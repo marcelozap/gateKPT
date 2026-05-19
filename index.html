@@ -17,7 +17,7 @@
         </div>
 
         <div class="controls">
-          <button id="startButton" type="button">Start</button>
+          <button id="startButton" type="button" title="Start live audio analysis">Start</button>
           <button id="fullscreenButton" type="button" title="Project fullscreen">Fullscreen</button>
 
           <label>
@@ -28,10 +28,22 @@
           <label>
             Mode
             <select id="modeSelect" aria-label="Visual mode">
-              <option value="voice">Voice</option>
+              <option value="prism">Prism</option>
+              <option value="aurora">Aurora</option>
+              <option value="cathedral">Cathedral</option>
               <option value="storm">Storm</option>
-              <option value="chords">Chords</option>
               <option value="grid">Grid</option>
+            </select>
+          </label>
+
+          <label>
+            Palette
+            <select id="paletteSelect" aria-label="Color palette">
+              <option value="auto">Auto</option>
+              <option value="neon">Neon</option>
+              <option value="ember">Ember</option>
+              <option value="ice">Ice</option>
+              <option value="royal">Royal</option>
             </select>
           </label>
 
@@ -44,11 +56,17 @@
             Bloom
             <input id="bloom" type="range" min="0" max="1" value="0.72" step="0.01" />
           </label>
+
+          <label class="slider">
+            Motion
+            <input id="motion" type="range" min="0.25" max="1.8" value="1" step="0.01" />
+          </label>
         </div>
 
         <div class="meters" aria-label="Audio meters">
           <span id="noteMeter">--</span>
           <span id="levelMeter">0%</span>
+          <span id="beatMeter">BEAT --</span>
           <span id="midiMeter">MIDI --</span>
         </div>
       </section>

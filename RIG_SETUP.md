@@ -62,6 +62,22 @@ For the cleanest voice visuals, route the `VOICE IN` track to a virtual audio de
 
 For full-room energy visuals, route Ableton master or the RC-505 stereo mix instead.
 
+## Million-Dollar Show Routing
+
+Use two visual instances when the machine can handle it:
+
+1. `Voice Mirror - Voice`
+   - Input: voice-only Ableton send
+   - Mode: Prism or Aurora
+   - Purpose: mouth, pitch, lyric energy, intimate movement
+
+2. `Voice Mirror - Room`
+   - Input: full Ableton master or RC-505 mix
+   - Mode: Storm, Cathedral, or Grid
+   - Purpose: drums, loop impacts, chorus expansion, crowd-facing motion
+
+Put both browser windows into OBS or your projection mapper. Blend the voice layer over the room layer with Screen/Add blending if your projection software supports it.
+
 ## Launch
 
 From this folder:
@@ -85,5 +101,6 @@ Press **Start**, choose the input, and use **Fullscreen** for the projector.
 - Bass/drum energy: particle impacts and screen pulses
 - High frequencies: sparks and sharp movement
 - Piano MIDI notes: chord palette and column mode
-- Keys `1` to `4`: change visual worlds
+- Keys `1` to `5`: change visual worlds
 - Key `F`: fullscreen
+- Key `H`: hide/show controls
