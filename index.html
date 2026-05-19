@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voice Mirror</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="stage" aria-label="Voice Mirror live visualizer">
+      <canvas id="visualizer" aria-label="Live audio reactive visuals"></canvas>
+
+      <section class="hud" aria-label="Performance controls">
+        <div class="brand">
+          <span class="mark"></span>
+          <span>Voice Mirror</span>
+        </div>
+
+        <div class="controls">
+          <button id="startButton" type="button">Start</button>
+          <button id="fullscreenButton" type="button" title="Project fullscreen">Fullscreen</button>
+
+          <label>
+            Input
+            <select id="inputSelect" aria-label="Audio input"></select>
+          </label>
+
+          <label>
+            Mode
+            <select id="modeSelect" aria-label="Visual mode">
+              <option value="voice">Voice</option>
+              <option value="storm">Storm</option>
+              <option value="chords">Chords</option>
+              <option value="grid">Grid</option>
+            </select>
+          </label>
+
+          <label class="slider">
+            Sensitivity
+            <input id="sensitivity" type="range" min="0.35" max="2.5" value="1.15" step="0.01" />
+          </label>
+
+          <label class="slider">
+            Bloom
+            <input id="bloom" type="range" min="0" max="1" value="0.72" step="0.01" />
+          </label>
+        </div>
+
+        <div class="meters" aria-label="Audio meters">
+          <span id="noteMeter">--</span>
+          <span id="levelMeter">0%</span>
+          <span id="midiMeter">MIDI --</span>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
