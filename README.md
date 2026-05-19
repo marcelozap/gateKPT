@@ -54,7 +54,7 @@ See [INDUSTRY_BUILD_SPEC.md](./INDUSTRY_BUILD_SPEC.md) for the sellable product 
 Additional technical documents:
 
 - [CONTROL_PROTOCOL.md](./CONTROL_PROTOCOL.md): WebSocket/OSC feature-frame protocol.
-- [PLUGIN_TECHNICAL_DESIGN.md](./PLUGIN_TECHNICAL_DESIGN.md): DAW bridge plugin design and realtime rules.
+- [ABLETON_PLUGIN_PLAN.md](./ABLETON_PLUGIN_PLAN.md): DAW bridge plugin design and realtime rules.
 - [VISUAL_ENGINE_TECHNICAL_DESIGN.md](./VISUAL_ENGINE_TECHNICAL_DESIGN.md): renderer, projector, quality, and integration architecture.
 
 ## Rig Plan
