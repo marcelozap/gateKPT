@@ -14,6 +14,7 @@ const motionInput = document.querySelector("#motion");
 const noteMeter = document.querySelector("#noteMeter");
 const levelMeter = document.querySelector("#levelMeter");
 const beatMeter = document.querySelector("#beatMeter");
+const bridgeMeter = document.querySelector("#bridgeMeter");
 const midiMeter = document.querySelector("#midiMeter");
 
 const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -60,6 +61,9 @@ const state = {
   starfield: [],
   frameIndex: 0,
   blackout: false,
+  bridge: null,
+  bridgeFrame: null,
+  bridgeLastSeen: 0,
   time: 0,
   lastFrame: performance.now(),
 };
@@ -126,6 +130,85 @@ function activePalette() {
   if (paletteSelect.value !== "auto") return palettes[paletteSelect.value];
   const anchor = modeSelect.value === "cathedral" ? state.chordHue : state.hue;
   return [anchor, (anchor + 76) % 360, (anchor + 156) % 360, (anchor + 248) % 360];
+}
+
+function setSelectValue(select, value) {
+  if (!value) return;
+  const option = [...select.options].find((item) => item.value === value);
+  if (option) select.value = value;
+}
+
+function updateMidiNotesFromFrame(midiNotes) {
+  if (!Array.isArray(midiNotes)) return;
+  state.midiNotes = new Set(midiNotes.filter((note) => Number.isFinite(note)).map((note) => Math.round(note)));
+}
+
+function applyBridgeFrame(frame) {
+  const amount = 0.28;
+  state.level = lerp(state.level, clamp(frame.level ?? frame.rms ?? 0), amount);
+  state.smoothLevel = lerp(state.smoothLevel, state.level, 0.2);
+  state.bass = lerp(state.bass, clamp(frame.bass ?? 0), amount);
+  state.lowMid = lerp(state.lowMid, clamp(frame.lowMid ?? 0), amount);
+  state.mid = lerp(state.mid, clamp(frame.mid ?? 0), amount);
+  state.high = lerp(state.high, clamp(frame.high ?? 0), amount);
+  state.air = lerp(state.air, clamp(frame.air ?? 0), amount);
+  state.onset = Math.max(state.onset * 0.84, clamp(frame.onset ?? 0));
+
+  if (frame.pitchHz > 0) {
+    state.pitch = lerp(state.pitch || frame.pitchHz, frame.pitchHz, 0.24);
+    state.note = frame.note || noteFromFrequency(state.pitch);
+  }
+
+  if (frame.beat === true || frame.onset > 0.65) {
+    state.beatPulse = 1;
+    state.beatCount += 1;
+  }
+
+  updateMidiNotesFromFrame(frame.midiNotes);
+  setSelectValue(modeSelect, frame.scene);
+  setSelectValue(paletteSelect, frame.palette);
+  if (Number.isFinite(frame.intensity)) motionInput.value = String(mapRange(frame.intensity, 0, 1, 0.35, 1.8).toFixed(2));
+  if (Number.isFinite(frame.bloom)) bloomInput.value = String(clamp(frame.bloom).toFixed(2));
+  if (typeof frame.blackout === "boolean" && frame.blackout !== state.blackout) blackoutButton.click();
+
+  const pitchHue = frame.pitchHz ? (Math.log2(frame.pitchHz / 55) * 52 + 180) % 360 : state.hue;
+  state.hue = lerp(state.hue, pitchHue, 0.06);
+  state.chordHue = lerp(state.chordHue, hueFromMidiNotes(), 0.09);
+}
+
+function isBridgeActive() {
+  return state.bridgeFrame && performance.now() - state.bridgeLastSeen < 900;
+}
+
+function startBridge() {
+  const params = new URLSearchParams(window.location.search);
+  const url = params.get("bridge");
+  if (!url || !window.WebSocket) return;
+
+  try {
+    state.bridge = new WebSocket(url);
+    bridgeMeter.textContent = "BRIDGE...";
+    state.bridge.addEventListener("open", () => {
+      bridgeMeter.textContent = "BRIDGE";
+    });
+    state.bridge.addEventListener("message", (event) => {
+      try {
+        state.bridgeFrame = JSON.parse(event.data);
+        state.bridgeLastSeen = performance.now();
+      } catch {
+        bridgeMeter.textContent = "BAD DATA";
+      }
+    });
+    state.bridge.addEventListener("close", () => {
+      bridgeMeter.textContent = "LOCAL";
+      window.setTimeout(startBridge, 1200);
+    });
+    state.bridge.addEventListener("error", () => {
+      bridgeMeter.textContent = "LOCAL";
+    });
+  } catch {
+    bridgeMeter.textContent = "LOCAL";
+  }
 }
 
 async function listInputs() {
@@ -212,6 +295,18 @@ function detectPitch() {
 }
 
 function analyzeAudio() {
+  if (isBridgeActive()) {
+    applyBridgeFrame(state.bridgeFrame);
+    state.beatPulse = Math.max(0, state.beatPulse - 0.045);
+    noteMeter.textContent = state.note;
+    levelMeter.textContent = `${Math.round(state.smoothLevel * 100)}%`;
+    beatMeter.textContent = state.beatPulse > 0.5 ? `BEAT ${state.beatCount}` : "BEAT --";
+    bridgeMeter.textContent = "BRIDGE";
+    return;
+  }
+
+  bridgeMeter.textContent = state.bridge ? "LOCAL" : "LOCAL";
+
   if (!state.analyser) {
     state.level = lerp(state.level, 0.16, 0.02);
     state.smoothLevel = lerp(state.smoothLevel, 0.16, 0.02);
@@ -675,4 +770,5 @@ window.addEventListener("keydown", (event) => {
 resize();
 listInputs().catch(() => {});
 setupMidi();
+startBridge();
 drawFrame();

@@ -51,6 +51,12 @@ Use **Balanced** for most shows, **Eco** if Ableton is recording heavily or the 
 
 See [INDUSTRY_BUILD_SPEC.md](./INDUSTRY_BUILD_SPEC.md) for the sellable product architecture: DAW bridge plugin, standalone visual engine, projector/broadcast output, realtime-safety rules, and release roadmap.
 
+Additional technical documents:
+
+- [CONTROL_PROTOCOL.md](./CONTROL_PROTOCOL.md): WebSocket/OSC feature-frame protocol.
+- [PLUGIN_TECHNICAL_DESIGN.md](./PLUGIN_TECHNICAL_DESIGN.md): DAW bridge plugin design and realtime rules.
+- [VISUAL_ENGINE_TECHNICAL_DESIGN.md](./VISUAL_ENGINE_TECHNICAL_DESIGN.md): renderer, projector, quality, and integration architecture.
+
 ## Rig Plan
 
 Best routing for clean vocal pitch correction:
