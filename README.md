@@ -47,6 +47,10 @@ Voice Mirror does not alter audio. Ableton or your vocal plugin chain should han
 
 Use **Balanced** for most shows, **Eco** if Ableton is recording heavily or the laptop fan starts climbing, and **Ultra** only after a full rehearsal on the exact projector machine.
 
+## Commercial Build Plan
+
+See [INDUSTRY_BUILD_SPEC.md](./INDUSTRY_BUILD_SPEC.md) for the sellable product architecture: DAW bridge plugin, standalone visual engine, projector/broadcast output, realtime-safety rules, and release roadmap.
+
 ## Rig Plan
 
 Best routing for clean vocal pitch correction:
