@@ -19,6 +19,7 @@
         <div class="controls">
           <button id="startButton" type="button" title="Start live audio analysis">Start</button>
           <button id="fullscreenButton" type="button" title="Project fullscreen">Fullscreen</button>
+          <button id="blackoutButton" type="button" title="Blackout projector output">Blackout</button>
 
           <label>
             Input
@@ -44,6 +45,15 @@
               <option value="ember">Ember</option>
               <option value="ice">Ice</option>
               <option value="royal">Royal</option>
+            </select>
+          </label>
+
+          <label>
+            Quality
+            <select id="qualitySelect" aria-label="Render quality">
+              <option value="balanced">Balanced</option>
+              <option value="eco">Eco</option>
+              <option value="ultra">Ultra</option>
             </select>
           </label>
 

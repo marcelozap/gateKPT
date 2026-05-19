@@ -3,9 +3,11 @@ const ctx = canvas.getContext("2d", { alpha: false });
 const stage = document.querySelector(".stage");
 const startButton = document.querySelector("#startButton");
 const fullscreenButton = document.querySelector("#fullscreenButton");
+const blackoutButton = document.querySelector("#blackoutButton");
 const inputSelect = document.querySelector("#inputSelect");
 const modeSelect = document.querySelector("#modeSelect");
 const paletteSelect = document.querySelector("#paletteSelect");
+const qualitySelect = document.querySelector("#qualitySelect");
 const sensitivityInput = document.querySelector("#sensitivity");
 const bloomInput = document.querySelector("#bloom");
 const motionInput = document.querySelector("#motion");
@@ -20,6 +22,12 @@ const palettes = {
   ember: [18, 42, 355, 206],
   ice: [174, 202, 265, 112],
   royal: [266, 314, 52, 185],
+};
+
+const qualityProfiles = {
+  eco: { dpr: 1, starDensity: 15000, particleLimit: 650, ribbonLimit: 12, pitchEvery: 3 },
+  balanced: { dpr: 1.5, starDensity: 9500, particleLimit: 1050, ribbonLimit: 20, pitchEvery: 2 },
+  ultra: { dpr: 2, starDensity: 6500, particleLimit: 1600, ribbonLimit: 30, pitchEvery: 1 },
 };
 
 const state = {
@@ -50,6 +58,8 @@ const state = {
   particles: [],
   ribbons: [],
   starfield: [],
+  frameIndex: 0,
+  blackout: false,
   time: 0,
   lastFrame: performance.now(),
 };
@@ -68,15 +78,19 @@ function mapRange(value, inMin, inMax, outMin, outMax) {
 }
 
 function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, quality().dpr);
   canvas.width = Math.floor(window.innerWidth * dpr);
   canvas.height = Math.floor(window.innerHeight * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   seedStarfield();
 }
 
+function quality() {
+  return qualityProfiles[qualitySelect.value] || qualityProfiles.balanced;
+}
+
 function seedStarfield() {
-  const count = Math.round((window.innerWidth * window.innerHeight) / 9000);
+  const count = Math.round((window.innerWidth * window.innerHeight) / quality().starDensity);
   state.starfield = Array.from({ length: count }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
@@ -154,6 +168,7 @@ async function startAudio(deviceId = inputSelect.value) {
 
   await listInputs();
   startButton.textContent = "Running";
+  stage.classList.add("hide-hud");
 }
 
 function averageBand(fromHz, toHz) {
@@ -232,7 +247,8 @@ function analyzeAudio() {
   state.beatPulse = Math.max(0, state.beatPulse - 0.045);
   state.lastEnergy = lerp(state.lastEnergy, energy, 0.16);
 
-  const pitch = detectPitch();
+  const shouldDetectPitch = state.frameIndex % quality().pitchEvery === 0;
+  const pitch = shouldDetectPitch ? detectPitch() : state.pitch;
   state.pitch = pitch ? lerp(state.pitch || pitch, pitch, 0.22) : lerp(state.pitch, 0, 0.04);
   state.note = noteFromFrequency(state.pitch);
   const pitchHue = pitch ? (Math.log2(pitch / 55) * 52 + 180) % 360 : state.chordHue;
@@ -266,11 +282,12 @@ function spawnParticles(width, height) {
     });
   }
 
-  if (state.particles.length > 1500) state.particles.splice(0, state.particles.length - 1500);
+  const limit = quality().particleLimit;
+  if (state.particles.length > limit) state.particles.splice(0, state.particles.length - limit);
 }
 
 function spawnRibbon(width, height) {
-  if (state.ribbons.length > 26) state.ribbons.shift();
+  if (state.ribbons.length > quality().ribbonLimit) state.ribbons.shift();
   const palette = activePalette();
   state.ribbons.push({
     phase: Math.random() * Math.PI * 2,
@@ -557,13 +574,20 @@ function drawFrame(now = performance.now()) {
   const dt = Math.min(0.05, (now - state.lastFrame) / 1000);
   state.lastFrame = now;
   state.time += dt * 60;
+  state.frameIndex += 1;
 
   analyzeAudio();
+  if (state.blackout) {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
+    requestAnimationFrame(drawFrame);
+    return;
+  }
   drawBackground(width, height);
   drawStarfield(width, height);
 
   if (state.onset > 0.08 || state.level > 0.22) spawnParticles(width, height);
-  if (state.onset > 0.32 || (state.ribbons.length < 5 && Math.random() < 0.02)) spawnRibbon(width, height);
+  if (state.onset > 0.32 || (state.ribbons.length < Math.min(5, quality().ribbonLimit) && Math.random() < 0.02)) spawnRibbon(width, height);
 
   const mode = modeSelect.value;
   if (mode === "prism") drawPrism(width, height);
@@ -623,6 +647,14 @@ fullscreenButton.addEventListener("click", () => {
   else document.exitFullscreen();
 });
 
+blackoutButton.addEventListener("click", () => {
+  state.blackout = !state.blackout;
+  stage.classList.toggle("blackout", state.blackout);
+  blackoutButton.textContent = state.blackout ? "Live" : "Blackout";
+});
+
+qualitySelect.addEventListener("change", resize);
+
 window.addEventListener("resize", resize);
 window.addEventListener("keydown", (event) => {
   if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;
@@ -630,6 +662,12 @@ window.addEventListener("keydown", (event) => {
   if (event.key >= "1" && event.key <= "5") modeSelect.value = modes[Number(event.key) - 1];
   if (event.key.toLowerCase() === "f") fullscreenButton.click();
   if (event.key.toLowerCase() === "h") stage.classList.toggle("hide-hud");
+  if (event.key.toLowerCase() === "b") blackoutButton.click();
+  if (event.key.toLowerCase() === "q") {
+    const values = ["eco", "balanced", "ultra"];
+    qualitySelect.value = values[(values.indexOf(qualitySelect.value) + 1) % values.length];
+    resize();
+  }
   if (event.key === "[") sensitivityInput.value = Math.max(Number(sensitivityInput.min), Number(sensitivityInput.value) - 0.05).toFixed(2);
   if (event.key === "]") sensitivityInput.value = Math.min(Number(sensitivityInput.max), Number(sensitivityInput.value) + 0.05).toFixed(2);
 });

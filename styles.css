@@ -73,6 +73,14 @@ input {
   transform: translateY(12px);
 }
 
+.stage.blackout {
+  background: #000;
+}
+
+.stage.blackout #visualizer {
+  opacity: 0;
+}
+
 .brand,
 .meters,
 .controls,
@@ -113,7 +121,7 @@ select {
 }
 
 button {
-  min-width: 88px;
+  min-width: 82px;
   padding: 0 12px;
   cursor: pointer;
 }
@@ -124,7 +132,7 @@ select:hover {
 }
 
 select {
-  width: 126px;
+  width: 118px;
   padding: 0 9px;
 }
 

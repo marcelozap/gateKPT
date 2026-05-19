@@ -27,6 +27,8 @@ Ableton voice-only send or master send
   -> projector
 ```
 
+Voice Mirror is a listener, not the audio processor. Keep pitch correction, vocal effects, monitoring, and recording inside Ableton or your plugin chain. Send Voice Mirror a duplicate signal so visuals never sit in the critical audio path.
+
 ## Ableton Tracks
 
 1. `VOICE IN`
@@ -78,6 +80,15 @@ Use two visual instances when the machine can handle it:
 
 Put both browser windows into OBS or your projection mapper. Blend the voice layer over the room layer with Screen/Add blending if your projection software supports it.
 
+## Stability Rules
+
+- Run Ableton at the lowest stable buffer you need for singing.
+- Run Voice Mirror from a browser window on the projector display.
+- Start in **Balanced** quality; switch to **Eco** with `Q` if the DAW gets busy.
+- Use `H` to hide controls before the song starts.
+- Use `B` for blackout between songs, input changes, or projector fades.
+- Keep audio routing one-way into Voice Mirror. Do not route browser audio back into Ableton.
+
 ## Launch
 
 From this folder:
@@ -104,3 +115,5 @@ Press **Start**, choose the input, and use **Fullscreen** for the projector.
 - Keys `1` to `5`: change visual worlds
 - Key `F`: fullscreen
 - Key `H`: hide/show controls
+- Key `B`: blackout/live output
+- Key `Q`: cycle render quality
