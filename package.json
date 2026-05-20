@@ -1,0 +1,26 @@
+{
+  "name": "gatekpt-visual-engine",
+  "version": "0.1.0",
+  "description": "Standalone fullscreen oscilloscope-forward visual instrument driven by live audio features",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.gatekpt.visual-engine",
+    "productName": "GateKPT Visual Engine",
+    "win": {
+      "target": ["nsis"],
+      "icon": null
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
