@@ -24,6 +24,8 @@ It should not:
 - Require internet during a show.
 - Require advanced visual software for a basic user.
 
+For the gateKPT MacBook + PC rig, the visual app should primarily run on the PC while the MacBook runs the DAW and bridge plugin. See [MACBOOK_PC_DEPLOYMENT_PLAN.md](./MACBOOK_PC_DEPLOYMENT_PLAN.md).
+
 ## Current App
 
 The current browser version already includes:

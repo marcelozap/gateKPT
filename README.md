@@ -56,6 +56,7 @@ Additional technical documents:
 - [CONTROL_PROTOCOL.md](./CONTROL_PROTOCOL.md): WebSocket/OSC feature-frame protocol.
 - [ABLETON_PLUGIN_PLAN.md](./ABLETON_PLUGIN_PLAN.md): DAW bridge plugin design and realtime rules.
 - [VISUAL_APP_PLAN.md](./VISUAL_APP_PLAN.md): projector visual app, presets, packaging, and show reliability plan.
+- [MACBOOK_PC_DEPLOYMENT_PLAN.md](./MACBOOK_PC_DEPLOYMENT_PLAN.md): MacBook + PC live rig split for DAW, bridge, visuals, projector, and recording.
 
 ## Rig Plan
 
