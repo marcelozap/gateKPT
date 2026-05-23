@@ -18,18 +18,22 @@ Turn raw performance footage into platform-ready clips:
 
 - Avalonia desktop shell.
 - Persistent local session log.
-- Media path analysis workflow.
+- Native media file picker workflow.
+- Media metadata inspection with FFprobe fallback.
 - NAudio envelope/correlation sync analyzer.
 - FFmpeg extraction bridge, activated when `ffmpeg` is available on PATH.
 - Toolchain status indicator.
+- Review clip render workflow with platform presets.
+- Export queue, export history, timeline markers, and production brief snapshots.
+- Vocal processing presets for clean vocal, spoken clarity, music performance, and dry sync.
 
 ## Next Engineering Steps
 
-- Add native file picker buttons instead of pasted paths.
 - Bundle or install FFmpeg automatically.
-- Store project files, media references, offsets, and export settings.
 - Draw real timeline lanes with draggable sync offset.
-- Add `-100ms`, `-10ms`, `+10ms`, `+100ms` nudge controls.
-- Use FFmpeg to render synced review clips.
-- Add loudness measurement and normalization.
-- Add vocal chain presets: clean speech, vocal performance, noisy room, car/phone recording.
+- Add loudness measurement before and after render.
+- Add waveform timeline zoom and marker snapping.
+- Add take rating and A/B comparison.
+- Add caption/transcript generation.
+- Add export queue progress, cancellation, and retry.
+- Add bundled FFmpeg discovery so the app does not depend only on `PATH`.
