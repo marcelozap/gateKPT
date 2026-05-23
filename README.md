@@ -55,6 +55,7 @@ Music OS is shaped around the normal build order:
 - Lyric vault: save hooks, fragments, moods, tags, and pull the latest lyric into the active session notes.
 - Visualizer module: save mode, palette, motion, lyric source, intensity, and live-meter-aware visual direction inside the project.
 - Safe captions: draft lyric captions on a beat grid, defaulting to 3-beat spacing, and flag dense lines as review-needed instead of burning in bad timing.
+- Command chat: type local commands like `add captions`, `sync video`, `make drums warmer`, `add vocal layers`, or `export reels`; unsafe work drafts or queues instead of forcing destructive changes.
 
 ## Direction
 

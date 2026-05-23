@@ -33,6 +33,7 @@ Turn raw performance footage into platform-ready clips:
 - Lyric vault for hooks, fragments, tags, moods, and song ideas.
 - Visualizer preset module for stage-aware lyric/audio visuals.
 - Safe caption drafts with beat-grid timing and review-needed flags.
+- Local command chat for captions, sync, mix intent, lyric capture, visualizer notes, and export queueing.
 
 ## Next Engineering Steps
 
@@ -43,6 +44,7 @@ Turn raw performance footage into platform-ready clips:
 - Add lyric search, rhyme clusters, and section labels.
 - Render visualizer clips to MP4 using audio energy and lyric timing.
 - Burn only reviewed captions into video exports; otherwise export sidecar SRT.
+- Add optional AI interpretation behind the command-chat interface with confirmation gates.
 - Add RC-505 MIDI transport/loop commands once device mapping is confirmed.
 - Draw real timeline lanes with draggable sync offset.
 - Add loudness measurement before and after render.

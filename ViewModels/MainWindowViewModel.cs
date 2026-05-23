@@ -21,6 +21,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly LiveInputMeterService _meter = new();
     private readonly MixIntentService _mixIntent = new();
     private readonly CaptionDraftService _captionDrafts = new();
+    private readonly CommandIntentService _commands = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -221,6 +222,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _captionStatus = "No captions drafted yet.";
+
+    [ObservableProperty]
+    private string _commandText = "add captions but only if timing is safe";
+
+    [ObservableProperty]
+    private string _commandResponse = "Command chat ready. Safe actions draft or queue instead of destructive changes.";
 
     public MainWindowViewModel()
     {
@@ -893,6 +900,53 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveCaptions(Captions);
         UpdateCaptionStatus();
         Status = "Caption drafts cleared.";
+    }
+
+    [RelayCommand]
+    private void RunCommand()
+    {
+        var intent = _commands.Parse(CommandText);
+        CommandResponse = intent.SafetyNote;
+        switch (intent.Action)
+        {
+            case CommandAction.DraftCaptions:
+                DraftCaptions();
+                CommandResponse = $"{intent.SafetyNote} {CaptionStatus}";
+                break;
+            case CommandAction.SyncMedia:
+                AnalyzeMedia();
+                CommandResponse = $"{intent.SafetyNote} {SyncRecommendation}";
+                break;
+            case CommandAction.ApplyMixIntent:
+                MixPrompt = intent.Payload;
+                ApplyMixIntent();
+                CommandResponse = $"{intent.SafetyNote} {MixChain}";
+                break;
+            case CommandAction.SaveVisualizer:
+                VisualizerNotes = intent.Payload;
+                SaveVisualizer();
+                CommandResponse = intent.SafetyNote;
+                break;
+            case CommandAction.SaveLyric:
+                LyricText = intent.Payload;
+                SaveLyricIdea();
+                CommandResponse = intent.SafetyNote;
+                break;
+            case CommandAction.QueueExport:
+                QueueCurrentExport();
+                CommandResponse = intent.SafetyNote;
+                break;
+            case CommandAction.CaptureNote:
+                CaptureTitle = "Command note";
+                CaptureNotes = intent.Payload;
+                SaveCapture();
+                CommandResponse = intent.SafetyNote;
+                break;
+            default:
+                CommandResponse = intent.SafetyNote;
+                Status = intent.SafetyNote;
+                break;
+        }
     }
 
     private ProjectSettings CurrentProjectSettings() => new(
