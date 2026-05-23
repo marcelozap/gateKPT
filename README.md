@@ -40,7 +40,8 @@ The app can scan active Windows audio endpoints and MIDI ports through NAudio. U
 
 - Focusrite / Scarlett: primary mic/instrument input and monitoring output.
 - RC-505 Loop Station: loop audio device if exposed over USB, plus MIDI input/output when available.
-- Future layer: live meters, one-click recording, RC-505 transport/scene commands, and loop capture into the project timeline.
+- Live input meter: start/stop a local peak meter for the preferred input without recording or transmitting audio.
+- Future layer: one-click recording, RC-505 transport/scene commands, and loop capture into the project timeline.
 
 ## Direction
 

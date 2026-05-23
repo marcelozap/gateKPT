@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GateKPT.MusicOS.Services;
@@ -17,6 +18,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly MediaMetadataService _metadata = new();
     private readonly ProductionBriefService _briefs = new();
     private readonly HardwareDeviceService _hardware = new();
+    private readonly LiveInputMeterService _meter = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -151,6 +153,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _routingNotes = "";
+
+    [ObservableProperty]
+    private double _inputMeterLevel = 0;
+
+    [ObservableProperty]
+    private string _inputMeterLabel = "Meter idle";
 
     public MainWindowViewModel()
     {
@@ -592,6 +600,29 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         _store.SaveHardwareRouting(CurrentHardwareRouting());
         Status = "Saved Focusrite / RC-505 routing preferences.";
+    }
+
+    [RelayCommand]
+    private void StartInputMeter()
+    {
+        var result = _meter.Start(PreferredAudioInput, level =>
+            Dispatcher.UIThread.Post(() =>
+            {
+                InputMeterLevel = Math.Round(level * 100, 1);
+                InputMeterLabel = $"{InputMeterLevel:0.0}% input peak";
+            }));
+
+        Status = result.Message;
+        InputMeterLabel = result.Success ? result.Message : "Meter idle";
+    }
+
+    [RelayCommand]
+    private void StopInputMeter()
+    {
+        _meter.Stop();
+        InputMeterLevel = 0;
+        InputMeterLabel = "Meter stopped";
+        Status = "Live input meter stopped.";
     }
 
     private ProjectSettings CurrentProjectSettings() => new(

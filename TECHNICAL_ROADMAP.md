@@ -27,11 +27,11 @@ Turn raw performance footage into platform-ready clips:
 - Export queue, export history, timeline markers, and production brief snapshots.
 - Vocal processing presets for clean vocal, spoken clarity, music performance, and dry sync.
 - Windows audio endpoint and MIDI port discovery for Focusrite / RC-505 routing.
+- Live input peak meter for the preferred Focusrite / RC-505 input.
 
 ## Next Engineering Steps
 
 - Bundle or install FFmpeg automatically.
-- Add live input meters for selected Focusrite / RC-505 devices.
 - Add recording capture from preferred input into the project library.
 - Add RC-505 MIDI transport/loop commands once device mapping is confirmed.
 - Draw real timeline lanes with draggable sync offset.
