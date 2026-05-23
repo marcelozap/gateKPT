@@ -124,6 +124,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _lastBriefPath = "";
 
+    [ObservableProperty]
+    private string _takeName = "Take 01";
+
+    [ObservableProperty]
+    private int _takeRating = 4;
+
+    [ObservableProperty]
+    private string _takeNotes = "Check lip sync, emotion, and consonants.";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -179,6 +188,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                     new("00:00.000", "Start", "Project opens on first usable visual frame", "Timeline"),
                     new("00:08.000", "Hook", "Check mouth shape against lead vocal", "Sync"),
                 ]);
+        TakeReviews = new ObservableCollection<TakeReviewItem>(
+            _store.LoadTakeReviews().Count > 0
+                ? _store.LoadTakeReviews()
+                :
+                [
+                    new("Take 01", 4, "Promising; verify hook consonants before export.", DateTime.Now.ToString("yyyy-MM-dd")),
+                ]);
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -194,6 +210,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ExportHistoryItem> ExportHistory { get; }
 
     public ObservableCollection<TimelineMarker> TimelineMarkers { get; }
+
+    public ObservableCollection<TakeReviewItem> TakeReviews { get; }
 
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
@@ -310,6 +328,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveExportQueue(ExportQueue);
         _store.SaveExportHistory(ExportHistory);
         _store.SaveTimelineMarkers(TimelineMarkers);
+        _store.SaveTakeReviews(TakeReviews);
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -322,6 +341,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             CurrentProjectSettings(),
             RecentCaptures,
             TimelineMarkers,
+            TakeReviews,
             ExportQueue,
             ExportHistory);
         Status = $"Production brief written: {LastBriefPath}";
@@ -498,6 +518,27 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Added marker: {label}";
     }
 
+    [RelayCommand]
+    private void SaveTakeReview()
+    {
+        var name = string.IsNullOrWhiteSpace(TakeName) ? $"Take {TakeReviews.Count + 1:00}" : TakeName.Trim();
+        var rating = Math.Clamp(TakeRating, 1, 5);
+        TakeReviews.Insert(0, new TakeReviewItem(
+            name,
+            rating,
+            string.IsNullOrWhiteSpace(TakeNotes) ? "No notes yet." : TakeNotes.Trim(),
+            DateTime.Now.ToString("yyyy-MM-dd")));
+        while (TakeReviews.Count > 20)
+        {
+            TakeReviews.RemoveAt(TakeReviews.Count - 1);
+        }
+
+        _store.SaveTakeReviews(TakeReviews);
+        TakeName = $"Take {TakeReviews.Count + 1:00}";
+        TakeNotes = "";
+        Status = $"Saved take review: {name}";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -567,3 +608,5 @@ public sealed record ExportQueueItem(
 public sealed record ExportHistoryItem(string RenderedAt, string PresetName, string AudioPresetName, string OffsetLabel, string OutputPath);
 
 public sealed record TimelineMarker(string Timecode, string Label, string Notes, string Room);
+
+public sealed record TakeReviewItem(string Name, int Rating, string Notes, string ReviewedAt);

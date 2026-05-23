@@ -28,6 +28,8 @@ public sealed class LocalLibraryStore
 
     private string TimelineMarkersPath => Path.Combine(LibraryDirectory, "timeline-markers.json");
 
+    private string TakeReviewsPath => Path.Combine(LibraryDirectory, "take-reviews.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -89,6 +91,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<TimelineMarker> LoadTimelineMarkers() => LoadList<TimelineMarker>(TimelineMarkersPath);
 
     public void SaveTimelineMarkers(IEnumerable<TimelineMarker> markers) => SaveList(TimelineMarkersPath, markers);
+
+    public IReadOnlyList<TakeReviewItem> LoadTakeReviews() => LoadList<TakeReviewItem>(TakeReviewsPath);
+
+    public void SaveTakeReviews(IEnumerable<TakeReviewItem> reviews) => SaveList(TakeReviewsPath, reviews);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

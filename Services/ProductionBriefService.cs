@@ -13,6 +13,7 @@ public sealed class ProductionBriefService
         ProjectSettings project,
         IEnumerable<CaptureItem> captures,
         IEnumerable<TimelineMarker> markers,
+        IEnumerable<TakeReviewItem> takes,
         IEnumerable<ExportQueueItem> queue,
         IEnumerable<ExportHistoryItem> history)
     {
@@ -28,6 +29,7 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Business mode: {project.BusinessMode}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");
+        AppendSection(brief, "Take Reviews", takes, item => $"- {item.Rating}/5 {item.Name}: {item.Notes}");
         AppendSection(brief, "Export Queue", queue, item => $"- {item.Status}: {item.PresetName} + {item.AudioPresetName} at {item.OffsetMs:+#;-#;0} ms");
         AppendSection(brief, "Export History", history, item => $"- {item.RenderedAt}: {item.PresetName} / {item.AudioPresetName} / {item.OffsetLabel}");
         AppendSection(brief, "Session Notes", captures, item => $"- {item.Status}: {item.Title} - {item.Detail}");
