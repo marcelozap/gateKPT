@@ -43,6 +43,15 @@ The app can scan active Windows audio endpoints and MIDI ports through NAudio. U
 - Live input meter: start/stop a local peak meter for the preferred input without recording or transmitting audio.
 - Future layer: one-click recording, RC-505 transport/scene commands, and loop capture into the project timeline.
 
+## Song Workflow
+
+Music OS is shaped around the normal build order:
+
+- Drums first: tempo, groove, loop length, kick/snare feel.
+- Guitar / Piano second: harmony, rhythm pocket, arrangement.
+- Vocals last: melody, diction, emotion, doubles, hook clarity.
+- Review / Export: rate takes, sync video, process vocal, render clips.
+
 ## Direction
 
 `gatekpt.ai` stays the public landing page for music, videos, pricing, and booking.

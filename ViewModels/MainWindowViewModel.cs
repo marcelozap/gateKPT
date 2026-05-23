@@ -160,6 +160,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _inputMeterLabel = "Meter idle";
 
+    [ObservableProperty]
+    private SongStage _selectedSongStage = null!;
+
+    [ObservableProperty]
+    private string _songStageNotes = "";
+
+    [ObservableProperty]
+    private string _tempo = "120 BPM";
+
+    [ObservableProperty]
+    private string _keyCenter = "TBD";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -231,6 +243,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         PreferredMidiOutput = hardwareRouting.PreferredMidiOutput;
         RoutingNotes = hardwareRouting.RoutingNotes;
         ScanHardware();
+
+        SongStages = SongWorkflowCatalog.DefaultStages;
+        var songWorkflow = _store.LoadSongWorkflow();
+        _selectedSongStage = SongStages.FirstOrDefault(stage => stage.Name == songWorkflow.ActiveStageName) ?? SongStages[0];
+        SongStageNotes = songWorkflow.StageNotes;
+        Tempo = songWorkflow.Tempo;
+        KeyCenter = songWorkflow.KeyCenter;
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -250,6 +269,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<TakeReviewItem> TakeReviews { get; }
 
     public ObservableCollection<HardwareDevice> HardwareDevices { get; }
+
+    public IReadOnlyList<SongStage> SongStages { get; }
 
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
@@ -298,6 +319,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SelectedAudioPresetDescription => SelectedAudioPreset?.Description ?? "";
 
+    public string SelectedSongStageGoal => SelectedSongStage?.Goal ?? "";
+
+    public string SelectedSongStageRouting => SelectedSongStage?.Routing ?? "";
+
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
         PlatformProfile = value.Name;
@@ -307,6 +332,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnSelectedAudioPresetChanged(AudioProcessingPreset value)
     {
         OnPropertyChanged(nameof(SelectedAudioPresetDescription));
+    }
+
+    partial void OnSelectedSongStageChanged(SongStage value)
+    {
+        OnPropertyChanged(nameof(SelectedSongStageGoal));
+        OnPropertyChanged(nameof(SelectedSongStageRouting));
+        CaptureTitle = $"{value.Name} pass";
+        CaptureNotes = value.Goal;
+        Status = $"Song workflow moved to {value.Name}.";
     }
 
     partial void OnSelectedRoomChanged(OsRoom value)
@@ -368,6 +402,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveTimelineMarkers(TimelineMarkers);
         _store.SaveTakeReviews(TakeReviews);
         _store.SaveHardwareRouting(CurrentHardwareRouting());
+        _store.SaveSongWorkflow(CurrentSongWorkflow());
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -378,6 +413,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LastBriefPath = _briefs.WriteBrief(
             LibraryPath,
             CurrentProjectSettings(),
+            CurrentSongWorkflow(),
             RecentCaptures,
             TimelineMarkers,
             TakeReviews,
@@ -625,6 +661,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = "Live input meter stopped.";
     }
 
+    [RelayCommand]
+    private void SaveSongStage()
+    {
+        _store.SaveSongWorkflow(CurrentSongWorkflow());
+        RecentCaptures.Insert(0, new CaptureItem(
+            $"{SelectedSongStage.Name} stage",
+            $"{Tempo} / {KeyCenter}. {SongStageNotes}",
+            DateTime.Now.ToString("h:mm tt"),
+            "Song"));
+        _store.SaveCaptures(RecentCaptures);
+        Status = $"Saved {SelectedSongStage.Name} song stage.";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -677,6 +726,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         PreferredMidiInput,
         PreferredMidiOutput,
         RoutingNotes);
+
+    private SongWorkflowSettings CurrentSongWorkflow() => new(
+        SelectedSongStage.Name,
+        SongStageNotes,
+        Tempo,
+        KeyCenter);
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

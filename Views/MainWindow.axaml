@@ -207,7 +207,7 @@
                                        LineHeight="54"
                                        TextWrapping="Wrap"
                                        Foreground="#15120D"/>
-                            <TextBlock Text="Sync mouth movement to final vocal, edit takes, mix the audio, export clips, and keep the production memory in one local system."
+                            <TextBlock Text="Build songs the way you actually play: drums first, guitar or piano second, vocals last, then sync video and export."
                                        Margin="0,20,0,0"
                                        FontSize="15"
                                        LineHeight="24"
@@ -219,6 +219,65 @@
                                 <TextBox Grid.Row="1" Text="{Binding BusinessMode}" PlaceholderText="Business mode" Background="#66FFFFFF" Foreground="#15120D"/>
                                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding LoudnessTarget}" PlaceholderText="Loudness target" Background="#66FFFFFF" Foreground="#15120D"/>
                             </Grid>
+                            <Border CornerRadius="26" Background="#3315120D" BorderBrush="#3315120D" BorderThickness="1" Padding="16" Margin="0,18,0,0">
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                                    <TextBlock Text="SONG BUILD ORDER" FontSize="11" FontWeight="Black" Foreground="#8D5631" LetterSpacing="2.8"/>
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding SongStages}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="svc:SongStage">
+                                                <Border CornerRadius="18" Background="#44FFFFFF" Padding="12,9">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Step}" FontSize="10" FontWeight="Black" Foreground="{Binding Accent}"/>
+                                                        <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="Black" Foreground="#15120D"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Grid Grid.Row="2" ColumnDefinitions="*,100,100,Auto" ColumnSpacing="8">
+                                        <ComboBox ItemsSource="{Binding SongStages}"
+                                                  SelectedItem="{Binding SelectedSongStage}"
+                                                  Background="#66FFFFFF"
+                                                  Foreground="#15120D">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate x:DataType="svc:SongStage">
+                                                    <TextBlock Text="{Binding Name}"/>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                        <TextBox Grid.Column="1" Text="{Binding Tempo}" PlaceholderText="Tempo" Background="#66FFFFFF" Foreground="#15120D"/>
+                                        <TextBox Grid.Column="2" Text="{Binding KeyCenter}" PlaceholderText="Key" Background="#66FFFFFF" Foreground="#15120D"/>
+                                        <Button Grid.Column="3"
+                                                Content="Save stage"
+                                                Command="{Binding SaveSongStageCommand}"
+                                                Padding="14,9"
+                                                Background="#15120D"
+                                                Foreground="#F8F0E5"
+                                                FontWeight="Black"/>
+                                    </Grid>
+                                    <TextBlock Grid.Row="3"
+                                               Text="{Binding SelectedSongStageGoal}"
+                                               FontSize="12"
+                                               TextWrapping="Wrap"
+                                               Foreground="#5D503F"/>
+                                    <TextBlock Grid.Row="4"
+                                               Text="{Binding SelectedSongStageRouting}"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"
+                                               Foreground="#8D5631"/>
+                                    <TextBox Grid.Row="5"
+                                             Text="{Binding SongStageNotes}"
+                                             PlaceholderText="Stage notes"
+                                             Background="#66FFFFFF"
+                                             Foreground="#15120D"
+                                             BorderBrush="#3315120D"/>
+                                </Grid>
+                            </Border>
                         </StackPanel>
 
                         <Border Grid.Column="1" CornerRadius="32" Background="#E615120D" Padding="24"

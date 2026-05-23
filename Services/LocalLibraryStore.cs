@@ -32,6 +32,8 @@ public sealed class LocalLibraryStore
 
     private string HardwareRoutingPath => Path.Combine(LibraryDirectory, "hardware-routing.json");
 
+    private string SongWorkflowPath => Path.Combine(LibraryDirectory, "song-workflow.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -123,6 +125,31 @@ public sealed class LocalLibraryStore
         File.WriteAllText(HardwareRoutingPath, json);
     }
 
+    public SongWorkflowSettings LoadSongWorkflow()
+    {
+        try
+        {
+            if (!File.Exists(SongWorkflowPath))
+            {
+                return SongWorkflowSettings.Default;
+            }
+
+            var json = File.ReadAllText(SongWorkflowPath);
+            return JsonSerializer.Deserialize<SongWorkflowSettings>(json, JsonOptions) ?? SongWorkflowSettings.Default;
+        }
+        catch
+        {
+            return SongWorkflowSettings.Default;
+        }
+    }
+
+    public void SaveSongWorkflow(SongWorkflowSettings settings)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(settings, JsonOptions);
+        File.WriteAllText(SongWorkflowPath, json);
+    }
+
     private static IReadOnlyList<T> LoadList<T>(string path)
     {
         try
@@ -162,6 +189,19 @@ public sealed record HardwareRoutingSettings(
         "RC-505 MIDI input",
         "RC-505 MIDI output",
         "Goal: mic/instruments through Focusrite, loops and transport via RC-505.");
+}
+
+public sealed record SongWorkflowSettings(
+    string ActiveStageName,
+    string StageNotes,
+    string Tempo,
+    string KeyCenter)
+{
+    public static SongWorkflowSettings Default => new(
+        "Drums",
+        "Start with drums. Lock the groove before adding harmony or vocals.",
+        "120 BPM",
+        "TBD");
 }
 
 public sealed record ProjectSettings(

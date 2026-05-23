@@ -11,6 +11,7 @@ public sealed class ProductionBriefService
     public string WriteBrief(
         string libraryDirectory,
         ProjectSettings project,
+        SongWorkflowSettings workflow,
         IEnumerable<CaptureItem> captures,
         IEnumerable<TimelineMarker> markers,
         IEnumerable<TakeReviewItem> takes,
@@ -27,6 +28,10 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Loudness: {project.LoudnessTarget}");
         brief.AppendLine($"Current offset: {project.SyncOffsetMs:+#;-#;0} ms");
         brief.AppendLine($"Business mode: {project.BusinessMode}");
+        brief.AppendLine($"Song stage: {workflow.ActiveStageName}");
+        brief.AppendLine($"Tempo: {workflow.Tempo}");
+        brief.AppendLine($"Key center: {workflow.KeyCenter}");
+        brief.AppendLine($"Stage notes: {workflow.StageNotes}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");
         AppendSection(brief, "Take Reviews", takes, item => $"- {item.Rating}/5 {item.Name}: {item.Notes}");
