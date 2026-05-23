@@ -12,6 +12,7 @@ public sealed class ProductionBriefService
         string libraryDirectory,
         ProjectSettings project,
         SongWorkflowSettings workflow,
+        VisualizerSettings visualizer,
         IEnumerable<CaptureItem> captures,
         IEnumerable<TimelineMarker> markers,
         IEnumerable<TakeReviewItem> takes,
@@ -36,6 +37,8 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Mix intent: {workflow.MixPrompt}");
         brief.AppendLine($"Mix recommendation: {workflow.MixRecommendation}");
         brief.AppendLine($"Mix chain: {workflow.MixChain}");
+        brief.AppendLine($"Visualizer: {visualizer.Mode} / {visualizer.Palette} / {visualizer.Motion}");
+        brief.AppendLine($"Visualizer notes: {visualizer.Notes}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");
         AppendSection(brief, "Lyric Ideas", lyrics, item => $"- {item.Title} [{item.Stage} / {item.Mood}] {item.Tags}: {item.Preview}");

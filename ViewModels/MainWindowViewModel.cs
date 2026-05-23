@@ -194,6 +194,24 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _lyricText = "";
 
+    [ObservableProperty]
+    private string _visualizerMode = "Lyric Pulse";
+
+    [ObservableProperty]
+    private string _visualizerPalette = "Amber / seafoam";
+
+    [ObservableProperty]
+    private string _visualizerMotion = "Breathing waveform";
+
+    [ObservableProperty]
+    private string _visualizerLyricSource = "Latest lyric";
+
+    [ObservableProperty]
+    private double _visualizerIntensity = 64;
+
+    [ObservableProperty]
+    private string _visualizerNotes = "Use live input energy, song stage color, and lyric fragments.";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -283,6 +301,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 [
                     new("First hook", "Vocals", "raw", "hook, draft", "Write the first line before judging it.", DateTime.Now.ToString("yyyy-MM-dd")),
                 ]);
+
+        var visualizer = _store.LoadVisualizer();
+        VisualizerMode = visualizer.Mode;
+        VisualizerPalette = visualizer.Palette;
+        VisualizerMotion = visualizer.Motion;
+        VisualizerLyricSource = visualizer.LyricSource;
+        VisualizerIntensity = visualizer.Intensity;
+        VisualizerNotes = visualizer.Notes;
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -306,6 +332,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public IReadOnlyList<SongStage> SongStages { get; }
 
     public ObservableCollection<LyricIdeaItem> LyricIdeas { get; }
+
+    public IReadOnlyList<string> VisualizerModes { get; } =
+    [
+        "Lyric Pulse",
+        "Waveform Tunnel",
+        "Stage Aura",
+        "Camera Overlay",
+        "Minimal Performance",
+    ];
+
+    public IReadOnlyList<string> VisualizerPalettes { get; } =
+    [
+        "Amber / seafoam",
+        "Black / ivory",
+        "Neon rehearsal",
+        "Blue hour",
+        "Red room",
+    ];
+
+    public IReadOnlyList<string> VisualizerMotions { get; } =
+    [
+        "Breathing waveform",
+        "Kick pulse",
+        "Lyric type-on",
+        "Slow orbit",
+        "Hard cuts",
+    ];
 
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
@@ -358,6 +411,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SelectedSongStageRouting => SelectedSongStage?.Routing ?? "";
 
+    public string VisualizerPreviewTitle => $"{VisualizerMode} - {SelectedSongStage?.Name ?? "Stage"}";
+
+    public string VisualizerPreviewDetail =>
+        $"{VisualizerPalette} / {VisualizerMotion} / intensity {VisualizerIntensity:0}% / live meter {InputMeterLevel:0.0}%";
+
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
         PlatformProfile = value.Name;
@@ -373,6 +431,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(SelectedSongStageGoal));
         OnPropertyChanged(nameof(SelectedSongStageRouting));
+        OnPropertyChanged(nameof(VisualizerPreviewTitle));
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
         CaptureTitle = $"{value.Name} pass";
         CaptureNotes = value.Goal;
         Status = $"Song workflow moved to {value.Name}.";
@@ -439,6 +499,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveHardwareRouting(CurrentHardwareRouting());
         _store.SaveSongWorkflow(CurrentSongWorkflow());
         _store.SaveLyricIdeas(LyricIdeas);
+        _store.SaveVisualizer(CurrentVisualizerSettings());
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -450,6 +511,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             LibraryPath,
             CurrentProjectSettings(),
             CurrentSongWorkflow(),
+            CurrentVisualizerSettings(),
             RecentCaptures,
             TimelineMarkers,
             TakeReviews,
@@ -683,6 +745,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             {
                 InputMeterLevel = Math.Round(level * 100, 1);
                 InputMeterLabel = $"{InputMeterLevel:0.0}% input peak";
+                OnPropertyChanged(nameof(VisualizerPreviewDetail));
             }));
 
         Status = result.Message;
@@ -767,6 +830,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Loaded lyric idea into capture: {latest.Title}";
     }
 
+    [RelayCommand]
+    private void SaveVisualizer()
+    {
+        _store.SaveVisualizer(CurrentVisualizerSettings());
+        RecentCaptures.Insert(0, new CaptureItem(
+            "Visualizer preset",
+            $"{VisualizerMode}: {VisualizerPalette}, {VisualizerMotion}, {VisualizerLyricSource}",
+            DateTime.Now.ToString("h:mm tt"),
+            "Visual"));
+        _store.SaveCaptures(RecentCaptures);
+        OnPropertyChanged(nameof(VisualizerPreviewTitle));
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        Status = $"Saved visualizer preset: {VisualizerMode}";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -828,6 +906,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         MixPrompt,
         MixRecommendation,
         MixChain);
+
+    private VisualizerSettings CurrentVisualizerSettings() => new(
+        VisualizerMode,
+        VisualizerPalette,
+        VisualizerMotion,
+        VisualizerLyricSource,
+        VisualizerIntensity,
+        VisualizerNotes);
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

@@ -36,6 +36,8 @@ public sealed class LocalLibraryStore
 
     private string LyricIdeasPath => Path.Combine(LibraryDirectory, "lyric-ideas.json");
 
+    private string VisualizerPath => Path.Combine(LibraryDirectory, "visualizer.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -156,6 +158,31 @@ public sealed class LocalLibraryStore
 
     public void SaveLyricIdeas(IEnumerable<LyricIdeaItem> ideas) => SaveList(LyricIdeasPath, ideas);
 
+    public VisualizerSettings LoadVisualizer()
+    {
+        try
+        {
+            if (!File.Exists(VisualizerPath))
+            {
+                return VisualizerSettings.Default;
+            }
+
+            var json = File.ReadAllText(VisualizerPath);
+            return JsonSerializer.Deserialize<VisualizerSettings>(json, JsonOptions) ?? VisualizerSettings.Default;
+        }
+        catch
+        {
+            return VisualizerSettings.Default;
+        }
+    }
+
+    public void SaveVisualizer(VisualizerSettings settings)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(settings, JsonOptions);
+        File.WriteAllText(VisualizerPath, json);
+    }
+
     private static IReadOnlyList<T> LoadList<T>(string path)
     {
         try
@@ -214,6 +241,23 @@ public sealed record SongWorkflowSettings(
         "make it tighter and warmer",
         "Prioritize groove, kick/snare balance, and transient control.",
         "HPF only if rumble -> warm EQ -> light compression -> short room/plate if needed -> level match");
+}
+
+public sealed record VisualizerSettings(
+    string Mode,
+    string Palette,
+    string Motion,
+    string LyricSource,
+    double Intensity,
+    string Notes)
+{
+    public static VisualizerSettings Default => new(
+        "Lyric Pulse",
+        "Amber / seafoam",
+        "Breathing waveform",
+        "Latest lyric",
+        64,
+        "Use live input energy, song stage color, and lyric fragments.");
 }
 
 public sealed record ProjectSettings(
