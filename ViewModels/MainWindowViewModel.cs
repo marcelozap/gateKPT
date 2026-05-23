@@ -238,6 +238,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveCaptures(RecentCaptures);
         Status = "Media analysis complete";
     }
+
+    [RelayCommand]
+    private void NudgeOffset(int milliseconds)
+    {
+        SyncOffsetMs = Math.Clamp(SyncOffsetMs + milliseconds, -5_000, 5_000);
+        Status = $"Offset nudged to {SyncOffsetMs:+#;-#;0} ms";
+    }
+
+    [RelayCommand]
+    private void ResetOffset()
+    {
+        SyncOffsetMs = 0;
+        Status = "Offset reset to 0 ms";
+    }
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

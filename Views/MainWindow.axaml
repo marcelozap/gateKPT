@@ -222,7 +222,7 @@
 
                         <Border Grid.Column="1" CornerRadius="32" Background="#E615120D" Padding="24"
                                 BorderBrush="#18F8F0E5" BorderThickness="1">
-                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+                            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                                 <TextBlock Classes="label" Text="SYNC LAB"/>
 
                                 <Grid Grid.Row="1" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
@@ -316,7 +316,43 @@
                                            TextWrapping="Wrap"
                                            Foreground="#D9C5A5"/>
 
-                                <ItemsControl Grid.Row="5" ItemsSource="{Binding Ritual}" IsVisible="False">
+                                <Grid Grid.Row="5" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="8">
+                                    <Button Content="-100"
+                                            Command="{Binding NudgeOffsetCommand}"
+                                            CommandParameter="-100"
+                                            Padding="10,8"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                    <Button Grid.Column="1"
+                                            Content="-10"
+                                            Command="{Binding NudgeOffsetCommand}"
+                                            CommandParameter="-10"
+                                            Padding="10,8"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                    <Button Grid.Column="2"
+                                            Content="0"
+                                            Command="{Binding ResetOffsetCommand}"
+                                            Padding="10,8"
+                                            Background="#F2EADC"
+                                            Foreground="#15120D"/>
+                                    <Button Grid.Column="3"
+                                            Content="+10"
+                                            Command="{Binding NudgeOffsetCommand}"
+                                            CommandParameter="10"
+                                            Padding="10,8"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                    <Button Grid.Column="4"
+                                            Content="+100"
+                                            Command="{Binding NudgeOffsetCommand}"
+                                            CommandParameter="100"
+                                            Padding="10,8"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                </Grid>
+
+                                <ItemsControl Grid.Row="6" ItemsSource="{Binding Ritual}" IsVisible="False">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,10">
