@@ -22,6 +22,12 @@ public sealed class LocalLibraryStore
 
     private string ProjectPath => Path.Combine(LibraryDirectory, "project.json");
 
+    private string ExportHistoryPath => Path.Combine(LibraryDirectory, "export-history.json");
+
+    private string ExportQueuePath => Path.Combine(LibraryDirectory, "export-queue.json");
+
+    private string TimelineMarkersPath => Path.Combine(LibraryDirectory, "timeline-markers.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -70,6 +76,43 @@ public sealed class LocalLibraryStore
         Directory.CreateDirectory(LibraryDirectory);
         var json = JsonSerializer.Serialize(project, JsonOptions);
         File.WriteAllText(ProjectPath, json);
+    }
+
+    public IReadOnlyList<ExportHistoryItem> LoadExportHistory() => LoadList<ExportHistoryItem>(ExportHistoryPath);
+
+    public void SaveExportHistory(IEnumerable<ExportHistoryItem> items) => SaveList(ExportHistoryPath, items);
+
+    public IReadOnlyList<ExportQueueItem> LoadExportQueue() => LoadList<ExportQueueItem>(ExportQueuePath);
+
+    public void SaveExportQueue(IEnumerable<ExportQueueItem> items) => SaveList(ExportQueuePath, items);
+
+    public IReadOnlyList<TimelineMarker> LoadTimelineMarkers() => LoadList<TimelineMarker>(TimelineMarkersPath);
+
+    public void SaveTimelineMarkers(IEnumerable<TimelineMarker> markers) => SaveList(TimelineMarkersPath, markers);
+
+    private static IReadOnlyList<T> LoadList<T>(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+            {
+                return [];
+            }
+
+            var json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<List<T>>(json, JsonOptions) ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private void SaveList<T>(string path, IEnumerable<T> items)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(items, JsonOptions);
+        File.WriteAllText(path, json);
     }
 }
 

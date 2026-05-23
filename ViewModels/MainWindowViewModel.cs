@@ -95,6 +95,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _toolchainInstallHint = "";
 
+    [ObservableProperty]
+    private string _markerTimecode = "00:00.000";
+
+    [ObservableProperty]
+    private string _markerLabel = "Hook consonant";
+
+    [ObservableProperty]
+    private string _markerNotes = "";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -137,6 +146,17 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                     new("Noise cleanup", "Room hum around 120 Hz; gate before compression", "Mix", "Mix"),
                     new("Best phrase", "Take 03 has clean consonants on the hook", "Review", "Takes"),
                 ]);
+
+        ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
+        ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
+        TimelineMarkers = new ObservableCollection<TimelineMarker>(
+            _store.LoadTimelineMarkers().Count > 0
+                ? _store.LoadTimelineMarkers()
+                :
+                [
+                    new("00:00.000", "Start", "Project opens on first usable visual frame", "Timeline"),
+                    new("00:08.000", "Hook", "Check mouth shape against lead vocal", "Sync"),
+                ]);
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -144,6 +164,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public IReadOnlyList<ExportPreset> ExportPresets { get; }
 
     public ObservableCollection<CaptureItem> RecentCaptures { get; }
+
+    public ObservableCollection<ExportQueueItem> ExportQueue { get; }
+
+    public ObservableCollection<ExportHistoryItem> ExportHistory { get; }
+
+    public ObservableCollection<TimelineMarker> TimelineMarkers { get; }
+
+    public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
     public string ActiveRoom => $"{SelectedRoom.Name} Room";
 
@@ -248,6 +276,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         _store.SaveCaptures(RecentCaptures);
         _store.SaveProject(CurrentProjectSettings());
+        _store.SaveExportQueue(ExportQueue);
+        _store.SaveExportHistory(ExportHistory);
+        _store.SaveTimelineMarkers(TimelineMarkers);
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -313,15 +344,93 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         if (result.Success)
         {
             LastExportPath = result.OutputPath ?? "";
+            AddExportHistory(SelectedExportPreset.Name, SyncOffsetMs, LastExportPath);
             RecentCaptures.Insert(0, new CaptureItem(
                 "Rendered review clip",
                 $"{SelectedExportPreset.Name}: {LastExportPath}",
                 DateTime.Now.ToString("h:mm tt"),
                 "Export"));
             _store.SaveCaptures(RecentCaptures);
+            _store.SaveExportHistory(ExportHistory);
         }
 
         Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void QueueCurrentExport()
+    {
+        var missing = ValidateMediaSelection();
+        if (missing is not null)
+        {
+            Status = missing;
+            return;
+        }
+
+        ExportQueue.Insert(0, new ExportQueueItem(
+            Guid.NewGuid().ToString("N"),
+            DateTime.Now.ToString("yyyy-MM-dd h:mm tt"),
+            VideoPath,
+            VocalPath,
+            SyncOffsetMs,
+            SelectedExportPreset.Slug,
+            SelectedExportPreset.Name,
+            "Queued",
+            ""));
+        _store.SaveExportQueue(ExportQueue);
+        OnPropertyChanged(nameof(ExportQueueLabel));
+        Status = $"Queued {SelectedExportPreset.Name} export.";
+    }
+
+    [RelayCommand]
+    private void RenderNextQueuedExport()
+    {
+        var next = ExportQueue.FirstOrDefault(item => item.Status != "Rendered");
+        if (next is null)
+        {
+            Status = "Export queue is empty.";
+            return;
+        }
+
+        var preset = ExportPresets.FirstOrDefault(item => item.Slug == next.PresetSlug) ?? SelectedExportPreset;
+        var result = _renderer.RenderReviewClip(next.VideoPath, next.VocalPath, next.OffsetMs, OutputDirectory, preset);
+        var index = ExportQueue.IndexOf(next);
+        if (result.Success)
+        {
+            var output = result.OutputPath ?? "";
+            ExportQueue[index] = next with { Status = "Rendered", OutputPath = output };
+            LastExportPath = output;
+            AddExportHistory(next.PresetName, next.OffsetMs, output);
+            Status = result.Message;
+        }
+        else
+        {
+            ExportQueue[index] = next with { Status = "Blocked" };
+            Status = result.Message;
+        }
+
+        _store.SaveExportQueue(ExportQueue);
+        _store.SaveExportHistory(ExportHistory);
+        OnPropertyChanged(nameof(ExportQueueLabel));
+    }
+
+    [RelayCommand]
+    private void AddTimelineMarker()
+    {
+        var label = string.IsNullOrWhiteSpace(MarkerLabel) ? $"{SelectedRoom.Name} marker" : MarkerLabel.Trim();
+        TimelineMarkers.Insert(0, new TimelineMarker(
+            string.IsNullOrWhiteSpace(MarkerTimecode) ? "00:00.000" : MarkerTimecode.Trim(),
+            label,
+            MarkerNotes.Trim(),
+            SelectedRoom.Name));
+        while (TimelineMarkers.Count > 12)
+        {
+            TimelineMarkers.RemoveAt(TimelineMarkers.Count - 1);
+        }
+
+        _store.SaveTimelineMarkers(TimelineMarkers);
+        MarkerNotes = "";
+        Status = $"Added marker: {label}";
     }
 
     private ProjectSettings CurrentProjectSettings() => new(
@@ -340,6 +449,34 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ToolchainDetail = toolchain.Detail;
         ToolchainInstallHint = toolchain.WindowsInstallHint;
     }
+
+    private string? ValidateMediaSelection()
+    {
+        if (string.IsNullOrWhiteSpace(VideoPath))
+        {
+            return "Choose a camera video first.";
+        }
+
+        if (string.IsNullOrWhiteSpace(VocalPath))
+        {
+            return "Choose a final vocal/audio file first.";
+        }
+
+        return null;
+    }
+
+    private void AddExportHistory(string presetName, int offsetMs, string outputPath)
+    {
+        ExportHistory.Insert(0, new ExportHistoryItem(
+            DateTime.Now.ToString("yyyy-MM-dd h:mm tt"),
+            presetName,
+            $"{offsetMs:+#;-#;0} ms",
+            outputPath));
+        while (ExportHistory.Count > 20)
+        {
+            ExportHistory.RemoveAt(ExportHistory.Count - 1);
+        }
+    }
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
@@ -347,3 +484,18 @@ public sealed record OsRoom(string Name, string Description, string Number, stri
 public sealed record CaptureItem(string Title, string Detail, string Status, string Room);
 
 public sealed record WaveformBar(int Index, int Height);
+
+public sealed record ExportQueueItem(
+    string Id,
+    string CreatedAt,
+    string VideoPath,
+    string VocalPath,
+    int OffsetMs,
+    string PresetSlug,
+    string PresetName,
+    string Status,
+    string OutputPath);
+
+public sealed record ExportHistoryItem(string RenderedAt, string PresetName, string OffsetLabel, string OutputPath);
+
+public sealed record TimelineMarker(string Timecode, string Label, string Notes, string Room);
