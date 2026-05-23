@@ -15,6 +15,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly ToolchainProbe _toolchainProbe = new();
     private readonly FfmpegRenderService _renderer = new();
     private readonly MediaMetadataService _metadata = new();
+    private readonly ProductionBriefService _briefs = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -119,6 +120,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _markerNotes = "";
+
+    [ObservableProperty]
+    private string _lastBriefPath = "";
 
     public MainWindowViewModel()
     {
@@ -307,6 +311,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveExportHistory(ExportHistory);
         _store.SaveTimelineMarkers(TimelineMarkers);
         Status = $"Library saved to {LibraryPath}";
+    }
+
+    [RelayCommand]
+    private void WriteProductionBrief()
+    {
+        SaveLibrary();
+        LastBriefPath = _briefs.WriteBrief(
+            LibraryPath,
+            CurrentProjectSettings(),
+            RecentCaptures,
+            TimelineMarkers,
+            ExportQueue,
+            ExportHistory);
+        Status = $"Production brief written: {LastBriefPath}";
     }
 
     [RelayCommand]

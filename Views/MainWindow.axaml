@@ -597,7 +597,7 @@
                     <Grid ColumnDefinitions="Auto,*">
                         <TextBlock Text="ENGINE MODULES" FontSize="11" FontWeight="Black" Foreground="#D9B36F"
                                    LetterSpacing="2.8" Margin="0,2,18,0"/>
-                        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="14">
+                        <Grid Grid.Column="1" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="14">
                             <ItemsControl ItemsSource="{Binding NextBuild}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -611,6 +611,13 @@
                             </ItemsControl.ItemTemplate>
                             </ItemsControl>
                             <Button Grid.Column="1"
+                                    Content="Write Brief"
+                                    Command="{Binding WriteProductionBriefCommand}"
+                                    Padding="16,8"
+                                    Background="#1F1A13"
+                                    Foreground="#D9C5A5"
+                                    FontWeight="Black"/>
+                            <Button Grid.Column="2"
                                     Content="Save Library"
                                     Command="{Binding SaveLibraryCommand}"
                                     Padding="16,8"
