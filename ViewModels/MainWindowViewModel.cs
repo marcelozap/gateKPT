@@ -89,6 +89,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _toolchainStatus = "Checking tools...";
 
+    [ObservableProperty]
+    private string _toolchainDetail = "";
+
+    [ObservableProperty]
+    private string _toolchainInstallHint = "";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -101,7 +107,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ];
 
         _selectedRoom = Rooms[0];
-        ToolchainStatus = _toolchainProbe.Probe().Label;
+        RefreshToolchainState();
 
         ExportPresets =
         [
@@ -246,6 +252,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void RefreshToolchain()
+    {
+        RefreshToolchainState();
+        Status = ToolchainStatus;
+    }
+
+    [RelayCommand]
     private void AnalyzeMedia()
     {
         var result = _mediaAnalysis.Analyze(VideoPath, VocalPath, LibraryPath);
@@ -319,6 +332,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LoudnessTarget,
         BusinessMode,
         OutputDirectory);
+
+    private void RefreshToolchainState()
+    {
+        var toolchain = _toolchainProbe.Probe();
+        ToolchainStatus = toolchain.Label;
+        ToolchainDetail = toolchain.Detail;
+        ToolchainInstallHint = toolchain.WindowsInstallHint;
+    }
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

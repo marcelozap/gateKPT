@@ -44,4 +44,10 @@ public sealed record ToolchainStatus(bool FfmpegAvailable, bool FfprobeAvailable
     public string Label => FfmpegAvailable && FfprobeAvailable
         ? "FFmpeg ready"
         : "FFmpeg missing - audio files work now; video extraction next";
+
+    public string Detail => FfmpegAvailable && FfprobeAvailable
+        ? "Video extraction and review rendering are available."
+        : "Install FFmpeg to unlock video-audio extraction and MP4 review exports.";
+
+    public string WindowsInstallHint => "Windows: winget install Gyan.FFmpeg, then restart GateKPT Music OS.";
 }

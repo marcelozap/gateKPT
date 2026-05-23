@@ -55,7 +55,12 @@ public sealed class FfmpegRenderService
                 return ExportResult.Fail("Could not start FFmpeg.");
             }
 
-            process.WaitForExit(TimeSpan.FromMinutes(5));
+            if (!process.WaitForExit(TimeSpan.FromMinutes(5)))
+            {
+                process.Kill(entireProcessTree: true);
+                return ExportResult.Fail("FFmpeg export timed out after 5 minutes.");
+            }
+
             var stderr = process.StandardError.ReadToEnd();
             if (process.ExitCode != 0 || !File.Exists(outputPath))
             {
