@@ -13,7 +13,8 @@ public sealed class FfmpegRenderService
         string vocalPath,
         int offsetMs,
         string outputDirectory,
-        ExportPreset preset)
+        ExportPreset preset,
+        AudioProcessingPreset audioPreset)
     {
         if (!File.Exists(videoPath))
         {
@@ -30,7 +31,7 @@ public sealed class FfmpegRenderService
             outputDirectory,
             $"{Path.GetFileNameWithoutExtension(videoPath)}-{preset.Slug}-synced.mp4");
 
-        var filter = BuildAudioFilter(offsetMs);
+        var filter = BuildAudioFilter(offsetMs, audioPreset);
         var scale = preset.Width > 0 && preset.Height > 0
             ? $"-vf \"scale={preset.Width}:{preset.Height}:force_original_aspect_ratio=decrease,pad={preset.Width}:{preset.Height}:(ow-iw)/2:(oh-ih)/2\""
             : "";
@@ -68,7 +69,7 @@ public sealed class FfmpegRenderService
                 return ExportResult.Fail($"FFmpeg export failed. {stderr.Trim()}");
             }
 
-            WriteManifest(outputPath, videoPath, vocalPath, offsetMs, preset);
+            WriteManifest(outputPath, videoPath, vocalPath, offsetMs, preset, audioPreset);
             return ExportResult.Ok(outputPath, $"Rendered {preset.Name} review clip.");
         }
         catch (Exception ex)
@@ -77,20 +78,42 @@ public sealed class FfmpegRenderService
         }
     }
 
-    private static string BuildAudioFilter(int offsetMs)
+    private static string BuildAudioFilter(int offsetMs, AudioProcessingPreset audioPreset)
     {
+        var processing = BuildProcessingFilter(audioPreset);
         if (offsetMs > 0)
         {
-            return $"[1:a]adelay={offsetMs}|{offsetMs},asetpts=PTS-STARTPTS[synced]";
+            return $"[1:a]adelay={offsetMs}|{offsetMs},asetpts=PTS-STARTPTS{processing}[synced]";
         }
 
         if (offsetMs < 0)
         {
             var seconds = (-offsetMs / 1000.0).ToString("0.###", CultureInfo.InvariantCulture);
-            return $"[1:a]atrim=start={seconds},asetpts=PTS-STARTPTS[synced]";
+            return $"[1:a]atrim=start={seconds},asetpts=PTS-STARTPTS{processing}[synced]";
         }
 
-        return "[1:a]asetpts=PTS-STARTPTS[synced]";
+        return $"[1:a]asetpts=PTS-STARTPTS{processing}[synced]";
+    }
+
+    private static string BuildProcessingFilter(AudioProcessingPreset audioPreset)
+    {
+        if (audioPreset.Slug == "dry")
+        {
+            return "";
+        }
+
+        var filters = "";
+        if (audioPreset.HighPassHz > 0)
+        {
+            filters += $",highpass=f={audioPreset.HighPassHz}";
+        }
+
+        if (audioPreset.TargetLufs != 0)
+        {
+            filters += $",loudnorm=I={audioPreset.TargetLufs}:TP=-1.5:LRA=11";
+        }
+
+        return filters;
     }
 
     private static void WriteManifest(
@@ -98,7 +121,8 @@ public sealed class FfmpegRenderService
         string videoPath,
         string vocalPath,
         int offsetMs,
-        ExportPreset preset)
+        ExportPreset preset,
+        AudioProcessingPreset audioPreset)
     {
         var manifest = new ExportManifest(
             DateTimeOffset.Now,
@@ -107,6 +131,7 @@ public sealed class FfmpegRenderService
             vocalPath,
             offsetMs,
             preset.Name,
+            audioPreset.Name,
             preset.Width,
             preset.Height);
 
@@ -124,6 +149,7 @@ public sealed record ExportManifest(
     string VocalPath,
     int OffsetMs,
     string PresetName,
+    string AudioPresetName,
     int Width,
     int Height);
 

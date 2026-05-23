@@ -46,6 +46,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private ExportPreset _selectedExportPreset = null!;
 
     [ObservableProperty]
+    private AudioProcessingPreset _selectedAudioPreset = null!;
+
+    [ObservableProperty]
     private string _lastExportPath = "";
 
     [ObservableProperty]
@@ -139,6 +142,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("Original frame", "original", 0, 0, "Keep source frame size"),
         ];
         _selectedExportPreset = ExportPresets[0];
+        AudioPresets = AudioProcessingPresetCatalog.Defaults;
+        _selectedAudioPreset = AudioPresets[0];
 
         var project = _store.LoadProject();
         ProjectName = project.ProjectName;
@@ -175,6 +180,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public IReadOnlyList<OsRoom> Rooms { get; }
 
     public IReadOnlyList<ExportPreset> ExportPresets { get; }
+
+    public IReadOnlyList<AudioProcessingPreset> AudioPresets { get; }
 
     public ObservableCollection<CaptureItem> RecentCaptures { get; }
 
@@ -229,10 +236,17 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SelectedExportDescription => SelectedExportPreset?.Description ?? "";
 
+    public string SelectedAudioPresetDescription => SelectedAudioPreset?.Description ?? "";
+
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
         PlatformProfile = value.Name;
         OnPropertyChanged(nameof(SelectedExportDescription));
+    }
+
+    partial void OnSelectedAudioPresetChanged(AudioProcessingPreset value)
+    {
+        OnPropertyChanged(nameof(SelectedAudioPresetDescription));
     }
 
     partial void OnSelectedRoomChanged(OsRoom value)
@@ -370,11 +384,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void RenderReviewClip()
     {
         SaveLibrary();
-        var result = _renderer.RenderReviewClip(VideoPath, VocalPath, SyncOffsetMs, OutputDirectory, SelectedExportPreset);
+        var result = _renderer.RenderReviewClip(VideoPath, VocalPath, SyncOffsetMs, OutputDirectory, SelectedExportPreset, SelectedAudioPreset);
         if (result.Success)
         {
             LastExportPath = result.OutputPath ?? "";
-            AddExportHistory(SelectedExportPreset.Name, SyncOffsetMs, LastExportPath);
+            AddExportHistory(SelectedExportPreset.Name, SelectedAudioPreset.Name, SyncOffsetMs, LastExportPath);
             RecentCaptures.Insert(0, new CaptureItem(
                 "Rendered review clip",
                 $"{SelectedExportPreset.Name}: {LastExportPath}",
@@ -405,6 +419,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             SyncOffsetMs,
             SelectedExportPreset.Slug,
             SelectedExportPreset.Name,
+            SelectedAudioPreset.Slug,
+            SelectedAudioPreset.Name,
             "Queued",
             ""));
         _store.SaveExportQueue(ExportQueue);
@@ -423,14 +439,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
 
         var preset = ExportPresets.FirstOrDefault(item => item.Slug == next.PresetSlug) ?? SelectedExportPreset;
-        var result = _renderer.RenderReviewClip(next.VideoPath, next.VocalPath, next.OffsetMs, OutputDirectory, preset);
+        var audioPreset = AudioPresets.FirstOrDefault(item => item.Slug == next.AudioPresetSlug) ?? SelectedAudioPreset;
+        var result = _renderer.RenderReviewClip(next.VideoPath, next.VocalPath, next.OffsetMs, OutputDirectory, preset, audioPreset);
         var index = ExportQueue.IndexOf(next);
         if (result.Success)
         {
             var output = result.OutputPath ?? "";
             ExportQueue[index] = next with { Status = "Rendered", OutputPath = output };
             LastExportPath = output;
-            AddExportHistory(next.PresetName, next.OffsetMs, output);
+            AddExportHistory(next.PresetName, next.AudioPresetName, next.OffsetMs, output);
             Status = result.Message;
         }
         else
@@ -495,11 +512,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         return null;
     }
 
-    private void AddExportHistory(string presetName, int offsetMs, string outputPath)
+    private void AddExportHistory(string presetName, string audioPresetName, int offsetMs, string outputPath)
     {
         ExportHistory.Insert(0, new ExportHistoryItem(
             DateTime.Now.ToString("yyyy-MM-dd h:mm tt"),
             presetName,
+            audioPresetName,
             $"{offsetMs:+#;-#;0} ms",
             outputPath));
         while (ExportHistory.Count > 20)
@@ -523,9 +541,11 @@ public sealed record ExportQueueItem(
     int OffsetMs,
     string PresetSlug,
     string PresetName,
+    string AudioPresetSlug,
+    string AudioPresetName,
     string Status,
     string OutputPath);
 
-public sealed record ExportHistoryItem(string RenderedAt, string PresetName, string OffsetLabel, string OutputPath);
+public sealed record ExportHistoryItem(string RenderedAt, string PresetName, string AudioPresetName, string OffsetLabel, string OutputPath);
 
 public sealed record TimelineMarker(string Timecode, string Label, string Notes, string Room);
