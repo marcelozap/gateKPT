@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
 
 namespace GateKPT.MusicOS.Services;
 
@@ -67,6 +68,7 @@ public sealed class FfmpegRenderService
                 return ExportResult.Fail($"FFmpeg export failed. {stderr.Trim()}");
             }
 
+            WriteManifest(outputPath, videoPath, vocalPath, offsetMs, preset);
             return ExportResult.Ok(outputPath, $"Rendered {preset.Name} review clip.");
         }
         catch (Exception ex)
@@ -90,9 +92,40 @@ public sealed class FfmpegRenderService
 
         return "[1:a]asetpts=PTS-STARTPTS[synced]";
     }
+
+    private static void WriteManifest(
+        string outputPath,
+        string videoPath,
+        string vocalPath,
+        int offsetMs,
+        ExportPreset preset)
+    {
+        var manifest = new ExportManifest(
+            DateTimeOffset.Now,
+            outputPath,
+            videoPath,
+            vocalPath,
+            offsetMs,
+            preset.Name,
+            preset.Width,
+            preset.Height);
+
+        var json = JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true });
+        File.WriteAllText(Path.ChangeExtension(outputPath, ".manifest.json"), json);
+    }
 }
 
 public sealed record ExportPreset(string Name, string Slug, int Width, int Height, string Description);
+
+public sealed record ExportManifest(
+    DateTimeOffset RenderedAt,
+    string OutputPath,
+    string VideoPath,
+    string VocalPath,
+    int OffsetMs,
+    string PresetName,
+    int Width,
+    int Height);
 
 public sealed record ExportResult(bool Success, string? OutputPath, string Message)
 {
