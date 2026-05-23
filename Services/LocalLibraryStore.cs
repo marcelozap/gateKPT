@@ -195,13 +195,19 @@ public sealed record SongWorkflowSettings(
     string ActiveStageName,
     string StageNotes,
     string Tempo,
-    string KeyCenter)
+    string KeyCenter,
+    string MixPrompt,
+    string MixRecommendation,
+    string MixChain)
 {
     public static SongWorkflowSettings Default => new(
         "Drums",
         "Start with drums. Lock the groove before adding harmony or vocals.",
         "120 BPM",
-        "TBD");
+        "TBD",
+        "make it tighter and warmer",
+        "Prioritize groove, kick/snare balance, and transient control.",
+        "HPF only if rumble -> warm EQ -> light compression -> short room/plate if needed -> level match");
 }
 
 public sealed record ProjectSettings(

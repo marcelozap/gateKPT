@@ -51,6 +51,7 @@ Music OS is shaped around the normal build order:
 - Guitar / Piano second: harmony, rhythm pocket, arrangement.
 - Vocals last: melody, diction, emotion, doubles, hook clarity.
 - Review / Export: rate takes, sync video, process vocal, render clips.
+- Word-driven mix intent: type phrases like `warmer drums`, `less harsh guitar`, or `more intimate vocal` and the app turns them into a stage-aware processing chain.
 
 ## Direction
 

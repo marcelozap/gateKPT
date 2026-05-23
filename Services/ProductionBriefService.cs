@@ -32,6 +32,9 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Tempo: {workflow.Tempo}");
         brief.AppendLine($"Key center: {workflow.KeyCenter}");
         brief.AppendLine($"Stage notes: {workflow.StageNotes}");
+        brief.AppendLine($"Mix intent: {workflow.MixPrompt}");
+        brief.AppendLine($"Mix recommendation: {workflow.MixRecommendation}");
+        brief.AppendLine($"Mix chain: {workflow.MixChain}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");
         AppendSection(brief, "Take Reviews", takes, item => $"- {item.Rating}/5 {item.Name}: {item.Notes}");

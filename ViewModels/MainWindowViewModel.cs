@@ -19,6 +19,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly ProductionBriefService _briefs = new();
     private readonly HardwareDeviceService _hardware = new();
     private readonly LiveInputMeterService _meter = new();
+    private readonly MixIntentService _mixIntent = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -172,6 +173,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _keyCenter = "TBD";
 
+    [ObservableProperty]
+    private string _mixPrompt = "make it tighter and warmer";
+
+    [ObservableProperty]
+    private string _mixRecommendation = "";
+
+    [ObservableProperty]
+    private string _mixChain = "";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -250,6 +260,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SongStageNotes = songWorkflow.StageNotes;
         Tempo = songWorkflow.Tempo;
         KeyCenter = songWorkflow.KeyCenter;
+        MixPrompt = songWorkflow.MixPrompt;
+        MixRecommendation = songWorkflow.MixRecommendation;
+        MixChain = songWorkflow.MixChain;
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -674,6 +687,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Saved {SelectedSongStage.Name} song stage.";
     }
 
+    [RelayCommand]
+    private void ApplyMixIntent()
+    {
+        var result = _mixIntent.Interpret(SelectedSongStage.Name, MixPrompt);
+        MixRecommendation = result.Recommendation;
+        MixChain = result.Chain;
+        SongStageNotes = $"{SongStageNotes.Trim()} Mix: {result.Prompt}".Trim();
+        _store.SaveSongWorkflow(CurrentSongWorkflow());
+        RecentCaptures.Insert(0, new CaptureItem(
+            $"{SelectedSongStage.Name} mix intent",
+            $"{result.Prompt}: {result.Chain}",
+            DateTime.Now.ToString("h:mm tt"),
+            "Mix"));
+        _store.SaveCaptures(RecentCaptures);
+        Status = $"Applied mix intent for {SelectedSongStage.Name}.";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -731,7 +761,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedSongStage.Name,
         SongStageNotes,
         Tempo,
-        KeyCenter);
+        KeyCenter,
+        MixPrompt,
+        MixRecommendation,
+        MixChain);
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

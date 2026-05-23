@@ -220,7 +220,7 @@
                                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding LoudnessTarget}" PlaceholderText="Loudness target" Background="#66FFFFFF" Foreground="#15120D"/>
                             </Grid>
                             <Border CornerRadius="26" Background="#3315120D" BorderBrush="#3315120D" BorderThickness="1" Padding="16" Margin="0,18,0,0">
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                     <TextBlock Text="SONG BUILD ORDER" FontSize="11" FontWeight="Black" Foreground="#8D5631" LetterSpacing="2.8"/>
                                     <ItemsControl Grid.Row="1" ItemsSource="{Binding SongStages}">
                                         <ItemsControl.ItemsPanel>
@@ -276,6 +276,34 @@
                                              Background="#66FFFFFF"
                                              Foreground="#15120D"
                                              BorderBrush="#3315120D"/>
+                                    <Grid Grid.Row="6" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                        <TextBox Text="{Binding MixPrompt}"
+                                                 PlaceholderText="Type mix intent: warmer drums, less harsh guitar, more intimate vocal..."
+                                                 Background="#66FFFFFF"
+                                                 Foreground="#15120D"
+                                                 BorderBrush="#3315120D"/>
+                                        <Button Grid.Column="1"
+                                                Content="Apply words"
+                                                Command="{Binding ApplyMixIntentCommand}"
+                                                Padding="14,9"
+                                                Background="#E37B45"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                    </Grid>
+                                    <Border Grid.Row="7" CornerRadius="18" Background="#2615120D" Padding="12">
+                                        <Grid RowDefinitions="Auto,Auto" RowSpacing="5">
+                                            <TextBlock Text="{Binding MixRecommendation}"
+                                                       FontSize="11"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#5D503F"/>
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding MixChain}"
+                                                       FontSize="11"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#8D5631"/>
+                                        </Grid>
+                                    </Border>
                                 </Grid>
                             </Border>
                         </StackPanel>
