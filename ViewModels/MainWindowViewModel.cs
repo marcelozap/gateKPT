@@ -15,35 +15,35 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private OsRoom _selectedRoom;
 
     [ObservableProperty]
-    private string _captureTitle = "Voice reset";
+    private string _captureTitle = "Lip sync pass";
 
     [ObservableProperty]
     private string _captureNotes = "";
 
     [ObservableProperty]
-    private string _mood = "Grounded";
+    private string _mood = "Syncing";
 
     [ObservableProperty]
-    private string _status = "Ready to capture";
+    private string _status = "Ready to sync";
 
     public MainWindowViewModel()
     {
         Rooms =
         [
-            new("Voice", "Warmups, breath, tone, confidence", "01", "#E37B45"),
-            new("Songs", "Lyrics, chords, arrangements, references", "02", "#EABF7A"),
-            new("Takes", "Recordings, rough demos, best moments", "03", "#6FB6A6"),
-            new("Practice", "Daily discipline, reps, vocal checklists", "04", "#D9C5A5"),
-            new("Archive", "Everything searchable by mood, song, date", "05", "#F2EADC"),
+            new("Sync", "Line up lip movement, camera audio, and final vocal", "01", "#E37B45"),
+            new("Timeline", "Video, vocal, beat, captions, markers", "02", "#EABF7A"),
+            new("Mix", "Levels, EQ, compression, noise cleanup", "03", "#6FB6A6"),
+            new("Takes", "Compare performances and choose usable moments", "04", "#D9C5A5"),
+            new("Export", "Render clips for LinkedIn, TikTok, YouTube", "05", "#F2EADC"),
         ];
 
         _selectedRoom = Rooms[0];
 
         RecentCaptures =
         [
-            new("Voice reset", "Two-minute hum, jaw loose, low breath", "Today", "Voice"),
-            new("Song seed", "Hook idea for late-night chorus", "Draft", "Songs"),
-            new("Take note", "Keep the second phrase; first phrase rushed", "Review", "Takes"),
+            new("Lip sync pass", "Camera track needs +42 ms offset against final vocal", "Today", "Sync"),
+            new("Noise cleanup", "Room hum around 120 Hz; gate before compression", "Mix", "Mix"),
+            new("Best phrase", "Take 03 has clean consonants on the hook", "Review", "Takes"),
         ];
     }
 
@@ -55,38 +55,38 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string CaptureHint => SelectedRoom.Name switch
     {
-        "Voice" => "Breath, pitch, jaw, throat, confidence, before/after state...",
-        "Songs" => "Lyric seed, melody shape, chords, reference, song section...",
-        "Takes" => "What worked, what to keep, what rushed, exact timestamp...",
-        "Practice" => "Exercise, reps, range, tension, what improved...",
-        _ => "Anything you need future you to find...",
+        "Sync" => "Offset in ms, clap point, lip consonant, drift, camera/audio notes...",
+        "Timeline" => "Marker, section, clip start/end, caption, cut idea...",
+        "Mix" => "Level, EQ, compressor, gate, noise, reference track...",
+        "Takes" => "Take number, timestamp, keeper phrase, problem area...",
+        _ => "Format, platform, loudness target, aspect ratio, render notes...",
     };
 
     public IReadOnlyList<string> Moods { get; } =
     [
-        "Grounded",
-        "Tense",
-        "Inspired",
-        "Locked in",
-        "Scattered",
-        "Recovering",
+        "Syncing",
+        "Editing",
+        "Mixing",
+        "Reviewing",
+        "Exporting",
+        "Blocked",
     ];
 
     public IReadOnlyList<string> Ritual { get; } =
     [
-        "Open voice with one quiet breath cycle",
-        "Capture one honest take before judging it",
-        "Write the body state, not just the lyric",
-        "Tag the idea so future you can find it",
+        "Import camera video and reference audio",
+        "Detect clap/transient or mouth-open sync point",
+        "Nudge final vocal until consonants match lips",
+        "Export one clean review clip before moving on",
     ];
 
     public IReadOnlyList<string> NextBuild { get; } =
     [
-        "Local SQLite library",
-        "Audio file import",
-        "Voice session form",
-        "Song/project workspace",
-        "Private AI reflection panel",
+        "Video/audio import pipeline",
+        "Waveform + frame timeline",
+        "Auto lip-sync offset detection",
+        "Nonlinear clip editor",
+        "DAW-style mixer and export queue",
     ];
 
     partial void OnSelectedRoomChanged(OsRoom value)
