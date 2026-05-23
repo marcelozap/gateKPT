@@ -20,6 +20,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly HardwareDeviceService _hardware = new();
     private readonly LiveInputMeterService _meter = new();
     private readonly MixIntentService _mixIntent = new();
+    private readonly CaptionDraftService _captionDrafts = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -212,6 +213,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _visualizerNotes = "Use live input energy, song stage color, and lyric fragments.";
 
+    [ObservableProperty]
+    private int _captionBeats = 3;
+
+    [ObservableProperty]
+    private string _captionSource = "Latest lyric";
+
+    [ObservableProperty]
+    private string _captionStatus = "No captions drafted yet.";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -309,6 +319,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerLyricSource = visualizer.LyricSource;
         VisualizerIntensity = visualizer.Intensity;
         VisualizerNotes = visualizer.Notes;
+
+        Captions = new ObservableCollection<CaptionLine>(_store.LoadCaptions());
+        UpdateCaptionStatus();
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -332,6 +345,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public IReadOnlyList<SongStage> SongStages { get; }
 
     public ObservableCollection<LyricIdeaItem> LyricIdeas { get; }
+
+    public ObservableCollection<CaptionLine> Captions { get; }
 
     public IReadOnlyList<string> VisualizerModes { get; } =
     [
@@ -500,6 +515,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveSongWorkflow(CurrentSongWorkflow());
         _store.SaveLyricIdeas(LyricIdeas);
         _store.SaveVisualizer(CurrentVisualizerSettings());
+        _store.SaveCaptions(Captions);
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -516,6 +532,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             TimelineMarkers,
             TakeReviews,
             LyricIdeas,
+            Captions,
             ExportQueue,
             ExportHistory);
         Status = $"Production brief written: {LastBriefPath}";
@@ -845,6 +862,39 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Saved visualizer preset: {VisualizerMode}";
     }
 
+    [RelayCommand]
+    private void DraftCaptions()
+    {
+        var source = CaptionSource.Contains("latest", StringComparison.OrdinalIgnoreCase)
+            ? LyricIdeas.FirstOrDefault()?.Text ?? LyricText
+            : LyricText;
+        if (string.IsNullOrWhiteSpace(source))
+        {
+            CaptionStatus = "No lyrics available. Captions not drafted.";
+            Status = CaptionStatus;
+            return;
+        }
+
+        Captions.Clear();
+        foreach (var caption in _captionDrafts.DraftFromLyrics(source, Tempo, CaptionBeats))
+        {
+            Captions.Add(caption);
+        }
+
+        _store.SaveCaptions(Captions);
+        UpdateCaptionStatus();
+        Status = CaptionStatus;
+    }
+
+    [RelayCommand]
+    private void ClearCaptions()
+    {
+        Captions.Clear();
+        _store.SaveCaptions(Captions);
+        UpdateCaptionStatus();
+        Status = "Caption drafts cleared.";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -914,6 +964,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerLyricSource,
         VisualizerIntensity,
         VisualizerNotes);
+
+    private void UpdateCaptionStatus()
+    {
+        var unsafeCount = Captions.Count(caption => caption.Status != "Safe draft");
+        CaptionStatus = Captions.Count == 0
+            ? "No captions drafted yet."
+            : unsafeCount == 0
+                ? $"{Captions.Count} safe caption draft(s), spaced by {CaptionBeats} beats."
+                : $"{Captions.Count} caption draft(s), {unsafeCount} need review. If it might be wrong, do not burn it in.";
+    }
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);

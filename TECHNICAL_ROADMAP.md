@@ -32,6 +32,7 @@ Turn raw performance footage into platform-ready clips:
 - Word-driven mix intent parser for stage-aware filter suggestions.
 - Lyric vault for hooks, fragments, tags, moods, and song ideas.
 - Visualizer preset module for stage-aware lyric/audio visuals.
+- Safe caption drafts with beat-grid timing and review-needed flags.
 
 ## Next Engineering Steps
 
@@ -41,6 +42,7 @@ Turn raw performance footage into platform-ready clips:
 - Translate mix intent into actual FFmpeg/NAudio render chains per track.
 - Add lyric search, rhyme clusters, and section labels.
 - Render visualizer clips to MP4 using audio energy and lyric timing.
+- Burn only reviewed captions into video exports; otherwise export sidecar SRT.
 - Add RC-505 MIDI transport/loop commands once device mapping is confirmed.
 - Draw real timeline lanes with draggable sync offset.
 - Add loudness measurement before and after render.

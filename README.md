@@ -54,6 +54,7 @@ Music OS is shaped around the normal build order:
 - Word-driven mix intent: type phrases like `warmer drums`, `less harsh guitar`, or `more intimate vocal` and the app turns them into a stage-aware processing chain.
 - Lyric vault: save hooks, fragments, moods, tags, and pull the latest lyric into the active session notes.
 - Visualizer module: save mode, palette, motion, lyric source, intensity, and live-meter-aware visual direction inside the project.
+- Safe captions: draft lyric captions on a beat grid, defaulting to 3-beat spacing, and flag dense lines as review-needed instead of burning in bad timing.
 
 ## Direction
 

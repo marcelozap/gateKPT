@@ -38,6 +38,8 @@ public sealed class LocalLibraryStore
 
     private string VisualizerPath => Path.Combine(LibraryDirectory, "visualizer.json");
 
+    private string CaptionsPath => Path.Combine(LibraryDirectory, "captions.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -183,6 +185,10 @@ public sealed class LocalLibraryStore
         File.WriteAllText(VisualizerPath, json);
     }
 
+    public IReadOnlyList<CaptionLine> LoadCaptions() => LoadList<CaptionLine>(CaptionsPath);
+
+    public void SaveCaptions(IEnumerable<CaptionLine> captions) => SaveList(CaptionsPath, captions);
+
     private static IReadOnlyList<T> LoadList<T>(string path)
     {
         try
@@ -259,6 +265,8 @@ public sealed record VisualizerSettings(
         64,
         "Use live input energy, song stage color, and lyric fragments.");
 }
+
+public sealed record CaptionLine(string Start, string End, string Text, string Status, string Note);
 
 public sealed record ProjectSettings(
     string ProjectName,
