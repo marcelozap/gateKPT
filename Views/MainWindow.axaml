@@ -4,17 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        d:DesignWidth="1280"
-        d:DesignHeight="820"
+        d:DesignWidth="1360"
+        d:DesignHeight="860"
         x:Class="GateKPT.MusicOS.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GateKPT Music OS"
-        Width="1280"
-        Height="820"
-        MinWidth="980"
-        MinHeight="680"
-        Background="#15120D">
+        Width="1360"
+        Height="860"
+        MinWidth="1080"
+        MinHeight="720"
+        Background="#070706">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -24,28 +24,89 @@
         <Style Selector="TextBlock">
             <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial"/>
         </Style>
-        <Style Selector="Border.card">
-            <Setter Property="CornerRadius" Value="28"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#22F8F0E5"/>
-            <Setter Property="Background" Value="#17130D"/>
-            <Setter Property="Padding" Value="24"/>
-        </Style>
+
         <Style Selector="TextBlock.label">
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Black"/>
             <Setter Property="LetterSpacing" Value="2.8"/>
             <Setter Property="Foreground" Value="#D9B36F"/>
         </Style>
+
+        <Style Selector="Border.card">
+            <Setter Property="CornerRadius" Value="32"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#26F8F0E5"/>
+            <Setter Property="Background" Value="#B3120F0B"/>
+            <Setter Property="Padding" Value="24"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="999"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="Opacity" Value="0.84"/>
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="Opacity" Value="0.64"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="CaretBrush" Value="#E37B45"/>
+            <Setter Property="SelectionBrush" Value="#66E37B45"/>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush" Value="#E37B45"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="BorderBrush" Value="#26F8F0E5"/>
+        </Style>
+
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover">
+            <Setter Property="Background" Value="#12F8F0E5"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="#20E37B45"/>
+        </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,*" Background="#15120D">
-        <Border Padding="28,18" BorderBrush="#18F8F0E5" BorderThickness="0,0,0,1">
+    <Grid RowDefinitions="Auto,*">
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#070706" Offset="0"/>
+                <GradientStop Color="#15120D" Offset="0.45"/>
+                <GradientStop Color="#24150E" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Ellipse Grid.RowSpan="2" Width="640" Height="640" Fill="#1CE37B45"
+                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-280,-320,0,0"/>
+        <Ellipse Grid.RowSpan="2" Width="720" Height="720" Fill="#146FB6A6"
+                 HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-320,-340"/>
+
+        <Border Padding="30,18" BorderBrush="#18F8F0E5" BorderThickness="0,0,0,1" Background="#B0070706">
             <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <Border Width="34" Height="34" CornerRadius="12" Background="#F2EADC">
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Border Width="40" Height="40" CornerRadius="15">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#F2EADC" Offset="0"/>
+                                <GradientStop Color="#E37B45" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <TextBlock Text="G" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   FontSize="18" FontWeight="Black" Foreground="#15120D"/>
+                                   FontSize="19" FontWeight="Black" Foreground="#15120D"/>
                     </Border>
                     <StackPanel>
                         <TextBlock Text="GateKPT" FontSize="16" FontWeight="Black" Foreground="#F8F0E5"/>
@@ -53,31 +114,29 @@
                     </StackPanel>
                 </StackPanel>
 
-                <TextBlock Grid.Column="1"
-                           Text="{Binding TodayState}"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           FontSize="13"
-                           Foreground="#8E8170"/>
+                <Border Grid.Column="1" CornerRadius="999" Background="#0CFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1"
+                        Padding="16,8" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding TodayState}" FontSize="12" FontWeight="Bold" Foreground="#A89B88"/>
+                </Border>
 
-                <Border Grid.Column="2" CornerRadius="999" Background="#F2EADC" Padding="14,8">
-                    <TextBlock Text="{Binding OperatorName}" FontSize="12" FontWeight="Black" Foreground="#15120D"/>
+                <Border Grid.Column="2" CornerRadius="999" Background="#18F8F0E5" BorderBrush="#28F8F0E5" BorderThickness="1" Padding="14,8">
+                    <TextBlock Text="{Binding OperatorName}" FontSize="12" FontWeight="Black" Foreground="#F8F0E5"/>
                 </Border>
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1" ColumnDefinitions="340,*" Margin="28" ColumnSpacing="22">
+        <Grid Grid.Row="1" ColumnDefinitions="350,*" Margin="30" ColumnSpacing="22">
             <Border Classes="card">
                 <Grid RowDefinitions="Auto,Auto,*">
                     <StackPanel>
                         <TextBlock Classes="label" Text="ACTIVE ROOM"/>
                         <TextBlock Text="{Binding ActiveRoom}"
                                    Margin="0,12,0,0"
-                                   FontSize="42"
+                                   FontSize="44"
                                    FontWeight="Black"
-                                   LineHeight="40"
+                                   LineHeight="41"
                                    Foreground="#F8F0E5"/>
-                        <TextBlock Text="The private app starts here: record, organize, reflect, and keep the work close."
+                        <TextBlock Text="Select a room, capture the idea, and keep the private work moving."
                                    Margin="0,14,0,0"
                                    FontSize="14"
                                    LineHeight="22"
@@ -87,9 +146,9 @@
 
                     <Button Grid.Row="1"
                             Margin="0,28,0,24"
-                            Padding="18,12"
+                            Padding="20,13"
                             HorizontalAlignment="Stretch"
-                            Background="#E37B45"
+                            Background="#F2EADC"
                             Foreground="#15120D"
                             FontWeight="Black"
                             Command="{Binding StartSessionCommand}"
@@ -102,12 +161,16 @@
                              BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="vm:OsRoom">
-                                <Border CornerRadius="18" Background="#0F0C08" BorderBrush="#16F8F0E5" BorderThickness="1" Padding="14" Margin="0,0,0,10">
+                                <Border CornerRadius="22" Background="#CC0F0C08" BorderBrush="#18F8F0E5" BorderThickness="1" Padding="14">
                                     <Grid ColumnDefinitions="Auto,*">
-                                        <TextBlock Text="{Binding Number}" FontSize="12" FontWeight="Black" Foreground="{Binding Accent}" Margin="0,2,14,0"/>
+                                        <Border Width="40" Height="40" CornerRadius="15" Background="#12F8F0E5" Margin="0,0,14,0">
+                                            <TextBlock Text="{Binding Number}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                       FontSize="12" FontWeight="Black" Foreground="{Binding Accent}"/>
+                                        </Border>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Black" Foreground="#F8F0E5"/>
-                                            <TextBlock Text="{Binding Description}" Margin="0,4,0,0" FontSize="12" TextWrapping="Wrap" Foreground="#7E7466"/>
+                                            <TextBlock Text="{Binding Description}" Margin="0,4,0,0" FontSize="12"
+                                                       TextWrapping="Wrap" Foreground="#7E7466"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -117,16 +180,26 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Column="1" RowDefinitions="1.05*,0.95*,Auto" RowSpacing="18">
-                <Border CornerRadius="34" Background="#F2EADC" Padding="34">
-                    <Grid ColumnDefinitions="1.1*,0.9*" ColumnSpacing="30">
+            <Grid Grid.Column="1" RowDefinitions="1.04*,0.96*,Auto" RowSpacing="18">
+                <Border CornerRadius="38" BorderBrush="#33F8F0E5" BorderThickness="1" Padding="34">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#F2EADC" Offset="0"/>
+                            <GradientStop Color="#DCCAB0" Offset="0.62"/>
+                            <GradientStop Color="#9DBFB3" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <Grid ColumnDefinitions="1.08*,0.92*" ColumnSpacing="30">
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="MUSIC OS" FontSize="11" FontWeight="Black" Foreground="#8D5631" LetterSpacing="3"/>
+                            <Border CornerRadius="999" Background="#2415120D" Padding="12,7" HorizontalAlignment="Left">
+                                <TextBlock Text="MUSIC OS" FontSize="11" FontWeight="Black" Foreground="#8D5631" LetterSpacing="3"/>
+                            </Border>
                             <TextBlock Text="A private studio for the work before the world sees it."
                                        Margin="0,14,0,0"
-                                       FontSize="54"
+                                       FontSize="60"
                                        FontWeight="Black"
-                                       LineHeight="50"
+                                       LineHeight="54"
                                        TextWrapping="Wrap"
                                        Foreground="#15120D"/>
                             <TextBlock Text="GateKPT.ai stays public and simple. This app is where the songs, voice notes, takes, practice, and private reflections live."
@@ -137,17 +210,20 @@
                                        Foreground="#5D503F"/>
                         </StackPanel>
 
-                        <Border Grid.Column="1" CornerRadius="28" Background="#15120D" Padding="24">
+                        <Border Grid.Column="1" CornerRadius="32" Background="#E615120D" Padding="24"
+                                BorderBrush="#18F8F0E5" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Classes="label" Text="TODAY'S RITUAL"/>
                                 <ItemsControl ItemsSource="{Binding Ritual}" Margin="0,18,0,0">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,14">
-                                                <Border Width="22" Height="22" CornerRadius="11" Background="#6FB6A6" Margin="0,1,12,0">
-                                                    <TextBlock Text="✓" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#15120D" FontSize="12" FontWeight="Black"/>
+                                                <Border Width="24" Height="24" CornerRadius="12" Background="#6FB6A6" Margin="0,1,12,0">
+                                                    <TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="#15120D" FontSize="15" FontWeight="Black"/>
                                                 </Border>
-                                                <TextBlock Grid.Column="1" Text="{Binding}" FontSize="13" LineHeight="20" TextWrapping="Wrap" Foreground="#D9C5A5"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding}" FontSize="13" LineHeight="20"
+                                                           TextWrapping="Wrap" Foreground="#D9C5A5"/>
                                             </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -164,13 +240,16 @@
                             <ItemsControl ItemsSource="{Binding RecentCaptures}" Margin="0,18,0,0">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:CaptureItem">
-                                        <Border CornerRadius="18" Background="#0F0C08" Padding="16" Margin="0,0,0,12">
+                                        <Border CornerRadius="22" Background="#B30F0C08" BorderBrush="#12F8F0E5"
+                                                BorderThickness="1" Padding="16" Margin="0,0,0,12">
                                             <Grid ColumnDefinitions="*,Auto">
                                                 <StackPanel>
                                                     <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Black" Foreground="#F8F0E5"/>
-                                                    <TextBlock Text="{Binding Detail}" Margin="0,5,0,0" FontSize="12" TextWrapping="Wrap" Foreground="#8E8170"/>
+                                                    <TextBlock Text="{Binding Detail}" Margin="0,5,0,0" FontSize="12"
+                                                               TextWrapping="Wrap" Foreground="#8E8170"/>
                                                 </StackPanel>
-                                                <Border Grid.Column="1" CornerRadius="999" Background="#22E37B45" Padding="10,5" VerticalAlignment="Top">
+                                                <Border Grid.Column="1" CornerRadius="999" Background="#22E37B45"
+                                                        Padding="10,5" VerticalAlignment="Top">
                                                     <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Black" Foreground="#E37B45"/>
                                                 </Border>
                                             </Grid>
@@ -186,43 +265,46 @@
                             <TextBlock Classes="label" Text="QUICK CAPTURE"/>
                             <TextBlock Text="{Binding ActiveRoom}"
                                        Margin="0,12,0,16"
-                                       FontSize="28"
+                                       FontSize="30"
                                        FontWeight="Black"
                                        Foreground="#F8F0E5"/>
+
                             <Grid Grid.Row="2" ColumnDefinitions="*,150" ColumnSpacing="10">
                                 <TextBox Text="{Binding CaptureTitle}"
                                          PlaceholderText="Capture title"
-                                         Background="#0F0C08"
+                                         Background="#CC0F0C08"
                                          Foreground="#F8F0E5"
                                          BorderBrush="#22F8F0E5"/>
                                 <ComboBox Grid.Column="1"
                                           ItemsSource="{Binding Moods}"
                                           SelectedItem="{Binding Mood}"
-                                          Background="#0F0C08"
+                                          Background="#CC0F0C08"
                                           Foreground="#F8F0E5"/>
                             </Grid>
+
                             <TextBox Grid.Row="3"
                                      Text="{Binding CaptureNotes}"
                                      PlaceholderText="{Binding CaptureHint}"
                                      AcceptsReturn="True"
                                      TextWrapping="Wrap"
-                                     Background="#0F0C08"
+                                     Background="#CC0F0C08"
                                      Foreground="#F8F0E5"
                                      BorderBrush="#22F8F0E5"
-                                     MinHeight="104"/>
+                                     MinHeight="112"/>
+
                             <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
                                 <TextBlock Text="{Binding Status}" VerticalAlignment="Center" FontSize="12" Foreground="#8E8170"/>
                                 <Button Grid.Column="1"
                                         Content="Clear"
                                         Command="{Binding ClearCaptureCommand}"
-                                        Padding="16,9"
-                                        Background="#242018"
+                                        Padding="17,10"
+                                        Background="#1F1A13"
                                         Foreground="#D9C5A5"/>
                                 <Button Grid.Column="2"
                                         Content="Save"
                                         Command="{Binding SaveCaptureCommand}"
-                                        Padding="18,9"
-                                        Background="#6FB6A6"
+                                        Padding="20,10"
+                                        Background="#F2EADC"
                                         Foreground="#15120D"
                                         FontWeight="Black"/>
                             </Grid>
@@ -230,9 +312,11 @@
                     </Border>
                 </Grid>
 
-                <Border Grid.Row="2" CornerRadius="22" Background="#0F0C08" BorderBrush="#16F8F0E5" BorderThickness="1" Padding="18,12">
+                <Border Grid.Row="2" CornerRadius="24" Background="#990F0C08" BorderBrush="#16F8F0E5"
+                        BorderThickness="1" Padding="18,12">
                     <Grid ColumnDefinitions="Auto,*">
-                        <TextBlock Text="NEXT BUILD" FontSize="11" FontWeight="Black" Foreground="#D9B36F" LetterSpacing="2.8" Margin="0,2,18,0"/>
+                        <TextBlock Text="NEXT BUILD" FontSize="11" FontWeight="Black" Foreground="#D9B36F"
+                                   LetterSpacing="2.8" Margin="0,2,18,0"/>
                         <ItemsControl Grid.Column="1" ItemsSource="{Binding NextBuild}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
