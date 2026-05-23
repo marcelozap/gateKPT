@@ -225,19 +225,32 @@
                             <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                                 <TextBlock Classes="label" Text="SYNC LAB"/>
 
-                                <Grid Grid.Row="1" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <Grid Grid.Row="1" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
                                     <TextBox Text="{Binding VideoPath}"
                                              PlaceholderText="Paste camera video path"
                                              Background="#CC0F0C08"
                                              Foreground="#F8F0E5"
                                              BorderBrush="#22F8F0E5"/>
-                                    <TextBox Grid.Column="1"
+                                    <Button Grid.Column="1"
+                                            Content="Browse video"
+                                            Click="BrowseVideo_Click"
+                                            Padding="14,10"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                    <TextBox Grid.Row="1"
                                              Text="{Binding VocalPath}"
                                              PlaceholderText="Paste final vocal/audio path"
                                              Background="#CC0F0C08"
                                              Foreground="#F8F0E5"
                                              BorderBrush="#22F8F0E5"/>
                                     <Button Grid.Row="1"
+                                            Grid.Column="1"
+                                            Content="Browse audio"
+                                            Click="BrowseVocal_Click"
+                                            Padding="14,10"
+                                            Background="#1F1A13"
+                                            Foreground="#D9C5A5"/>
+                                    <Button Grid.Row="2"
                                             Grid.ColumnSpan="2"
                                             Content="Analyze sync"
                                             Command="{Binding AnalyzeMediaCommand}"
