@@ -3,13 +3,36 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GateKPT.MusicOS.Services;
 
 namespace GateKPT.MusicOS.ViewModels;
 
 public sealed partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly LocalLibraryStore _store = new();
+
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
+
+    public string LibraryPath => _store.LibraryDirectory;
+
+    [ObservableProperty]
+    private string _projectName = "GateKPT clip system";
+
+    [ObservableProperty]
+    private string _platformProfile = "LinkedIn / 16:9";
+
+    [ObservableProperty]
+    private int _syncOffsetMs = 42;
+
+    [ObservableProperty]
+    private double _frameRate = 29.97;
+
+    [ObservableProperty]
+    private string _loudnessTarget = "-14 LUFS";
+
+    [ObservableProperty]
+    private string _businessMode = "Build video catalog";
 
     [ObservableProperty]
     private OsRoom _selectedRoom;
@@ -39,12 +62,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         _selectedRoom = Rooms[0];
 
-        RecentCaptures =
-        [
-            new("Lip sync pass", "Camera track needs +42 ms offset against final vocal", "Today", "Sync"),
-            new("Noise cleanup", "Room hum around 120 Hz; gate before compression", "Mix", "Mix"),
-            new("Best phrase", "Take 03 has clean consonants on the hook", "Review", "Takes"),
-        ];
+        var storedCaptures = _store.LoadCaptures();
+        RecentCaptures = new ObservableCollection<CaptureItem>(
+            storedCaptures.Count > 0
+                ? storedCaptures
+                :
+                [
+                    new("Lip sync pass", "Camera track needs +42 ms offset against final vocal", "Today", "Sync"),
+                    new("Noise cleanup", "Room hum around 120 Hz; gate before compression", "Mix", "Mix"),
+                    new("Best phrase", "Take 03 has clean consonants on the hook", "Review", "Takes"),
+                ]);
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -124,6 +151,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
         }
 
+        _store.SaveCaptures(RecentCaptures);
         CaptureTitle = $"{SelectedRoom.Name} capture";
         CaptureNotes = "";
         Status = $"Saved {SelectedRoom.Name} capture";
@@ -135,6 +163,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         CaptureTitle = $"{SelectedRoom.Name} capture";
         CaptureNotes = "";
         Status = "Capture cleared";
+    }
+
+    [RelayCommand]
+    private void SaveLibrary()
+    {
+        _store.SaveCaptures(RecentCaptures);
+        Status = $"Library saved to {LibraryPath}";
     }
 }
 

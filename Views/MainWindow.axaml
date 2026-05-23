@@ -136,7 +136,7 @@
                                    FontWeight="Black"
                                    LineHeight="41"
                                    Foreground="#F8F0E5"/>
-                        <TextBlock Text="Build clips: sync lips, edit takes, mix the vocal, export clean."
+                        <TextBlock Text="{Binding BusinessMode}"
                                    Margin="0,14,0,0"
                                    FontSize="14"
                                    LineHeight="22"
@@ -195,19 +195,25 @@
                             <Border CornerRadius="999" Background="#2415120D" Padding="12,7" HorizontalAlignment="Left">
                                 <TextBlock Text="VIDEO AUDIO ENGINE" FontSize="11" FontWeight="Black" Foreground="#8D5631" LetterSpacing="3"/>
                             </Border>
-                            <TextBlock Text="Sync the mouth. Mix the sound. Ship the video."
+                            <TextBlock Text="{Binding ProjectName}"
                                        Margin="0,14,0,0"
                                        FontSize="60"
                                        FontWeight="Black"
                                        LineHeight="54"
                                        TextWrapping="Wrap"
                                        Foreground="#15120D"/>
-                            <TextBlock Text="This needs to replace the messy DAW/video handoff: camera track, final vocal, waveform, timeline, markers, mix chain, and export targets in one place."
+                            <TextBlock Text="Sync mouth movement to final vocal, edit takes, mix the audio, export clips, and keep the production memory in one local system."
                                        Margin="0,20,0,0"
                                        FontSize="15"
                                        LineHeight="24"
                                        TextWrapping="Wrap"
                                        Foreground="#5D503F"/>
+                            <Grid Margin="0,22,0,0" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                <TextBox Text="{Binding ProjectName}" PlaceholderText="Project name" Background="#66FFFFFF" Foreground="#15120D"/>
+                                <TextBox Grid.Column="1" Text="{Binding PlatformProfile}" PlaceholderText="Platform / aspect" Background="#66FFFFFF" Foreground="#15120D"/>
+                                <TextBox Grid.Row="1" Text="{Binding BusinessMode}" PlaceholderText="Business mode" Background="#66FFFFFF" Foreground="#15120D"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding LoudnessTarget}" PlaceholderText="Loudness target" Background="#66FFFFFF" Foreground="#15120D"/>
+                            </Grid>
                         </StackPanel>
 
                         <Border Grid.Column="1" CornerRadius="32" Background="#E615120D" Padding="24"
@@ -218,19 +224,19 @@
                                 <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="10">
                                     <Border CornerRadius="18" Background="#130F0B" Padding="14">
                                         <StackPanel>
-                                            <TextBlock Text="+42 ms" FontSize="30" FontWeight="Black" Foreground="#E37B45"/>
+                                            <TextBlock Text="{Binding SyncOffsetMs, StringFormat={}{0:+#;-#;0} ms}" FontSize="30" FontWeight="Black" Foreground="#E37B45"/>
                                             <TextBlock Text="vocal offset" FontSize="11" Foreground="#8E8170"/>
                                         </StackPanel>
                                     </Border>
                                     <Border Grid.Column="1" CornerRadius="18" Background="#130F0B" Padding="14">
                                         <StackPanel>
-                                            <TextBlock Text="29.97" FontSize="30" FontWeight="Black" Foreground="#EABF7A"/>
+                                            <TextBlock Text="{Binding FrameRate}" FontSize="30" FontWeight="Black" Foreground="#EABF7A"/>
                                             <TextBlock Text="fps target" FontSize="11" Foreground="#8E8170"/>
                                         </StackPanel>
                                     </Border>
                                     <Border Grid.Column="2" CornerRadius="18" Background="#130F0B" Padding="14">
                                         <StackPanel>
-                                            <TextBlock Text="-14 LUFS" FontSize="26" FontWeight="Black" Foreground="#6FB6A6"/>
+                                            <TextBlock Text="{Binding LoudnessTarget}" FontSize="26" FontWeight="Black" Foreground="#6FB6A6"/>
                                             <TextBlock Text="export loudness" FontSize="11" Foreground="#8E8170"/>
                                         </StackPanel>
                                     </Border>
@@ -351,7 +357,8 @@
                     <Grid ColumnDefinitions="Auto,*">
                         <TextBlock Text="ENGINE MODULES" FontSize="11" FontWeight="Black" Foreground="#D9B36F"
                                    LetterSpacing="2.8" Margin="0,2,18,0"/>
-                        <ItemsControl Grid.Column="1" ItemsSource="{Binding NextBuild}">
+                        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="14">
+                            <ItemsControl ItemsSource="{Binding NextBuild}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="14"/>
@@ -362,7 +369,15 @@
                                     <TextBlock Text="{Binding}" FontSize="12" Foreground="#8E8170"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                            </ItemsControl>
+                            <Button Grid.Column="1"
+                                    Content="Save Library"
+                                    Command="{Binding SaveLibraryCommand}"
+                                    Padding="16,8"
+                                    Background="#F2EADC"
+                                    Foreground="#15120D"
+                                    FontWeight="Black"/>
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>
