@@ -14,6 +14,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly MediaAnalysisService _mediaAnalysis = new();
     private readonly ToolchainProbe _toolchainProbe = new();
     private readonly FfmpegRenderService _renderer = new();
+    private readonly MediaMetadataService _metadata = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -64,6 +65,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _vocalSize = "-";
+
+    [ObservableProperty]
+    private string _videoDuration = "-";
+
+    [ObservableProperty]
+    private string _vocalDuration = "-";
+
+    [ObservableProperty]
+    private string _videoTechnicalSummary = "Choose media to inspect.";
+
+    [ObservableProperty]
+    private string _vocalTechnicalSummary = "Choose media to inspect.";
 
     [ObservableProperty]
     private string _syncRecommendation = "Paste media paths, then run analysis.";
@@ -292,6 +305,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AnalyzeMedia()
     {
+        InspectMedia();
         var result = _mediaAnalysis.Analyze(VideoPath, VocalPath, LibraryPath);
         VideoFileName = result.Video.Name;
         VocalFileName = result.Vocal.Name;
@@ -320,6 +334,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         _store.SaveCaptures(RecentCaptures);
         Status = "Media analysis complete";
+    }
+
+    [RelayCommand]
+    private void InspectMedia()
+    {
+        var video = _metadata.Inspect(VideoPath);
+        var vocal = _metadata.Inspect(VocalPath);
+        VideoFileName = video.FileName;
+        VocalFileName = vocal.FileName;
+        VideoSize = video.SizeLabel;
+        VocalSize = vocal.SizeLabel;
+        VideoDuration = video.Duration;
+        VocalDuration = vocal.Duration;
+        VideoTechnicalSummary = video.Summary;
+        VocalTechnicalSummary = vocal.Summary;
+        Status = "Media inspection complete";
     }
 
     [RelayCommand]

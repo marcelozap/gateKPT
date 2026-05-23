@@ -250,15 +250,20 @@
                                             Padding="14,10"
                                             Background="#1F1A13"
                                             Foreground="#D9C5A5"/>
-                                    <Button Grid.Row="2"
-                                            Grid.ColumnSpan="2"
-                                            Content="Analyze sync"
-                                            Command="{Binding AnalyzeMediaCommand}"
-                                            Padding="18,10"
-                                            Background="#F2EADC"
-                                            Foreground="#15120D"
-                                            FontWeight="Black"
-                                            HorizontalAlignment="Left"/>
+                                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10">
+                                        <Button Content="Inspect media"
+                                                Command="{Binding InspectMediaCommand}"
+                                                Padding="18,10"
+                                                Background="#1F1A13"
+                                                Foreground="#D9C5A5"
+                                                FontWeight="Black"/>
+                                        <Button Content="Analyze sync"
+                                                Command="{Binding AnalyzeMediaCommand}"
+                                                Padding="18,10"
+                                                Background="#F2EADC"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                    </StackPanel>
                                 </Grid>
 
                                 <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="10">
@@ -283,13 +288,15 @@
                                 </Grid>
 
                                 <Grid Grid.Row="3" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                                    <Grid ColumnDefinitions="Auto,*">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                         <TextBlock Text="VIDEO" Width="54" FontSize="10" FontWeight="Black" Foreground="#8E8170"/>
                                         <TextBlock Grid.Column="1" Text="{Binding VideoFileName}" FontSize="11" Foreground="#D9C5A5"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding VideoDuration}" FontSize="11" Foreground="#6FB6A6"/>
                                     </Grid>
-                                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
                                         <TextBlock Text="VOCAL" Width="54" FontSize="10" FontWeight="Black" Foreground="#8E8170"/>
                                         <TextBlock Grid.Column="1" Text="{Binding VocalFileName}" FontSize="11" Foreground="#D9C5A5"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding VocalDuration}" FontSize="11" Foreground="#6FB6A6"/>
                                     </Grid>
                                     <ItemsControl Grid.Row="2" ItemsSource="{Binding Waveform}">
                                         <ItemsControl.ItemsPanel>
