@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GateKPT.MusicOS.Services;
@@ -10,6 +11,7 @@ namespace GateKPT.MusicOS.ViewModels;
 public sealed partial class MainWindowViewModel : ViewModelBase
 {
     private readonly LocalLibraryStore _store = new();
+    private readonly MediaAnalysisService _mediaAnalysis = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -33,6 +35,30 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _businessMode = "Build video catalog";
+
+    [ObservableProperty]
+    private string _videoPath = "";
+
+    [ObservableProperty]
+    private string _vocalPath = "";
+
+    [ObservableProperty]
+    private string _videoFileName = "No video selected";
+
+    [ObservableProperty]
+    private string _vocalFileName = "No final vocal selected";
+
+    [ObservableProperty]
+    private string _videoSize = "-";
+
+    [ObservableProperty]
+    private string _vocalSize = "-";
+
+    [ObservableProperty]
+    private string _syncRecommendation = "Paste media paths, then run analysis.";
+
+    [ObservableProperty]
+    private double _syncConfidence = 0.0;
 
     [ObservableProperty]
     private OsRoom _selectedRoom;
@@ -116,6 +142,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "DAW-style mixer and export queue",
     ];
 
+    public ObservableCollection<WaveformBar> Waveform { get; } =
+        new(Enumerable.Range(0, 40).Select(i => new WaveformBar(i, 20 + (i % 7) * 8)));
+
     partial void OnSelectedRoomChanged(OsRoom value)
     {
         OnPropertyChanged(nameof(ActiveRoom));
@@ -171,8 +200,43 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveCaptures(RecentCaptures);
         Status = $"Library saved to {LibraryPath}";
     }
+
+    [RelayCommand]
+    private void AnalyzeMedia()
+    {
+        var result = _mediaAnalysis.Analyze(VideoPath, VocalPath);
+        VideoFileName = result.Video.Name;
+        VocalFileName = result.Vocal.Name;
+        VideoSize = result.Video.SizeLabel;
+        VocalSize = result.Vocal.SizeLabel;
+        SyncOffsetMs = result.SuggestedOffsetMs;
+        SyncConfidence = result.Confidence;
+        SyncRecommendation = result.Recommendation;
+
+        Waveform.Clear();
+        for (var i = 0; i < result.Waveform.Count; i++)
+        {
+            Waveform.Add(new WaveformBar(i, result.Waveform[i]));
+        }
+
+        RecentCaptures.Insert(0, new CaptureItem(
+            "Media sync analysis",
+            $"{result.Video.Name} + {result.Vocal.Name}. {result.Recommendation} Confidence {result.Confidence:P0}.",
+            DateTime.Now.ToString("h:mm tt"),
+            "Sync"));
+
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        _store.SaveCaptures(RecentCaptures);
+        Status = "Media analysis complete";
+    }
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
 
 public sealed record CaptureItem(string Title, string Detail, string Status, string Room);
+
+public sealed record WaveformBar(int Index, int Height);
