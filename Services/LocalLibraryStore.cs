@@ -34,6 +34,8 @@ public sealed class LocalLibraryStore
 
     private string SongWorkflowPath => Path.Combine(LibraryDirectory, "song-workflow.json");
 
+    private string LyricIdeasPath => Path.Combine(LibraryDirectory, "lyric-ideas.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -149,6 +151,10 @@ public sealed class LocalLibraryStore
         var json = JsonSerializer.Serialize(settings, JsonOptions);
         File.WriteAllText(SongWorkflowPath, json);
     }
+
+    public IReadOnlyList<LyricIdeaItem> LoadLyricIdeas() => LoadList<LyricIdeaItem>(LyricIdeasPath);
+
+    public void SaveLyricIdeas(IEnumerable<LyricIdeaItem> ideas) => SaveList(LyricIdeasPath, ideas);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

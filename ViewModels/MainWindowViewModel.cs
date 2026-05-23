@@ -182,6 +182,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _mixChain = "";
 
+    [ObservableProperty]
+    private string _lyricTitle = "Untitled hook";
+
+    [ObservableProperty]
+    private string _lyricMood = "raw";
+
+    [ObservableProperty]
+    private string _lyricTags = "hook, idea";
+
+    [ObservableProperty]
+    private string _lyricText = "";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -263,6 +275,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         MixPrompt = songWorkflow.MixPrompt;
         MixRecommendation = songWorkflow.MixRecommendation;
         MixChain = songWorkflow.MixChain;
+
+        LyricIdeas = new ObservableCollection<LyricIdeaItem>(
+            _store.LoadLyricIdeas().Count > 0
+                ? _store.LoadLyricIdeas()
+                :
+                [
+                    new("First hook", "Vocals", "raw", "hook, draft", "Write the first line before judging it.", DateTime.Now.ToString("yyyy-MM-dd")),
+                ]);
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -284,6 +304,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<HardwareDevice> HardwareDevices { get; }
 
     public IReadOnlyList<SongStage> SongStages { get; }
+
+    public ObservableCollection<LyricIdeaItem> LyricIdeas { get; }
 
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
@@ -416,6 +438,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveTakeReviews(TakeReviews);
         _store.SaveHardwareRouting(CurrentHardwareRouting());
         _store.SaveSongWorkflow(CurrentSongWorkflow());
+        _store.SaveLyricIdeas(LyricIdeas);
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -430,6 +453,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             RecentCaptures,
             TimelineMarkers,
             TakeReviews,
+            LyricIdeas,
             ExportQueue,
             ExportHistory);
         Status = $"Production brief written: {LastBriefPath}";
@@ -704,6 +728,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Applied mix intent for {SelectedSongStage.Name}.";
     }
 
+    [RelayCommand]
+    private void SaveLyricIdea()
+    {
+        var title = string.IsNullOrWhiteSpace(LyricTitle) ? "Untitled lyric" : LyricTitle.Trim();
+        var text = string.IsNullOrWhiteSpace(LyricText) ? "No lyric text yet." : LyricText.Trim();
+        LyricIdeas.Insert(0, new LyricIdeaItem(
+            title,
+            SelectedSongStage.Name,
+            string.IsNullOrWhiteSpace(LyricMood) ? Mood : LyricMood.Trim(),
+            LyricTags.Trim(),
+            text,
+            DateTime.Now.ToString("yyyy-MM-dd")));
+        while (LyricIdeas.Count > 50)
+        {
+            LyricIdeas.RemoveAt(LyricIdeas.Count - 1);
+        }
+
+        _store.SaveLyricIdeas(LyricIdeas);
+        LyricTitle = "Untitled hook";
+        LyricText = "";
+        Status = $"Saved lyric idea: {title}";
+    }
+
+    [RelayCommand]
+    private void UseLatestLyric()
+    {
+        var latest = LyricIdeas.FirstOrDefault();
+        if (latest is null)
+        {
+            Status = "No lyric ideas saved yet.";
+            return;
+        }
+
+        CaptureTitle = $"Lyric: {latest.Title}";
+        CaptureNotes = latest.Text;
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Takes") ?? SelectedRoom;
+        Status = $"Loaded lyric idea into capture: {latest.Title}";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -791,3 +854,8 @@ public sealed record ExportHistoryItem(string RenderedAt, string PresetName, str
 public sealed record TimelineMarker(string Timecode, string Label, string Notes, string Room);
 
 public sealed record TakeReviewItem(string Name, int Rating, string Notes, string ReviewedAt);
+
+public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)
+{
+    public string Preview => Text.Length <= 80 ? Text : $"{Text[..80]}...";
+}

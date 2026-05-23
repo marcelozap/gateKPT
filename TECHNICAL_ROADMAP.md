@@ -30,6 +30,7 @@ Turn raw performance footage into platform-ready clips:
 - Live input peak meter for the preferred Focusrite / RC-505 input.
 - Song workflow path: drums, guitar/piano, vocals, review/export.
 - Word-driven mix intent parser for stage-aware filter suggestions.
+- Lyric vault for hooks, fragments, tags, moods, and song ideas.
 
 ## Next Engineering Steps
 
@@ -37,6 +38,7 @@ Turn raw performance footage into platform-ready clips:
 - Add recording capture from preferred input into the project library.
 - Add stage-specific recording lanes and file naming.
 - Translate mix intent into actual FFmpeg/NAudio render chains per track.
+- Add lyric search, rhyme clusters, and section labels.
 - Add RC-505 MIDI transport/loop commands once device mapping is confirmed.
 - Draw real timeline lanes with draggable sync offset.
 - Add loudness measurement before and after render.

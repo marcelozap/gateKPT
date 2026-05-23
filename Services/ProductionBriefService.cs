@@ -15,6 +15,7 @@ public sealed class ProductionBriefService
         IEnumerable<CaptureItem> captures,
         IEnumerable<TimelineMarker> markers,
         IEnumerable<TakeReviewItem> takes,
+        IEnumerable<LyricIdeaItem> lyrics,
         IEnumerable<ExportQueueItem> queue,
         IEnumerable<ExportHistoryItem> history)
     {
@@ -37,6 +38,7 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Mix chain: {workflow.MixChain}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");
+        AppendSection(brief, "Lyric Ideas", lyrics, item => $"- {item.Title} [{item.Stage} / {item.Mood}] {item.Tags}: {item.Preview}");
         AppendSection(brief, "Take Reviews", takes, item => $"- {item.Rating}/5 {item.Name}: {item.Notes}");
         AppendSection(brief, "Export Queue", queue, item => $"- {item.Status}: {item.PresetName} + {item.AudioPresetName} at {item.OffsetMs:+#;-#;0} ms");
         AppendSection(brief, "Export History", history, item => $"- {item.RenderedAt}: {item.PresetName} / {item.AudioPresetName} / {item.OffsetLabel}");
