@@ -34,6 +34,14 @@ winget install Gyan.FFmpeg
 .\Publish-Windows.ps1
 ```
 
+## Hardware
+
+The app can scan active Windows audio endpoints and MIDI ports through NAudio. Use the Hardware Routing panel to save the intended studio path:
+
+- Focusrite / Scarlett: primary mic/instrument input and monitoring output.
+- RC-505 Loop Station: loop audio device if exposed over USB, plus MIDI input/output when available.
+- Future layer: live meters, one-click recording, RC-505 transport/scene commands, and loop capture into the project timeline.
+
 ## Direction
 
 `gatekpt.ai` stays the public landing page for music, videos, pricing, and booking.

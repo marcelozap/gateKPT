@@ -30,6 +30,8 @@ public sealed class LocalLibraryStore
 
     private string TakeReviewsPath => Path.Combine(LibraryDirectory, "take-reviews.json");
 
+    private string HardwareRoutingPath => Path.Combine(LibraryDirectory, "hardware-routing.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -96,6 +98,31 @@ public sealed class LocalLibraryStore
 
     public void SaveTakeReviews(IEnumerable<TakeReviewItem> reviews) => SaveList(TakeReviewsPath, reviews);
 
+    public HardwareRoutingSettings LoadHardwareRouting()
+    {
+        try
+        {
+            if (!File.Exists(HardwareRoutingPath))
+            {
+                return HardwareRoutingSettings.Default;
+            }
+
+            var json = File.ReadAllText(HardwareRoutingPath);
+            return JsonSerializer.Deserialize<HardwareRoutingSettings>(json, JsonOptions) ?? HardwareRoutingSettings.Default;
+        }
+        catch
+        {
+            return HardwareRoutingSettings.Default;
+        }
+    }
+
+    public void SaveHardwareRouting(HardwareRoutingSettings settings)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(settings, JsonOptions);
+        File.WriteAllText(HardwareRoutingPath, json);
+    }
+
     private static IReadOnlyList<T> LoadList<T>(string path)
     {
         try
@@ -120,6 +147,21 @@ public sealed class LocalLibraryStore
         var json = JsonSerializer.Serialize(items, JsonOptions);
         File.WriteAllText(path, json);
     }
+}
+
+public sealed record HardwareRoutingSettings(
+    string PreferredAudioInput,
+    string PreferredAudioOutput,
+    string PreferredMidiInput,
+    string PreferredMidiOutput,
+    string RoutingNotes)
+{
+    public static HardwareRoutingSettings Default => new(
+        "Focusrite / Scarlett input",
+        "Focusrite / Scarlett output",
+        "RC-505 MIDI input",
+        "RC-505 MIDI output",
+        "Goal: mic/instruments through Focusrite, loops and transport via RC-505.");
 }
 
 public sealed record ProjectSettings(

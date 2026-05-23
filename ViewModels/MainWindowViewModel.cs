@@ -16,6 +16,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly FfmpegRenderService _renderer = new();
     private readonly MediaMetadataService _metadata = new();
     private readonly ProductionBriefService _briefs = new();
+    private readonly HardwareDeviceService _hardware = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -133,6 +134,24 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _takeNotes = "Check lip sync, emotion, and consonants.";
 
+    [ObservableProperty]
+    private string _hardwareStatus = "Hardware not scanned yet.";
+
+    [ObservableProperty]
+    private string _preferredAudioInput = "";
+
+    [ObservableProperty]
+    private string _preferredAudioOutput = "";
+
+    [ObservableProperty]
+    private string _preferredMidiInput = "";
+
+    [ObservableProperty]
+    private string _preferredMidiOutput = "";
+
+    [ObservableProperty]
+    private string _routingNotes = "";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -195,6 +214,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 [
                     new("Take 01", 4, "Promising; verify hook consonants before export.", DateTime.Now.ToString("yyyy-MM-dd")),
                 ]);
+
+        HardwareDevices = new ObservableCollection<HardwareDevice>();
+        var hardwareRouting = _store.LoadHardwareRouting();
+        PreferredAudioInput = hardwareRouting.PreferredAudioInput;
+        PreferredAudioOutput = hardwareRouting.PreferredAudioOutput;
+        PreferredMidiInput = hardwareRouting.PreferredMidiInput;
+        PreferredMidiOutput = hardwareRouting.PreferredMidiOutput;
+        RoutingNotes = hardwareRouting.RoutingNotes;
+        ScanHardware();
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -212,6 +240,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<TimelineMarker> TimelineMarkers { get; }
 
     public ObservableCollection<TakeReviewItem> TakeReviews { get; }
+
+    public ObservableCollection<HardwareDevice> HardwareDevices { get; }
 
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
@@ -329,6 +359,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveExportHistory(ExportHistory);
         _store.SaveTimelineMarkers(TimelineMarkers);
         _store.SaveTakeReviews(TakeReviews);
+        _store.SaveHardwareRouting(CurrentHardwareRouting());
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -539,6 +570,30 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = $"Saved take review: {name}";
     }
 
+    [RelayCommand]
+    private void ScanHardware()
+    {
+        var result = _hardware.Scan();
+        HardwareDevices.Clear();
+        foreach (var device in result.AudioInputs
+                     .Concat(result.AudioOutputs)
+                     .Concat(result.MidiInputs)
+                     .Concat(result.MidiOutputs))
+        {
+            HardwareDevices.Add(device);
+        }
+
+        HardwareStatus = $"{result.Summary} {HardwareDevices.Count} active device path(s) found.";
+        Status = HardwareStatus;
+    }
+
+    [RelayCommand]
+    private void SaveHardwareRouting()
+    {
+        _store.SaveHardwareRouting(CurrentHardwareRouting());
+        Status = "Saved Focusrite / RC-505 routing preferences.";
+    }
+
     private ProjectSettings CurrentProjectSettings() => new(
         ProjectName,
         PlatformProfile,
@@ -584,6 +639,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ExportHistory.RemoveAt(ExportHistory.Count - 1);
         }
     }
+
+    private HardwareRoutingSettings CurrentHardwareRouting() => new(
+        PreferredAudioInput,
+        PreferredAudioOutput,
+        PreferredMidiInput,
+        PreferredMidiOutput,
+        RoutingNotes);
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
