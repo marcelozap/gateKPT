@@ -209,7 +209,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void AnalyzeMedia()
     {
-        var result = _mediaAnalysis.Analyze(VideoPath, VocalPath);
+        var result = _mediaAnalysis.Analyze(VideoPath, VocalPath, LibraryPath);
         VideoFileName = result.Video.Name;
         VocalFileName = result.Vocal.Name;
         VideoSize = result.Video.SizeLabel;

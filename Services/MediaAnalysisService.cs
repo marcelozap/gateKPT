@@ -8,17 +8,24 @@ namespace GateKPT.MusicOS.Services;
 public sealed class MediaAnalysisService
 {
     private readonly AudioSyncAnalyzer _audioSyncAnalyzer = new();
+    private readonly FfmpegAudioExtractor _audioExtractor = new();
 
-    public MediaAnalysisResult Analyze(string videoPath, string vocalPath)
+    public MediaAnalysisResult Analyze(string videoPath, string vocalPath, string workDirectory)
     {
         var video = ReadMediaFile(videoPath, "Video");
         var vocal = ReadMediaFile(vocalPath, "Vocal");
-        var audioResult = _audioSyncAnalyzer.TryAnalyze(videoPath, vocalPath);
+        var referenceAudioPath = _audioExtractor.TryExtractMonoWav(videoPath, workDirectory) ?? videoPath;
+        var finalVocalPath = _audioExtractor.TryExtractMonoWav(vocalPath, workDirectory) ?? vocalPath;
+        var audioResult = _audioSyncAnalyzer.TryAnalyze(referenceAudioPath, finalVocalPath);
         var seed = HashCode.Combine(videoPath, vocalPath, video.SizeBytes, vocal.SizeBytes);
         var offset = audioResult?.SuggestedOffsetMs ?? Math.Clamp(seed % 161 - 80, -80, 80);
         var confidence = audioResult?.Confidence ?? Math.Clamp(0.62 + Math.Abs(offset) / 400.0, 0.62, 0.92);
         var waveform = audioResult?.Waveform ?? GenerateWaveform(seed);
-        var mode = audioResult is null ? "metadata fallback" : "real audio envelope correlation";
+        var mode = audioResult is null
+            ? "metadata fallback"
+            : referenceAudioPath == videoPath
+                ? "real audio envelope correlation"
+                : "FFmpeg extraction + real audio envelope correlation";
 
         return new MediaAnalysisResult(
             video,
