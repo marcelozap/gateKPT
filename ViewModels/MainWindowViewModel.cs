@@ -13,6 +13,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly LocalLibraryStore _store = new();
     private readonly MediaAnalysisService _mediaAnalysis = new();
     private readonly ToolchainProbe _toolchainProbe = new();
+    private readonly FfmpegRenderService _renderer = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -36,6 +37,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _businessMode = "Build video catalog";
+
+    [ObservableProperty]
+    private string _outputDirectory = "";
+
+    [ObservableProperty]
+    private ExportPreset _selectedExportPreset = null!;
+
+    [ObservableProperty]
+    private string _lastExportPath = "";
 
     [ObservableProperty]
     private string _videoPath = "";
@@ -93,6 +103,24 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _selectedRoom = Rooms[0];
         ToolchainStatus = _toolchainProbe.Probe().Label;
 
+        ExportPresets =
+        [
+            new("LinkedIn 16:9", "linkedin-16x9", 1920, 1080, "Clean landscape portfolio clip"),
+            new("TikTok / Reels 9:16", "vertical-9x16", 1080, 1920, "Vertical short-form export"),
+            new("YouTube 16:9", "youtube-16x9", 1920, 1080, "Full-quality YouTube upload"),
+            new("Original frame", "original", 0, 0, "Keep source frame size"),
+        ];
+        _selectedExportPreset = ExportPresets[0];
+
+        var project = _store.LoadProject();
+        ProjectName = project.ProjectName;
+        PlatformProfile = project.PlatformProfile;
+        SyncOffsetMs = project.SyncOffsetMs;
+        FrameRate = project.FrameRate;
+        LoudnessTarget = project.LoudnessTarget;
+        BusinessMode = project.BusinessMode;
+        OutputDirectory = project.OutputDirectory;
+
         var storedCaptures = _store.LoadCaptures();
         RecentCaptures = new ObservableCollection<CaptureItem>(
             storedCaptures.Count > 0
@@ -106,6 +134,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
+
+    public IReadOnlyList<ExportPreset> ExportPresets { get; }
 
     public ObservableCollection<CaptureItem> RecentCaptures { get; }
 
@@ -149,6 +179,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<WaveformBar> Waveform { get; } =
         new(Enumerable.Range(0, 40).Select(i => new WaveformBar(i, 20 + (i % 7) * 8)));
+
+    public string SelectedExportDescription => SelectedExportPreset?.Description ?? "";
+
+    partial void OnSelectedExportPresetChanged(ExportPreset value)
+    {
+        PlatformProfile = value.Name;
+        OnPropertyChanged(nameof(SelectedExportDescription));
+    }
 
     partial void OnSelectedRoomChanged(OsRoom value)
     {
@@ -203,6 +241,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void SaveLibrary()
     {
         _store.SaveCaptures(RecentCaptures);
+        _store.SaveProject(CurrentProjectSettings());
         Status = $"Library saved to {LibraryPath}";
     }
 
@@ -252,6 +291,34 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SyncOffsetMs = 0;
         Status = "Offset reset to 0 ms";
     }
+
+    [RelayCommand]
+    private void RenderReviewClip()
+    {
+        SaveLibrary();
+        var result = _renderer.RenderReviewClip(VideoPath, VocalPath, SyncOffsetMs, OutputDirectory, SelectedExportPreset);
+        if (result.Success)
+        {
+            LastExportPath = result.OutputPath ?? "";
+            RecentCaptures.Insert(0, new CaptureItem(
+                "Rendered review clip",
+                $"{SelectedExportPreset.Name}: {LastExportPath}",
+                DateTime.Now.ToString("h:mm tt"),
+                "Export"));
+            _store.SaveCaptures(RecentCaptures);
+        }
+
+        Status = result.Message;
+    }
+
+    private ProjectSettings CurrentProjectSettings() => new(
+        ProjectName,
+        PlatformProfile,
+        SyncOffsetMs,
+        FrameRate,
+        LoudnessTarget,
+        BusinessMode,
+        OutputDirectory);
 }
 
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
