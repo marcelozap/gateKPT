@@ -39,6 +39,10 @@ public sealed class ProductionBriefService
         brief.AppendLine($"Mix recommendation: {workflow.MixRecommendation}");
         brief.AppendLine($"Mix chain: {workflow.MixChain}");
         brief.AppendLine($"Visualizer: {visualizer.Mode} / {visualizer.Palette} / {visualizer.Motion}");
+        brief.AppendLine($"Visualizer quality: {visualizer.QualityMode}");
+        brief.AppendLine($"Visualizer output: {visualizer.OutputTarget}");
+        brief.AppendLine($"Projector blackout: {(visualizer.ProjectorBlackout ? "on" : "off")}");
+        brief.AppendLine($"DAW safe mode: {(visualizer.DawSafeMode ? "on" : "off")}");
         brief.AppendLine($"Visualizer notes: {visualizer.Notes}");
         brief.AppendLine();
         AppendSection(brief, "Timeline Markers", markers, item => $"- `{item.Timecode}` {item.Label} [{item.Room}] {item.Notes}");

@@ -215,6 +215,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _visualizerNotes = "Use live input energy, song stage color, and lyric fragments.";
 
     [ObservableProperty]
+    private string _visualizerQualityMode = "Balanced";
+
+    [ObservableProperty]
+    private string _visualizerOutputTarget = "Projector";
+
+    [ObservableProperty]
+    private bool _projectorBlackout = false;
+
+    [ObservableProperty]
+    private bool _dawSafeMode = true;
+
+    [ObservableProperty]
     private int _captionBeats = 3;
 
     [ObservableProperty]
@@ -326,6 +338,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerLyricSource = visualizer.LyricSource;
         VisualizerIntensity = visualizer.Intensity;
         VisualizerNotes = visualizer.Notes;
+        VisualizerQualityMode = visualizer.QualityMode;
+        VisualizerOutputTarget = visualizer.OutputTarget;
+        ProjectorBlackout = visualizer.ProjectorBlackout;
+        DawSafeMode = visualizer.DawSafeMode;
 
         Captions = new ObservableCollection<CaptionLine>(_store.LoadCaptions());
         UpdateCaptionStatus();
@@ -382,6 +398,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "Hard cuts",
     ];
 
+    public IReadOnlyList<string> VisualizerQualityModes { get; } =
+    [
+        "Eco",
+        "Balanced",
+        "Ultra",
+    ];
+
+    public IReadOnlyList<string> VisualizerOutputTargets { get; } =
+    [
+        "Projector",
+        "OBS",
+        "NDI future",
+        "Recording preview",
+    ];
+
     public string ExportQueueLabel => $"{ExportQueue.Count} queued";
 
     public string ActiveRoom => $"{SelectedRoom.Name} Room";
@@ -436,7 +467,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string VisualizerPreviewTitle => $"{VisualizerMode} - {SelectedSongStage?.Name ?? "Stage"}";
 
     public string VisualizerPreviewDetail =>
-        $"{VisualizerPalette} / {VisualizerMotion} / intensity {VisualizerIntensity:0}% / live meter {InputMeterLevel:0.0}%";
+        ProjectorBlackout
+            ? "Projector blackout is armed. Visual output should go black immediately."
+            : $"{VisualizerPalette} / {VisualizerMotion} / {VisualizerQualityMode} / {VisualizerOutputTarget} / intensity {VisualizerIntensity:0}% / live meter {InputMeterLevel:0.0}%";
 
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
@@ -924,6 +957,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 break;
             case CommandAction.SaveVisualizer:
                 VisualizerNotes = intent.Payload;
+                if (intent.Payload.Contains("blackout", StringComparison.OrdinalIgnoreCase))
+                {
+                    ProjectorBlackout = true;
+                }
+
                 SaveVisualizer();
                 CommandResponse = intent.SafetyNote;
                 break;
@@ -1017,7 +1055,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerMotion,
         VisualizerLyricSource,
         VisualizerIntensity,
-        VisualizerNotes);
+        VisualizerNotes,
+        VisualizerQualityMode,
+        VisualizerOutputTarget,
+        ProjectorBlackout,
+        DawSafeMode);
 
     private void UpdateCaptionStatus()
     {

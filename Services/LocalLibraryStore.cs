@@ -255,7 +255,11 @@ public sealed record VisualizerSettings(
     string Motion,
     string LyricSource,
     double Intensity,
-    string Notes)
+    string Notes,
+    string QualityMode,
+    string OutputTarget,
+    bool ProjectorBlackout,
+    bool DawSafeMode)
 {
     public static VisualizerSettings Default => new(
         "Lyric Pulse",
@@ -263,7 +267,11 @@ public sealed record VisualizerSettings(
         "Breathing waveform",
         "Latest lyric",
         64,
-        "Use live input energy, song stage color, and lyric fragments.");
+        "Use live input energy, song stage color, and lyric fragments.",
+        "Balanced",
+        "Projector",
+        false,
+        true);
 }
 
 public sealed record CaptionLine(string Start, string End, string Text, string Status, string Note);

@@ -32,6 +32,7 @@ Turn raw performance footage into platform-ready clips:
 - Word-driven mix intent parser for stage-aware filter suggestions.
 - Lyric vault for hooks, fragments, tags, moods, and song ideas.
 - Visualizer preset module for stage-aware lyric/audio visuals.
+- Projector reliability controls: quality mode, output target, blackout, and DAW-safe mode.
 - Safe caption drafts with beat-grid timing and review-needed flags.
 - Local command chat for captions, sync, mix intent, lyric capture, visualizer notes, and export queueing.
 
@@ -45,6 +46,8 @@ Turn raw performance footage into platform-ready clips:
 - Render visualizer clips to MP4 using audio energy and lyric timing.
 - Burn only reviewed captions into video exports; otherwise export sidecar SRT.
 - Add optional AI interpretation behind the command-chat interface with confirmation gates.
+- Create a shared bridge protocol for future DAW plugin/control data.
+- Prototype a separate visual engine process that can restart without affecting the DAW.
 - Add RC-505 MIDI transport/loop commands once device mapping is confirmed.
 - Draw real timeline lanes with draggable sync offset.
 - Add loudness measurement before and after render.

@@ -43,6 +43,12 @@ The app can scan active Windows audio endpoints and MIDI ports through NAudio. U
 - Live input meter: start/stop a local peak meter for the preferred input without recording or transmitting audio.
 - Future layer: one-click recording, RC-505 transport/scene commands, and loop capture into the project timeline.
 
+## Live Performance Rule
+
+GateKPT visuals should never sit in the critical audio path. The DAW records and alters the voice; GateKPT listens to a duplicate signal/control stream and drives projector visuals. If visuals fail, the music keeps running.
+
+See [LIVE_PERFORMANCE_ARCHITECTURE.md](LIVE_PERFORMANCE_ARCHITECTURE.md).
+
 ## Song Workflow
 
 Music OS is shaped around the normal build order:
@@ -54,6 +60,7 @@ Music OS is shaped around the normal build order:
 - Word-driven mix intent: type phrases like `warmer drums`, `less harsh guitar`, or `more intimate vocal` and the app turns them into a stage-aware processing chain.
 - Lyric vault: save hooks, fragments, moods, tags, and pull the latest lyric into the active session notes.
 - Visualizer module: save mode, palette, motion, lyric source, intensity, and live-meter-aware visual direction inside the project.
+- Projector safety: visualizer presets include quality mode, output target, blackout, and DAW-safe mode.
 - Safe captions: draft lyric captions on a beat grid, defaulting to 3-beat spacing, and flag dense lines as review-needed instead of burning in bad timing.
 - Command chat: type local commands like `add captions`, `sync video`, `make drums warmer`, `add vocal layers`, or `export reels`; unsafe work drafts or queues instead of forcing destructive changes.
 

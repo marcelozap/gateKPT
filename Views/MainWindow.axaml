@@ -361,20 +361,42 @@
                                                   Background="#CC0F0C08"
                                                   Foreground="#F8F0E5"/>
                                     </Grid>
-                                    <Grid Grid.Row="3" ColumnDefinitions="*,100" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                    <Grid Grid.Row="3" ColumnDefinitions="*,*,120" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                        <ComboBox ItemsSource="{Binding VisualizerQualityModes}"
+                                                  SelectedItem="{Binding VisualizerQualityMode}"
+                                                  Background="#CC0F0C08"
+                                                  Foreground="#F8F0E5"/>
+                                        <ComboBox Grid.Column="1"
+                                                  ItemsSource="{Binding VisualizerOutputTargets}"
+                                                  SelectedItem="{Binding VisualizerOutputTarget}"
+                                                  Background="#CC0F0C08"
+                                                  Foreground="#F8F0E5"/>
+                                        <CheckBox Grid.Column="2"
+                                                  Content="DAW safe"
+                                                  IsChecked="{Binding DawSafeMode}"
+                                                  Foreground="#F8F0E5"
+                                                  VerticalAlignment="Center"/>
                                         <TextBox Text="{Binding VisualizerLyricSource}"
+                                                 Grid.Row="1"
                                                  PlaceholderText="Lyric source"
                                                  Background="#CC0F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
-                                        <TextBox Grid.Column="1"
+                                        <TextBox Grid.Row="1"
+                                                 Grid.Column="1"
                                                  Text="{Binding VisualizerIntensity}"
                                                  PlaceholderText="Intensity"
                                                  Background="#CC0F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
-                                        <TextBox Grid.Row="1"
-                                                 Grid.ColumnSpan="2"
+                                        <CheckBox Grid.Row="1"
+                                                  Grid.Column="2"
+                                                  Content="Blackout"
+                                                  IsChecked="{Binding ProjectorBlackout}"
+                                                  Foreground="#F8F0E5"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBox Grid.Row="2"
+                                                 Grid.ColumnSpan="3"
                                                  Text="{Binding VisualizerNotes}"
                                                  PlaceholderText="Visualizer notes"
                                                  Background="#CC0F0C08"
