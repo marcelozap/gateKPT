@@ -116,7 +116,11 @@
 
                 <Border Grid.Column="1" CornerRadius="999" Background="#0CFFFFFF" BorderBrush="#14FFFFFF" BorderThickness="1"
                         Padding="16,8" HorizontalAlignment="Center">
-                    <TextBlock Text="{Binding TodayState}" FontSize="12" FontWeight="Bold" Foreground="#A89B88"/>
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <TextBlock Text="{Binding TodayState}" FontSize="12" FontWeight="Bold" Foreground="#A89B88"/>
+                        <TextBlock Text="|" FontSize="12" Foreground="#4DFFFFFF"/>
+                        <TextBlock Text="{Binding ToolchainStatus}" FontSize="12" FontWeight="Bold" Foreground="#D9B36F"/>
+                    </StackPanel>
                 </Border>
 
                 <Border Grid.Column="2" CornerRadius="999" Background="#18F8F0E5" BorderBrush="#28F8F0E5" BorderThickness="1" Padding="14,8">

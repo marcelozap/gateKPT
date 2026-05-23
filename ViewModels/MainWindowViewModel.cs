@@ -12,6 +12,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 {
     private readonly LocalLibraryStore _store = new();
     private readonly MediaAnalysisService _mediaAnalysis = new();
+    private readonly ToolchainProbe _toolchainProbe = new();
 
     public string OperatorName { get; } = "Marcelo";
     public string TodayState { get; } = "Private Music OS";
@@ -75,6 +76,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _status = "Ready to sync";
 
+    [ObservableProperty]
+    private string _toolchainStatus = "Checking tools...";
+
     public MainWindowViewModel()
     {
         Rooms =
@@ -87,6 +91,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ];
 
         _selectedRoom = Rooms[0];
+        ToolchainStatus = _toolchainProbe.Probe().Label;
 
         var storedCaptures = _store.LoadCaptures();
         RecentCaptures = new ObservableCollection<CaptureItem>(

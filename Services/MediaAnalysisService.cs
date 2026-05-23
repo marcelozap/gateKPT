@@ -7,14 +7,18 @@ namespace GateKPT.MusicOS.Services;
 
 public sealed class MediaAnalysisService
 {
+    private readonly AudioSyncAnalyzer _audioSyncAnalyzer = new();
+
     public MediaAnalysisResult Analyze(string videoPath, string vocalPath)
     {
         var video = ReadMediaFile(videoPath, "Video");
         var vocal = ReadMediaFile(vocalPath, "Vocal");
+        var audioResult = _audioSyncAnalyzer.TryAnalyze(videoPath, vocalPath);
         var seed = HashCode.Combine(videoPath, vocalPath, video.SizeBytes, vocal.SizeBytes);
-        var offset = Math.Clamp(seed % 161 - 80, -80, 80);
-        var confidence = Math.Clamp(0.62 + Math.Abs(offset) / 400.0, 0.62, 0.92);
-        var waveform = GenerateWaveform(seed);
+        var offset = audioResult?.SuggestedOffsetMs ?? Math.Clamp(seed % 161 - 80, -80, 80);
+        var confidence = audioResult?.Confidence ?? Math.Clamp(0.62 + Math.Abs(offset) / 400.0, 0.62, 0.92);
+        var waveform = audioResult?.Waveform ?? GenerateWaveform(seed);
+        var mode = audioResult is null ? "metadata fallback" : "real audio envelope correlation";
 
         return new MediaAnalysisResult(
             video,
@@ -22,7 +26,7 @@ public sealed class MediaAnalysisService
             offset,
             confidence,
             waveform,
-            $"Suggested vocal nudge: {offset:+#;-#;0} ms. Review plosives and mouth-open consonants before export.");
+            $"Suggested vocal nudge: {offset:+#;-#;0} ms via {mode}. Review plosives and mouth-open consonants before export.");
     }
 
     private static MediaFile ReadMediaFile(string path, string role)
