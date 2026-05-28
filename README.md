@@ -63,12 +63,27 @@ MusicOS is shaped around the normal build order:
 - Drums first: tempo, groove, loop length, kick/snare feel.
 - Guitar / piano second: harmony, rhythm pocket, arrangement.
 - Vocals last: melody, diction, emotion, doubles, hook clarity.
+- Built-in looper alpha: record, overdub, replace, mute/solo, play one lane, or play the whole arrangement.
+- Lane readiness: see whether the song has drums, harmony bed, vocal lane, captions, routing, and export direction.
 - Review / export: rate takes, sync video, process vocal, render clips.
 - Lyric vault: save hooks, fragments, moods, tags, and pull the latest lyric into active session notes.
 - Visual system: save mode, palette, motion, lyric source, intensity, and live-meter-aware visual direction inside the project.
 - Projector safety: visualizer presets include quality mode, output target, blackout, and DAW-safe mode.
 - Captions: draft lyric captions on a beat grid, defaulting to 3-beat spacing, and flag dense lines as review-needed instead of burning in bad timing.
 - Command layer: queue local actions such as `add captions`, `sync video`, `add vocal layers`, or `export reels`; destructive work drafts or queues instead of forcing changes.
+- Looper command layer: type moves such as `prime drums`, `prime vocal`, `overdub`, `replace loop`, `play arrangement`, or `stop all loops`.
+
+## Built-In Looper Alpha
+
+The looper is designed around a live-loop artist workflow rather than a traditional timeline:
+
+- `Record` protects existing loops and only captures empty lanes.
+- `Overdub` captures another pass/take and preserves take history for future comping.
+- `Replace` intentionally overwrites the active lane.
+- `Play arrangement` starts all playable recorded lanes while respecting mute/solo.
+- Project memory saves looper lane state, stem paths, capture mode, take count, and take archive.
+
+The current alpha records WAV stems from the selected Windows input through NAudio. True DAW-grade overdub mixing/comping is planned as the next deeper audio-engine layer.
 
 ## Resume Bullet
 
