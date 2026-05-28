@@ -1149,6 +1149,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public TimeSpan TargetLoopDuration
+    {
+        get
+        {
+            var safeBpm = Math.Clamp(LooperBpm, 40, 240);
+            var beats = Math.Max(1, LooperBars * 4);
+            return TimeSpan.FromSeconds(beats * 60.0 / safeBpm);
+        }
+    }
+
     public string LooperTestNextStep
     {
         get
@@ -1176,7 +1186,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
             if (SelectedLooperTrack.Status is "Empty" or "Armed")
             {
-                return "4. Press Record, play the loop after count-in, then Stop + save.";
+                return "4. Press Timed record for auto-stop, or Record for manual stop.";
             }
 
             if (SelectedLooperTrack.Status == "Recorded")
@@ -2647,6 +2657,77 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? $"Recording {track.Instrument}. Target: {LooperBars} bars at {LooperBpm} BPM."
             : "Recording blocked.";
         Status = result.Message;
+    }
+
+    [RelayCommand]
+    private async Task RecordTimedLooperTrack()
+    {
+        if (SelectedLooperTrack is null)
+        {
+            Status = "Select a looper track first.";
+            return;
+        }
+
+        ArmLooperTrack();
+        var track = SelectedLooperTrack;
+        if (!FocusriteReadyForRecording)
+        {
+            LooperEngineStatus = $"Focusrite not calibrated yet. {FocusriteCalibrationSignal}";
+            Status = LooperEngineStatus;
+            return;
+        }
+
+        var target = TargetLoopDuration;
+        LooperTransportStatus = $"Timed loop count-in for {track.Instrument}. Target {target.TotalSeconds:0.0}s.";
+        await _clickTrack.PlayCountInAsync(LooperBpm, LooperCountInBeats, beat =>
+        {
+            LooperTransportStatus = $"Count-in {beat}/{Math.Clamp(LooperCountInBeats, 1, 16)}";
+            Status = LooperTransportStatus;
+        });
+
+        var start = _layerRecorder.Start(PreferredAudioInput, StemDirectory, $"timed-loop-track-{track.Number:00}-{track.Instrument}");
+        var recording = track with
+        {
+            Status = start.Success ? "Recording" : "Blocked",
+            StemPath = start.Path,
+            InputNote = InstrumentInputNote
+        };
+        ReplaceLooperTrack(recording);
+        ActiveStemPath = start.Path;
+        LooperEngineStatus = start.Message;
+        if (!start.Success)
+        {
+            LooperTransportStatus = "Timed recording blocked.";
+            Status = start.Message;
+            return;
+        }
+
+        LooperTransportStatus = $"Recording timed {track.Instrument} loop for {target.TotalSeconds:0.0}s.";
+        await Task.Delay(target);
+
+        var stop = _layerRecorder.Stop();
+        var saved = recording with
+        {
+            Status = stop.Success ? "Recorded" : "Empty",
+            StemPath = stop.Success ? stop.Path : recording.StemPath,
+            DurationLabel = stop.Success ? stop.DurationLabel : recording.DurationLabel
+        };
+        ReplaceLooperTrack(saved);
+        ActiveStemPath = saved.StemPath;
+        LastStemDuration = saved.DurationLabel;
+        LooperEngineStatus = stop.Message;
+        LooperTransportStatus = stop.Success
+            ? $"Timed loop saved: {saved.Instrument} / {saved.DurationLabel}."
+            : "Timed recording stopped without a saved loop.";
+
+        if (stop.Success)
+        {
+            AddPerformanceLayer(stop.Path, stop.DurationLabel);
+        }
+        else
+        {
+            Status = stop.Message;
+        }
     }
 
     [RelayCommand]

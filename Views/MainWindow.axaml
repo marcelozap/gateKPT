@@ -1417,6 +1417,13 @@
                                                 Background="#E37B45"
                                                 Foreground="#15120D"
                                                 FontWeight="Black"/>
+                                        <Button Content="Timed record"
+                                                Command="{Binding RecordTimedLooperTrackCommand}"
+                                                Padding="14,9"
+                                                Margin="0,0,8,8"
+                                                Background="#F2EADC"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
                                         <Button Content="Stop + save"
                                                 Command="{Binding StopLooperTrackRecordingCommand}"
                                                 Padding="14,9"
