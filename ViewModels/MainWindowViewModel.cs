@@ -1163,6 +1163,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string LooperNextMove
+    {
+        get
+        {
+            var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath));
+            if (next is not null)
+            {
+                return $"Next lane: {next.Instrument}. Prime it, count in, then capture the part.";
+            }
+
+            var overdub = SelectedLooperTrack?.Instrument ?? "Vocal";
+            return $"All core lanes have audio. Next move: overdub or replace {overdub}.";
+        }
+    }
+
     public string LooperTimingSignal
     {
         get
@@ -2884,6 +2899,48 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void PrimeNextLooperLane()
+    {
+        var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath))
+            ?? SelectedLooperTrack
+            ?? LooperTracks.FirstOrDefault();
+
+        if (next is null)
+        {
+            Status = "No looper tracks available.";
+            return;
+        }
+
+        SelectedLooperTrack = next;
+        SelectedLooperMode = string.IsNullOrWhiteSpace(next.StemPath) ? "Record" : "Overdub";
+
+        var channel = InstrumentChannels.FirstOrDefault(item => item.Name == next.Instrument);
+        if (channel is not null)
+        {
+            SelectedInstrumentChannel = channel;
+        }
+
+        LayerInstrument = next.Instrument;
+        LayerBeatTarget = next.Instrument switch
+        {
+            "Drums" => "Beat 1 / downbeat",
+            "Guitar" => "Beat 2 pocket",
+            "Piano" => "Beat 3 answer",
+            "Vocal" => "Chorus pickup",
+            "Harmony" => "Off-beat push",
+            _ => LayerBeatTarget,
+        };
+        LayerEffectIntent = channel?.EffectIntent ?? LayerEffectIntent;
+        LayerNotes = $"Prime {next.Instrument}: {LayerBeatTarget}. {InstrumentTonePrompt}";
+        ApplyVisualDefaultsForInstrument(next.Instrument);
+
+        LooperEngineStatus = $"Primed next lane: track {next.Number} / {next.Instrument} / {SelectedLooperMode}.";
+        LooperTransportStatus = $"Ready for {next.Instrument}. Run Focusrite check if needed, then timed record.";
+        Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(LooperNextMove));
+    }
+
+    [RelayCommand]
     private void ToggleLooperMute()
     {
         if (SelectedLooperTrack is null)
@@ -3312,6 +3369,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveLooperTracks(LooperTracks);
         OnPropertyChanged(nameof(BuiltInLooperSignal));
         OnPropertyChanged(nameof(LooperModeGuidance));
+        OnPropertyChanged(nameof(LooperNextMove));
         OnPropertyChanged(nameof(LooperTestNextStep));
     }
 

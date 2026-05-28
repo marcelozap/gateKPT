@@ -1468,6 +1468,13 @@
                                                 Background="#3315120D"
                                                 Foreground="#D9C5A5"
                                                 FontWeight="Black"/>
+                                        <Button Content="Prime next lane"
+                                                Command="{Binding PrimeNextLooperLaneCommand}"
+                                                Padding="14,9"
+                                                Margin="0,0,8,8"
+                                                Background="#9DBFB3"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
                                     </WrapPanel>
 
                                     <WrapPanel Grid.Row="8">
@@ -1495,11 +1502,18 @@
                                     </WrapPanel>
 
                                     <Border Grid.Row="9" CornerRadius="16" Background="#2615120D" Padding="12">
-                                        <TextBlock Text="{Binding LooperEngineStatus}"
-                                                   FontSize="11"
-                                                   FontWeight="Bold"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="#D9C5A5"/>
+                                        <StackPanel Spacing="6">
+                                            <TextBlock Text="{Binding LooperNextMove}"
+                                                       FontSize="12"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#F2EADC"/>
+                                            <TextBlock Text="{Binding LooperEngineStatus}"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#D9C5A5"/>
+                                        </StackPanel>
                                     </Border>
 
                                     <Border Grid.Row="10" CornerRadius="16" Background="#2415120D" BorderBrush="#12F8F0E5" BorderThickness="1" Padding="12">
