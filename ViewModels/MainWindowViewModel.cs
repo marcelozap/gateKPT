@@ -788,13 +788,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     public string ProjectHealthDetail =>
-        $"Layers {PerformanceLayers.Count} / Lyrics {LyricIdeas.Count} / Takes {TakeReviews.Count} / Captions {Captions.Count} / Exports {ExportQueue.Count + ExportHistory.Count}";
+        $"Loops {RecordedLooperTrackCount}/5 / Layers {PerformanceLayers.Count} / Lyrics {LyricIdeas.Count} / Takes {TakeReviews.Count} / Captions {Captions.Count} / Exports {ExportQueue.Count + ExportHistory.Count}";
 
     public string ProjectMemorySummary =>
         $"{OperatorName} / {Tempo} / {KeyCenter} / {BusinessMode} / {PlatformProfile} / {LoudnessTarget}";
 
     public string ProjectMemoryCounts =>
-        $"Captures {RecentCaptures.Count} / Layers {PerformanceLayers.Count} / Lyrics {LyricIdeas.Count} / Takes {TakeReviews.Count} / Captions {Captions.Count} / Visuals 1 / Routing 1 / Exports {ExportQueue.Count + ExportHistory.Count}";
+        $"Captures {RecentCaptures.Count} / Loops {RecordedLooperTrackCount}/5 / Layers {PerformanceLayers.Count} / Lyrics {LyricIdeas.Count} / Takes {TakeReviews.Count} / Captions {Captions.Count} / Visuals 1 / Routing 1 / Exports {ExportQueue.Count + ExportHistory.Count}";
 
     public string ProjectMemoryModified => $"Modified {DateTime.Now:yyyy-MM-dd h:mm tt}";
 
@@ -914,6 +914,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             var gaps = MissingProjectPieces().Select(item => item.Label).ToHashSet();
             return
             [
+                gaps.Contains("drums") ? "Drum loop missing" : "Drum foundation captured",
+                gaps.Contains("harmony") ? "Guitar/piano bed missing" : "Harmony bed captured",
+                gaps.Contains("vocal") ? "Vocal lane missing" : "Vocal lane captured",
                 gaps.Contains("lyric") ? "Lyric missing" : "Lyric captured",
                 gaps.Contains("take") ? "Take decision missing" : "Take reviewed",
                 gaps.Contains("captions") ? "Captions missing" : "Captions drafted",
@@ -957,6 +960,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private int TodayCaptionCount => Captions.Count > 0 ? 1 : 0;
 
     private int TodayRenderedExportCount => ExportHistory.Count(item => IsSameLocalDate(item.RenderedAt, DateTime.Today));
+
+    private int RecordedLooperTrackCount => LooperTracks.Count(track => !string.IsNullOrWhiteSpace(track.StemPath));
 
     public string ProjectHealthBlockers
     {
@@ -1904,6 +1909,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
 
         SelectedProjectModule = ProjectModules.FirstOrDefault(item => item.Name == gap.ModuleName);
+        if (gap.Label is "drums" or "harmony" or "vocal")
+        {
+            SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Song Builder") ?? SelectedRoom;
+            PrimeNextLooperLane();
+        }
+
         Status = $"Primed missing piece: {gap.Label}";
     }
 
@@ -3453,6 +3464,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LooperNextMove));
         OnPropertyChanged(nameof(LooperArrangementSignal));
         OnPropertyChanged(nameof(LooperLaneReadiness));
+        OnPropertyChanged(nameof(ProjectHealthDetail));
+        OnPropertyChanged(nameof(ProjectMemoryCounts));
+        OnPropertyChanged(nameof(ExportReadinessChecklist));
         OnPropertyChanged(nameof(LooperTestNextStep));
     }
 
@@ -3695,6 +3709,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         if (LyricIdeas.Count == 0)
         {
             missing.Add(new("lyric", "Lyric Vault"));
+        }
+
+        if (!LooperTracks.Any(track => track.Instrument == "Drums" && !string.IsNullOrWhiteSpace(track.StemPath)))
+        {
+            missing.Add(new("drums", "Song Builder"));
+        }
+
+        if (!LooperTracks.Any(track => track.Instrument is "Guitar" or "Piano" && !string.IsNullOrWhiteSpace(track.StemPath)))
+        {
+            missing.Add(new("harmony", "Song Builder"));
+        }
+
+        if (!LooperTracks.Any(track => track.Instrument is "Vocal" or "Harmony" && !string.IsNullOrWhiteSpace(track.StemPath)))
+        {
+            missing.Add(new("vocal", "Song Builder"));
         }
 
         if (TakeReviews.Count == 0)
