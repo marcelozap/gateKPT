@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using GateKPT.MusicOS.Models;
 using GateKPT.MusicOS.ViewModels;
 
 namespace GateKPT.MusicOS.Services;
@@ -22,6 +23,10 @@ public sealed class LocalLibraryStore
 
     private string ProjectPath => Path.Combine(LibraryDirectory, "project.json");
 
+    private string ProjectFilePath => Path.Combine(LibraryDirectory, "music-project-file.json");
+
+    public string ProjectFileLocation => ProjectFilePath;
+
     private string ExportHistoryPath => Path.Combine(LibraryDirectory, "export-history.json");
 
     private string ExportQueuePath => Path.Combine(LibraryDirectory, "export-queue.json");
@@ -39,6 +44,16 @@ public sealed class LocalLibraryStore
     private string VisualizerPath => Path.Combine(LibraryDirectory, "visualizer.json");
 
     private string CaptionsPath => Path.Combine(LibraryDirectory, "captions.json");
+
+    private string PerformanceLayersPath => Path.Combine(LibraryDirectory, "performance-layers.json");
+
+    private string InstrumentChannelsPath => Path.Combine(LibraryDirectory, "instrument-channels.json");
+
+    private string LooperTracksPath => Path.Combine(LibraryDirectory, "looper-tracks.json");
+
+    private string PinnedMemoryPath => Path.Combine(LibraryDirectory, "pinned-memory.json");
+
+    private string CompletionHistoryPath => Path.Combine(LibraryDirectory, "completion-history.json");
 
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
@@ -88,6 +103,13 @@ public sealed class LocalLibraryStore
         Directory.CreateDirectory(LibraryDirectory);
         var json = JsonSerializer.Serialize(project, JsonOptions);
         File.WriteAllText(ProjectPath, json);
+    }
+
+    public void SaveProjectFile(MusicProjectFile projectFile)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(projectFile, JsonOptions);
+        File.WriteAllText(ProjectFilePath, json);
     }
 
     public IReadOnlyList<ExportHistoryItem> LoadExportHistory() => LoadList<ExportHistoryItem>(ExportHistoryPath);
@@ -189,6 +211,55 @@ public sealed class LocalLibraryStore
 
     public void SaveCaptions(IEnumerable<CaptionLine> captions) => SaveList(CaptionsPath, captions);
 
+    public IReadOnlyList<PerformanceLayerItem> LoadPerformanceLayers() => LoadList<PerformanceLayerItem>(PerformanceLayersPath);
+
+    public void SavePerformanceLayers(IEnumerable<PerformanceLayerItem> layers) => SaveList(PerformanceLayersPath, layers);
+
+    public IReadOnlyList<InstrumentChannelItem> LoadInstrumentChannels() => LoadList<InstrumentChannelItem>(InstrumentChannelsPath);
+
+    public void SaveInstrumentChannels(IEnumerable<InstrumentChannelItem> channels) => SaveList(InstrumentChannelsPath, channels);
+
+    public IReadOnlyList<LooperTrackItem> LoadLooperTracks() => LoadList<LooperTrackItem>(LooperTracksPath);
+
+    public void SaveLooperTracks(IEnumerable<LooperTrackItem> tracks) => SaveList(LooperTracksPath, tracks);
+
+    public PinnedProjectMemory? LoadPinnedProjectMemory()
+    {
+        try
+        {
+            if (!File.Exists(PinnedMemoryPath))
+            {
+                return null;
+            }
+
+            var json = File.ReadAllText(PinnedMemoryPath);
+            return JsonSerializer.Deserialize<PinnedProjectMemory>(json, JsonOptions);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public void SavePinnedProjectMemory(PinnedProjectMemory item)
+    {
+        Directory.CreateDirectory(LibraryDirectory);
+        var json = JsonSerializer.Serialize(item, JsonOptions);
+        File.WriteAllText(PinnedMemoryPath, json);
+    }
+
+    public void ClearPinnedProjectMemory()
+    {
+        if (File.Exists(PinnedMemoryPath))
+        {
+            File.Delete(PinnedMemoryPath);
+        }
+    }
+
+    public IReadOnlyList<ProjectCompletionRecord> LoadCompletionHistory() => LoadList<ProjectCompletionRecord>(CompletionHistoryPath);
+
+    public void SaveCompletionHistory(IEnumerable<ProjectCompletionRecord> records) => SaveList(CompletionHistoryPath, records);
+
     private static IReadOnlyList<T> LoadList<T>(string path)
     {
         try
@@ -275,6 +346,21 @@ public sealed record VisualizerSettings(
 }
 
 public sealed record CaptionLine(string Start, string End, string Text, string Status, string Note);
+
+public sealed record PinnedProjectMemory(
+    string When,
+    string Room,
+    string TargetRoom,
+    string Filter,
+    string Title,
+    string Detail,
+    string Accent);
+
+public sealed record ProjectCompletionRecord(
+    string CompletedAt,
+    string TargetRoom,
+    string Title,
+    string Detail);
 
 public sealed record ProjectSettings(
     string ProjectName,
