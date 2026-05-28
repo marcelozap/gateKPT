@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NAudio.Wave;
 
 namespace GateKPT.MusicOS.Services;
@@ -61,7 +62,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
     public void StopAll()
     {
-        foreach (var trackNumber in _playing.Keys)
+        foreach (var trackNumber in _playing.Keys.ToArray())
         {
             Stop(trackNumber);
         }

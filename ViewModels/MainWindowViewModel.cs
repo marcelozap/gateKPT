@@ -1178,6 +1178,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string LooperArrangementSignal
+    {
+        get
+        {
+            var ready = LooperTracks.Count(track =>
+                !string.IsNullOrWhiteSpace(track.StemPath)
+                && !track.Muted
+                && (!LooperTracks.Any(item => item.Solo) || track.Solo));
+            var total = LooperTracks.Count(track => !string.IsNullOrWhiteSpace(track.StemPath));
+            return total == 0
+                ? "No recorded lanes yet. Build the first drum loop."
+                : $"{ready}/{total} recorded lane(s) ready for arrangement playback.";
+        }
+    }
+
     public string LooperTimingSignal
     {
         get
@@ -2867,6 +2882,52 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void PlayLooperArrangement()
+    {
+        var soloActive = LooperTracks.Any(track => track.Solo);
+        var playable = LooperTracks
+            .Where(track =>
+                !string.IsNullOrWhiteSpace(track.StemPath)
+                && !track.Muted
+                && (!soloActive || track.Solo))
+            .ToList();
+
+        if (playable.Count == 0)
+        {
+            LooperEngineStatus = "No playable loops yet. Record a lane first, or unmute/unsolo tracks.";
+            LooperTransportStatus = "Arrangement playback blocked.";
+            Status = LooperEngineStatus;
+            return;
+        }
+
+        var started = new List<string>();
+        var blocked = new List<string>();
+        foreach (var track in playable)
+        {
+            var result = _looperPlayback.PlayLoop(track.Number, track.StemPath, track.Volume);
+            if (result.Success)
+            {
+                started.Add(track.Instrument);
+                ReplaceLooperTrack(track with { Status = "Looping" });
+            }
+            else
+            {
+                blocked.Add(track.Instrument);
+            }
+        }
+
+        var startedText = string.Join(", ", started);
+        LooperEngineStatus = blocked.Count == 0
+            ? $"Arrangement playing: {startedText}."
+            : $"Arrangement partially playing: {startedText}. Blocked: {string.Join(", ", blocked)}.";
+        LooperTransportStatus = $"Playing {started.Count} lane(s). Use Stop all before a clean new pass.";
+        VisualizerAlwaysOn = true;
+        UpdateVisualPaintingFromAudio();
+        Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(LooperArrangementSignal));
+    }
+
+    [RelayCommand]
     private void StopLooperTrack()
     {
         if (SelectedLooperTrack is null)
@@ -2896,6 +2957,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LooperEngineStatus = "Stopped all built-in looper tracks.";
         LooperTransportStatus = "Transport idle.";
         Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(LooperArrangementSignal));
     }
 
     [RelayCommand]
@@ -3370,6 +3432,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(BuiltInLooperSignal));
         OnPropertyChanged(nameof(LooperModeGuidance));
         OnPropertyChanged(nameof(LooperNextMove));
+        OnPropertyChanged(nameof(LooperArrangementSignal));
         OnPropertyChanged(nameof(LooperTestNextStep));
     }
 

@@ -1454,6 +1454,13 @@
                                                 Background="#EABF7A"
                                                 Foreground="#15120D"
                                                 FontWeight="Black"/>
+                                        <Button Content="Play arrangement"
+                                                Command="{Binding PlayLooperArrangementCommand}"
+                                                Padding="14,9"
+                                                Margin="0,0,8,8"
+                                                Background="#F2EADC"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
                                         <Button Content="Stop track"
                                                 Command="{Binding StopLooperTrackCommand}"
                                                 Padding="14,9"
@@ -1508,6 +1515,11 @@
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
                                                        Foreground="#F2EADC"/>
+                                            <TextBlock Text="{Binding LooperArrangementSignal}"
+                                                       FontSize="11"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#9DBFB3"/>
                                             <TextBlock Text="{Binding LooperEngineStatus}"
                                                        FontSize="11"
                                                        FontWeight="Bold"
