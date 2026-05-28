@@ -1128,6 +1128,50 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string LooperTestNextStep
+    {
+        get
+        {
+            if (SelectedLooperTrack is null)
+            {
+                return "1. Select a looper track.";
+            }
+
+            if (!PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
+                && !PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
+            {
+                return "1. Press Auto Focusrite.";
+            }
+
+            if (FocusritePeakPercent <= 0)
+            {
+                return "2. Press 3s input test and play/tap the instrument.";
+            }
+
+            if (!FocusriteReadyForRecording)
+            {
+                return $"3. Fix input level: {FocusriteCalibrationSignal}";
+            }
+
+            if (SelectedLooperTrack.Status is "Empty" or "Armed")
+            {
+                return "4. Press Record, play the loop after count-in, then Stop + save.";
+            }
+
+            if (SelectedLooperTrack.Status == "Recorded")
+            {
+                return "5. Press Play loop, then adjust Track volume.";
+            }
+
+            if (SelectedLooperTrack.Status == "Looping")
+            {
+                return "6. Listen, adjust volume, then add the next instrument lane.";
+            }
+
+            return "Check transport status, then continue the loop test.";
+        }
+    }
+
     public string LoopStackReadiness
     {
         get
@@ -2065,6 +2109,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         FocusriteTestStatus = selection.Summary;
         _store.SaveHardwareRouting(CurrentHardwareRouting());
         SaveProjectSnapshot("Focusrite auto configured");
+        OnPropertyChanged(nameof(LooperTestNextStep));
         Status = FocusriteTestStatus;
     }
 
@@ -2080,6 +2125,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LastFocusriteTestPath = result.Path;
         FocusritePeakPercent = result.PeakPercent;
         UpdateFocusriteCalibration(result.PeakPercent);
+        OnPropertyChanged(nameof(LooperTestNextStep));
         FocusriteTestStatus = result.Message;
         Status = result.Message;
 
@@ -3027,6 +3073,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
         OnPropertyChanged(nameof(FocusriteCalibrationSignal));
         OnPropertyChanged(nameof(FocusriteReadyForRecording));
+        OnPropertyChanged(nameof(LooperTestNextStep));
     }
 
     private void StampVisualPainting(string label)
@@ -3080,6 +3127,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedLooperTrack = updated;
         _store.SaveLooperTracks(LooperTracks);
         OnPropertyChanged(nameof(BuiltInLooperSignal));
+        OnPropertyChanged(nameof(LooperTestNextStep));
     }
 
     private static IReadOnlyList<InstrumentChannelItem> DefaultInstrumentChannels() =>
