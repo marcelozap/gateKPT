@@ -1280,6 +1280,9 @@
                                                         <TextBlock Text="{Binding Number}" FontSize="18" FontWeight="Black" Foreground="{Binding Color}"/>
                                                         <TextBlock Text="{Binding Instrument}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
                                                         <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Bold" Foreground="#9DBFB3"/>
+                                                        <TextBlock Text="{Binding Mode}" FontSize="10" FontWeight="Black" Foreground="#EABF7A"/>
+                                                        <TextBlock Text="{Binding TakeCount, StringFormat='take {0}'}" FontSize="10" Foreground="#D9C5A5"/>
+                                                        <TextBlock Text="{Binding LastAction}" FontSize="9" Foreground="#8D7D68" TextWrapping="Wrap"/>
                                                         <TextBlock Text="{Binding DurationLabel}" FontSize="10" Foreground="#D9C5A5"/>
                                                     </StackPanel>
                                                 </Border>
@@ -1354,25 +1357,31 @@
                                         </Grid>
                                     </Border>
 
-                                    <Grid Grid.Row="5" ColumnDefinitions="90,90,90,*" ColumnSpacing="8">
-                                        <TextBox Text="{Binding LooperBpm}"
+                                    <Grid Grid.Row="5" ColumnDefinitions="130,90,90,90,*" ColumnSpacing="8">
+                                        <ComboBox ItemsSource="{Binding LooperModes}"
+                                                  SelectedItem="{Binding SelectedLooperMode}"
+                                                  Background="#A80F0C08"
+                                                  Foreground="#F8F0E5"
+                                                  BorderBrush="#22F8F0E5"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding LooperBpm}"
                                                  PlaceholderText="BPM"
                                                  Background="#A80F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
-                                        <TextBox Grid.Column="1"
+                                        <TextBox Grid.Column="2"
                                                  Text="{Binding LooperCountInBeats}"
                                                  PlaceholderText="Count"
                                                  Background="#A80F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
-                                        <TextBox Grid.Column="2"
+                                        <TextBox Grid.Column="3"
                                                  Text="{Binding LooperBars}"
                                                  PlaceholderText="Bars"
                                                  Background="#A80F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
-                                        <TextBlock Grid.Column="3"
+                                        <TextBlock Grid.Column="4"
                                                    Text="{Binding LooperTimingSignal}"
                                                    FontSize="11"
                                                    FontWeight="Bold"
@@ -1394,11 +1403,18 @@
                                             </StackPanel>
                                         </Border>
                                         <Border Grid.Column="1" CornerRadius="16" Background="#2615120D" Padding="12">
-                                            <TextBlock Text="{Binding LooperTransportStatus}"
-                                                       FontSize="12"
-                                                       FontWeight="Black"
-                                                       TextWrapping="Wrap"
-                                                       Foreground="#E37B45"/>
+                                            <StackPanel Spacing="6">
+                                                <TextBlock Text="{Binding LooperTransportStatus}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#E37B45"/>
+                                                <TextBlock Text="{Binding LooperModeGuidance}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                            </StackPanel>
                                         </Border>
                                     </Grid>
 

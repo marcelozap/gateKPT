@@ -282,6 +282,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private double _selectedLooperTrackVolume = 80;
 
     [ObservableProperty]
+    private string _selectedLooperMode = "Record";
+
+    [ObservableProperty]
     private string _looperEngineStatus = "Built-in looper alpha ready. Arm a track, record from Focusrite/RC-505, then play it as a loop.";
 
     [ObservableProperty]
@@ -616,6 +619,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<LooperTrackItem> LooperTracks { get; }
 
     public ObservableCollection<MusicOsModule> ProjectModules { get; }
+
+    public IReadOnlyList<string> LooperModes { get; } =
+    [
+        "Record",
+        "Overdub",
+        "Replace",
+    ];
 
     public IReadOnlyList<string> VisualizerModes { get; } =
     [
@@ -1136,7 +1146,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string BuiltInLooperSignal =>
         SelectedLooperTrack is null
             ? "No looper track selected."
-            : $"Track {SelectedLooperTrack.Number}: {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / volume {SelectedLooperTrack.Volume:0}%";
+            : $"Track {SelectedLooperTrack.Number}: {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / {SelectedLooperTrack.Mode} / take {SelectedLooperTrack.TakeCount} / volume {SelectedLooperTrack.Volume:0}%";
+
+    public string LooperModeGuidance
+    {
+        get
+        {
+            var mode = NormalizeLooperMode(SelectedLooperMode);
+            return mode switch
+            {
+                "Record" => "Record protects finished loops. Use it for an empty lane.",
+                "Overdub" => "Overdub captures another pass/take over the current loop for comping later.",
+                "Replace" => "Replace intentionally overwrites this lane with a fresh performance.",
+                _ => "Choose how this lane should capture the next pass.",
+            };
+        }
+    }
 
     public string LooperTimingSignal
     {
@@ -1189,7 +1214,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 return "4. Press Timed record for auto-stop, or Record for manual stop.";
             }
 
-            if (SelectedLooperTrack.Status == "Recorded")
+            if (SelectedLooperTrack.Status is "Recorded" or "Overdub saved")
             {
                 return "5. Press Play loop, then adjust Track volume.";
             }
@@ -1328,6 +1353,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     partial void OnLooperBarsChanged(int value) => OnPropertyChanged(nameof(LooperTimingSignal));
 
+    partial void OnSelectedLooperModeChanged(string value)
+    {
+        OnPropertyChanged(nameof(LooperModeGuidance));
+        OnPropertyChanged(nameof(BuiltInLooperSignal));
+    }
+
     partial void OnSelectedInstrumentChannelChanged(InstrumentChannelItem? value)
     {
         if (value is null)
@@ -1358,6 +1389,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LayerInstrument = value.Instrument;
         InstrumentInputNote = value.InputNote;
         SelectedLooperTrackVolume = value.Volume;
+        SelectedLooperMode = NormalizeLooperMode(value.Mode);
         OnPropertyChanged(nameof(BuiltInLooperSignal));
     }
 
@@ -2610,11 +2642,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var updated = SelectedLooperTrack with { Status = "Armed", InputNote = InstrumentInputNote };
+        var mode = NormalizeLooperMode(SelectedLooperMode);
+        var updated = SelectedLooperTrack with { Status = "Armed", InputNote = InstrumentInputNote, Mode = mode };
         ReplaceLooperTrack(updated);
         LayerInstrument = updated.Instrument;
-        LayerNotes = $"Built-in looper track {updated.Number}: {updated.Instrument}. Input: {updated.InputNote}.";
-        LooperEngineStatus = $"Armed track {updated.Number}: {updated.Instrument}.";
+        LayerNotes = $"Built-in looper track {updated.Number}: {updated.Instrument}. Mode: {mode}. Input: {updated.InputNote}.";
+        LooperEngineStatus = $"Armed track {updated.Number}: {updated.Instrument} in {mode} mode.";
         Status = LooperEngineStatus;
     }
 
@@ -2636,25 +2669,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        LooperTransportStatus = $"Count-in for track {track.Number}: {track.Instrument}.";
+        var mode = NormalizeLooperMode(SelectedLooperMode);
+        if (!PrepareLooperCapture(track, mode))
+        {
+            return;
+        }
+
+        LooperTransportStatus = $"Count-in for track {track.Number}: {track.Instrument} / {mode}.";
         await _clickTrack.PlayCountInAsync(LooperBpm, LooperCountInBeats, beat =>
         {
             LooperTransportStatus = $"Count-in {beat}/{Math.Clamp(LooperCountInBeats, 1, 16)}";
             Status = LooperTransportStatus;
         });
 
-        var result = _layerRecorder.Start(PreferredAudioInput, StemDirectory, $"looper-track-{track.Number:00}-{track.Instrument}");
+        var result = _layerRecorder.Start(PreferredAudioInput, StemDirectory, BuildLooperCapturePrefix(track, mode));
         var updated = track with
         {
             Status = result.Success ? "Recording" : "Blocked",
-            StemPath = result.Path,
-            InputNote = InstrumentInputNote
+            StemPath = result.Success ? result.Path : track.StemPath,
+            InputNote = InstrumentInputNote,
+            Mode = mode,
+            LastAction = result.Success ? $"{mode} started at {DateTime.Now:h:mm tt}" : track.LastAction
         };
         ReplaceLooperTrack(updated);
-        ActiveStemPath = result.Path;
+        ActiveStemPath = result.Success ? result.Path : ActiveStemPath;
         LooperEngineStatus = result.Message;
         LooperTransportStatus = result.Success
-            ? $"Recording {track.Instrument}. Target: {LooperBars} bars at {LooperBpm} BPM."
+            ? $"Recording {track.Instrument} in {mode} mode. Target: {LooperBars} bars at {LooperBpm} BPM."
             : "Recording blocked.";
         Status = result.Message;
     }
@@ -2677,23 +2718,31 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        var mode = NormalizeLooperMode(SelectedLooperMode);
+        if (!PrepareLooperCapture(track, mode))
+        {
+            return;
+        }
+
         var target = TargetLoopDuration;
-        LooperTransportStatus = $"Timed loop count-in for {track.Instrument}. Target {target.TotalSeconds:0.0}s.";
+        LooperTransportStatus = $"Timed loop count-in for {track.Instrument} / {mode}. Target {target.TotalSeconds:0.0}s.";
         await _clickTrack.PlayCountInAsync(LooperBpm, LooperCountInBeats, beat =>
         {
             LooperTransportStatus = $"Count-in {beat}/{Math.Clamp(LooperCountInBeats, 1, 16)}";
             Status = LooperTransportStatus;
         });
 
-        var start = _layerRecorder.Start(PreferredAudioInput, StemDirectory, $"timed-loop-track-{track.Number:00}-{track.Instrument}");
+        var start = _layerRecorder.Start(PreferredAudioInput, StemDirectory, BuildLooperCapturePrefix(track, mode));
         var recording = track with
         {
             Status = start.Success ? "Recording" : "Blocked",
-            StemPath = start.Path,
-            InputNote = InstrumentInputNote
+            StemPath = start.Success ? start.Path : track.StemPath,
+            InputNote = InstrumentInputNote,
+            Mode = mode,
+            LastAction = start.Success ? $"{mode} timed pass started at {DateTime.Now:h:mm tt}" : track.LastAction
         };
         ReplaceLooperTrack(recording);
-        ActiveStemPath = start.Path;
+        ActiveStemPath = start.Success ? start.Path : ActiveStemPath;
         LooperEngineStatus = start.Message;
         if (!start.Success)
         {
@@ -2708,16 +2757,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var stop = _layerRecorder.Stop();
         var saved = recording with
         {
-            Status = stop.Success ? "Recorded" : "Empty",
+            Status = stop.Success ? SavedLooperStatus(mode) : "Empty",
             StemPath = stop.Success ? stop.Path : recording.StemPath,
-            DurationLabel = stop.Success ? stop.DurationLabel : recording.DurationLabel
+            DurationLabel = stop.Success ? stop.DurationLabel : recording.DurationLabel,
+            TakeCount = stop.Success ? NextLooperTakeCount(recording, mode) : recording.TakeCount,
+            LastAction = stop.Success ? $"{mode} saved at {DateTime.Now:h:mm tt}" : recording.LastAction
         };
         ReplaceLooperTrack(saved);
         ActiveStemPath = saved.StemPath;
         LastStemDuration = saved.DurationLabel;
         LooperEngineStatus = stop.Message;
         LooperTransportStatus = stop.Success
-            ? $"Timed loop saved: {saved.Instrument} / {saved.DurationLabel}."
+            ? $"Timed {mode.ToLowerInvariant()} saved: {saved.Instrument} / {saved.DurationLabel}."
             : "Timed recording stopped without a saved loop.";
 
         if (stop.Success)
@@ -2740,11 +2791,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
 
         var result = _layerRecorder.Stop();
+        var mode = NormalizeLooperMode(SelectedLooperTrack.Mode);
         var updated = SelectedLooperTrack with
         {
-            Status = result.Success ? "Recorded" : "Empty",
+            Status = result.Success ? SavedLooperStatus(mode) : "Empty",
             StemPath = result.Success ? result.Path : SelectedLooperTrack.StemPath,
-            DurationLabel = result.Success ? result.DurationLabel : SelectedLooperTrack.DurationLabel
+            DurationLabel = result.Success ? result.DurationLabel : SelectedLooperTrack.DurationLabel,
+            TakeCount = result.Success ? NextLooperTakeCount(SelectedLooperTrack, mode) : SelectedLooperTrack.TakeCount,
+            LastAction = result.Success ? $"{mode} saved at {DateTime.Now:h:mm tt}" : SelectedLooperTrack.LastAction
         };
         ReplaceLooperTrack(updated);
         ActiveStemPath = updated.StemPath;
@@ -3255,8 +3309,44 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedLooperTrack = updated;
         _store.SaveLooperTracks(LooperTracks);
         OnPropertyChanged(nameof(BuiltInLooperSignal));
+        OnPropertyChanged(nameof(LooperModeGuidance));
         OnPropertyChanged(nameof(LooperTestNextStep));
     }
+
+    private bool PrepareLooperCapture(LooperTrackItem track, string mode)
+    {
+        if (mode == "Record" && !string.IsNullOrWhiteSpace(track.StemPath))
+        {
+            LooperEngineStatus = $"{track.Instrument} already has a loop. Choose Overdub to add a take, or Replace to overwrite it.";
+            LooperTransportStatus = "Capture blocked to protect the existing loop.";
+            Status = LooperEngineStatus;
+            return false;
+        }
+
+        if (mode == "Replace")
+        {
+            _looperPlayback.Stop(track.Number);
+        }
+
+        return true;
+    }
+
+    private static string BuildLooperCapturePrefix(LooperTrackItem track, string mode) =>
+        $"looper-{mode.ToLowerInvariant()}-track-{track.Number:00}-{track.Instrument}-take-{track.TakeCount + 1:00}";
+
+    private static string NormalizeLooperMode(string value) =>
+        value switch
+        {
+            "Overdub" => "Overdub",
+            "Replace" => "Replace",
+            _ => "Record",
+        };
+
+    private static int NextLooperTakeCount(LooperTrackItem track, string mode) =>
+        mode == "Replace" ? 1 : Math.Max(0, track.TakeCount) + 1;
+
+    private static string SavedLooperStatus(string mode) =>
+        mode == "Overdub" ? "Overdub saved" : "Recorded";
 
     private static IReadOnlyList<InstrumentChannelItem> DefaultInstrumentChannels() =>
     [
@@ -3700,7 +3790,10 @@ public sealed record LooperTrackItem(
     double Volume,
     bool Muted,
     bool Solo,
-    string Color);
+    string Color,
+    string Mode = "Record",
+    int TakeCount = 0,
+    string LastAction = "");
 
 public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)
 {
