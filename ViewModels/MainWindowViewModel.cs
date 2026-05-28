@@ -3003,6 +3003,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        PrimeLooperLane(next);
+    }
+
+    private void PrimeLooperLane(LooperTrackItem next)
+    {
         SelectedLooperTrack = next;
         SelectedLooperMode = string.IsNullOrWhiteSpace(next.StemPath) ? "Record" : "Overdub";
 
@@ -3285,6 +3290,22 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 QueueCurrentExport();
                 CommandResponse = intent.SafetyNote;
                 break;
+            case CommandAction.PrimeLooperLane:
+                PrimeLooperLaneFromCommand(intent.Payload);
+                CommandResponse = $"{intent.SafetyNote} {LooperEngineStatus}";
+                break;
+            case CommandAction.PlayLooperArrangement:
+                PlayLooperArrangement();
+                CommandResponse = $"{intent.SafetyNote} {LooperArrangementSignal}";
+                break;
+            case CommandAction.StopLooperArrangement:
+                StopAllLooperTracks();
+                CommandResponse = $"{intent.SafetyNote} {LooperTransportStatus}";
+                break;
+            case CommandAction.SetLooperMode:
+                SetLooperModeFromCommand(intent.Payload);
+                CommandResponse = $"{intent.SafetyNote} {LooperModeGuidance}";
+                break;
             case CommandAction.CaptureNote:
                 CaptureTitle = "Command note";
                 CaptureNotes = intent.Payload;
@@ -3296,6 +3317,58 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 Status = intent.SafetyNote;
                 break;
         }
+    }
+
+    private void PrimeLooperLaneFromCommand(string text)
+    {
+        var requested = ResolveInstrumentFromText(text);
+        if (!string.IsNullOrWhiteSpace(requested))
+        {
+            var track = LooperTracks.FirstOrDefault(item => item.Instrument == requested);
+            if (track is not null)
+            {
+                PrimeLooperLane(track);
+                return;
+            }
+        }
+
+        PrimeNextLooperLane();
+    }
+
+    private void SetLooperModeFromCommand(string text)
+    {
+        SelectedLooperMode = text.Contains("replace", StringComparison.OrdinalIgnoreCase)
+            ? "Replace"
+            : text.Contains("overdub", StringComparison.OrdinalIgnoreCase)
+                ? "Overdub"
+                : "Record";
+        LooperEngineStatus = $"Looper mode set to {SelectedLooperMode}.";
+        Status = LooperEngineStatus;
+    }
+
+    private static string ResolveInstrumentFromText(string text)
+    {
+        if (text.Contains("drum", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Drums";
+        }
+
+        if (text.Contains("guitar", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Guitar";
+        }
+
+        if (text.Contains("piano", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Piano";
+        }
+
+        if (text.Contains("harmony", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Harmony";
+        }
+
+        return text.Contains("vocal", StringComparison.OrdinalIgnoreCase) ? "Vocal" : "";
     }
 
     private void RefreshProjectModules()

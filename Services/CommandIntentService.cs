@@ -13,6 +13,26 @@ public sealed class CommandIntentService
             return new CommandIntent(CommandAction.Unknown, "Type a command first.", "");
         }
 
+        if (ContainsAny(normalized, "play arrangement", "start arrangement", "play all loops", "play all lanes"))
+        {
+            return new CommandIntent(CommandAction.PlayLooperArrangement, "Start all playable looper lanes. Muted lanes stay silent; solo lanes are respected.", text);
+        }
+
+        if (ContainsAny(normalized, "stop arrangement", "stop all loops", "stop looper", "stop all lanes"))
+        {
+            return new CommandIntent(CommandAction.StopLooperArrangement, "Stop looper playback safely.", text);
+        }
+
+        if (ContainsAny(normalized, "prime next lane", "next lane", "next loop", "prime loop", "prime drums", "prime drum", "prime guitar", "prime piano", "prime vocal", "prime harmony"))
+        {
+            return new CommandIntent(CommandAction.PrimeLooperLane, "Prime the next recordable looper lane.", text);
+        }
+
+        if (ContainsAny(normalized, "overdub", "replace loop", "replace lane", "record mode"))
+        {
+            return new CommandIntent(CommandAction.SetLooperMode, "Set looper capture mode without recording yet.", text);
+        }
+
         if (ContainsAny(normalized, "caption", "subtitles", "words on video"))
         {
             return new CommandIntent(CommandAction.DraftCaptions, "Draft captions in safe mode. Review-needed lines will not be treated as ready.", text);
@@ -70,6 +90,10 @@ public enum CommandAction
     SaveLyric,
     QueueExport,
     CaptureNote,
+    PrimeLooperLane,
+    PlayLooperArrangement,
+    StopLooperArrangement,
+    SetLooperMode,
 }
 
 public sealed record CommandIntent(CommandAction Action, string SafetyNote, string Payload);
