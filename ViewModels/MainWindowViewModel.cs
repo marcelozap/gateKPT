@@ -2761,6 +2761,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             StemPath = stop.Success ? stop.Path : recording.StemPath,
             DurationLabel = stop.Success ? stop.DurationLabel : recording.DurationLabel,
             TakeCount = stop.Success ? NextLooperTakeCount(recording, mode) : recording.TakeCount,
+            TakeArchive = stop.Success ? NextLooperTakeArchive(recording, mode, stop.Path) : recording.TakeArchive,
             LastAction = stop.Success ? $"{mode} saved at {DateTime.Now:h:mm tt}" : recording.LastAction
         };
         ReplaceLooperTrack(saved);
@@ -2798,6 +2799,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             StemPath = result.Success ? result.Path : SelectedLooperTrack.StemPath,
             DurationLabel = result.Success ? result.DurationLabel : SelectedLooperTrack.DurationLabel,
             TakeCount = result.Success ? NextLooperTakeCount(SelectedLooperTrack, mode) : SelectedLooperTrack.TakeCount,
+            TakeArchive = result.Success ? NextLooperTakeArchive(SelectedLooperTrack, mode, result.Path) : SelectedLooperTrack.TakeArchive,
             LastAction = result.Success ? $"{mode} saved at {DateTime.Now:h:mm tt}" : SelectedLooperTrack.LastAction
         };
         ReplaceLooperTrack(updated);
@@ -3331,8 +3333,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         return true;
     }
 
-    private static string BuildLooperCapturePrefix(LooperTrackItem track, string mode) =>
-        $"looper-{mode.ToLowerInvariant()}-track-{track.Number:00}-{track.Instrument}-take-{track.TakeCount + 1:00}";
+    private static string BuildLooperCapturePrefix(LooperTrackItem track, string mode)
+    {
+        var nextTake = mode == "Replace" ? 1 : track.TakeCount + 1;
+        return $"looper-{mode.ToLowerInvariant()}-track-{track.Number:00}-{track.Instrument}-take-{nextTake:00}";
+    }
 
     private static string NormalizeLooperMode(string value) =>
         value switch
@@ -3344,6 +3349,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     private static int NextLooperTakeCount(LooperTrackItem track, string mode) =>
         mode == "Replace" ? 1 : Math.Max(0, track.TakeCount) + 1;
+
+    private static string NextLooperTakeArchive(LooperTrackItem track, string mode, string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return track.TakeArchive;
+        }
+
+        if (mode == "Replace")
+        {
+            return path;
+        }
+
+        return string.IsNullOrWhiteSpace(track.TakeArchive)
+            ? path
+            : $"{track.TakeArchive}|{path}";
+    }
 
     private static string SavedLooperStatus(string mode) =>
         mode == "Overdub" ? "Overdub saved" : "Recorded";
@@ -3793,7 +3815,11 @@ public sealed record LooperTrackItem(
     string Color,
     string Mode = "Record",
     int TakeCount = 0,
-    string LastAction = "");
+    string LastAction = "",
+    string TakeArchive = "")
+{
+    public string TakeArchiveSummary => TakeCount <= 0 ? "no saved passes" : $"{TakeCount} saved pass(es)";
+}
 
 public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)
 {

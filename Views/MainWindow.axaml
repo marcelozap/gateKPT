@@ -1281,7 +1281,7 @@
                                                         <TextBlock Text="{Binding Instrument}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
                                                         <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Bold" Foreground="#9DBFB3"/>
                                                         <TextBlock Text="{Binding Mode}" FontSize="10" FontWeight="Black" Foreground="#EABF7A"/>
-                                                        <TextBlock Text="{Binding TakeCount, StringFormat='take {0}'}" FontSize="10" Foreground="#D9C5A5"/>
+                                                        <TextBlock Text="{Binding TakeArchiveSummary}" FontSize="10" Foreground="#D9C5A5"/>
                                                         <TextBlock Text="{Binding LastAction}" FontSize="9" Foreground="#8D7D68" TextWrapping="Wrap"/>
                                                         <TextBlock Text="{Binding DurationLabel}" FontSize="10" Foreground="#D9C5A5"/>
                                                     </StackPanel>
