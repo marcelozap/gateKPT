@@ -411,6 +411,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _layerRecordingStatus = "Recorder idle. Prime a layer, then arm recording.";
 
     [ObservableProperty]
+    private string _looperTestIssue = "Not tested yet";
+
+    [ObservableProperty]
+    private string _looperTestNotes = "After the first drum test, write what happened: signal, timing, playback, volume, latency.";
+
+    [ObservableProperty]
     private string _activeStemPath = "";
 
     [ObservableProperty]
@@ -684,6 +690,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "Space / reverb",
         "Delay throw",
         "Lo-fi texture",
+    ];
+
+    public IReadOnlyList<string> LooperTestIssues { get; } =
+    [
+        "Not tested yet",
+        "Worked",
+        "No input signal",
+        "Too quiet",
+        "Clipping",
+        "Recording failed",
+        "Playback failed",
+        "Timing late",
+        "Timing early",
+        "Count-in confusing",
+        "Volume wrong",
     ];
 
     public IReadOnlyList<string> SongSections { get; } =
@@ -2812,7 +2833,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         PerformanceCueNotes = "First test: record only drums. Keep it simple, stop cleanly, then play loop.";
         LooperEngineStatus = "First drum loop test primed. Run Focusrite input test, then press Record.";
         LooperTransportStatus = "Ready for Focusrite calibration.";
+        LooperTestIssue = "Not tested yet";
+        LooperTestNotes = "Test drums: describe signal, count-in timing, recording, playback, and volume.";
         Status = LooperEngineStatus;
+    }
+
+    [RelayCommand]
+    private void SaveLooperTestReport()
+    {
+        var track = SelectedLooperTrack is null
+            ? "No selected track"
+            : $"Track {SelectedLooperTrack.Number}: {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / {SelectedLooperTrack.DurationLabel}";
+        var detail =
+            $"{track}. Issue: {LooperTestIssue}. Focusrite peak {FocusritePeakPercent:0.0}%. {FocusriteCalibrationSignal} Notes: {LooperTestNotes}";
+
+        RecentCaptures.Insert(0, new CaptureItem(
+            "Built-in looper test report",
+            detail,
+            DateTime.Now.ToString("h:mm tt"),
+            "Song Builder"));
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        _store.SaveCaptures(RecentCaptures);
+        SaveProjectSnapshot("Looper test report saved");
+        Status = $"Saved looper test report: {LooperTestIssue}";
     }
 
     [RelayCommand]

@@ -1226,7 +1226,7 @@
                                 </Grid>
                             </Border>
                             <Border CornerRadius="20" Background="#660F0C08" BorderBrush="#22E37B45" BorderThickness="1" Padding="16" Margin="0,14,0,0">
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                         <StackPanel Spacing="5">
                                             <TextBlock Text="BUILT-IN LOOPER ALPHA" FontSize="11" FontWeight="Black" Foreground="#E37B45" LetterSpacing="2.8"/>
@@ -1477,6 +1477,37 @@
                                                    FontWeight="Bold"
                                                    TextWrapping="Wrap"
                                                    Foreground="#D9C5A5"/>
+                                    </Border>
+
+                                    <Border Grid.Row="10" CornerRadius="16" Background="#2415120D" BorderBrush="#12F8F0E5" BorderThickness="1" Padding="12">
+                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                            <TextBlock Text="TEST REPORT"
+                                                       FontSize="10"
+                                                       FontWeight="Black"
+                                                       Foreground="#F2EADC"
+                                                       LetterSpacing="2.2"/>
+                                            <Grid Grid.Row="1" ColumnDefinitions="180,*" ColumnSpacing="8">
+                                                <ComboBox ItemsSource="{Binding LooperTestIssues}"
+                                                          SelectedItem="{Binding LooperTestIssue}"
+                                                          Background="#A80F0C08"
+                                                          Foreground="#F8F0E5"/>
+                                                <TextBox Grid.Column="1"
+                                                         Text="{Binding LooperTestNotes}"
+                                                         PlaceholderText="What happened during the drum test?"
+                                                         Background="#A80F0C08"
+                                                         Foreground="#F8F0E5"
+                                                         BorderBrush="#22F8F0E5"/>
+                                            </Grid>
+                                            <WrapPanel Grid.Row="2">
+                                                <Button Content="Save test report"
+                                                        Command="{Binding SaveLooperTestReportCommand}"
+                                                        Padding="14,8"
+                                                        Margin="0,0,8,8"
+                                                        Background="#6FB6A6"
+                                                        Foreground="#15120D"
+                                                        FontWeight="Black"/>
+                                            </WrapPanel>
+                                        </Grid>
                                     </Border>
                                 </Grid>
                             </Border>
