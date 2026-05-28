@@ -1502,6 +1502,13 @@
                                                 Background="#9DBFB3"
                                                 Foreground="#15120D"
                                                 FontWeight="Black"/>
+                                        <Button Content="Save arrangement take"
+                                                Command="{Binding SaveLooperArrangementTakeCommand}"
+                                                Padding="14,9"
+                                                Margin="0,0,8,8"
+                                                Background="#6FB6A6"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
                                     </WrapPanel>
 
                                     <WrapPanel Grid.Row="8">

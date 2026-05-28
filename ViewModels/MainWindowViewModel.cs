@@ -2190,6 +2190,53 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void SaveLooperArrangementTake()
+    {
+        var recorded = LooperTracks
+            .Where(track => !string.IsNullOrWhiteSpace(track.StemPath))
+            .OrderBy(track => track.Number)
+            .ToList();
+
+        if (recorded.Count == 0)
+        {
+            Status = "Record at least one looper lane before saving an arrangement take.";
+            return;
+        }
+
+        var name = $"Loop Arrangement {TakeReviews.Count + 1:00}";
+        var laneSummary = string.Join("; ", recorded.Select(track =>
+            $"{track.Instrument}: {track.DurationLabel}, {track.TakeArchiveSummary}, {track.Mode}, vol {track.Volume:0}%"));
+        var missing = LooperTracks
+            .Where(track => string.IsNullOrWhiteSpace(track.StemPath))
+            .Select(track => track.Instrument)
+            .ToList();
+        var notes = missing.Count == 0
+            ? $"Full loop arrangement captured. {laneSummary}"
+            : $"Partial loop arrangement captured. Missing: {string.Join(", ", missing)}. {laneSummary}";
+        var decision = missing.Count == 0 ? "Keep" : "Fix";
+        var nextAction = missing.Count == 0
+            ? "Play arrangement, reveal the visual painting, then decide whether to export or overdub one support layer."
+            : $"Record missing lane: {missing.First()}.";
+
+        TakeReviews.Insert(0, new TakeReviewItem(
+            name,
+            Math.Clamp(recorded.Count, 1, 5),
+            notes,
+            DateTime.Now.ToString("yyyy-MM-dd"),
+            decision,
+            nextAction));
+        while (TakeReviews.Count > 20)
+        {
+            TakeReviews.RemoveAt(TakeReviews.Count - 1);
+        }
+
+        _store.SaveTakeReviews(TakeReviews);
+        SaveProjectSnapshot("Looper arrangement take saved");
+        OnPropertyChanged(nameof(TakeDecisionSignal));
+        Status = $"Saved looper arrangement take: {name}";
+    }
+
+    [RelayCommand]
     private void ScanHardware()
     {
         var result = _hardware.Scan();
