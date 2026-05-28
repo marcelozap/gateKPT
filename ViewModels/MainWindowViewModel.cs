@@ -3877,7 +3877,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             item.AudioPresetName,
             item.Status,
             item.OutputPath)).ToList(),
-        DateTime.Now.ToString("O"));
+        DateTime.Now.ToString("O"),
+        LooperTracks.Select(item => new MusicProjectLooperTrack(
+            item.Number,
+            item.Instrument,
+            item.InputNote,
+            item.Status,
+            item.StemPath,
+            item.DurationLabel,
+            item.Volume,
+            item.Muted,
+            item.Solo,
+            item.Mode,
+            item.TakeCount,
+            item.LastAction,
+            item.TakeArchive)).ToList());
 
     private void UpdateCaptionStatus()
     {

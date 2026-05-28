@@ -19,7 +19,8 @@ public sealed record MusicProjectFile(
     IReadOnlyList<MusicProjectVisualPreset> VisualPresets,
     IReadOnlyList<MusicProjectRoutingNote> RoutingNotes,
     IReadOnlyList<MusicProjectExportTask> ExportTasks,
-    string ModifiedAt);
+    string ModifiedAt,
+    IReadOnlyList<MusicProjectLooperTrack>? LooperTracks = null);
 
 public sealed record MusicProjectCapture(string Title, string Detail, string Status, string Room);
 
@@ -72,3 +73,18 @@ public sealed record MusicProjectExportTask(
     string AudioPresetName,
     string Status,
     string OutputPath);
+
+public sealed record MusicProjectLooperTrack(
+    int Number,
+    string Instrument,
+    string InputNote,
+    string Status,
+    string StemPath,
+    string DurationLabel,
+    double Volume,
+    bool Muted,
+    bool Solo,
+    string Mode,
+    int TakeCount,
+    string LastAction,
+    string TakeArchive);
