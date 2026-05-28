@@ -1262,33 +1262,53 @@
                                                    Foreground="#F2EADC"/>
                                     </Border>
 
-                                    <ListBox Grid.Row="3"
-                                             ItemsSource="{Binding LooperTracks}"
-                                             SelectedItem="{Binding SelectedLooperTrack}"
-                                             Background="Transparent"
-                                             BorderThickness="0"
-                                             MaxHeight="170">
-                                        <ListBox.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ListBox.ItemsPanel>
-                                        <ListBox.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:LooperTrackItem">
-                                                <Border CornerRadius="16" Background="#2415120D" Padding="12" Margin="0,0,8,8" Width="156">
-                                                    <StackPanel Spacing="4">
-                                                        <TextBlock Text="{Binding Number}" FontSize="18" FontWeight="Black" Foreground="{Binding Color}"/>
-                                                        <TextBlock Text="{Binding Instrument}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
-                                                        <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Bold" Foreground="#9DBFB3"/>
-                                                        <TextBlock Text="{Binding Mode}" FontSize="10" FontWeight="Black" Foreground="#EABF7A"/>
-                                                        <TextBlock Text="{Binding TakeArchiveSummary}" FontSize="10" Foreground="#D9C5A5"/>
-                                                        <TextBlock Text="{Binding LastAction}" FontSize="9" Foreground="#8D7D68" TextWrapping="Wrap"/>
-                                                        <TextBlock Text="{Binding DurationLabel}" FontSize="10" Foreground="#D9C5A5"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
+                                    <StackPanel Grid.Row="3" Spacing="10">
+                                        <ListBox ItemsSource="{Binding LooperTracks}"
+                                                 SelectedItem="{Binding SelectedLooperTrack}"
+                                                 Background="Transparent"
+                                                 BorderThickness="0"
+                                                 MaxHeight="170">
+                                            <ListBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ListBox.ItemsPanel>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:LooperTrackItem">
+                                                    <Border CornerRadius="16" Background="#2415120D" Padding="12" Margin="0,0,8,8" Width="156">
+                                                        <StackPanel Spacing="4">
+                                                            <TextBlock Text="{Binding Number}" FontSize="18" FontWeight="Black" Foreground="{Binding Color}"/>
+                                                            <TextBlock Text="{Binding Instrument}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                            <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Bold" Foreground="#9DBFB3"/>
+                                                            <TextBlock Text="{Binding Mode}" FontSize="10" FontWeight="Black" Foreground="#EABF7A"/>
+                                                            <TextBlock Text="{Binding TakeArchiveSummary}" FontSize="10" Foreground="#D9C5A5"/>
+                                                            <TextBlock Text="{Binding LastAction}" FontSize="9" Foreground="#8D7D68" TextWrapping="Wrap"/>
+                                                            <TextBlock Text="{Binding DurationLabel}" FontSize="10" Foreground="#D9C5A5"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+
+                                        <ItemsControl ItemsSource="{Binding LooperLaneReadiness}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:LooperLaneReadinessItem">
+                                                    <Border CornerRadius="999" Background="#1F15120D" BorderBrush="{Binding Color}" BorderThickness="1" Padding="10,6" Margin="0,0,8,8">
+                                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                                            <TextBlock Text="{Binding Instrument}" FontSize="10" FontWeight="Black" Foreground="{Binding Color}"/>
+                                                            <TextBlock Text="{Binding Role}" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                                            <TextBlock Text="{Binding State}" FontSize="10" Foreground="#8D7D68"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
 
                                     <Border Grid.Row="4" CornerRadius="16" Background="#2615120D" BorderBrush="#12F8F0E5" BorderThickness="1" Padding="12">
                                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">

@@ -1193,6 +1193,25 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public IEnumerable<LooperLaneReadinessItem> LooperLaneReadiness =>
+        LooperTracks.Select(track =>
+        {
+            var hasStem = !string.IsNullOrWhiteSpace(track.StemPath);
+            var role = track.Instrument switch
+            {
+                "Drums" => "foundation",
+                "Guitar" => "pocket",
+                "Piano" => "color",
+                "Vocal" => "hook",
+                "Harmony" => "lift",
+                _ => "layer",
+            };
+            var state = hasStem
+                ? $"{track.Status} / {track.TakeArchiveSummary}"
+                : "missing";
+            return new LooperLaneReadinessItem(track.Instrument, role, state, hasStem ? track.Color : "#8D7D68");
+        });
+
     public string LooperTimingSignal
     {
         get
@@ -3433,6 +3452,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LooperModeGuidance));
         OnPropertyChanged(nameof(LooperNextMove));
         OnPropertyChanged(nameof(LooperArrangementSignal));
+        OnPropertyChanged(nameof(LooperLaneReadiness));
         OnPropertyChanged(nameof(LooperTestNextStep));
     }
 
@@ -3941,6 +3961,8 @@ public sealed record LooperTrackItem(
 {
     public string TakeArchiveSummary => TakeCount <= 0 ? "no saved passes" : $"{TakeCount} saved pass(es)";
 }
+
+public sealed record LooperLaneReadinessItem(string Instrument, string Role, string State, string Color);
 
 public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)
 {
