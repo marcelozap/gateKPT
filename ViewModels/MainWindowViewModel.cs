@@ -426,6 +426,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _lastStemDuration = "00:00";
 
     [ObservableProperty]
+    private string _lastAutosavePath = "";
+
+    [ObservableProperty]
     private string _songSection = "Intro";
 
     [ObservableProperty]
@@ -1135,6 +1138,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string StemDirectory => System.IO.Path.Combine(LibraryPath, "stems");
 
+    public string AutosaveSignal =>
+        string.IsNullOrWhiteSpace(LastAutosavePath)
+            ? "Autosave ready: new generated files will use XIV + timestamp."
+            : $"Latest autosave: {System.IO.Path.GetFileName(LastAutosavePath)}";
+
     public string LayerRecordingPlan =>
         $"{LayerCountInBeats}-beat count-in / {LayerInstrument} / {LayerBeatTarget} / {LayerEffectIntent}";
 
@@ -1400,6 +1408,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     partial void OnLayerCountInBeatsChanged(int value) => OnPropertyChanged(nameof(LayerRecordingPlan));
+
+    partial void OnLastAutosavePathChanged(string value) => OnPropertyChanged(nameof(AutosaveSignal));
 
     partial void OnLooperBpmChanged(int value) => OnPropertyChanged(nameof(LooperTimingSignal));
 
@@ -1934,6 +1944,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             Captions,
             ExportQueue,
             ExportHistory);
+        LastAutosavePath = LastBriefPath;
         Status = $"Production brief written: {LastBriefPath}";
     }
 
@@ -2017,6 +2028,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         if (result.Success)
         {
             LastExportPath = result.OutputPath ?? "";
+            LastAutosavePath = LastExportPath;
             AddExportHistory(SelectedExportPreset.Name, SelectedAudioPreset.Name, SyncOffsetMs, LastExportPath);
             RecentCaptures.Insert(0, new CaptureItem(
                 "Rendered review clip",
@@ -2115,6 +2127,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             var output = result.OutputPath ?? "";
             ExportQueue[index] = next with { Status = "Rendered", OutputPath = output };
             LastExportPath = output;
+            LastAutosavePath = output;
             AddExportHistory(next.PresetName, next.AudioPresetName, next.OffsetMs, output);
             Status = result.Message;
         }
@@ -2302,6 +2315,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         if (result.Success)
         {
             ActiveStemPath = result.Path;
+            LastAutosavePath = result.Path;
             RecentCaptures.Insert(0, new CaptureItem(
                 "Focusrite input test",
                 $"{result.Message} File: {result.Path}",
@@ -2452,6 +2466,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var layerName = $"{PerformanceLayers.Count + 1:00}-{LayerInstrument}-{LayerBeatTarget}";
         var result = _layerRecorder.Start(PreferredAudioInput, StemDirectory, layerName);
         ActiveStemPath = result.Path;
+        LastAutosavePath = result.Success ? result.Path : LastAutosavePath;
         LayerRecordingStatus = result.Success
             ? $"{LayerCountInBeats}-beat count-in set. {result.Message}"
             : result.Message;
@@ -2464,6 +2479,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var result = _layerRecorder.Stop();
         ActiveStemPath = result.Path;
         LastStemDuration = result.DurationLabel;
+        LastAutosavePath = result.Success ? result.Path : LastAutosavePath;
         LayerRecordingStatus = result.Message;
         Status = result.Message;
 
@@ -2567,6 +2583,32 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         catch (Exception ex)
         {
             Status = $"Could not open latest stem: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private void OpenLatestAutosave()
+    {
+        var path = ResolveLatestAutosavePath();
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            {
+                OpenStemsFolder();
+                return;
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+            Status = $"Opened latest autosave: {path}";
+        }
+        catch (Exception ex)
+        {
+            Status = $"Could not open latest autosave: {ex.Message}";
         }
     }
 
@@ -2800,6 +2842,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
         ReplaceLooperTrack(updated);
         ActiveStemPath = result.Success ? result.Path : ActiveStemPath;
+        LastAutosavePath = result.Success ? result.Path : LastAutosavePath;
         LooperEngineStatus = result.Message;
         LooperTransportStatus = result.Success
             ? $"Recording {track.Instrument} in {mode} mode. Target: {LooperBars} bars at {LooperBpm} BPM."
@@ -2850,6 +2893,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
         ReplaceLooperTrack(recording);
         ActiveStemPath = start.Success ? start.Path : ActiveStemPath;
+        LastAutosavePath = start.Success ? start.Path : LastAutosavePath;
         LooperEngineStatus = start.Message;
         if (!start.Success)
         {
@@ -2874,6 +2918,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ReplaceLooperTrack(saved);
         ActiveStemPath = saved.StemPath;
         LastStemDuration = saved.DurationLabel;
+        LastAutosavePath = stop.Success ? saved.StemPath : LastAutosavePath;
         LooperEngineStatus = stop.Message;
         LooperTransportStatus = stop.Success
             ? $"Timed {mode.ToLowerInvariant()} saved: {saved.Instrument} / {saved.DurationLabel}."
@@ -2912,6 +2957,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ReplaceLooperTrack(updated);
         ActiveStemPath = updated.StemPath;
         LastStemDuration = updated.DurationLabel;
+        LastAutosavePath = result.Success ? updated.StemPath : LastAutosavePath;
         LooperEngineStatus = result.Message;
         LooperTransportStatus = result.Success
             ? $"Saved {updated.Instrument} loop: {updated.DurationLabel}."
@@ -3644,6 +3690,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     private static string SavedLooperStatus(string mode) =>
         mode == "Overdub" ? "Overdub saved" : "Recorded";
+
+    private string ResolveLatestAutosavePath()
+    {
+        if (!string.IsNullOrWhiteSpace(LastAutosavePath))
+        {
+            return LastAutosavePath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(ActiveStemPath))
+        {
+            return ActiveStemPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(LastExportPath))
+        {
+            return LastExportPath;
+        }
+
+        if (!string.IsNullOrWhiteSpace(LastBriefPath))
+        {
+            return LastBriefPath;
+        }
+
+        return !string.IsNullOrWhiteSpace(LastFocusriteTestPath)
+            ? LastFocusriteTestPath
+            : PerformanceLayers.LastOrDefault(item => !string.IsNullOrWhiteSpace(item.StemPath))?.StemPath ?? "";
+    }
 
     private static IReadOnlyList<InstrumentChannelItem> DefaultInstrumentChannels() =>
     [

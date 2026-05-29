@@ -1547,6 +1547,21 @@
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
                                                        Foreground="#9DBFB3"/>
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                <TextBlock Text="{Binding AutosaveSignal}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#EABF7A"
+                                                           VerticalAlignment="Center"/>
+                                                <Button Grid.Column="1"
+                                                        Content="Open latest autosave"
+                                                        Command="{Binding OpenLatestAutosaveCommand}"
+                                                        Padding="12,7"
+                                                        Background="#2415120D"
+                                                        Foreground="#D9C5A5"
+                                                        FontWeight="Black"/>
+                                            </Grid>
                                             <TextBlock Text="{Binding LooperEngineStatus}"
                                                        FontSize="11"
                                                        FontWeight="Bold"
