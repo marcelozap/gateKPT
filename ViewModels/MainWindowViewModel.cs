@@ -3839,13 +3839,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             .Select(path =>
             {
                 var info = new System.IO.FileInfo(path);
+                var kind = DescribeAutosaveKind(info.Extension);
+                var audio = kind.Contains("Audio", StringComparison.OrdinalIgnoreCase)
+                    ? AudioPreviewService.Inspect(path)
+                    : AudioPreview.Empty;
                 return new AutosaveFileItem(
                     info.Name,
                     path,
-                    DescribeAutosaveKind(info.Extension),
+                    kind,
                     info.LastWriteTime.ToString("yyyy-MM-dd h:mm tt"),
                     FormatFileSize(info.Length),
-                    info.LastWriteTime);
+                    info.LastWriteTime,
+                    audio.Duration,
+                    audio.Peak,
+                    audio.Waveform);
             })
             .OrderByDescending(item => item.ModifiedAt)
             .Take(24)
@@ -4360,11 +4367,16 @@ public sealed record AutosaveFileItem(
     string Kind,
     string Modified,
     string Size,
-    DateTime ModifiedAt)
+    DateTime ModifiedAt,
+    string Duration,
+    string Peak,
+    string Waveform)
 {
     public bool IsAudio => Kind.Contains("Audio", StringComparison.OrdinalIgnoreCase);
 
-    public string Summary => $"{Kind} / {Size} / {Modified}";
+    public string Summary => IsAudio
+        ? $"{Kind} / {Duration} / peak {Peak} / {Size} / {Modified}"
+        : $"{Kind} / {Size} / {Modified}";
 }
 
 public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)

@@ -1628,7 +1628,7 @@
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate x:DataType="vm:AutosaveFileItem">
                                                                 <Border CornerRadius="10" Background="#2415120D" Padding="8" Margin="0,0,0,6">
-                                                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="3">
+                                                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="3">
                                                                         <TextBlock Text="{Binding Name}"
                                                                                    FontSize="10"
                                                                                    FontWeight="Black"
@@ -1639,6 +1639,12 @@
                                                                                    FontSize="9"
                                                                                    TextWrapping="Wrap"
                                                                                    Foreground="#9DBFB3"/>
+                                                                        <TextBlock Grid.Row="2"
+                                                                                   Text="{Binding Waveform}"
+                                                                                   FontFamily="Consolas"
+                                                                                   FontSize="10"
+                                                                                   TextWrapping="NoWrap"
+                                                                                   Foreground="#EABF7A"/>
                                                                     </Grid>
                                                                 </Border>
                                                             </DataTemplate>
