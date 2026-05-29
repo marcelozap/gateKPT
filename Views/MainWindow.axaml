@@ -1255,11 +1255,38 @@
                                             FontWeight="Black"/>
 
                                     <Border Grid.Row="2" CornerRadius="16" Background="#2A15120D" BorderBrush="#18E37B45" BorderThickness="1" Padding="12">
-                                        <TextBlock Text="{Binding LooperTestNextStep}"
-                                                   FontSize="13"
-                                                   FontWeight="Black"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="#F2EADC"/>
+                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                <TextBlock Text="{Binding LooperTestNextStep}"
+                                                           FontSize="13"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#F2EADC"/>
+                                                <Button Grid.Column="1"
+                                                        Content="Prime full test"
+                                                        Command="{Binding PrimeFullRecordingTestCommand}"
+                                                        Padding="12,7"
+                                                        Background="#F2EADC"
+                                                        Foreground="#15120D"
+                                                        FontWeight="Black"/>
+                                            </Grid>
+                                            <ItemsControl Grid.Row="1" ItemsSource="{Binding RecordingTestChecklist}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"
+                                                                   FontSize="10"
+                                                                   FontWeight="Bold"
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="#D9C5A5"/>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                            <TextBlock Grid.Row="2"
+                                                       Text="Files autosave with XIV + timestamp. No manual rename needed."
+                                                       FontSize="10"
+                                                       FontWeight="Black"
+                                                       Foreground="#EABF7A"/>
+                                        </Grid>
                                     </Border>
 
                                     <StackPanel Grid.Row="3" Spacing="10">

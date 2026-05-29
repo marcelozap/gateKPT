@@ -1225,6 +1225,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return new LooperLaneReadinessItem(track.Instrument, role, state, hasStem ? track.Color : "#8D7D68");
         });
 
+    public IReadOnlyList<string> RecordingTestChecklist
+    {
+        get
+        {
+            var hasInput = PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
+                || PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase);
+            return
+            [
+                hasInput ? $"Input locked: {PreferredAudioInput}" : "Press Auto Focusrite before recording.",
+                FocusriteReadyForRecording ? $"Input level ready: {FocusritePeakPercent:0.0}% peak" : $"Run 3s input test. {FocusriteCalibrationSignal}",
+                RecordedLooperTrackCount > 0 ? $"{RecordedLooperTrackCount} loop lane(s) saved." : "Record the first drum loop.",
+                string.IsNullOrWhiteSpace(LastAutosavePath) ? "No autosave file yet." : $"Autosave active: {System.IO.Path.GetFileName(LastAutosavePath)}",
+                "After recording: Play arrangement, then Save arrangement take.",
+            ];
+        }
+    }
+
     public string LooperTimingSignal
     {
         get
@@ -3220,6 +3237,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LooperTestIssue = "Not tested yet";
         LooperTestNotes = "Test drums: describe signal, count-in timing, recording, playback, and volume.";
         Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(RecordingTestChecklist));
+    }
+
+    [RelayCommand]
+    private void PrimeFullRecordingTest()
+    {
+        PrimeFirstDrumLoopTest();
+        LooperTestIssue = "Not tested yet";
+        LooperTestNotes = "Full test: Auto Focusrite -> 3s input test -> Timed record drums -> Prime next lane -> record harmony/vocal -> Play arrangement -> Save arrangement take -> Open latest autosave.";
+        LooperEngineStatus = "Full recording test primed. Start with 3s input test, then timed record the drum lane.";
+        LooperTransportStatus = "Test mode ready. Files will autosave as XIV + timestamp.";
+        Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(RecordingTestChecklist));
     }
 
     [RelayCommand]
@@ -3630,6 +3660,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LooperNextMove));
         OnPropertyChanged(nameof(LooperArrangementSignal));
         OnPropertyChanged(nameof(LooperLaneReadiness));
+        OnPropertyChanged(nameof(RecordingTestChecklist));
         OnPropertyChanged(nameof(ProjectHealthDetail));
         OnPropertyChanged(nameof(ProjectMemoryCounts));
         OnPropertyChanged(nameof(ExportReadinessChecklist));
