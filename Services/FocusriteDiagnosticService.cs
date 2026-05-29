@@ -48,7 +48,7 @@ public sealed class FocusriteDiagnosticService
                 return new FocusriteInputTestResult(false, "", 0, "No Focusrite/Scarlett input is active.");
             }
 
-            path = Path.Combine(outputDirectory, $"focusrite-test-{DateTime.Now:yyyyMMdd-HHmmss}.wav");
+            path = AutoSaveFileNamer.CreatePath(outputDirectory, "focusrite-test", ".wav");
             capture = new WasapiCapture(device);
             writer = new WaveFileWriter(path, capture.WaveFormat);
             capture.DataAvailable += (_, args) =>

@@ -19,9 +19,10 @@ public sealed class FfmpegAudioExtractor
         }
 
         Directory.CreateDirectory(workDirectory);
-        var target = Path.Combine(
+        var target = AutoSaveFileNamer.CreatePath(
             workDirectory,
-            $"{Path.GetFileNameWithoutExtension(sourceMediaPath)}-{Guid.NewGuid():N}.sync.wav");
+            $"{Path.GetFileNameWithoutExtension(sourceMediaPath)}-sync",
+            ".wav");
 
         try
         {

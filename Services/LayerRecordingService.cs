@@ -31,9 +31,7 @@ public sealed class LayerRecordingService : IDisposable
                 return new LayerRecordingStartResult(false, "", "No active audio input matched the preferred routing.");
             }
 
-            _activePath = Path.Combine(
-                stemDirectory,
-                $"{DateTime.Now:yyyyMMdd-HHmmss}-{SanitizeFileName(layerName)}.wav");
+            _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
             _capture = new WasapiCapture(device);
             _writer = new WaveFileWriter(_activePath, _capture.WaveFormat);
             _clock = Stopwatch.StartNew();
@@ -128,12 +126,6 @@ public sealed class LayerRecordingService : IDisposable
             ?? devices[0];
     }
 
-    private static string SanitizeFileName(string value)
-    {
-        var invalid = Path.GetInvalidFileNameChars();
-        var safe = new string(value.Select(character => invalid.Contains(character) ? '-' : character).ToArray());
-        return string.IsNullOrWhiteSpace(safe) ? "layer" : safe.Trim('-').Replace(' ', '-').ToLowerInvariant();
-    }
 }
 
 public sealed record LayerRecordingStartResult(bool Success, string Path, string Message);

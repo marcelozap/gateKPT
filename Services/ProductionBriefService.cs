@@ -22,7 +22,7 @@ public sealed class ProductionBriefService
         IEnumerable<ExportHistoryItem> history)
     {
         Directory.CreateDirectory(libraryDirectory);
-        var path = Path.Combine(libraryDirectory, $"production-brief-{DateTime.Now:yyyyMMdd-HHmmss}.md");
+        var path = AutoSaveFileNamer.CreatePath(libraryDirectory, $"production-brief-{project.ProjectName}", ".md");
         var brief = new StringBuilder();
         brief.AppendLine($"# {project.ProjectName}");
         brief.AppendLine();

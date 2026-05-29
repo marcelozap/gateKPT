@@ -27,9 +27,10 @@ public sealed class FfmpegRenderService
         }
 
         Directory.CreateDirectory(outputDirectory);
-        var outputPath = Path.Combine(
+        var outputPath = AutoSaveFileNamer.CreatePath(
             outputDirectory,
-            $"{Path.GetFileNameWithoutExtension(videoPath)}-{preset.Slug}-synced.mp4");
+            $"{Path.GetFileNameWithoutExtension(videoPath)}-{preset.Slug}-synced",
+            ".mp4");
 
         var filter = BuildAudioFilter(offsetMs, audioPreset);
         var scale = preset.Width > 0 && preset.Height > 0
