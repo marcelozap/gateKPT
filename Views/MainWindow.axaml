@@ -2030,6 +2030,13 @@
                                                     Background="#E37B45"
                                                     Foreground="#15120D"
                                                     FontWeight="Black"/>
+                                            <Button Content="Export artwork"
+                                                    Command="{Binding ExportVisualPaintingCommand}"
+                                                    Padding="14,8"
+                                                    Margin="0,0,8,8"
+                                                    Background="#6FB6A6"
+                                                    Foreground="#15120D"
+                                                    FontWeight="Black"/>
                                         </WrapPanel>
                                     </Grid>
 
@@ -2189,6 +2196,13 @@
                                                 Padding="14,8"
                                                 Margin="0,0,8,8"
                                                 Background="#E37B45"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                        <Button Content="Export artwork"
+                                                Command="{Binding ExportVisualPaintingCommand}"
+                                                Padding="14,8"
+                                                Margin="0,0,8,8"
+                                                Background="#F2EADC"
                                                 Foreground="#15120D"
                                                 FontWeight="Black"/>
                                     </WrapPanel>

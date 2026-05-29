@@ -28,6 +28,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly MixIntentService _mixIntent = new();
     private readonly CaptionDraftService _captionDrafts = new();
     private readonly CommandIntentService _commands = new();
+    private readonly VisualPaintingExportService _visualPaintingExport = new();
     private readonly LayerRecordingService _layerRecorder = new();
     private readonly BuiltInLooperPlaybackService _looperPlayback = new();
     private readonly ClickTrackService _clickTrack = new();
@@ -2460,6 +2461,42 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ExportVisualPainting()
+    {
+        var path = _visualPaintingExport.ExportSvg(
+            LibraryPath,
+            new VisualPaintingExport(
+                VisualPaintingTitle,
+                VisualPaintingMood,
+                VisualPaintingComposition,
+                VisualizerPalette,
+                VisualizerMotion,
+                SongSection,
+                LayerInstrument,
+                VisualPaintingSignature,
+                VisualPulseSize,
+                VisualBloomSize,
+                VisualStrokeLevel,
+                VisualizerIntensity,
+                InputMeterLevel));
+        LastAutosavePath = path;
+        RecentCaptures.Insert(0, new CaptureItem(
+            "Visual painting exported",
+            path,
+            DateTime.Now.ToString("h:mm tt"),
+            "Visual"));
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        _store.SaveCaptures(RecentCaptures);
+        SaveProjectSnapshot("Visual painting exported");
+        RefreshAutosaveFiles();
+        Status = $"Exported visual painting: {path}";
+    }
+
+    [RelayCommand]
     private void OpenPerformanceReveal()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Performance / Reveal") ?? SelectedRoom;
@@ -3892,6 +3929,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         {
             ".wav" => "Audio WAV",
             ".mp4" => "Video MP4",
+            ".svg" => "Visual SVG",
             ".md" => "Brief",
             ".json" => "Manifest",
             _ => extension.Trim('.').ToUpperInvariant(),
