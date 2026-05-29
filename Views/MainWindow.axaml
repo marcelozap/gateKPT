@@ -1235,6 +1235,11 @@
                                                        FontWeight="Bold"
                                                        TextWrapping="Wrap"
                                                        Foreground="#D9C5A5"/>
+                                            <TextBlock Text="{Binding SelectedLooperRoutingSignal}"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#9DBFB3"/>
                                         </StackPanel>
                                         <Button Grid.Column="1"
                                                 Content="Reset looper"

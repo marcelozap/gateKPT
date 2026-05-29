@@ -1178,6 +1178,25 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? "No looper track selected."
             : $"Track {SelectedLooperTrack.Number}: {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / {SelectedLooperTrack.Mode} / take {SelectedLooperTrack.TakeCount} / volume {SelectedLooperTrack.Volume:0}%";
 
+    public string SelectedLooperRoutingSignal
+    {
+        get
+        {
+            if (SelectedLooperTrack is null)
+            {
+                return "Select a looper lane to see routing.";
+            }
+
+            var channel = InstrumentChannels.FirstOrDefault(item => item.Name == SelectedLooperTrack.Instrument);
+            if (channel is null)
+            {
+                return $"{SelectedLooperTrack.Instrument}: {SelectedLooperTrack.InputNote}";
+            }
+
+            return $"{SelectedLooperTrack.Instrument} route: {channel.InputNote} / {channel.EffectIntent} / {channel.VisualPalette} + {channel.VisualMotion}";
+        }
+    }
+
     public string LooperModeGuidance
     {
         get
@@ -1499,7 +1518,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         InstrumentInputNote = value.InputNote;
         SelectedLooperTrackVolume = value.Volume;
         SelectedLooperMode = NormalizeLooperMode(value.Mode);
+        SelectedInstrumentChannel = InstrumentChannels.FirstOrDefault(item => item.Name == value.Instrument) ?? SelectedInstrumentChannel;
         OnPropertyChanged(nameof(BuiltInLooperSignal));
+        OnPropertyChanged(nameof(SelectedLooperRoutingSignal));
     }
 
     partial void OnSelectedLooperTrackVolumeChanged(double value)
@@ -3793,6 +3814,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedLooperTrack = updated;
         _store.SaveLooperTracks(LooperTracks);
         OnPropertyChanged(nameof(BuiltInLooperSignal));
+        OnPropertyChanged(nameof(SelectedLooperRoutingSignal));
         OnPropertyChanged(nameof(LooperModeGuidance));
         OnPropertyChanged(nameof(LooperNextMove));
         OnPropertyChanged(nameof(LooperArrangementSignal));
