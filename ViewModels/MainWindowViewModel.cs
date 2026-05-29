@@ -429,6 +429,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _lastAutosavePath = "";
 
     [ObservableProperty]
+    private AutosaveFileItem? _selectedAutosaveFile;
+
+    [ObservableProperty]
     private string _songSection = "Intro";
 
     [ObservableProperty]
@@ -587,6 +590,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
         UpdateCaptionStatus();
         RefreshProjectModules();
+        RefreshAutosaveFiles();
     }
 
     public IReadOnlyList<OsRoom> Rooms { get; }
@@ -620,6 +624,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<InstrumentChannelItem> InstrumentChannels { get; }
 
     public ObservableCollection<LooperTrackItem> LooperTracks { get; }
+
+    public ObservableCollection<AutosaveFileItem> AutosaveFiles { get; } = [];
 
     public ObservableCollection<MusicOsModule> ProjectModules { get; }
 
@@ -1143,6 +1149,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? "Autosave ready: new generated files will use XIV + timestamp."
             : $"Latest autosave: {System.IO.Path.GetFileName(LastAutosavePath)}";
 
+    public string AutosaveBrowserSignal =>
+        AutosaveFiles.Count == 0
+            ? "No XIV autosaves found yet."
+            : $"{AutosaveFiles.Count} recent XIV autosave file(s).";
+
     public string LayerRecordingPlan =>
         $"{LayerCountInBeats}-beat count-in / {LayerInstrument} / {LayerBeatTarget} / {LayerEffectIntent}";
 
@@ -1427,6 +1438,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnLayerCountInBeatsChanged(int value) => OnPropertyChanged(nameof(LayerRecordingPlan));
 
     partial void OnLastAutosavePathChanged(string value) => OnPropertyChanged(nameof(AutosaveSignal));
+
+    partial void OnSelectedAutosaveFileChanged(AutosaveFileItem? value)
+    {
+        if (value is null)
+        {
+            return;
+        }
+
+        LastAutosavePath = value.Path;
+    }
 
     partial void OnLooperBpmChanged(int value) => OnPropertyChanged(nameof(LooperTimingSignal));
 
@@ -2630,6 +2651,57 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void RefreshAutosaveFiles()
+    {
+        AutosaveFiles.Clear();
+        foreach (var item in FindRecentAutosaveFiles())
+        {
+            AutosaveFiles.Add(item);
+        }
+
+        SelectedAutosaveFile = AutosaveFiles.FirstOrDefault(item => item.Path == LastAutosavePath)
+            ?? AutosaveFiles.FirstOrDefault();
+        OnPropertyChanged(nameof(AutosaveBrowserSignal));
+        Status = AutosaveFiles.Count == 0
+            ? "No XIV autosaves found yet."
+            : $"Refreshed {AutosaveFiles.Count} autosave file(s).";
+    }
+
+    [RelayCommand]
+    private void OpenSelectedAutosave()
+    {
+        if (SelectedAutosaveFile is null)
+        {
+            Status = "Select an autosave file first.";
+            return;
+        }
+
+        LastAutosavePath = SelectedAutosaveFile.Path;
+        OpenLatestAutosave();
+    }
+
+    [RelayCommand]
+    private void PlaySelectedAutosave()
+    {
+        if (SelectedAutosaveFile is null)
+        {
+            Status = "Select an autosave file first.";
+            return;
+        }
+
+        if (!SelectedAutosaveFile.IsAudio)
+        {
+            Status = "Selected autosave is not an audio file. Open it instead.";
+            return;
+        }
+
+        LastAutosavePath = SelectedAutosaveFile.Path;
+        var result = _looperPlayback.PlayLoop(98, SelectedAutosaveFile.Path, 75);
+        Status = result.Message;
+        LooperEngineStatus = result.Message;
+    }
+
+    [RelayCommand]
     private void SavePerformancePlan()
     {
         var detail = $"{Rc505CueSheet}. Notes: {PerformanceCueNotes}";
@@ -3749,6 +3821,57 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             : PerformanceLayers.LastOrDefault(item => !string.IsNullOrWhiteSpace(item.StemPath))?.StemPath ?? "";
     }
 
+    private IReadOnlyList<AutosaveFileItem> FindRecentAutosaveFiles()
+    {
+        var folders = new[]
+            {
+                LibraryPath,
+                StemDirectory,
+                System.IO.Path.Combine(LibraryPath, "diagnostics"),
+                OutputDirectory,
+            }
+            .Where(path => !string.IsNullOrWhiteSpace(path) && System.IO.Directory.Exists(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase);
+
+        return folders
+            .SelectMany(folder => System.IO.Directory.EnumerateFiles(folder, "XIV-*", System.IO.SearchOption.TopDirectoryOnly))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Select(path =>
+            {
+                var info = new System.IO.FileInfo(path);
+                return new AutosaveFileItem(
+                    info.Name,
+                    path,
+                    DescribeAutosaveKind(info.Extension),
+                    info.LastWriteTime.ToString("yyyy-MM-dd h:mm tt"),
+                    FormatFileSize(info.Length),
+                    info.LastWriteTime);
+            })
+            .OrderByDescending(item => item.ModifiedAt)
+            .Take(24)
+            .ToList();
+    }
+
+    private static string DescribeAutosaveKind(string extension) =>
+        extension.ToLowerInvariant() switch
+        {
+            ".wav" => "Audio WAV",
+            ".mp4" => "Video MP4",
+            ".md" => "Brief",
+            ".json" => "Manifest",
+            _ => extension.Trim('.').ToUpperInvariant(),
+        };
+
+    private static string FormatFileSize(long bytes)
+    {
+        if (bytes >= 1024 * 1024)
+        {
+            return $"{bytes / 1024.0 / 1024.0:0.0} MB";
+        }
+
+        return bytes >= 1024 ? $"{bytes / 1024.0:0.0} KB" : $"{bytes} B";
+    }
+
     private static IReadOnlyList<InstrumentChannelItem> DefaultInstrumentChannels() =>
     [
         new("Drums", "RC-505 track 1 / mixed input", "make drums warmer and punchier", "Tight drums", 62, 21, 78, "Amber / seafoam", "Kick pulse"),
@@ -4230,6 +4353,19 @@ public sealed record LooperTrackItem(
 }
 
 public sealed record LooperLaneReadinessItem(string Instrument, string Role, string State, string Color);
+
+public sealed record AutosaveFileItem(
+    string Name,
+    string Path,
+    string Kind,
+    string Modified,
+    string Size,
+    DateTime ModifiedAt)
+{
+    public bool IsAudio => Kind.Contains("Audio", StringComparison.OrdinalIgnoreCase);
+
+    public string Summary => $"{Kind} / {Size} / {Modified}";
+}
 
 public sealed record LyricIdeaItem(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt)
 {
