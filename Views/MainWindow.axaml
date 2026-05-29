@@ -1590,7 +1590,7 @@
                                                         FontWeight="Black"/>
                                             </Grid>
                                             <Border CornerRadius="14" Background="#1A0F0C08" BorderBrush="#12EABF7A" BorderThickness="1" Padding="10">
-                                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                                <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
                                                     <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8">
                                                         <TextBlock Text="{Binding AutosaveBrowserSignal}"
                                                                    FontSize="10"
@@ -1619,6 +1619,13 @@
                                                                 Foreground="#15120D"
                                                                 FontWeight="Black"/>
                                                     </Grid>
+                                                    <Button Grid.Row="2"
+                                                            Content="Attach selected autosave to take review"
+                                                            Command="{Binding AttachSelectedAutosaveToTakeCommand}"
+                                                            Padding="10,6"
+                                                            Background="#6FB6A6"
+                                                            Foreground="#15120D"
+                                                            FontWeight="Black"/>
                                                     <ListBox Grid.Row="1"
                                                              ItemsSource="{Binding AutosaveFiles}"
                                                              SelectedItem="{Binding SelectedAutosaveFile}"
@@ -1650,7 +1657,7 @@
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
-                                                    <TextBlock Grid.Row="2"
+                                                    <TextBlock Grid.Row="3"
                                                                Text="Recent XIV files from project memory, stems, diagnostics, and exports."
                                                                FontSize="9"
                                                                TextWrapping="Wrap"
@@ -2412,7 +2419,7 @@
 
                             <Border CornerRadius="18" Background="#660F0C08" BorderBrush="#0EF8F0E5" BorderThickness="1" Padding="16" Margin="0,10,0,0">
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
-                                    <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
+                                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
                                         <TextBlock Text="LYRIC VAULT" FontSize="11" FontWeight="Black" Foreground="#D9B36F" LetterSpacing="2.8"/>
                                         <WrapPanel Grid.Row="1">
                                             <Button Content="Use latest"
@@ -2487,6 +2494,12 @@
                                                     Background="#1F1A13"
                                                     Foreground="#D9C5A5"/>
                                         </Grid>
+                                        <TextBlock Grid.Row="2"
+                                                   Text="{Binding SelectedAutosaveTakeSignal}"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#EABF7A"/>
                                     </Grid>
                                     <Grid Grid.Row="1" ColumnDefinitions="*,70,130" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                                         <TextBox Text="{Binding TakeName}"

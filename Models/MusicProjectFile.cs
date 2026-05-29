@@ -32,7 +32,8 @@ public sealed record MusicProjectTake(
     string Notes,
     string ReviewedAt,
     string Decision = "Fix",
-    string NextAction = "No next action written.");
+    string NextAction = "No next action written.",
+    string AttachedPath = "");
 
 public sealed record MusicProjectCaption(string Start, string End, string Text, string Status, string Note);
 

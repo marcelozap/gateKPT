@@ -1154,6 +1154,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? "No XIV autosaves found yet."
             : $"{AutosaveFiles.Count} recent XIV autosave file(s).";
 
+    public string SelectedAutosaveTakeSignal =>
+        SelectedAutosaveFile is null
+            ? "No autosave attached to take review."
+            : $"Attached: {SelectedAutosaveFile.Name}";
+
     public string LayerRecordingPlan =>
         $"{LayerCountInBeats}-beat count-in / {LayerInstrument} / {LayerBeatTarget} / {LayerEffectIntent}";
 
@@ -1447,6 +1452,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
 
         LastAutosavePath = value.Path;
+        OnPropertyChanged(nameof(SelectedAutosaveTakeSignal));
     }
 
     partial void OnLooperBpmChanged(int value) => OnPropertyChanged(nameof(LooperTimingSignal));
@@ -2212,7 +2218,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             string.IsNullOrWhiteSpace(TakeNotes) ? "No notes yet." : TakeNotes.Trim(),
             DateTime.Now.ToString("yyyy-MM-dd"),
             string.IsNullOrWhiteSpace(TakeDecision) ? "Fix" : TakeDecision.Trim(),
-            string.IsNullOrWhiteSpace(TakeNextAction) ? "No next action written." : TakeNextAction.Trim()));
+            string.IsNullOrWhiteSpace(TakeNextAction) ? "No next action written." : TakeNextAction.Trim(),
+            SelectedAutosaveFile?.Path ?? LastAutosavePath));
         while (TakeReviews.Count > 20)
         {
             TakeReviews.RemoveAt(TakeReviews.Count - 1);
@@ -2234,8 +2241,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void PrimeTakeDecision()
     {
-        TakeName = $"Take {TakeReviews.Count + 1:00}";
-        TakeNotes = $"Room: {SelectedRoom.Name}. Listen for timing, emotion, consonants, and whether this supports {ProjectName}.";
+        var attached = SelectedAutosaveFile;
+        TakeName = attached is null ? $"Take {TakeReviews.Count + 1:00}" : System.IO.Path.GetFileNameWithoutExtension(attached.Name);
+        TakeNotes = attached is null
+            ? $"Room: {SelectedRoom.Name}. Listen for timing, emotion, consonants, and whether this supports {ProjectName}."
+            : $"Review attached autosave: {attached.Name}. {attached.Summary}. Listen for timing, emotion, signal level, and whether this supports {ProjectName}.";
         TakeNextAction = DefaultNextActionForDecision(TakeDecision);
         Status = "Take decision primed.";
     }
@@ -2275,7 +2285,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             notes,
             DateTime.Now.ToString("yyyy-MM-dd"),
             decision,
-            nextAction));
+            nextAction,
+            recorded.FirstOrDefault()?.StemPath ?? LastAutosavePath));
         while (TakeReviews.Count > 20)
         {
             TakeReviews.RemoveAt(TakeReviews.Count - 1);
@@ -2699,6 +2710,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var result = _looperPlayback.PlayLoop(98, SelectedAutosaveFile.Path, 75);
         Status = result.Message;
         LooperEngineStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private void AttachSelectedAutosaveToTake()
+    {
+        if (SelectedAutosaveFile is null)
+        {
+            Status = "Select an autosave file first.";
+            return;
+        }
+
+        TakeName = System.IO.Path.GetFileNameWithoutExtension(SelectedAutosaveFile.Name);
+        TakeNotes = $"Attached autosave: {SelectedAutosaveFile.Name}. {SelectedAutosaveFile.Summary}.";
+        TakeNextAction = "Listen once, decide Keep/Fix/Re-record/Export, then save the take review.";
+        LastAutosavePath = SelectedAutosaveFile.Path;
+        Status = $"Attached autosave to take review: {SelectedAutosaveFile.Name}";
+        OnPropertyChanged(nameof(SelectedAutosaveTakeSignal));
     }
 
     [RelayCommand]
@@ -4224,7 +4252,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             item.Notes,
             item.ReviewedAt,
             item.Decision,
-            item.NextAction)).ToList(),
+            item.NextAction,
+            item.AttachedPath)).ToList(),
         PerformanceLayers.Select(item => new MusicProjectLayer(
             item.Order,
             item.CreatedAt,
@@ -4316,7 +4345,13 @@ public sealed record TakeReviewItem(
     string Notes,
     string ReviewedAt,
     string Decision = "Fix",
-    string NextAction = "No next action written.");
+    string NextAction = "No next action written.",
+    string AttachedPath = "")
+{
+    public string AttachedFileName => string.IsNullOrWhiteSpace(AttachedPath)
+        ? "No attached file"
+        : System.IO.Path.GetFileName(AttachedPath);
+}
 
 public sealed record PerformanceLayerItem(
     int Order,
