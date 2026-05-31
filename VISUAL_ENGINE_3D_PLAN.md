@@ -52,6 +52,23 @@ The app now tracks a renderer path inside visualizer settings:
 4. Prototype a separate renderer process.
 5. Add 3D scenes only after the control protocol and safety commands are stable.
 
+## Current Control Packet
+
+MusicOS can now export a renderer control snapshot as JSON from the Visual Room.
+
+The packet is intentionally lightweight:
+
+- protocol version
+- renderer path
+- mode, palette, motion
+- song section and active instrument
+- output target and quality mode
+- DAW-safe and blackout flags
+- energy, transient strength, and intensity
+- lyric source, visual signature, and notes
+
+This is the first bridge between the MusicOS cockpit and a future renderer process. A 3D engine should consume this kind of packet rather than reading private app state directly.
+
 ## 3D Safety Rules
 
 - Audio and recording stay in the DAW or MusicOS capture layer.

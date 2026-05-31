@@ -2138,7 +2138,7 @@
                                                   Foreground="#F8F0E5"/>
                                     </Grid>
 
-                                    <Grid Grid.Row="4" ColumnDefinitions="*,*,120" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                    <Grid Grid.Row="4" ColumnDefinitions="*,*,120" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                                         <ComboBox ItemsSource="{Binding VisualizerQualityModes}"
                                                   SelectedItem="{Binding VisualizerQualityMode}"
                                                   Background="#A80F0C08"
@@ -2189,9 +2189,16 @@
                                                   Grid.ColumnSpan="3"
                                                   Text="{Binding VisualizerNotes}"
                                                   PlaceholderText="Visualizer notes"
-                                                 Background="#A80F0C08"
-                                                 Foreground="#F8F0E5"
-                                                 BorderBrush="#22F8F0E5"/>
+                                                  Background="#A80F0C08"
+                                                  Foreground="#F8F0E5"
+                                                  BorderBrush="#22F8F0E5"/>
+                                        <TextBlock Grid.Row="4"
+                                                   Grid.ColumnSpan="3"
+                                                   Text="{Binding VisualRendererControlSignal}"
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#D9C5A5"/>
                                     </Grid>
 
                                     <WrapPanel Grid.Row="5">
@@ -2222,6 +2229,13 @@
                                                 Margin="0,0,8,8"
                                                 Background="#F2EADC"
                                                 Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                        <Button Content="Export renderer packet"
+                                                Command="{Binding ExportRendererControlSnapshotCommand}"
+                                                Padding="14,8"
+                                                Margin="0,0,8,8"
+                                                Background="#3315120D"
+                                                Foreground="#D9C5A5"
                                                 FontWeight="Black"/>
                                     </WrapPanel>
                                 </Grid>

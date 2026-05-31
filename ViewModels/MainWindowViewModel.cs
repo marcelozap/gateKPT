@@ -29,6 +29,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly CaptionDraftService _captionDrafts = new();
     private readonly CommandIntentService _commands = new();
     private readonly VisualPaintingExportService _visualPaintingExport = new();
+    private readonly VisualRendererControlService _visualRendererControl = new();
     private readonly LayerRecordingService _layerRecorder = new();
     private readonly BuiltInLooperPlaybackService _looperPlayback = new();
     private readonly ClickTrackService _clickTrack = new();
@@ -1105,6 +1106,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _ => "Choose a renderer path before rehearsal so visual load and output expectations are clear.",
     };
 
+    public string VisualRendererControlSignal
+    {
+        get
+        {
+            var packet = CurrentVisualRendererPacket();
+            return $"{packet.Protocol} / {packet.RendererPath} / energy {packet.Energy:P0} / transient {packet.TransientStrength:P0} / {packet.Section} / {packet.Instrument}";
+        }
+    }
+
     public string VisualPaintingTitle =>
         VisualizerRevealMode ? "Reveal the painting" : "Painting in the background";
 
@@ -1561,20 +1571,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(VisualizerPreviewDetail));
         OnPropertyChanged(nameof(VisualPaintingSignal));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
     }
 
-    partial void OnVisualizerMotionChanged(string value) => OnPropertyChanged(nameof(VisualizerPreviewDetail));
+    partial void OnVisualizerMotionChanged(string value)
+    {
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
+    }
 
     partial void OnVisualizerModeChanged(string value)
     {
         OnPropertyChanged(nameof(VisualizerPreviewTitle));
         OnPropertyChanged(nameof(VisualPaintingTitle));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
+    }
+
+    partial void OnVisualizerQualityModeChanged(string value)
+    {
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
+    }
+
+    partial void OnVisualizerOutputTargetChanged(string value)
+    {
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
+    }
+
+    partial void OnVisualizerIntensityChanged(double value)
+    {
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
     }
 
     partial void OnSongSectionChanged(string value)
     {
         OnPropertyChanged(nameof(PerformancePlanSignal));
         OnPropertyChanged(nameof(Rc505CueSheet));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
         RefreshLiveCue();
     }
 
@@ -2536,6 +2571,28 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SaveProjectSnapshot("Visual painting exported");
         RefreshAutosaveFiles();
         Status = $"Exported visual painting: {path}";
+    }
+
+    [RelayCommand]
+    private void ExportRendererControlSnapshot()
+    {
+        var packet = CurrentVisualRendererPacket();
+        var path = _visualRendererControl.ExportSnapshot(LibraryPath, packet);
+        LastAutosavePath = path;
+        RecentCaptures.Insert(0, new CaptureItem(
+            "Renderer control snapshot",
+            $"{packet.RendererPath}: {packet.Section} / {packet.Instrument} / energy {packet.Energy:P0}",
+            DateTime.Now.ToString("h:mm tt"),
+            "Visual"));
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        _store.SaveCaptures(RecentCaptures);
+        SaveProjectSnapshot("Renderer control snapshot exported");
+        RefreshAutosaveFiles();
+        Status = $"Exported renderer control packet: {path}";
     }
 
     [RelayCommand]
@@ -3765,6 +3822,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VisualPaintingSignal));
         OnPropertyChanged(nameof(VisualPaintingMood));
         OnPropertyChanged(nameof(VisualPaintingComposition));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
     }
 
     private void UpdateFocusriteCalibration(double peakPercent)
@@ -4296,7 +4354,26 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(VisualizerPreviewDetail));
         OnPropertyChanged(nameof(VisualizerRendererGuidance));
+        OnPropertyChanged(nameof(VisualRendererControlSignal));
     }
+
+    private VisualRendererControlPacket CurrentVisualRendererPacket() =>
+        _visualRendererControl.BuildPacket(new VisualRendererControlInput(
+            VisualizerRendererPath,
+            VisualizerMode,
+            VisualizerPalette,
+            VisualizerMotion,
+            SongSection,
+            LayerInstrument,
+            VisualizerOutputTarget,
+            VisualizerQualityMode,
+            DawSafeMode,
+            ProjectorBlackout,
+            InputMeterLevel,
+            VisualizerIntensity,
+            VisualizerLyricSource,
+            VisualPaintingSignature,
+            VisualizerNotes));
 
     private PerformanceLayerItem RecommendedNextLayer()
     {
