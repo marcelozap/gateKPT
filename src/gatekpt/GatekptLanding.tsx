@@ -14,11 +14,11 @@ declare global {
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
 
 const productSections: Array<[string, string, LucideIcon, string]> = [
-  ["Record", "Capture sound before the feeling disappears.", Mic, "Start"],
-  ["Command", "Type simple changes instead of hunting through knobs.", Sparkles, "Shape"],
-  ["Visual", "Let the sound create motion, color, and clip direction.", Waves, "Look"],
-  ["Route", "Keep live-loop gear and stems understandable.", Cable, "Rig"],
-  ["Finish", "Prepare demos, clips, folders, and shareable files.", Archive, "Export"],
+  ["Record", "Save the idea before it disappears.", Mic, "Start"],
+  ["Shape", "Type what you want: warmer, raw, louder, brighter.", Sparkles, "Change"],
+  ["See", "Turn sound into motion and color.", Waves, "Visual"],
+  ["Organize", "Keep takes and parts easy to find.", Cable, "Keep"],
+  ["Share", "Prepare a demo, clip, or folder.", Archive, "Finish"],
 ];
 
 const cuePath = [
@@ -330,13 +330,13 @@ export function GatekptLanding() {
               Custom music tool
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
-              Capture ideas fast.
+              Make music feel easier.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              GateKPT is a custom music tool for recording ideas in the desktop app, shaping takes with simple commands, and turning sound into visuals.
+              GateKPT is a custom music tool for people who want to create without getting buried in complicated software.
             </p>
             <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
-              {["Record", "Shape", "Visualize"].map((item) => (
+              {["Play", "Record", "Shape"].map((item) => (
                 <div key={item} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/60">
                   {item}
                 </div>
@@ -356,12 +356,12 @@ export function GatekptLanding() {
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#92bfb3]">How it works</p>
+                <p className="gk-label text-[#92bfb3]">The idea</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                  App records. Website previews.
+                  Make first. Learn as you go.
                 </h2>
                 <div className="mt-8 grid gap-3">
-                  {["Record in MusicOS", "Shape the take", "Preview the visual"].map((item, index) => (
+                  {["Press record", "Say the change", "Save the version"].map((item, index) => (
                     <div key={item} className="flex items-center gap-4 rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4">
                       <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
                       <span className="text-sm font-black">{item}</span>
@@ -380,10 +380,10 @@ export function GatekptLanding() {
             <div>
               <p className="gk-label text-[#c6a96d]">Try it</p>
               <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                Try the visualizer.
+                Play with sound.
               </h2>
               <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-                This page does not save audio. Press play or use your mic to see how sound moves.
+                Press play or use your mic. Nothing saves here. This is just a safe way to feel the idea.
               </p>
             </div>
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#92bfb3]/70">
@@ -398,12 +398,12 @@ export function GatekptLanding() {
       <section id="tracks" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Desktop app flow</p>
+            <p className="gk-label text-[#c6a96d]">For making songs</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Record the parts.
+              Build it one part at a time.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Drums first, then guitar or keys, then vocals. Same way the session actually builds.
+              Start with rhythm, add sound, then vocals. GateKPT keeps the pieces organized.
             </p>
             <div className="mt-8 rounded-[1.25rem] border border-[#92bfb3]/18 bg-[#92bfb3]/8 p-4">
               <p className="gk-label text-[#92bfb3]">Now</p>
@@ -445,7 +445,7 @@ export function GatekptLanding() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-5">
             <p className="gk-label text-[#92bfb3]">What it helps with</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Record, shape, visualize, finish.</h2>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Make, change, keep going.</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
             {productSections.map(([title, text, Icon, meta]) => (
@@ -465,9 +465,9 @@ export function GatekptLanding() {
       <section className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.75fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#d08a56]">Public-safe summary</p>
+            <p className="gk-label text-[#d08a56]">Simple mission</p>
             <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.045em]">
-              Creative audio tool for capturing ideas fast and shaping sessions with simple commands.
+              Help more people create music without feeling locked out by complicated tools.
             </h2>
           </div>
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">

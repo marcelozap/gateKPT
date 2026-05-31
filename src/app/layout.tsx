@@ -12,20 +12,20 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - Capture Ideas Fast",
+    default: "GateKPT - Make Music Feel Easier",
     template: "%s - GateKPT",
   },
   description:
-    "GateKPT is a custom music tool for recording ideas, shaping sound with simple commands, and turning sessions into visuals.",
+    "GateKPT is a custom music tool for helping people record ideas, shape sound with simple commands, and create without complicated software getting in the way.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     shortcut: ["/icon.svg"],
   },
   openGraph: {
-    title: "GateKPT - Capture Ideas Fast",
+    title: "GateKPT - Make Music Feel Easier",
     description:
-      "A custom music tool for recording ideas, shaping sound with simple commands, and turning sessions into visuals.",
+      "A custom music tool for helping people record ideas, shape sound with simple commands, and create without complicated software getting in the way.",
     type: "website",
     url: getSiteUrl(),
   },
