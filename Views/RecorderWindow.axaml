@@ -8,8 +8,8 @@
         Title="GateKPT Recorder"
         Width="980"
         Height="720"
-        MinWidth="860"
-        MinHeight="620"
+        MinWidth="640"
+        MinHeight="520"
         Background="#070504">
 
     <Design.DataContext>
@@ -33,7 +33,8 @@
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="Auto,*,Auto" Margin="24" RowSpacing="18">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+    <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="18" MinWidth="560">
         <Border CornerRadius="34" Padding="28" BorderBrush="#24F8F0E5" BorderThickness="1">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -204,18 +205,26 @@
                 </Border>
 
                 <Border CornerRadius="28" Background="#D915120D" BorderBrush="#24F8F0E5" BorderThickness="1" Padding="22">
-                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
                         <TextBlock Text="3. CHAT CONTROL"
                                    FontSize="11"
                                    FontWeight="Black"
                                    Foreground="#F1C27D"
                                    LetterSpacing="2.4"/>
-                        <TextBox Grid.Row="1"
+                        <TextBlock Grid.Row="1"
+                                   Text="Try: make warmer, make louder, rename chorus, delete last version."
+                                   FontSize="12"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   Foreground="#D9C5A5"/>
+                        <TextBox Grid.Row="2"
                                  Text="{Binding ChatText}"
                                  PlaceholderText="delete last version, rename hook idea, show versions..."
+                                 TextWrapping="Wrap"
+                                 MinHeight="48"
                                  Background="#F2EADC"
                                  Foreground="#15120D"/>
-                        <Button Grid.Row="2"
+                        <Button Grid.Row="3"
                                 Content="Run command"
                                 Command="{Binding RunChatCommandCommand}"
                                 Padding="18,12"
@@ -274,4 +283,5 @@
                        Foreground="#F8F0E5"/>
         </Border>
     </Grid>
+    </ScrollViewer>
 </Window>
