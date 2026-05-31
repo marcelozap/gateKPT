@@ -1309,6 +1309,46 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string SignalCheckHeadline =>
+        FocusritePeakPercent <= 0
+            ? "First job: prove sound is entering the Scarlett."
+            : FocusriteReadyForRecording
+                ? $"Signal works: {FocusritePeakPercent:0.0}% peak."
+                : $"Signal detected: {FocusritePeakPercent:0.0}% peak needs adjustment.";
+
+    public string SignalCheckDetail
+    {
+        get
+        {
+            if (!PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
+                && !PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Click Find Scarlett. Nothing else matters until the input is selected.";
+            }
+
+            if (FocusritePeakPercent <= 0)
+            {
+                return "Click Record 3 sec test, then play the RC-505. If peak stays 0%, check cables/gain/input mode.";
+            }
+
+            return FocusriteReadyForRecording
+                ? "Good. You can record a drum lane now."
+                : FocusriteCalibrationSignal;
+        }
+    }
+
+    public string SignalCheckInputLabel =>
+        string.IsNullOrWhiteSpace(PreferredAudioInput)
+            ? "Input: not selected"
+            : $"Input: {PreferredAudioInput}";
+
+    public string SignalCheckPeakLabel => $"{FocusritePeakPercent:0}%";
+
+    public string SignalCheckTestFile =>
+        string.IsNullOrWhiteSpace(LastFocusriteTestPath)
+            ? "No test file yet."
+            : $"Test file: {System.IO.Path.GetFileName(LastFocusriteTestPath)}";
+
     public string SessionWorkflowSignal
     {
         get
@@ -1580,6 +1620,30 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnStatusChanged(string value)
     {
         OnPropertyChanged(nameof(SessionActionResult));
+    }
+
+    partial void OnPreferredAudioInputChanged(string value)
+    {
+        OnPropertyChanged(nameof(SignalCheckInputLabel));
+        OnPropertyChanged(nameof(SignalCheckDetail));
+    }
+
+    partial void OnFocusritePeakPercentChanged(double value)
+    {
+        OnPropertyChanged(nameof(SignalCheckHeadline));
+        OnPropertyChanged(nameof(SignalCheckDetail));
+        OnPropertyChanged(nameof(SignalCheckPeakLabel));
+    }
+
+    partial void OnFocusriteReadyForRecordingChanged(bool value)
+    {
+        OnPropertyChanged(nameof(SignalCheckHeadline));
+        OnPropertyChanged(nameof(SignalCheckDetail));
+    }
+
+    partial void OnLastFocusriteTestPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(SignalCheckTestFile));
     }
 
     partial void OnSelectedAutosaveFileChanged(AutosaveFileItem? value)
@@ -4327,6 +4391,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(SessionSelectedLaneSignal));
         OnPropertyChanged(nameof(NextRecordingMoveHeadline));
         OnPropertyChanged(nameof(NextRecordingMoveDetail));
+        OnPropertyChanged(nameof(SignalCheckHeadline));
+        OnPropertyChanged(nameof(SignalCheckDetail));
+        OnPropertyChanged(nameof(SignalCheckInputLabel));
+        OnPropertyChanged(nameof(SignalCheckPeakLabel));
+        OnPropertyChanged(nameof(SignalCheckTestFile));
     }
 
     private IEnumerable<ProjectMemoryTimelineItem> BuildProjectMemoryTimeline()

@@ -398,6 +398,93 @@
                                        LineHeight="24"
                                        TextWrapping="Wrap"
                                        Foreground="#B8AA96"/>
+                            <Border CornerRadius="28"
+                                    Background="#E6F2EADC"
+                                    BorderBrush="#55E37B45"
+                                    BorderThickness="1"
+                                    Padding="24"
+                                    Margin="0,21,0,0">
+                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="18">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
+                                        <StackPanel>
+                                            <TextBlock Text="SIGNAL CHECK"
+                                                       FontSize="11"
+                                                       FontWeight="Black"
+                                                       Foreground="#8D5631"
+                                                       LetterSpacing="2.6"/>
+                                            <TextBlock Text="{Binding SignalCheckHeadline}"
+                                                       Margin="0,7,0,0"
+                                                       FontSize="34"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#15120D"/>
+                                            <TextBlock Text="{Binding SignalCheckDetail}"
+                                                       Margin="0,8,0,0"
+                                                       FontSize="15"
+                                                       FontWeight="Bold"
+                                                       LineHeight="22"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#5D503F"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1"
+                                                Width="132"
+                                                Height="132"
+                                                CornerRadius="999"
+                                                Background="#15120D">
+                                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding SignalCheckPeakLabel}"
+                                                           FontSize="34"
+                                                           FontWeight="Black"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="#F2EADC"/>
+                                                <TextBlock Text="PEAK"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="#E37B45"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="10">
+                                        <TextBlock Text="{Binding SignalCheckInputLabel}"
+                                                   FontSize="12"
+                                                   FontWeight="Black"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#15120D"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Grid.Column="1"
+                                                Content="Find Scarlett"
+                                                Command="{Binding AutoConfigureFocusriteCommand}"
+                                                Padding="16,10"
+                                                Background="#15120D"
+                                                Foreground="#F8F0E5"
+                                                FontWeight="Black"/>
+                                        <Button Grid.Column="2"
+                                                Content="Record 3 sec test"
+                                                Command="{Binding RunFocusriteInputTestCommand}"
+                                                Padding="16,10"
+                                                Background="#E37B45"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                        <Button Grid.Column="3"
+                                                Content="Play test"
+                                                Command="{Binding PlayFocusriteTestCommand}"
+                                                Padding="16,10"
+                                                Background="#6FB6A6"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
+                                    </Grid>
+
+                                    <TextBlock Grid.Row="2"
+                                               Text="{Binding SignalCheckTestFile}"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#8D5631"/>
+                                </Grid>
+                            </Border>
                             <Border CornerRadius="26"
                                     Background="#D9110E0A"
                                     BorderBrush="#33E37B45"
