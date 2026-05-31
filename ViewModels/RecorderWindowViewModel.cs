@@ -123,6 +123,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string Rc505CaptureGuide =>
         "RC-505 flow: record the full loop, or solo one RC-505 track and capture it into the matching lane.";
 
+    public string SessionMemorySignal =>
+        "Session memory: capture -> cue lanes -> shape versions -> export mix -> visual layer.";
+
+    public string SectionTimelineSignal =>
+        "Sections: Intro / Groove / Hook / Bridge / Outro. Active capture should always know where it belongs.";
+
+    public string ExportPlanningSignal =>
+        "Export plan: create one layer mix, open it for review, then make DJ-ready or visual-ready versions.";
+
+    public string RoutingSignal =>
+        "Routing: RC-505 output -> Scarlett input -> GateKPT capture. Keep hardware in the musical path.";
+
     public RecorderWindowViewModel()
     {
         RefreshVersions();

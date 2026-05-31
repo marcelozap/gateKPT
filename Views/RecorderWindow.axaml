@@ -41,7 +41,7 @@
     </Window.Styles>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="18" MinWidth="560">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="21" RowSpacing="18" MinWidth="560">
             <Border CornerRadius="34" Padding="28" BorderBrush="#24F4EBDA" BorderThickness="1">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -100,7 +100,72 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="1.05*,0.95*" ColumnSpacing="18">
+            <Border Grid.Row="1" CornerRadius="24" Background="#111315" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="16">
+                <Grid ColumnDefinitions="1.1*,1*,1*,1*" ColumnSpacing="13">
+                    <Border CornerRadius="18" Background="#10F0B868" BorderBrush="#24F0B868" BorderThickness="1" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="PROJECT MEMORY"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#F0B868"/>
+                            <TextBlock Text="{Binding SessionMemorySignal}"
+                                       Margin="0,6,0,0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#CFC4B3"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" CornerRadius="18" Background="#1057DAE2" BorderBrush="#2457DAE2" BorderThickness="1" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="SECTION GRID"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#57DAE2"/>
+                            <TextBlock Text="{Binding SectionTimelineSignal}"
+                                       Margin="0,6,0,0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#CFC4B3"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" CornerRadius="18" Background="#10A484FF" BorderBrush="#24A484FF" BorderThickness="1" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="CAPTIONS / VISUALS"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#A484FF"/>
+                            <TextBlock Text="Lyrics, captions, and visuals should follow the active section color."
+                                       Margin="0,6,0,0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#CFC4B3"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="3" CornerRadius="18" Background="#0EF4EBDA" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="ROUTING"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#F4EBDA"/>
+                            <TextBlock Text="{Binding RoutingSignal}"
+                                       Margin="0,6,0,0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#CFC4B3"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2" ColumnDefinitions="1.05*,0.95*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
                 <Border CornerRadius="28" Background="#EAF4EBDA" Padding="22">
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
@@ -327,7 +392,7 @@
                 </StackPanel>
 
                 <Border Grid.Column="1" CornerRadius="28" Background="#B80D0F10" BorderBrush="#22F4EBDA" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto" RowSpacing="14">
+                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto,Auto" RowSpacing="14">
                         <TextBlock Text="VERSIONS"
                                    FontSize="11"
                                    FontWeight="Black"
@@ -427,11 +492,41 @@
                                     HorizontalAlignment="Stretch"
                                     Background="#F0B868"
                                     Foreground="#111315"/>
+                        <Border Grid.Row="7" CornerRadius="20" Background="#111315" BorderBrush="#24A484FF" BorderThickness="1" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="EXPORT PLANNING"
+                                           FontSize="11"
+                                           FontWeight="Black"
+                                           Foreground="#A484FF"
+                                           LetterSpacing="2.4"/>
+                                <TextBlock Text="{Binding ExportPlanningSignal}"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           TextWrapping="Wrap"
+                                           Foreground="#CFC4B3"/>
+                                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                    <Border CornerRadius="14" Background="#10F0B868" Padding="10">
+                                        <TextBlock Text="DJ-ready clip"
+                                                   FontSize="11"
+                                                   FontWeight="Black"
+                                                   Foreground="#F0B868"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
+                                    <Border Grid.Column="1" CornerRadius="14" Background="#1057DAE2" Padding="10">
+                                        <TextBlock Text="Visual-ready mix"
+                                                   FontSize="11"
+                                                   FontWeight="Black"
+                                                   Foreground="#57DAE2"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
                     </Grid>
                 </Border>
             </Grid>
 
-            <Border Grid.Row="2" CornerRadius="18" Background="#14F4EBDA" Padding="14">
+            <Border Grid.Row="3" CornerRadius="18" Background="#14F4EBDA" Padding="14">
                 <TextBlock Text="{Binding Status}"
                            FontSize="13"
                            FontWeight="Black"
