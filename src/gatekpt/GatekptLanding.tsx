@@ -289,7 +289,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
           <div>
             <p className="gk-label text-[#c6a96d]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              Active cue: {activeCue}. Use the demo loop or your mic.
+              Website preview only. Active cue: {activeCue}.
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -301,11 +301,11 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={startDemo} className="gk-button-primary">
                 <Waves className="h-4 w-4" />
-                Play demo
+                Play sample
               </button>
               <button type="button" onClick={startMic} className="gk-button-secondary">
                 <Mic className="h-4 w-4" />
-                Use mic
+                Use mic visualizer
               </button>
             </div>
           )}
@@ -333,7 +333,7 @@ export function GatekptLanding() {
               Capture ideas fast.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              GateKPT is a custom music tool for recording ideas, shaping sound with simple commands, and turning sessions into visuals.
+              GateKPT is a custom music tool for recording ideas in the desktop app, shaping takes with simple commands, and turning sound into visuals.
             </p>
             <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
               {["Record", "Shape", "Visualize"].map((item) => (
@@ -356,12 +356,12 @@ export function GatekptLanding() {
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#92bfb3]">Simple idea</p>
+                <p className="gk-label text-[#92bfb3]">How it works</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                  Record. Shape. See it move.
+                  App records. Website previews.
                 </h2>
                 <div className="mt-8 grid gap-3">
-                  {["Capture a take", "Type a sound change", "Turn the session visual"].map((item, index) => (
+                  {["Record in MusicOS", "Shape the take", "Preview the visual"].map((item, index) => (
                     <div key={item} className="flex items-center gap-4 rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4">
                       <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
                       <span className="text-sm font-black">{item}</span>
@@ -380,14 +380,14 @@ export function GatekptLanding() {
             <div>
               <p className="gk-label text-[#c6a96d]">Try it</p>
               <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                Make sound visible.
+                Try the visualizer.
               </h2>
               <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-                Press play. The terrain should move.
+                This page does not save audio. Press play or use your mic to see how sound moves.
               </p>
             </div>
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#92bfb3]/70">
-              No upload. No account. Just motion.
+              Recording happens in the GateKPT desktop app.
             </p>
           </div>
 
@@ -398,12 +398,12 @@ export function GatekptLanding() {
       <section id="tracks" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Live-loop workflow</p>
+            <p className="gk-label text-[#c6a96d]">Desktop app flow</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Build the loop.
+              Record the parts.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Tap a cue. The active layer moves with the session.
+              Drums first, then guitar or keys, then vocals. Same way the session actually builds.
             </p>
             <div className="mt-8 rounded-[1.25rem] border border-[#92bfb3]/18 bg-[#92bfb3]/8 p-4">
               <p className="gk-label text-[#92bfb3]">Now</p>
