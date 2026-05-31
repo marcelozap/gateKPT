@@ -144,9 +144,6 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RoutingSignal =>
         "RC-505 -> Scarlett -> GateKPT.";
 
-    public string ArtistWorkflowSignal =>
-        "Capture idea -> Choose version -> Shape sound -> Make visual -> Export/share";
-
     public RecorderWindowViewModel()
     {
         RefreshVersions();
