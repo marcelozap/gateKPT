@@ -16,6 +16,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly LayerRecordingService _recorder = new();
     private readonly BuiltInLooperPlaybackService _playback = new();
     private readonly RecorderVersionStore _versions = new();
+    private readonly AudioTransformService _transforms = new();
 
     [ObservableProperty]
     private string _inputName = "Scarlett not selected";
@@ -207,7 +208,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("clean", StringComparison.OrdinalIgnoreCase)
             || command.Contains("louder", StringComparison.OrdinalIgnoreCase))
         {
-            CreateSafeEditCopy(GetEditLabel(command));
+            var settings = GetEditSettings(command);
+            CreateSafeEditCopy(settings.Label, settings.Gain);
             return;
         }
 
@@ -259,7 +261,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RefreshVersions();
     }
 
-    private void CreateSafeEditCopy(string label)
+    private void CreateSafeEditCopy(string label, double gain)
     {
         var sourcePath = SelectedVersion?.Path ?? CurrentFilePath;
         if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -268,7 +270,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        var newPath = _versions.CopyVersion(sourcePath, label);
+        var newPath = _versions.CreateVersionPath(label, ".wav");
+        var result = _transforms.CreateGainCopy(sourcePath, newPath, gain);
+        if (!result.Success)
+        {
+            newPath = _versions.CopyVersion(sourcePath, label);
+        }
+
         if (string.IsNullOrWhiteSpace(newPath))
         {
             Status = "Could not create edit copy.";
@@ -278,33 +286,33 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CurrentFilePath = newPath;
         RefreshVersions();
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
-        Status = $"Created safe edit copy: {Path.GetFileName(newPath)}. Original kept. DSP comes next.";
+        Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
     }
 
-    private static string GetEditLabel(string command)
+    private static AudioEditSettings GetEditSettings(string command)
     {
         if (command.Contains("warmer", StringComparison.OrdinalIgnoreCase)
             || command.Contains("warm", StringComparison.OrdinalIgnoreCase))
         {
-            return "warmer-copy";
+            return new AudioEditSettings("warmer-boost", 3.0);
         }
 
         if (command.Contains("faster", StringComparison.OrdinalIgnoreCase))
         {
-            return "faster-copy";
+            return new AudioEditSettings("faster-copy", 1.0);
         }
 
         if (command.Contains("clean", StringComparison.OrdinalIgnoreCase))
         {
-            return "clean-copy";
+            return new AudioEditSettings("clean-copy", 1.25);
         }
 
         if (command.Contains("louder", StringComparison.OrdinalIgnoreCase))
         {
-            return "louder-copy";
+            return new AudioEditSettings("louder-boost", 6.0);
         }
 
-        return "edited-copy";
+        return new AudioEditSettings("edited-copy", 1.0);
     }
 
     private void RefreshVersions()
@@ -343,4 +351,6 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(CurrentFileLabel));
     }
+
+    private sealed record AudioEditSettings(string Label, double Gain);
 }

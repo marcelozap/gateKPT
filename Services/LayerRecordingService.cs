@@ -33,6 +33,7 @@ public sealed class LayerRecordingService : IDisposable
                 return new LayerRecordingStartResult(false, "", "No active audio input matched the preferred routing.");
             }
 
+            PrepareInputVolume(device);
             _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
             _peak = 0;
             _bytesWritten = 0;
@@ -94,7 +95,7 @@ public sealed class LayerRecordingService : IDisposable
         _peak = 0;
         _bytesWritten = 0;
 
-        if (File.Exists(path) && (elapsed.TotalSeconds < 0.75 || bytesWritten < 4096 || peakPercent < 1))
+        if (File.Exists(path) && (elapsed.TotalSeconds < 0.75 || bytesWritten < 4096 || peakPercent < 0.05))
         {
             return new LayerRecordingStopResult(
                 false,
@@ -109,7 +110,11 @@ public sealed class LayerRecordingService : IDisposable
             path,
             $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}",
             peakPercent,
-            File.Exists(path) ? $"Saved stem: {path}" : "Recording stopped before a stem file was written.");
+            File.Exists(path)
+                ? peakPercent < 8
+                    ? $"Saved low-signal stem: {path}. Peak {peakPercent:0.0}%. Turn up Scarlett/RC-505 input if playback is quiet."
+                    : $"Saved stem: {path}"
+                : "Recording stopped before a stem file was written.");
     }
 
     public void Dispose() => Stop();
@@ -145,6 +150,19 @@ public sealed class LayerRecordingService : IDisposable
                 || device.FriendlyName.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
                 || device.FriendlyName.Contains("boss", StringComparison.OrdinalIgnoreCase))
             ?? devices[0];
+    }
+
+    private static void PrepareInputVolume(MMDevice device)
+    {
+        try
+        {
+            device.AudioEndpointVolume.Mute = false;
+            device.AudioEndpointVolume.MasterVolumeLevelScalar = 1.0f;
+        }
+        catch
+        {
+            // Some drivers block software gain changes; hardware gain still controls the final level.
+        }
     }
 
     private static float CalculatePeak(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)

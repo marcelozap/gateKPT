@@ -48,6 +48,7 @@ public sealed class FocusriteDiagnosticService
                 return new FocusriteInputTestResult(false, "", 0, "No Focusrite/Scarlett input is active.");
             }
 
+            PrepareInputVolume(device);
             path = AutoSaveFileNamer.CreatePath(outputDirectory, "focusrite-test", ".wav");
             capture = new WasapiCapture(device);
             writer = new WaveFileWriter(path, capture.WaveFormat);
@@ -91,6 +92,19 @@ public sealed class FocusriteDiagnosticService
     private static bool IsFocusrite(MMDevice device) =>
         device.FriendlyName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
         || device.FriendlyName.Contains("scarlett", StringComparison.OrdinalIgnoreCase);
+
+    private static void PrepareInputVolume(MMDevice device)
+    {
+        try
+        {
+            device.AudioEndpointVolume.Mute = false;
+            device.AudioEndpointVolume.MasterVolumeLevelScalar = 1.0f;
+        }
+        catch
+        {
+            // Some drivers block software gain changes; hardware gain still controls the final level.
+        }
+    }
 
     private static float CalculatePeak(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)
     {

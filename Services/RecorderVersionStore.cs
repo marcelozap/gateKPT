@@ -81,6 +81,12 @@ public sealed class RecorderVersionStore
         return target;
     }
 
+    public string CreateVersionPath(string label, string extension)
+    {
+        Directory.CreateDirectory(TakesDirectory);
+        return AutoSaveFileNamer.CreatePath(TakesDirectory, label, extension);
+    }
+
     private static string FormatFileSize(long bytes)
     {
         if (bytes >= 1024 * 1024)
