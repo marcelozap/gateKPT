@@ -1326,6 +1326,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? $"Session package ready. Files will land in {System.IO.Path.Combine(LibraryPath, "session-packages")}."
             : $"Latest file: {System.IO.Path.GetFileName(LastAutosavePath)}";
 
+    public string SessionActionResult => Status;
+
+    public string SessionRecorderLocation =>
+        SelectedRoom.Name == "Song Builder"
+            ? "Recorder controls are in this Song Builder page. Scroll down to Built-in Looper."
+            : "Press Prep next lane to switch into Song Builder recording mode.";
+
+    public string SessionSelectedLaneSignal =>
+        SelectedLooperTrack is null
+            ? "No lane selected yet."
+            : $"Selected lane: Track {SelectedLooperTrack.Number} / {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status}.";
+
     public IReadOnlyList<string> SessionWorkflowChecklist
     {
         get
@@ -1529,6 +1541,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(AutosaveSignal));
         OnPropertyChanged(nameof(SessionPackageSignal));
+    }
+
+    partial void OnStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(SessionActionResult));
     }
 
     partial void OnSelectedAutosaveFileChanged(AutosaveFileItem? value)
@@ -1901,7 +1918,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         PrimeNextLooperLane();
         CaptureTitle = $"{ProjectName} recording session";
         CaptureNotes = string.Join(Environment.NewLine, SessionWorkflowChecklist.Select((item, index) => $"{index + 1}. {item}"));
-        Status = "Recording session primed: start with the next looper lane, then export the session package.";
+        Status = $"Step 1 complete: {SessionSelectedLaneSignal} Scroll down to Built-in Looper, then use Timed record.";
+    }
+
+    [RelayCommand]
+    private void OpenRecorderControls()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Song Builder") ?? SelectedRoom;
+        Status = "Step 2: use the Built-in Looper controls below. Recommended order: Auto Focusrite, 3s input test, Timed record, Play arrangement.";
     }
 
     [RelayCommand]
@@ -1913,7 +1937,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             var packageDirectory = CreateSessionPackage();
             LastAutosavePath = packageDirectory;
             RefreshAutosaveFiles();
-            Status = $"Session package exported: {packageDirectory}";
+            Status = $"Step 3 complete: session package saved at {packageDirectory}";
         }
         catch (Exception ex)
         {
@@ -4264,6 +4288,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(SessionWorkflowSignal));
         OnPropertyChanged(nameof(SessionPackageSignal));
         OnPropertyChanged(nameof(SessionWorkflowChecklist));
+        OnPropertyChanged(nameof(SessionActionResult));
+        OnPropertyChanged(nameof(SessionRecorderLocation));
+        OnPropertyChanged(nameof(SessionSelectedLaneSignal));
     }
 
     private IEnumerable<ProjectMemoryTimelineItem> BuildProjectMemoryTimeline()
