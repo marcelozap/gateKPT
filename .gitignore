@@ -1,0 +1,10 @@
+node_modules/
+gatekpt-site/node_modules/
+.next/
+gatekpt-site/.next/
+out/
+dist-desktop/
+.env*.local
+.DS_Store
+*.tsbuildinfo
+data/xiv/
