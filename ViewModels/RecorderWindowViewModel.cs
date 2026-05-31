@@ -45,6 +45,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandResult = "Command result will show here.";
 
     [ObservableProperty]
+    private string _assistantBrief = "Private assistant mode: it listens to your instructions and makes safe versions. It does not replace the artist.";
+
+    [ObservableProperty]
+    private string _commandHistory = "No commands yet.";
+
+    [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
 
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
@@ -90,7 +96,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : $"{Versions.Count} take(s). Select one, or type: vocal polish, drums punch, add reverb.";
 
     public string CommandHelp =>
-        "Try: vocal polish, drums punch, piano bright, acoustic warm, drone wide, add reverb, add echo, compress, normalize, clean, brighter, darker, bass boost, louder, quieter.";
+        "Ask for changes in plain words: make the drums hit harder, polish the vocal, add a small room, make it warmer, clean the rumble, make a DJ-ready boost.";
 
     public RecorderWindowViewModel()
     {
@@ -236,6 +242,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         CommandResult = $"Running: {command}";
+        AddCommandHistory(command);
         if (command.Contains("delete", StringComparison.OrdinalIgnoreCase))
         {
             DeleteSelectedOrLatest();
@@ -358,6 +365,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
         CommandResult = $"Created: {Path.GetFileName(newPath)}";
         Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
+    }
+
+    private void AddCommandHistory(string command)
+    {
+        var stamped = $"{DateTime.Now:h:mm tt} - {command}";
+        CommandHistory = CommandHistory == "No commands yet."
+            ? stamped
+            : $"{stamped}{Environment.NewLine}{CommandHistory}";
     }
 
     private static bool TryGetEditPreset(string command, out AudioEditPreset preset)

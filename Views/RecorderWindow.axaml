@@ -206,12 +206,20 @@
                     </Border>
 
                     <Border CornerRadius="28" Background="#D915120D" BorderBrush="#24F8F0E5" BorderThickness="1" Padding="22">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
-                            <TextBlock Text="3. CHAT CONTROL"
-                                       FontSize="11"
-                                       FontWeight="Black"
-                                       Foreground="#F1C27D"
-                                       LetterSpacing="2.4"/>
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+                            <StackPanel>
+                                <TextBlock Text="3. PRIVATE ASSISTANT"
+                                           FontSize="11"
+                                           FontWeight="Black"
+                                           Foreground="#F1C27D"
+                                           LetterSpacing="2.4"/>
+                                <TextBlock Text="{Binding AssistantBrief}"
+                                           Margin="0,7,0,0"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           TextWrapping="Wrap"
+                                           Foreground="#D9C5A5"/>
+                            </StackPanel>
                             <TextBlock Grid.Row="1"
                                        Text="{Binding CommandHelp}"
                                        FontSize="12"
@@ -245,6 +253,22 @@
                                                FontWeight="Black"
                                                TextWrapping="Wrap"
                                                Foreground="#F8F0E5"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Row="5" CornerRadius="16" Background="#126FB6A6" Padding="13">
+                                <StackPanel>
+                                    <TextBlock Text="RECENT INSTRUCTIONS"
+                                               FontSize="10"
+                                               FontWeight="Black"
+                                               LetterSpacing="2"
+                                               Foreground="#6FB6A6"/>
+                                    <TextBlock Text="{Binding CommandHistory}"
+                                               Margin="0,5,0,0"
+                                               MaxHeight="86"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#D9C5A5"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
