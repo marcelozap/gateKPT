@@ -36,7 +36,9 @@ public sealed class LayerMixdownService
                         ? reader
                         : new WdlResamplingSampleProvider(reader, waveFormat.SampleRate)))
             {
-                ReadFully = true
+                // False is critical: CreateWaveFile16 writes until Read returns 0.
+                // ReadFully=true pads forever with silence and can create runaway WAVs.
+                ReadFully = false
             };
 
             mixer = new VolumeSampleProvider(mixer)

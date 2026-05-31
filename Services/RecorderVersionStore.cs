@@ -7,9 +7,16 @@ namespace GateKPT.MusicOS.Services;
 
 public sealed class RecorderVersionStore
 {
-    public string RootDirectory { get; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
-        "GateKPT Recorder");
+    public RecorderVersionStore(string? rootDirectory = null)
+    {
+        RootDirectory = string.IsNullOrWhiteSpace(rootDirectory)
+            ? Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+                "GateKPT Recorder")
+            : rootDirectory;
+    }
+
+    public string RootDirectory { get; }
 
     public string TakesDirectory => Path.Combine(RootDirectory, "takes");
 

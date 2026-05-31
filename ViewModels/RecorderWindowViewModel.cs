@@ -627,6 +627,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
+        if (command.Contains("export stems", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("separate stems", StringComparison.OrdinalIgnoreCase))
+        {
+            ExportSeparateStems();
+            return;
+        }
+
+        if (command.Contains("export mix", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase))
+        {
+            ExportLayerMix();
+            return;
+        }
+
         if (TryGetEditPreset(command, out var preset))
         {
             CreateSafeEditCopy(preset);
@@ -740,6 +754,55 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 CompressionAmount: 0.45,
                 ReverbMs: 95,
                 ReverbMix: 0.10);
+            return true;
+        }
+
+        if (text.Contains("distort") || text.Contains("dirty") || text.Contains("grit"))
+        {
+            preset = new AudioEditPreset(
+                "distorted",
+                "Distorted copy with extra saturation and controlled level.",
+                Gain: 1.45,
+                CompressionAmount: 0.55,
+                SaturationAmount: 0.38);
+            return true;
+        }
+
+        if (text.Contains("intimate") || text.Contains("close") || text.Contains("dry"))
+        {
+            preset = new AudioEditPreset(
+                "intimate-close",
+                "Intimate close copy with rumble cut, gentle compression, and almost no room.",
+                Gain: 1.28,
+                HighPassHz: 85,
+                HighShelfDb: 1.4,
+                CompressionAmount: 0.32,
+                ReverbMs: 55,
+                ReverbMix: 0.035);
+            return true;
+        }
+
+        if (text.Contains("live room") || text.Contains("stage") || text.Contains("roomy"))
+        {
+            preset = new AudioEditPreset(
+                "live-room",
+                "Live room copy with wider space and light glue.",
+                Gain: 1.18,
+                CompressionAmount: 0.22,
+                ReverbMs: 210,
+                ReverbMix: 0.20,
+                EchoMs: 115,
+                EchoMix: 0.05);
+            return true;
+        }
+
+        if (text.Contains("raw") || text.Contains("original vibe") || text.Contains("less processed"))
+        {
+            preset = new AudioEditPreset(
+                "raw-lift",
+                "Raw lifted copy with only safe level control.",
+                Gain: 1.18,
+                CompressionAmount: 0.08);
             return true;
         }
 
