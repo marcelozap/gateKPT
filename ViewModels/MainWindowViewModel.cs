@@ -1198,6 +1198,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? "No autosave attached to take review."
             : $"Attached: {SelectedAutosaveFile.Name}";
 
+    public string SelectedAutosaveLaneSignal =>
+        SelectedAutosaveFile is null
+            ? "Select an audio autosave to load into a looper lane."
+            : SelectedLooperTrack is null
+                ? "Select a looper lane before loading the autosave."
+                : SelectedAutosaveFile.IsAudio
+                    ? $"Ready: load {SelectedAutosaveFile.Name} into {SelectedLooperTrack.Instrument}."
+                    : "Selected autosave is not audio. Pick a WAV file.";
+
     public string LayerRecordingPlan =>
         $"{LayerCountInBeats}-beat count-in / {LayerInstrument} / {LayerBeatTarget} / {LayerEffectIntent}";
 
@@ -1692,11 +1701,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         if (value is null)
         {
+            OnPropertyChanged(nameof(SelectedAutosaveLaneSignal));
             return;
         }
 
         LastAutosavePath = value.Path;
         OnPropertyChanged(nameof(SelectedAutosaveTakeSignal));
+        OnPropertyChanged(nameof(SelectedAutosaveLaneSignal));
     }
 
     partial void OnLooperBpmChanged(int value) => OnPropertyChanged(nameof(LooperTimingSignal));
@@ -1745,6 +1756,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedInstrumentChannel = InstrumentChannels.FirstOrDefault(item => item.Name == value.Instrument) ?? SelectedInstrumentChannel;
         OnPropertyChanged(nameof(BuiltInLooperSignal));
         OnPropertyChanged(nameof(SelectedLooperRoutingSignal));
+        OnPropertyChanged(nameof(SelectedAutosaveLaneSignal));
     }
 
     partial void OnSelectedLooperTrackVolumeChanged(double value)
@@ -3191,6 +3203,63 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void StopSelectedAutosavePreview()
+    {
+        _looperPlayback.Stop(98);
+        Status = "Stopped selected autosave preview.";
+        LooperEngineStatus = Status;
+    }
+
+    [RelayCommand]
+    private void AssignSelectedAutosaveToLooperLane()
+    {
+        if (SelectedAutosaveFile is null)
+        {
+            Status = "Select an autosave file first.";
+            return;
+        }
+
+        if (SelectedLooperTrack is null)
+        {
+            Status = "Select a looper lane first.";
+            return;
+        }
+
+        if (!SelectedAutosaveFile.IsAudio)
+        {
+            Status = "Selected autosave is not an audio file. Pick a WAV take.";
+            return;
+        }
+
+        if (!System.IO.File.Exists(SelectedAutosaveFile.Path))
+        {
+            Status = "Selected autosave file no longer exists.";
+            RefreshAutosaveFiles();
+            return;
+        }
+
+        _looperPlayback.Stop(SelectedLooperTrack.Number);
+        var updated = SelectedLooperTrack with
+        {
+            Status = "Loaded",
+            StemPath = SelectedAutosaveFile.Path,
+            DurationLabel = string.IsNullOrWhiteSpace(SelectedAutosaveFile.Duration) ? SelectedLooperTrack.DurationLabel : SelectedAutosaveFile.Duration,
+            TakeCount = Math.Max(SelectedLooperTrack.TakeCount, 1),
+            TakeArchive = NextLooperTakeArchive(SelectedLooperTrack, "Record", SelectedAutosaveFile.Path),
+            LastAction = $"Loaded autosave at {DateTime.Now:h:mm tt}"
+        };
+
+        ReplaceLooperTrack(updated);
+        ActiveStemPath = updated.StemPath;
+        LastAutosavePath = updated.StemPath;
+        LooperEngineStatus = $"Loaded {SelectedAutosaveFile.Name} into track {updated.Number}: {updated.Instrument}.";
+        LooperTransportStatus = $"Ready to play {updated.Instrument}, or export the arrangement.";
+        Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(SelectedAutosaveLaneSignal));
+        SaveProjectSnapshot($"Loaded autosave into {updated.Instrument} lane");
+    }
+
+    [RelayCommand]
     private void DeleteSelectedAutosave()
     {
         if (SelectedAutosaveFile is null)
@@ -4056,6 +4125,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 break;
             case CommandAction.DeleteSelectedAutosave:
                 DeleteSelectedAutosave();
+                CommandResponse = intent.SafetyNote;
+                break;
+            case CommandAction.AssignSelectedAutosaveToLooperLane:
+                AssignSelectedAutosaveToLooperLane();
+                CommandResponse = $"{intent.SafetyNote} {LooperEngineStatus}";
+                break;
+            case CommandAction.StopSelectedAutosavePreview:
+                StopSelectedAutosavePreview();
                 CommandResponse = intent.SafetyNote;
                 break;
             case CommandAction.SetLooperMode:

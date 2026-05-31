@@ -33,6 +33,16 @@ public sealed class CommandIntentService
             return new CommandIntent(CommandAction.DeleteSelectedAutosave, "Move the selected autosave to trash instead of deleting permanently.", text);
         }
 
+        if (ContainsAny(normalized, "load selected to lane", "use selected as lane", "assign selected to lane", "put selected on lane", "attach selected to lane"))
+        {
+            return new CommandIntent(CommandAction.AssignSelectedAutosaveToLooperLane, "Load the selected audio autosave into the selected looper lane.", text);
+        }
+
+        if (ContainsAny(normalized, "stop preview", "stop selected preview", "stop autosave preview", "stop file preview"))
+        {
+            return new CommandIntent(CommandAction.StopSelectedAutosavePreview, "Stop the selected file preview.", text);
+        }
+
         if (ContainsAny(normalized, "prime next lane", "next lane", "next loop", "prime loop", "prime drums", "prime drum", "prime guitar", "prime piano", "prime vocal", "prime harmony"))
         {
             return new CommandIntent(CommandAction.PrimeLooperLane, "Prime the next recordable looper lane.", text);
@@ -106,6 +116,8 @@ public enum CommandAction
     SetLooperMode,
     ExportLooperArrangement,
     DeleteSelectedAutosave,
+    AssignSelectedAutosaveToLooperLane,
+    StopSelectedAutosavePreview,
 }
 
 public sealed record CommandIntent(CommandAction Action, string SafetyNote, string Payload);
