@@ -404,7 +404,7 @@
                                     BorderThickness="1"
                                     Padding="24"
                                     Margin="0,21,0,0">
-                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="18">
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="18">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                                         <StackPanel>
                                             <TextBlock Text="SIGNAL CHECK"
@@ -477,7 +477,58 @@
                                                 FontWeight="Black"/>
                                     </Grid>
 
-                                    <TextBlock Grid.Row="2"
+                                    <Border Grid.Row="2"
+                                            CornerRadius="20"
+                                            Background="#15120D"
+                                            Padding="18">
+                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="13">
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding SimpleRecorderHeadline}"
+                                                               FontSize="22"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#F8F0E5"/>
+                                                    <TextBlock Text="{Binding SimpleRecorderDetail}"
+                                                               Margin="0,6,0,0"
+                                                               FontSize="12"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#D9C5A5"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1"
+                                                        Content="Start recording"
+                                                        Command="{Binding StartSimpleRecordingCommand}"
+                                                        Padding="18,12"
+                                                        Background="#6FB6A6"
+                                                        Foreground="#15120D"
+                                                        FontWeight="Black"
+                                                        VerticalAlignment="Center"/>
+                                                <Button Grid.Column="2"
+                                                        Content="Stop &amp; save"
+                                                        Command="{Binding StopSimpleRecordingCommand}"
+                                                        Padding="18,12"
+                                                        Background="#E37B45"
+                                                        Foreground="#15120D"
+                                                        FontWeight="Black"
+                                                        VerticalAlignment="Center"/>
+                                            </Grid>
+                                            <TextBlock Grid.Row="1"
+                                                       Text="{Binding SimpleRecordingStatus}"
+                                                       FontSize="12"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#9DBFB3"/>
+                                            <TextBlock Grid.Row="2"
+                                                       Text="{Binding SimpleRecorderFileLabel}"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#EABF7A"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="3"
                                                Text="{Binding SignalCheckTestFile}"
                                                FontSize="11"
                                                FontWeight="Bold"
@@ -1366,7 +1417,7 @@
                                     </Border>
                                 </Grid>
                             </Border>
-                            <Border CornerRadius="20" Background="#660F0C08" BorderBrush="#22E37B45" BorderThickness="1" Padding="16" Margin="0,14,0,0">
+                            <Border CornerRadius="20" Background="#660F0C08" BorderBrush="#22E37B45" BorderThickness="1" Padding="16" Margin="0,14,0,0" IsVisible="False">
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                         <StackPanel Spacing="5">

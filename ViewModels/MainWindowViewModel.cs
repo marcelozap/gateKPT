@@ -317,6 +317,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private bool _focusriteReadyForRecording = false;
 
     [ObservableProperty]
+    private bool _simpleRecordingActive = false;
+
+    [ObservableProperty]
+    private string _simpleRecordingStatus = "Not recording. First prove Scarlett signal, then record one short pass.";
+
+    [ObservableProperty]
     private string _lyricTitle = "Untitled hook";
 
     [ObservableProperty]
@@ -1349,6 +1355,25 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             ? "No test file yet."
             : $"Test file: {System.IO.Path.GetFileName(LastFocusriteTestPath)}";
 
+    public string SimpleRecorderHeadline =>
+        SimpleRecordingActive
+            ? "Recording now. Play the RC-505."
+            : FocusriteReadyForRecording
+                ? "Ready to record one clean test."
+                : "Not ready: prove signal first.";
+
+    public string SimpleRecorderDetail =>
+        SimpleRecordingActive
+            ? "When you are done, press Stop & save. The WAV will autosave with XIV + timestamp."
+            : FocusriteReadyForRecording
+                ? "Press Start recording. Do not worry about looper lanes yet."
+                : "Use Find Scarlett and Record 3 sec test. Target: 35-75% peak.";
+
+    public string SimpleRecorderFileLabel =>
+        string.IsNullOrWhiteSpace(ActiveStemPath)
+            ? "No recording saved yet."
+            : $"Saved: {System.IO.Path.GetFileName(ActiveStemPath)}";
+
     public string SessionWorkflowSignal
     {
         get
@@ -1644,6 +1669,17 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnLastFocusriteTestPathChanged(string value)
     {
         OnPropertyChanged(nameof(SignalCheckTestFile));
+    }
+
+    partial void OnSimpleRecordingActiveChanged(bool value)
+    {
+        OnPropertyChanged(nameof(SimpleRecorderHeadline));
+        OnPropertyChanged(nameof(SimpleRecorderDetail));
+    }
+
+    partial void OnActiveStemPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(SimpleRecorderFileLabel));
     }
 
     partial void OnSelectedAutosaveFileChanged(AutosaveFileItem? value)
@@ -2692,6 +2728,57 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _looperPlayback.Stop(99);
         FocusriteTestStatus = "Stopped Focusrite test playback.";
         Status = FocusriteTestStatus;
+    }
+
+    [RelayCommand]
+    private void StartSimpleRecording()
+    {
+        if (SimpleRecordingActive)
+        {
+            Status = "Already recording. Press Stop & save first.";
+            return;
+        }
+
+        AutoConfigureFocusrite();
+        if (!PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
+            && !PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
+        {
+            SimpleRecordingStatus = "No Scarlett input selected. Click Find Scarlett first.";
+            Status = SimpleRecordingStatus;
+            return;
+        }
+
+        var result = _layerRecorder.Start(PreferredAudioInput, StemDirectory, "simple-rc505-recording-test");
+        SimpleRecordingActive = result.Success;
+        SimpleRecordingStatus = result.Success
+            ? $"Recording from {PreferredAudioInput}. Play the RC-505 now."
+            : result.Message;
+        ActiveStemPath = result.Success ? result.Path : ActiveStemPath;
+        LastAutosavePath = result.Success ? result.Path : LastAutosavePath;
+        Status = SimpleRecordingStatus;
+    }
+
+    [RelayCommand]
+    private void StopSimpleRecording()
+    {
+        var result = _layerRecorder.Stop();
+        SimpleRecordingActive = false;
+        SimpleRecordingStatus = result.Success
+            ? $"Saved recording: {result.Path}"
+            : result.Message;
+        Status = SimpleRecordingStatus;
+
+        if (!result.Success)
+        {
+            return;
+        }
+
+        ActiveStemPath = result.Path;
+        LastAutosavePath = result.Path;
+        LayerInstrument = "Drums";
+        AddPerformanceLayer(result.Path, result.DurationLabel);
+        RefreshAutosaveFiles();
+        SaveProjectSnapshot("Simple RC-505 recording saved");
     }
 
     [RelayCommand]

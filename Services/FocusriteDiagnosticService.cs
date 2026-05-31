@@ -55,7 +55,7 @@ public sealed class FocusriteDiagnosticService
             {
                 writer.Write(args.Buffer, 0, args.BytesRecorded);
                 writer.Flush();
-                peak = Math.Max(peak, CalculatePeak(args.Buffer, args.BytesRecorded));
+                peak = Math.Max(peak, CalculatePeak(args.Buffer, args.BytesRecorded, capture.WaveFormat));
             };
             capture.StartRecording();
             await Task.Delay(TimeSpan.FromSeconds(Math.Clamp(seconds, 1, 10)));
@@ -92,16 +92,49 @@ public sealed class FocusriteDiagnosticService
         device.FriendlyName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
         || device.FriendlyName.Contains("scarlett", StringComparison.OrdinalIgnoreCase);
 
-    private static float CalculatePeak(byte[] buffer, int bytesRecorded)
+    private static float CalculatePeak(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)
     {
         var peak = 0f;
-        for (var index = 0; index + 3 < bytesRecorded; index += 4)
+
+        if (waveFormat.Encoding == WaveFormatEncoding.IeeeFloat && waveFormat.BitsPerSample == 32)
         {
-            var sample = BitConverter.ToSingle(buffer, index);
-            if (!float.IsNaN(sample))
+            for (var index = 0; index + 3 < bytesRecorded; index += 4)
             {
+                var sample = BitConverter.ToSingle(buffer, index);
+                if (!float.IsNaN(sample))
+                {
+                    peak = Math.Max(peak, Math.Abs(sample));
+                }
+            }
+
+            return Math.Clamp(peak, 0, 1);
+        }
+
+        if (waveFormat.BitsPerSample == 16)
+        {
+            for (var index = 0; index + 1 < bytesRecorded; index += 2)
+            {
+                var sample = BitConverter.ToInt16(buffer, index) / 32768f;
                 peak = Math.Max(peak, Math.Abs(sample));
             }
+
+            return Math.Clamp(peak, 0, 1);
+        }
+
+        if (waveFormat.BitsPerSample == 24)
+        {
+            for (var index = 0; index + 2 < bytesRecorded; index += 3)
+            {
+                var sample = buffer[index] | buffer[index + 1] << 8 | buffer[index + 2] << 16;
+                if ((sample & 0x800000) != 0)
+                {
+                    sample |= unchecked((int)0xff000000);
+                }
+
+                peak = Math.Max(peak, Math.Abs(sample / 8388608f));
+            }
+
+            return Math.Clamp(peak, 0, 1);
         }
 
         return Math.Clamp(peak, 0, 1);
