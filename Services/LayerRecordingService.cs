@@ -14,6 +14,8 @@ public sealed class LayerRecordingService : IDisposable
     private WaveFileWriter? _writer;
     private Stopwatch? _clock;
     private string _activePath = "";
+    private float _peak;
+    private long _bytesWritten;
 
     public bool IsRecording => _capture is not null;
 
@@ -32,6 +34,8 @@ public sealed class LayerRecordingService : IDisposable
             }
 
             _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
+            _peak = 0;
+            _bytesWritten = 0;
             _capture = new WasapiCapture(device);
             _writer = new WaveFileWriter(_activePath, _capture.WaveFormat);
             _clock = Stopwatch.StartNew();
@@ -41,6 +45,8 @@ public sealed class LayerRecordingService : IDisposable
                 {
                     _writer?.Write(args.Buffer, 0, args.BytesRecorded);
                     _writer?.Flush();
+                    _bytesWritten += args.BytesRecorded;
+                    _peak = Math.Max(_peak, CalculatePeak(args.Buffer, args.BytesRecorded, _capture.WaveFormat));
                 }
             };
             _capture.StartRecording();
@@ -58,11 +64,13 @@ public sealed class LayerRecordingService : IDisposable
     {
         if (_capture is null && _writer is null)
         {
-            return new LayerRecordingStopResult(false, "", "00:00", "No active layer recording.");
+            return new LayerRecordingStopResult(false, "", "00:00", 0, "No active layer recording.");
         }
 
         var path = _activePath;
         var elapsed = _clock?.Elapsed ?? TimeSpan.Zero;
+        var peakPercent = Math.Round(_peak * 100, 1);
+        var bytesWritten = _bytesWritten;
 
         try
         {
@@ -83,11 +91,24 @@ public sealed class LayerRecordingService : IDisposable
         _capture = null;
         _clock = null;
         _activePath = "";
+        _peak = 0;
+        _bytesWritten = 0;
+
+        if (File.Exists(path) && (elapsed.TotalSeconds < 0.75 || bytesWritten < 4096 || peakPercent < 1))
+        {
+            return new LayerRecordingStopResult(
+                false,
+                path,
+                $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}",
+                peakPercent,
+                $"Silent take rejected. Peak {peakPercent:0.0}%. Check signal first, then record while sound is playing.");
+        }
 
         return new LayerRecordingStopResult(
             File.Exists(path),
             path,
             $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}",
+            peakPercent,
             File.Exists(path) ? $"Saved stem: {path}" : "Recording stopped before a stem file was written.");
     }
 
@@ -126,8 +147,55 @@ public sealed class LayerRecordingService : IDisposable
             ?? devices[0];
     }
 
+    private static float CalculatePeak(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)
+    {
+        var peak = 0f;
+
+        if (waveFormat.Encoding == WaveFormatEncoding.IeeeFloat && waveFormat.BitsPerSample == 32)
+        {
+            for (var index = 0; index + 3 < bytesRecorded; index += 4)
+            {
+                var sample = BitConverter.ToSingle(buffer, index);
+                if (!float.IsNaN(sample))
+                {
+                    peak = Math.Max(peak, Math.Abs(sample));
+                }
+            }
+
+            return Math.Clamp(peak, 0, 1);
+        }
+
+        if (waveFormat.BitsPerSample == 16)
+        {
+            for (var index = 0; index + 1 < bytesRecorded; index += 2)
+            {
+                var sample = BitConverter.ToInt16(buffer, index) / 32768f;
+                peak = Math.Max(peak, Math.Abs(sample));
+            }
+
+            return Math.Clamp(peak, 0, 1);
+        }
+
+        if (waveFormat.BitsPerSample == 24)
+        {
+            for (var index = 0; index + 2 < bytesRecorded; index += 3)
+            {
+                var sample = buffer[index] | buffer[index + 1] << 8 | buffer[index + 2] << 16;
+                if ((sample & 0x800000) != 0)
+                {
+                    sample |= unchecked((int)0xff000000);
+                }
+
+                peak = Math.Max(peak, Math.Abs(sample / 8388608f));
+            }
+
+            return Math.Clamp(peak, 0, 1);
+        }
+
+        return Math.Clamp(peak, 0, 1);
+    }
 }
 
 public sealed record LayerRecordingStartResult(bool Success, string Path, string Message);
 
-public sealed record LayerRecordingStopResult(bool Success, string Path, string DurationLabel, string Message);
+public sealed record LayerRecordingStopResult(bool Success, string Path, string DurationLabel, double PeakPercent, string Message);

@@ -128,9 +128,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         if (result.Success)
         {
             CurrentFilePath = result.Path;
-            Status = $"Saved take: {Path.GetFileName(result.Path)}";
+            PeakPercent = result.PeakPercent;
+            Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%.";
             RefreshVersions();
             return;
+        }
+
+        PeakPercent = result.PeakPercent;
+        if (!string.IsNullOrWhiteSpace(result.Path) && File.Exists(result.Path))
+        {
+            _versions.MoveToTrash(result.Path);
+            CurrentFilePath = "";
+            RefreshVersions();
         }
 
         Status = result.Message;
