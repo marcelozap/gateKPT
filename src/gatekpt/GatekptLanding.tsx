@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Archive, Captions, Cable, Film, Layers3, Mic, Mountain, Route, Sparkles, Square, Waves } from "lucide-react";
+import { Archive, Cable, Film, Mic, Mountain, Route, Sparkles, Square, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -12,14 +12,6 @@ declare global {
 }
 
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
-
-const workflow: Array<[string, string, LucideIcon]> = [
-  ["Capture", "Record the sound.", Mic],
-  ["Choose", "Keep the best moment.", Layers3],
-  ["Shape", "Make it warmer, raw, brighter, or live.", Sparkles],
-  ["Visualize", "Turn the sound into a look.", Captions],
-  ["Export", "Share the finished idea.", Archive],
-];
 
 const productSections: Array<[string, string, LucideIcon, string]> = [
   ["Record", "Capture sound before the feeling disappears.", Mic, "Start"],
@@ -351,42 +343,59 @@ export function GatekptLanding() {
               ))}
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#workflow" className="gk-button-primary">
-                See workflow
+              <a href="#preview" className="gk-button-primary">
+                Try demo
               </a>
-              <a href="#preview" className="gk-button-secondary">
-                Try preview
+              <a href="#tracks" className="gk-button-secondary">
+                See tracks
               </a>
             </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
-            <TerrainSignalPreview activeCue={activeCue} />
+            <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
+              <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
+              <div className="relative">
+                <p className="gk-label text-[#92bfb3]">Simple idea</p>
+                <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
+                  Record. Shape. See it move.
+                </h2>
+                <div className="mt-8 grid gap-3">
+                  {["Capture a take", "Type a sound change", "Turn the session visual"].map((item, index) => (
+                    <div key={item} className="flex items-center gap-4 rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4">
+                      <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
+                      <span className="text-sm font-black">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      <section id="workflow" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.7fr_1fr] lg:items-stretch">
+          <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
             <div>
-              <p className="gk-label text-[#92bfb3]">Workflow</p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Capture. Choose. Shape. Export.</h2>
+              <p className="gk-label text-[#c6a96d]">Try it</p>
+              <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
+                Make sound visible.
+              </h2>
+              <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
+                Press play. The terrain should move.
+              </p>
             </div>
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#92bfb3]/70">
+              No upload. No account. Just motion.
+            </p>
           </div>
-          <div className="grid gap-4 lg:grid-cols-5">
-            {workflow.map(([title, text, Icon]) => (
-              <div key={title} className="gk-card group">
-                <Icon className="h-5 w-5 text-[#92bfb3] transition duration-200 group-hover:-translate-y-0.5 group-hover:text-[#c6a96d]" />
-                <h3 className="mt-5 text-xl font-black tracking-[-0.03em]">{title}</h3>
-                <p className="mt-3 text-sm font-medium leading-6 text-[#e8e1d2]/62">{text}</p>
-              </div>
-            ))}
-          </div>
+
+          <TerrainSignalPreview activeCue={activeCue} />
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
+      <section id="tracks" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
             <p className="gk-label text-[#c6a96d]">Live-loop workflow</p>
@@ -426,36 +435,6 @@ export function GatekptLanding() {
                     {activeCueIndex === index ? "active" : "cue"}
                   </span>
                 </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
-          <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Try it</p>
-            <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Make sound visible.
-            </h2>
-            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              This public demo is intentionally simple: play the demo loop, use your mic, and watch the terrain respond.
-            </p>
-          </div>
-
-          <div className="gk-panel p-4 sm:p-5">
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                ["01", "Play demo", "No gear needed"],
-                ["02", "Use mic", "Optional"],
-                ["03", "Watch motion", "Live terrain"],
-              ].map(([number, title, note]) => (
-                <div key={title} className="rounded-[1.35rem] border border-white/10 bg-white/[0.035] p-5">
-                  <span className="font-mono text-xs text-[#e8e1d2]/42">{number}</span>
-                  <p className="mt-8 text-xl font-black tracking-[-0.03em]">{title}</p>
-                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#92bfb3]/70">{note}</p>
-                </div>
               ))}
             </div>
           </div>
