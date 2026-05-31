@@ -424,36 +424,13 @@
                                                        TextWrapping="Wrap"
                                                        Foreground="#6FB6A6"/>
                                         </StackPanel>
-                                        <WrapPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <Button Content="Start pass"
-                                                    Command="{Binding StartRoomPassCommand}"
-                                                    Padding="14,9"
-                                                    Margin="0,0,8,8"
-                                                    Background="#E37B45"
-                                                    Foreground="#15120D"
-                                                    FontWeight="Black"/>
-                                            <Button Content="Resume pin"
-                                                    Command="{Binding OpenPinnedProjectMemoryCommand}"
-                                                    Padding="14,9"
-                                                    Margin="0,0,8,8"
-                                                    Background="#6FB6A6"
-                                                    Foreground="#15120D"
-                                                    FontWeight="Black"/>
-                                            <Button Content="Complete pin"
-                                                    Command="{Binding CompletePinnedProjectMemoryCommand}"
-                                                    Padding="14,9"
-                                                    Margin="0,0,8,8"
-                                                    Background="#F2EADC"
-                                                    Foreground="#15120D"
-                                                    FontWeight="Black"/>
-                                            <Button Content="Save memory"
-                                                    Command="{Binding SaveProjectSnapshotCommand}"
-                                                    Padding="14,9"
-                                                    Margin="0,0,8,8"
-                                                    Background="#15120D"
-                                                    Foreground="#F8F0E5"
-                                                    FontWeight="Black"/>
-                                        </WrapPanel>
+                                        <Button Grid.Column="1"
+                                                Content="Start today's pass"
+                                                Command="{Binding StartRoomPassCommand}"
+                                                Padding="18,12"
+                                                Background="#E37B45"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"/>
                                     </Grid>
 
                                     <Grid Grid.Row="1" ColumnDefinitions="1.1*,0.9*" ColumnSpacing="13">
@@ -491,14 +468,12 @@
                                                            FontWeight="Black"
                                                            TextWrapping="Wrap"
                                                            Foreground="#F8F0E5"/>
-                                                <Button Grid.Row="2"
-                                                        Content="{Binding PrimeGapLabel}"
-                                                        Command="{Binding PrimeNextProjectGapCommand}"
-                                                        Padding="10,7"
-                                                        Background="#E37B45"
-                                                        Foreground="#15120D"
-                                                        FontWeight="Black"
-                                                        HorizontalAlignment="Left"/>
+                                                <TextBlock Grid.Row="2"
+                                                           Text="Use the recorder panel below when you are ready to make sound."
+                                                           FontSize="10"
+                                                           FontWeight="Bold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
                                             </Grid>
                                         </Border>
                                     </Grid>
@@ -511,7 +486,7 @@
                                                        TextWrapping="Wrap"
                                                        Foreground="#D9C5A5"/>
                                         </Border>
-                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding ExportReadinessChecklist}">
+                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding ExportReadinessChecklist}" IsVisible="False">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <WrapPanel/>
@@ -538,23 +513,23 @@
                                     BorderThickness="1"
                                     Padding="24"
                                     Margin="0,13,0,0">
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="18">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                                         <StackPanel>
-                                            <TextBlock Text="SESSION RECORDER"
+                                            <TextBlock Text="NEXT RECORDING MOVE"
                                                        FontSize="10"
                                                        FontWeight="Black"
                                                        Foreground="#6FB6A6"
                                                        LetterSpacing="2.4"/>
                                             <TextBlock Text="{Binding SessionWorkflowSignal}"
                                                        Margin="0,5,0,0"
-                                                       FontSize="17"
+                                                       FontSize="20"
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
                                                        Foreground="#F8F0E5"/>
                                             <TextBlock Text="{Binding SessionSelectedLaneSignal}"
-                                                       Margin="0,4,0,0"
-                                                       FontSize="11"
+                                                       Margin="0,8,0,0"
+                                                       FontSize="13"
                                                        FontWeight="Bold"
                                                        TextWrapping="Wrap"
                                                        Foreground="#D9C5A5"/>
@@ -565,94 +540,17 @@
                                                        TextWrapping="Wrap"
                                                        Foreground="#9DBFB3"/>
                                         </StackPanel>
-                                        <Border Grid.Column="1"
-                                                CornerRadius="18"
-                                                Background="#1F6FB6A6"
-                                                Padding="14"
-                                                MinWidth="210">
-                                            <TextBlock Text="{Binding SessionPackageSignal}"
-                                                       FontSize="11"
-                                                       FontWeight="Black"
-                                                       TextWrapping="Wrap"
-                                                       Foreground="#F8F0E5"/>
-                                        </Border>
+                                        <Button Grid.Column="1"
+                                                Content="Prep next lane"
+                                                Command="{Binding PrimeRecordingSessionCommand}"
+                                                Padding="21,14"
+                                                Background="#6FB6A6"
+                                                Foreground="#15120D"
+                                                FontWeight="Black"
+                                                VerticalAlignment="Center"/>
                                     </Grid>
 
-                                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*" ColumnSpacing="13">
-                                        <Border CornerRadius="18" Background="#1B6FB6A6" BorderBrush="#336FB6A6" BorderThickness="1" Padding="16">
-                                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                                                <TextBlock Text="1 / PREP"
-                                                           FontSize="10"
-                                                           FontWeight="Black"
-                                                           Foreground="#6FB6A6"
-                                                           LetterSpacing="1.8"/>
-                                                <TextBlock Grid.Row="1"
-                                                           Text="Choose the next lane"
-                                                           FontSize="16"
-                                                           FontWeight="Black"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="#F8F0E5"/>
-                                                <Button Grid.Row="2"
-                                                        Content="Prep next lane"
-                                                        Command="{Binding PrimeRecordingSessionCommand}"
-                                                        Padding="14,9"
-                                                        Background="#6FB6A6"
-                                                        Foreground="#15120D"
-                                                        FontWeight="Black"
-                                                        HorizontalAlignment="Left"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Column="1" CornerRadius="18" Background="#1B6FB6A6" BorderBrush="#336FB6A6" BorderThickness="1" Padding="16">
-                                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                                                <TextBlock Text="2 / RECORD"
-                                                           FontSize="10"
-                                                           FontWeight="Black"
-                                                           Foreground="#6FB6A6"
-                                                           LetterSpacing="1.8"/>
-                                                <TextBlock Grid.Row="1"
-                                                           Text="Use looper controls"
-                                                           FontSize="16"
-                                                           FontWeight="Black"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="#F8F0E5"/>
-                                                <Button Grid.Row="2"
-                                                        Content="Show recorder"
-                                                        Command="{Binding OpenRecorderControlsCommand}"
-                                                        Padding="14,9"
-                                                        Background="#F2EADC"
-                                                        Foreground="#15120D"
-                                                        FontWeight="Black"
-                                                        HorizontalAlignment="Left"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Column="2" CornerRadius="18" Background="#1B6FB6A6" BorderBrush="#336FB6A6" BorderThickness="1" Padding="16">
-                                            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
-                                                <TextBlock Text="3 / SAVE"
-                                                           FontSize="10"
-                                                           FontWeight="Black"
-                                                           Foreground="#6FB6A6"
-                                                           LetterSpacing="1.8"/>
-                                                <TextBlock Grid.Row="1"
-                                                           Text="Export session package"
-                                                           FontSize="16"
-                                                           FontWeight="Black"
-                                                           TextWrapping="Wrap"
-                                                           Foreground="#F8F0E5"/>
-                                                <Button Grid.Row="2"
-                                                        Content="Save package"
-                                                        Command="{Binding ExportSessionPackageCommand}"
-                                                        Padding="14,9"
-                                                        Background="#E37B45"
-                                                        Foreground="#15120D"
-                                                        FontWeight="Black"
-                                                        HorizontalAlignment="Left"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
-
-                                    <Border Grid.Row="2" CornerRadius="16" Background="#2AF2EADC" Padding="13">
+                                    <Border Grid.Row="1" CornerRadius="16" Background="#2AF2EADC" Padding="13">
                                         <TextBlock Text="{Binding SessionActionResult}"
                                                    FontSize="12"
                                                    FontWeight="Black"
@@ -660,33 +558,28 @@
                                                    Foreground="#F8F0E5"/>
                                     </Border>
 
-                                    <ItemsControl Grid.Row="3" ItemsSource="{Binding SessionWorkflowChecklist}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel/>
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border CornerRadius="12" Background="#1F6FB6A6" Padding="10,7" Margin="0,0,8,8">
-                                                    <TextBlock Text="{Binding}"
-                                                               FontSize="10"
-                                                               FontWeight="Black"
-                                                               TextWrapping="Wrap"
-                                                                    Foreground="#F8F0E5"/>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <Button Grid.Row="4"
-                                            Content="Open packages folder"
-                                            Command="{Binding OpenSessionPackagesFolderCommand}"
-                                            Padding="12,8"
-                                            Margin="0,0,0,8"
-                                            Background="#15120D"
-                                            Foreground="#F8F0E5"
-                                            FontWeight="Black"
-                                            HorizontalAlignment="Right"/>
+                                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="13">
+                                        <TextBlock Text="{Binding SessionPackageSignal}"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#D9C5A5"
+                                                   VerticalAlignment="Center"/>
+                                        <Button Grid.Column="1"
+                                                Content="Save package"
+                                                Command="{Binding ExportSessionPackageCommand}"
+                                                Padding="12,8"
+                                                Background="#15120D"
+                                                Foreground="#F8F0E5"
+                                                FontWeight="Black"/>
+                                        <Button Grid.Column="2"
+                                                Content="Open folder"
+                                                Command="{Binding OpenSessionPackagesFolderCommand}"
+                                                Padding="12,8"
+                                                Background="#15120D"
+                                                Foreground="#F8F0E5"
+                                                FontWeight="Black"/>
+                                    </Grid>
                                 </Grid>
                             </Border>
                             <Border IsVisible="False" CornerRadius="24" Background="#3315120D" BorderBrush="#2615120D" BorderThickness="1" Padding="16" Margin="0,21,0,0">
