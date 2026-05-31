@@ -1,0 +1,119 @@
+# Voice Mirror Rig Setup
+
+## Goal
+
+Keep the voice separate before it hits the RC-505 loops, then use that voice-only signal for pitch correction, vocal effects, and voice-driven visuals.
+
+## Best Signal Flow
+
+```text
+Mic
+  -> audio interface input 1
+  -> Ableton voice track
+  -> pitch correction / vocal effects
+  -> RC-505 input or Ableton master
+
+Electric piano
+  -> RC-505 or audio interface input 2
+
+Drums
+  -> RC-505 or audio interface input 3/4
+
+RC-505 stereo output
+  -> Ableton recording track
+
+Ableton voice-only send or master send
+  -> Voice Mirror visual input
+  -> projector
+```
+
+Voice Mirror is a listener, not the audio processor. Keep pitch correction, vocal effects, monitoring, and recording inside Ableton or your plugin chain. Send Voice Mirror a duplicate signal so visuals never sit in the critical audio path.
+
+## Ableton Tracks
+
+1. `VOICE IN`
+   - Audio From: mic input
+   - Monitor: In
+   - Effects: pitch correction, gate, compressor, delay, reverb
+   - Send: to visuals or virtual audio device
+
+2. `RC-505 LOOP MIX`
+   - Audio From: RC-505 stereo USB or interface inputs
+   - Monitor: In
+   - Record Arm: on when capturing the performance
+
+3. `PIANO MIDI`
+   - MIDI From: electric piano, if available
+   - Monitor: In
+   - Use this to drive chord colors in visuals
+
+4. `DRUM TRIGGER`
+   - Audio From: drum input or RC-505 mix
+   - Use this for flashes, impacts, and stutter visuals
+
+## Visual Routing
+
+The visualizer can listen to:
+
+- A microphone input
+- An audio interface input
+- A virtual audio device carrying Ableton audio
+- The RC-505 USB audio input, if exposed to the browser
+
+For the cleanest voice visuals, route the `VOICE IN` track to a virtual audio device and choose that as the input in Voice Mirror.
+
+For full-room energy visuals, route Ableton master or the RC-505 stereo mix instead.
+
+## Million-Dollar Show Routing
+
+Use two visual instances when the machine can handle it:
+
+1. `Voice Mirror - Voice`
+   - Input: voice-only Ableton send
+   - Mode: Prism or Aurora
+   - Purpose: mouth, pitch, lyric energy, intimate movement
+
+2. `Voice Mirror - Room`
+   - Input: full Ableton master or RC-505 mix
+   - Mode: Storm, Cathedral, or Grid
+   - Purpose: drums, loop impacts, chorus expansion, crowd-facing motion
+
+Put both browser windows into OBS or your projection mapper. Blend the voice layer over the room layer with Screen/Add blending if your projection software supports it.
+
+## Stability Rules
+
+- Run Ableton at the lowest stable buffer you need for singing.
+- Run Voice Mirror from a browser window on the projector display.
+- Start in **Balanced** quality; switch to **Eco** with `Q` if the DAW gets busy.
+- Use `H` to hide controls before the song starts.
+- Use `B` for blackout between songs, input changes, or projector fades.
+- Keep audio routing one-way into Voice Mirror. Do not route browser audio back into Ableton.
+
+## Launch
+
+From this folder:
+
+```bash
+python3 -m http.server 8765 --bind 127.0.0.1
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8765/index.html
+```
+
+Press **Start**, choose the input, and use **Fullscreen** for the projector.
+
+## Performance Map
+
+- Voice pitch: ring color and note meter
+- Voice loudness: ring size, brightness, bloom
+- Bass/drum energy: particle impacts and screen pulses
+- High frequencies: sparks and sharp movement
+- Piano MIDI notes: chord palette and column mode
+- Keys `1` to `5`: change visual worlds
+- Key `F`: fullscreen
+- Key `H`: hide/show controls
+- Key `B`: blackout/live output
+- Key `Q`: cycle render quality
