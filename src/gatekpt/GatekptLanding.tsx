@@ -14,19 +14,19 @@ declare global {
 type AudioStatus = "preview" | "starting" | "listening" | "blocked" | "unsupported";
 
 const workflow: Array<[string, string, LucideIcon]> = [
-  ["Capture", "Record voice, loop, lyric, melody, or sound.", Mic],
-  ["Choose", "Pick the take and keep versions organized.", Layers3],
-  ["Shape", "Try warmer, raw, intimate, live room, brighter, darker.", Sparkles],
-  ["Visualize", "Build cover direction, captions, and clip mood.", Captions],
-  ["Export", "Prepare demo, folder, archive, or shareable version.", Archive],
+  ["Capture", "Record the sound.", Mic],
+  ["Choose", "Keep the best moment.", Layers3],
+  ["Shape", "Make it warmer, raw, brighter, or live.", Sparkles],
+  ["Visualize", "Turn the sound into a look.", Captions],
+  ["Export", "Share the finished idea.", Archive],
 ];
 
 const productSections: Array<[string, string, LucideIcon, string]> = [
-  ["Project memory", "Save takes, lyrics, captions, stems, routing notes, and export intent in one session record.", Layers3, "Saved states"],
-  ["Audio-reactive visuals", "Use live sound as a visual guide for covers, clips, projection, and performance identity.", Waves, "Signal layer"],
-  ["Video-first production", "Plan captions, clip direction, and finished media while the sound is still fresh.", Film, "Clip memory"],
-  ["Hardware-aware workflow", "Keep RC-505, Scarlett, stems, cue lanes, and routing decisions visible without turning into a settings wall.", Cable, "Rig path"],
-  ["Export memory", "Export mixes, separate stems, demos, archives, and share-ready versions.", Archive, "Final files"],
+  ["Record", "Capture sound before the feeling disappears.", Mic, "Start"],
+  ["Command", "Type simple changes instead of hunting through knobs.", Sparkles, "Shape"],
+  ["Visual", "Let the sound create motion, color, and clip direction.", Waves, "Look"],
+  ["Route", "Keep live-loop gear and stems understandable.", Cable, "Rig"],
+  ["Finish", "Prepare demos, clips, folders, and shareable files.", Archive, "Export"],
 ];
 
 const cuePath = [
@@ -194,7 +194,7 @@ function TerrainSignalPreview() {
           <div>
             <p className="gk-label text-[#c6a96d]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              A browser-safe visual sketch. The private OS handles capture, versions, commands, and exports.
+              Tap the mic and watch sound become motion. Nothing is uploaded.
             </p>
           </div>
           {status === "listening" || status === "starting" ? (
@@ -229,10 +229,10 @@ export function GatekptLanding() {
               Capture ideas fast.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              GateKPT records sounds, keeps versions organized, and lets an artist shape takes with simple commands.
+              GateKPT is a custom music tool for recording ideas, shaping sound with simple commands, and turning sessions into visuals.
             </p>
             <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
-              {["Loop cues", "Stem capture", "Finished media"].map((item) => (
+              {["Record", "Shape", "Visualize"].map((item) => (
                 <div key={item} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/60">
                   {item}
                 </div>
@@ -282,7 +282,7 @@ export function GatekptLanding() {
               Cue cards for the way a session actually builds.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Capture drums, guitar, keys, vocal, and extra layers as separate lanes. Keep the loop map readable while the idea is moving.
+              Start with drums, add guitar or keys, then vocals. Keep the flow visible while the loop grows.
             </p>
           </div>
           <div className="gk-panel p-4 sm:p-5">
@@ -307,27 +307,26 @@ export function GatekptLanding() {
       <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Built for sessions</p>
+            <p className="gk-label text-[#c6a96d]">Try it</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Record the idea before the feeling disappears.
+              Make sound visible.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Record a take, keep the original, create shaped versions, and export without turning the session into a maze.
+              This public demo is intentionally simple: use your mic, make noise, watch the terrain respond.
             </p>
           </div>
 
           <div className="gk-panel p-4 sm:p-5">
-            <div className="grid gap-3">
-              {["Voice memo", "Loop pass", "Stem layer", "Caption route", "Demo export"].map((item, index) => (
-                <div key={item} className="gk-cue">
-                  <span className="font-mono text-xs text-[#e8e1d2]/42">{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <p className="font-black">{item}</p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">saved version</p>
-                  </div>
-                  <span className="ml-auto rounded-full border border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/58">
-                    saved
-                  </span>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                ["01", "Allow mic", "Browser only"],
+                ["02", "Play sound", "Voice or beat"],
+                ["03", "Watch motion", "Live terrain"],
+              ].map(([number, title, note]) => (
+                <div key={title} className="rounded-[1.35rem] border border-white/10 bg-white/[0.035] p-5">
+                  <span className="font-mono text-xs text-[#e8e1d2]/42">{number}</span>
+                  <p className="mt-8 text-xl font-black tracking-[-0.03em]">{title}</p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#92bfb3]/70">{note}</p>
                 </div>
               ))}
             </div>
@@ -338,8 +337,8 @@ export function GatekptLanding() {
       <section className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-5">
-            <p className="gk-label text-[#92bfb3]">What the OS remembers</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Takes, sections, visuals, routing, exports.</h2>
+            <p className="gk-label text-[#92bfb3]">What it helps with</p>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Record, shape, visualize, finish.</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
             {productSections.map(([title, text, Icon, meta]) => (
