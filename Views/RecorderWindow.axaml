@@ -276,7 +276,7 @@
                 </StackPanel>
 
                 <Border Grid.Column="1" CornerRadius="28" Background="#A80B0907" BorderBrush="#22F8F0E5" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="14">
+                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto" RowSpacing="14">
                         <TextBlock Text="VERSIONS"
                                    FontSize="11"
                                    FontWeight="Black"
@@ -312,6 +312,76 @@
                                 HorizontalAlignment="Stretch"
                                 Background="#F2EADC"
                                 Foreground="#15120D"/>
+                        <Border Grid.Row="4" CornerRadius="20" Background="#15120D" BorderBrush="#306FB6A6" BorderThickness="1" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="LAYER DECK"
+                                           FontSize="11"
+                                           FontWeight="Black"
+                                           Foreground="#6FB6A6"
+                                           LetterSpacing="2.4"/>
+                                <TextBlock Text="{Binding LayerDeckSummary}"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           TextWrapping="Wrap"
+                                           Foreground="#D9C5A5"/>
+                                <ItemsControl ItemsSource="{Binding LayerSlots}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:LayerSlotItem">
+                                            <Border CornerRadius="14" Background="#12F8F0E5" Padding="10" Margin="0,0,0,8">
+                                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                                    <TextBlock Text="{Binding Number}"
+                                                               FontSize="12"
+                                                               FontWeight="Black"
+                                                               Foreground="#F1C27D"/>
+                                                    <StackPanel Grid.Column="1">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontSize="12"
+                                                                   FontWeight="Black"
+                                                                   Foreground="#F8F0E5"/>
+                                                        <TextBlock Text="{Binding FileName}"
+                                                                   FontSize="10"
+                                                                   FontWeight="Bold"
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="#D9C5A5"/>
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Status}"
+                                                               FontSize="10"
+                                                               FontWeight="Black"
+                                                               Foreground="#6FB6A6"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                        <Grid Grid.Row="5" ColumnDefinitions="*,*" ColumnSpacing="13">
+                            <Button Content="Assign take"
+                                    Command="{Binding AssignSelectedToNextLayerCommand}"
+                                    Padding="14,12"
+                                    Background="#6FB6A6"
+                                    Foreground="#07110D"/>
+                            <Button Grid.Column="1"
+                                    Content="Clear deck"
+                                    Command="{Binding ClearLayerDeckCommand}"
+                                    Padding="14,12"
+                                    Background="#2415120D"
+                                    Foreground="#D9C5A5"/>
+                        </Grid>
+                        <Grid Grid.Row="6" ColumnDefinitions="*,*" ColumnSpacing="13">
+                            <Button Content="Play stack"
+                                    Command="{Binding PlayLayerStackCommand}"
+                                    Padding="14,12"
+                                    Background="#F1C27D"
+                                    Foreground="#15120D"/>
+                            <Button Grid.Column="1"
+                                    Content="Stop stack"
+                                    Command="{Binding StopLayerStackCommand}"
+                                    Padding="14,12"
+                                    Background="#E37B45"
+                                    Foreground="#15120D"/>
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>

@@ -55,6 +55,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
+    public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
+    [
+        new(1, "Drums"),
+        new(2, "Guitar"),
+        new(3, "Piano"),
+        new(4, "Vocal")
+    ];
+
     public string PeakLabel => $"{PeakPercent:0}%";
 
     public string RecorderStateLabel =>
@@ -94,6 +102,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Versions.Count == 0
             ? "No takes yet. Record, then Stop & Save."
             : $"{Versions.Count} take(s). Select one, or type: vocal polish, drums punch, add reverb.";
+
+    public string LayerDeckSummary
+    {
+        get
+        {
+            var loaded = LayerSlots.Count(slot => !string.IsNullOrWhiteSpace(slot.Path));
+            return loaded == 0
+                ? "No layers assigned yet. Select a take, then assign it to the next lane."
+                : $"{loaded}/{LayerSlots.Count} layer(s) ready. Play stack to perform over them.";
+        }
+    }
 
     public string CommandHelp =>
         "Ask for changes in plain words: make the drums hit harder, polish the vocal, add a small room, make it warmer, clean the rumble, make a DJ-ready boost.";
@@ -228,6 +247,69 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _playback.StopAll();
         Status = "Internal playback stopped. If Windows player opened, close/pause it there.";
+    }
+
+    [RelayCommand]
+    private void AssignSelectedToNextLayer()
+    {
+        var path = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            Status = "No take selected. Record or select a take first.";
+            return;
+        }
+
+        var slot = LayerSlots.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Path))
+            ?? LayerSlots.First();
+        ReplaceLayerSlot(slot.Number, slot with
+        {
+            Path = path,
+            FileName = Path.GetFileName(path),
+            Status = "Loaded"
+        });
+
+        Status = $"Assigned {Path.GetFileName(path)} to {slot.Name}.";
+        CommandResult = $"Layer loaded: {slot.Name}";
+    }
+
+    [RelayCommand]
+    private void PlayLayerStack()
+    {
+        var loaded = LayerSlots.Where(slot => !string.IsNullOrWhiteSpace(slot.Path) && File.Exists(slot.Path)).ToList();
+        if (loaded.Count == 0)
+        {
+            Status = "No layers loaded yet. Assign takes to the layer deck first.";
+            return;
+        }
+
+        _playback.StopAll();
+        foreach (var slot in loaded)
+        {
+            _playback.PlayLoop(slot.Number, slot.Path, 80);
+        }
+
+        Status = $"Playing {loaded.Count} layer(s). Record the next layer while the stack plays.";
+    }
+
+    [RelayCommand]
+    private void StopLayerStack()
+    {
+        _playback.StopAll();
+        Status = "Layer stack stopped.";
+    }
+
+    [RelayCommand]
+    private void ClearLayerDeck()
+    {
+        _playback.StopAll();
+        for (var index = 0; index < LayerSlots.Count; index++)
+        {
+            var slot = LayerSlots[index];
+            LayerSlots[index] = new LayerSlotItem(slot.Number, slot.Name);
+        }
+
+        OnPropertyChanged(nameof(LayerDeckSummary));
+        Status = "Layer deck cleared. Takes are still saved in Versions.";
     }
 
     [RelayCommand]
@@ -582,6 +664,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VersionListHint));
     }
 
+    private void ReplaceLayerSlot(int number, LayerSlotItem updated)
+    {
+        var index = LayerSlots.IndexOf(LayerSlots.First(item => item.Number == number));
+        LayerSlots[index] = updated;
+        OnPropertyChanged(nameof(LayerDeckSummary));
+    }
+
     partial void OnPeakPercentChanged(double value)
     {
         OnPropertyChanged(nameof(PeakLabel));
@@ -613,3 +702,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(NextActionLabel));
     }
 }
+
+public sealed record LayerSlotItem(
+    int Number,
+    string Name,
+    string Path = "",
+    string FileName = "Empty",
+    string Status = "Empty");
