@@ -134,12 +134,12 @@
                     </Border>
                     <Border Grid.Column="2" CornerRadius="18" Background="#10A484FF" BorderBrush="#24A484FF" BorderThickness="1" Padding="13">
                         <StackPanel>
-                            <TextBlock Text="CAPTIONS / VISUALS"
+                            <TextBlock Text="VISUALS"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2"
                                        Foreground="#A484FF"/>
-                            <TextBlock Text="Lyrics, captions, and visuals should follow the active section color."
+                            <TextBlock Text="Captions. Color. Motion."
                                        Margin="0,6,0,0"
                                        FontSize="12"
                                        FontWeight="Bold"
@@ -188,7 +188,7 @@
                                     Foreground="#111315"/>
                             </Grid>
                             <TextBlock Grid.Row="2"
-                                       Text="Play the RC-505 during Check signal. While recording, the big signal number must move or Windows is not receiving the performance."
+                                       Text="Play RC-505. Signal must move."
                                        FontSize="12"
                                        FontWeight="Bold"
                                        TextWrapping="Wrap"
@@ -348,9 +348,9 @@
                                        FontWeight="Bold"
                                        TextWrapping="Wrap"
                                        Foreground="#CFC4B3"/>
-                            <TextBox Grid.Row="2"
+                                    <TextBox Grid.Row="2"
                                      Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="delete last version, rename hook idea, show versions..."
+                                     PlaceholderText="drums punch, vocal polish, add reverb..."
                                      TextWrapping="Wrap"
                                      MinHeight="48"
                                      Background="#F4EBDA"

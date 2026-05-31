@@ -42,13 +42,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _chatText = "make drums warmer";
 
     [ObservableProperty]
-    private string _status = "Find Scarlett, check signal, then record. Nothing else.";
+    private string _status = "Ready.";
 
     [ObservableProperty]
-    private string _commandResult = "Command result will show here.";
+    private string _commandResult = "No command yet.";
 
     [ObservableProperty]
-    private string _assistantBrief = "Private assistant mode: it listens to your instructions and makes safe versions. It does not replace the artist.";
+    private string _assistantBrief = "Text edits. Safe copies.";
 
     [ObservableProperty]
     private string _commandHistory = "No commands yet.";
@@ -81,24 +81,24 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string NextActionLabel =>
         IsRecording
-            ? "Press STOP & SAVE when the loop is done."
+            ? "Stop when done."
             : SignalReady
-                ? "Press RECORD, play, then STOP & SAVE."
-                : "Press CHECK SIGNAL while the RC-505 is playing.";
+                ? "Record the take."
+                : "Check signal.";
 
     public string PrimaryHeadline =>
         IsRecording
-            ? "Recording. Play now."
+            ? "Recording."
             : SignalReady
-                ? "Signal works. Record when ready."
-                : "First: prove sound.";
+                ? "Signal ready."
+                : "Audio check.";
 
     public string PrimaryDetail =>
         IsRecording
-            ? "Press Stop & Save when the pass is done."
+            ? "Play the pass."
             : SignalReady
-                ? "Now record a short take. Original files stay safe."
-                : "Click Find Scarlett, then Check Signal while the RC-505 is playing.";
+                ? "Capture when ready."
+                : "Find Scarlett. Check signal.";
 
     public string CurrentFileLabel =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
@@ -107,8 +107,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string VersionListHint =>
         Versions.Count == 0
-            ? "No takes yet. Record, then Stop & Save."
-            : $"{Versions.Count} take(s). Select one, or type: vocal polish, drums punch, add reverb.";
+            ? "No takes."
+            : $"{Versions.Count} take(s).";
 
     public string LayerDeckSummary
     {
@@ -116,8 +116,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             var loaded = LayerSlots.Count(slot => !string.IsNullOrWhiteSpace(slot.Path));
             return loaded == 0
-                ? "No layers assigned yet. Select a take, then assign it to the next lane."
-                : $"{loaded}/{LayerSlots.Count} layer(s) ready. Export a mix to create one playable WAV.";
+                ? "Empty lanes."
+                : $"{loaded}/{LayerSlots.Count} loaded.";
         }
     }
 
@@ -127,22 +127,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : Path.GetFileName(LastExportedMixPath);
 
     public string CommandHelp =>
-        "Ask for changes in plain words: make the drums hit harder, polish the vocal, add a small room, make it warmer, clean the rumble, make a DJ-ready boost.";
+        "Try: drums punch, vocal polish, add reverb, warmer, louder, delete.";
 
     public string Rc505CaptureGuide =>
-        "RC-505 flow: record the full loop, or solo one RC-505 track and capture it into the matching lane.";
+        "Full loop or solo track.";
 
     public string SessionMemorySignal =>
-        "Session memory: capture -> cue lanes -> shape versions -> export mix -> visual layer.";
+        "Capture -> lanes -> mix -> visual.";
 
     public string SectionTimelineSignal =>
-        "Sections: Intro / Groove / Hook / Bridge / Outro. Active capture should always know where it belongs.";
+        "Intro / Groove / Hook / Bridge / Outro.";
 
     public string ExportPlanningSignal =>
-        "Export plan: create one layer mix, open it for review, then make DJ-ready or visual-ready versions.";
+        "Mix, review, prep.";
 
     public string RoutingSignal =>
-        "Routing: RC-505 output -> Scarlett input -> GateKPT capture. Keep hardware in the musical path.";
+        "RC-505 -> Scarlett -> GateKPT.";
 
     public RecorderWindowViewModel()
     {
