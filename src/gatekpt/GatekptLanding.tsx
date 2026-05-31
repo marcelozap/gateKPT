@@ -30,14 +30,14 @@ const productSections: Array<[string, string, LucideIcon, string]> = [
 ];
 
 const cuePath = [
-  ["01", "Drums", "Capture the pulse"],
-  ["02", "Guitar", "Add movement"],
-  ["03", "Keys", "Fill the room"],
-  ["04", "Vocal", "Find the line"],
-  ["05", "Extra", "Texture or hook"],
+  ["01", "Drums", "Pulse"],
+  ["02", "Guitar", "Movement"],
+  ["03", "Keys", "Room"],
+  ["04", "Vocal", "Line"],
+  ["05", "Extra", "Hook"],
 ];
 
-function TerrainSignalPreview() {
+function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -45,6 +45,8 @@ function TerrainSignalPreview() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const demoIntervalRef = useRef<number | null>(null);
   const demoNodesRef = useRef<AudioNode[]>([]);
+  const lastCanvasDrawRef = useRef(0);
+  const lastLevelUpdateRef = useRef(0);
   const [status, setStatus] = useState<AudioStatus>("preview");
   const [level, setLevel] = useState(21);
 
@@ -78,6 +80,13 @@ function TerrainSignalPreview() {
     if (animationRef.current) cancelAnimationFrame(animationRef.current);
 
     const render = () => {
+      const nowMs = performance.now();
+      if (nowMs - lastCanvasDrawRef.current < 42) {
+        animationRef.current = requestAnimationFrame(render);
+        return;
+      }
+      lastCanvasDrawRef.current = nowMs;
+
       const rect = canvas.getBoundingClientRect();
       const width = Math.max(1, rect.width);
       const height = Math.max(1, rect.height);
@@ -103,7 +112,10 @@ function TerrainSignalPreview() {
 
       const average = bins.reduce((sum, value) => sum + value, 0) / bins.length;
       const pulse = Math.min(1, average / 165);
-      setLevel(Math.round(pulse * 100));
+      if (nowMs - lastLevelUpdateRef.current > 180) {
+        lastLevelUpdateRef.current = nowMs;
+        setLevel(Math.round(pulse * 100));
+      }
 
       ctx.clearRect(0, 0, width, height);
       const base = ctx.createLinearGradient(0, 0, width, height);
@@ -120,13 +132,13 @@ function TerrainSignalPreview() {
       ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
 
-      for (let line = 0; line < 12; line += 1) {
-        const yBase = height * (0.22 + line * 0.058);
+      for (let line = 0; line < 8; line += 1) {
+        const yBase = height * (0.24 + line * 0.076);
         ctx.beginPath();
         for (let index = 0; index < bins.length; index += 1) {
           const x = (index / (bins.length - 1)) * width;
           const signal = bins[(index + line * 5) % bins.length] / 255;
-          const y = yBase + Math.sin(index * 0.08 + line * 0.7 + performance.now() / 2400) * (7 + line * 0.8) - signal * (10 + pulse * 22);
+          const y = yBase + Math.sin(index * 0.08 + line * 0.7 + nowMs / 2400) * (7 + line * 0.8) - signal * (10 + pulse * 22);
           if (index === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -138,7 +150,7 @@ function TerrainSignalPreview() {
       ctx.beginPath();
       for (let index = 0; index < bins.length; index += 1) {
         const x = (index / (bins.length - 1)) * width;
-        const y = height * 0.63 + Math.sin(index * 0.09 + performance.now() / 900) * 16 - (bins[index] / 255) * 78;
+        const y = height * 0.63 + Math.sin(index * 0.09 + nowMs / 900) * 16 - (bins[index] / 255) * 78;
         if (index === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
@@ -285,7 +297,7 @@ function TerrainSignalPreview() {
           <div>
             <p className="gk-label text-[#c6a96d]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              Use your mic or start the built-in loop. Nothing is uploaded.
+              Active cue: {activeCue}. Use the demo loop or your mic.
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -312,6 +324,9 @@ function TerrainSignalPreview() {
 }
 
 export function GatekptLanding() {
+  const [activeCueIndex, setActiveCueIndex] = useState(0);
+  const activeCue = cuePath[activeCueIndex]?.[1] || "Drums";
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#06111c] text-[#e8e1d2]">
       <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
@@ -346,7 +361,7 @@ export function GatekptLanding() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
-            <TerrainSignalPreview />
+            <TerrainSignalPreview activeCue={activeCue} />
           </motion.div>
         </div>
       </section>
@@ -376,25 +391,41 @@ export function GatekptLanding() {
           <div className="gk-panel p-6 sm:p-8">
             <p className="gk-label text-[#c6a96d]">Live-loop workflow</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Cue cards for the way a session actually builds.
+              Build the loop.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Start with drums, add guitar or keys, then vocals. Keep the flow visible while the loop grows.
+              Tap a cue. The active layer moves with the session.
             </p>
+            <div className="mt-8 rounded-[1.25rem] border border-[#92bfb3]/18 bg-[#92bfb3]/8 p-4">
+              <p className="gk-label text-[#92bfb3]">Now</p>
+              <p className="mt-2 text-3xl font-black tracking-[-0.05em]">{activeCue}</p>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e8e1d2]/10">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#c6a96d] via-[#92bfb3] to-[#d08a56] transition-all duration-300"
+                  style={{ width: `${((activeCueIndex + 1) / cuePath.length) * 100}%` }}
+                />
+              </div>
+            </div>
           </div>
           <div className="gk-panel p-4 sm:p-5">
             <div className="grid gap-3">
-              {cuePath.map(([number, name, note]) => (
-                <div key={number} className="gk-cue group">
+              {cuePath.map(([number, name, note], index) => (
+                <button
+                  key={number}
+                  type="button"
+                  onClick={() => setActiveCueIndex(index)}
+                  className={`gk-cue group text-left ${activeCueIndex === index ? "is-active" : ""}`}
+                  aria-pressed={activeCueIndex === index}
+                >
                   <span className="font-mono text-xs text-[#e8e1d2]/42">{number}</span>
                   <div>
                     <p className="font-black">{name}</p>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">{note}</p>
                   </div>
                   <span className="ml-auto rounded-full border border-[#92bfb3]/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#92bfb3]/80 transition group-hover:border-[#c6a96d]/50 group-hover:text-[#c6a96d]">
-                    cue
+                    {activeCueIndex === index ? "active" : "cue"}
                   </span>
-                </div>
+                </button>
               ))}
             </div>
           </div>

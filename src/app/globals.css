@@ -142,6 +142,7 @@ body {
 }
 
 .gk-cue {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -155,6 +156,19 @@ body {
 .gk-cue:hover {
   transform: translateY(-2px);
   background: rgba(232, 225, 210, 0.055);
+}
+
+.gk-cue.is-active {
+  border-color: rgba(198, 169, 109, 0.58);
+  background:
+    linear-gradient(90deg, rgba(198, 169, 109, 0.15), rgba(146, 191, 179, 0.07)),
+    rgba(232, 225, 210, 0.045);
+  box-shadow: inset 0 0 0 1px rgba(198, 169, 109, 0.12), 0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.gk-cue.is-active span:last-child {
+  border-color: rgba(198, 169, 109, 0.62);
+  color: #c6a96d;
 }
 
 .gk-cue-amber:hover {
