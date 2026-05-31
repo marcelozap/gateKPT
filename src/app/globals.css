@@ -2,218 +2,167 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Base ──────────────────────────────────────────────────── */
 :root {
   color-scheme: dark;
+  --gk-ink: #f4ebda;
+  --gk-muted: rgba(244, 235, 218, 0.62);
+  --gk-bg: #08090a;
+  --gk-panel: rgba(17, 19, 21, 0.78);
+  --gk-border: rgba(244, 235, 218, 0.11);
+  --gk-amber: #f0b868;
+  --gk-cyan: #57dae2;
+  --gk-violet: #a484ff;
 }
 
 html,
 body {
   min-height: 100%;
+  background: var(--gk-bg);
+  color: var(--gk-ink);
 }
 
 body {
-  background-color: #000000;
-  color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
-  /* Very faint cold-blue depth at top — like a high-end monitor in a dark room */
-  background-image:
-    radial-gradient(ellipse 80% 40% at 50% -10%, rgba(10,86,214,0.06), transparent);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ─── Scrollbars ─────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
-* { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 235, 218, 0.2) transparent;
+}
 
-/* ─── Accessibility ──────────────────────────────────────────── */
-.sr-only {
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 235, 218, 0.18);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244, 235, 218, 0.3);
+}
+
+.gk-ambient {
   position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(240, 184, 104, 0.18), transparent 28%),
+    radial-gradient(circle at 86% 6%, rgba(87, 218, 226, 0.15), transparent 32%),
+    radial-gradient(circle at 68% 72%, rgba(164, 132, 255, 0.12), transparent 34%),
+    linear-gradient(135deg, #08090a 0%, #111315 48%, #070707 100%);
 }
 
-.skip-link {
-  @apply sr-only;
-  z-index: 200;
+.gk-panel {
+  border: 1px solid var(--gk-border);
+  background:
+    linear-gradient(135deg, rgba(244, 235, 218, 0.055), rgba(244, 235, 218, 0.018)),
+    rgba(12, 13, 14, 0.9);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(244, 235, 218, 0.06);
 }
-.skip-link:focus {
-  position: fixed;
-  top: 0.75rem; left: 0.75rem;
-  width: auto; height: auto;
-  margin: 0; padding: 0.5rem 1rem;
-  background: #0A56D6;
-  color: #fff;
-  border-radius: 8px;
+
+.gk-card {
+  border: 1px solid var(--gk-border);
+  border-radius: 1.5rem;
+  background: rgba(17, 19, 21, 0.72);
+  padding: 1.25rem;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.gk-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(87, 218, 226, 0.42);
+  background: rgba(20, 23, 25, 0.86);
+  box-shadow: 0 18px 50px rgba(87, 218, 226, 0.08);
+}
+
+.gk-button-primary,
+.gk-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
   font-size: 0.75rem;
-  font-weight: 600;
-  clip: auto;
-  overflow: visible;
-  white-space: normal;
-  outline: none;
-}
-
-/* ─── Apple Materials ────────────────────────────────────────── */
-
-/* ultraThinMaterial — nav bars */
-.material-ultra-thin {
-  background: rgba(8,8,8,0.85);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-}
-
-/* thinMaterial — cards, panels */
-.material-thin {
-  background: rgba(14,14,14,0.94);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-}
-
-/* regularMaterial — elevated panels */
-.material-regular {
-  background: rgba(20,20,20,0.97);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-}
-
-/* ─── Cards ──────────────────────────────────────────────────── */
-
-/* XIV card — pure #111 surface, near-invisible border */
-.apple-card {
-  @apply rounded-apple-xl;
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 2px 24px rgba(0,0,0,0.6);
-}
-
-/* Elevated card */
-.apple-card-elevated {
-  @apply apple-card;
-  background: #191919;
-  box-shadow: 0 8px 48px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.5);
-}
-
-/* Legacy name kept for zero-change backwards compat */
-.glass-panel {
-  @apply apple-card;
-}
-
-/* ─── Typography helpers ─────────────────────────────────────── */
-.display-number {
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-}
-
-.label-caps {
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-weight: 900;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(235,235,245,0.45);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
-/* Apple-style section title */
-.section-title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+.gk-button-primary {
+  background: var(--gk-amber);
+  color: #12100d;
+  box-shadow: 0 10px 32px rgba(240, 184, 104, 0.15);
+}
+
+.gk-button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 42px rgba(240, 184, 104, 0.24);
+}
+
+.gk-button-secondary {
+  border: 1px solid rgba(244, 235, 218, 0.16);
+  background: rgba(244, 235, 218, 0.04);
+  color: rgba(244, 235, 218, 0.78);
+}
+
+.gk-button-secondary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(87, 218, 226, 0.42);
+  background: rgba(87, 218, 226, 0.08);
+}
+
+.gk-chip,
+.gk-label {
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(235,235,245,0.45);
-  padding: 0 4px;
 }
 
-/* Remove old neon glow */
-.neon-text { text-shadow: none; }
-
-/* ─── Metrics ────────────────────────────────────────────────── */
-.metric-positive { color: #32D74B; }
-.metric-negative { color: #FF453A; }
-.metric-neutral  { color: rgba(255,255,255,0.55); }
-
-/* ─── Separator ─────────────────────────────────────────────── */
-.separator {
-  height: 1px;
-  background: rgba(84,84,88,0.35);
+.gk-chip {
+  border: 1px solid rgba(244, 235, 218, 0.14);
+  border-radius: 999px;
+  background: rgba(8, 9, 10, 0.68);
+  padding: 0.45rem 0.75rem;
+  color: rgba(244, 235, 218, 0.7);
+  backdrop-filter: blur(14px);
 }
 
-/* ─── Custom scrollbar (legacy alias) ───────────────────────── */
-.custom-scrollbar { /* handled by * {} above */ }
-
-/* ═══════════════════════════════════════════════════════════════
-   INTERACTION UTILITIES — XIV × Apple cold-precision feel
-   Blue glow is directional and snappy (150ms), never blooming.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* Generic hover glow — apply to any interactive surface */
-.hover-glow {
-  transition: box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-}
-.hover-glow:hover {
-  box-shadow: 0 0 16px rgba(10,86,214,0.35);
+.gk-cue {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid rgba(244, 235, 218, 0.1);
+  border-radius: 1.35rem;
+  background: rgba(244, 235, 218, 0.035);
+  padding: 1rem;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
-/* Blue interactive button — adds glow + brightness on hover */
-.btn-blue {
-  transition: box-shadow 0.15s ease, filter 0.15s ease, background 0.15s ease;
-}
-.btn-blue:hover:not(:disabled) {
-  box-shadow: 0 0 16px rgba(10,86,214,0.45);
-  filter: brightness(1.12);
-}
-.btn-blue:active:not(:disabled) {
-  filter: brightness(0.95);
-  box-shadow: 0 0 8px rgba(10,86,214,0.3);
+.gk-cue:hover {
+  transform: translateY(-2px);
+  background: rgba(244, 235, 218, 0.055);
 }
 
-/* Neutral button — white/silver hover lift */
-.btn-ghost {
-  transition: box-shadow 0.15s ease, background 0.15s ease;
-}
-.btn-ghost:hover:not(:disabled) {
-  background: rgba(255,255,255,0.10) !important;
-  box-shadow: 0 0 12px rgba(10,86,214,0.20);
+.gk-cue-amber:hover {
+  border-color: rgba(240, 184, 104, 0.5);
 }
 
-/* Input focus ring — replaces default outline */
-.input-focus {
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.input-focus:focus {
-  border-color: #0A56D6 !important;
-  box-shadow: 0 0 0 3px rgba(10,86,214,0.20) !important;
-  outline: none !important;
+.gk-cue-cyan:hover {
+  border-color: rgba(87, 218, 226, 0.5);
 }
 
-/* Card row hover — tape rows, forge tasks, list items */
-.card-row-hover {
-  border-left: 2px solid transparent;
-  transition: background 0.12s ease, border-left-color 0.12s ease, box-shadow 0.12s ease;
-}
-.card-row-hover:hover {
-  background: rgba(255,255,255,0.07) !important;
-  border-left-color: #0A56D6 !important;
-}
-
-/* Metric tile hover — Green Machine data cards */
-.metric-tile-hover {
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.metric-tile-hover:hover {
-  border-color: rgba(10,86,214,0.30) !important;
-  box-shadow: 0 0 12px rgba(10,86,214,0.15);
-}
-
-/* Keyboard focus glow — replaces focus-visible:ring everywhere */
-.focus-glow:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(10,86,214,0.40);
+.gk-cue-violet:hover {
+  border-color: rgba(164, 132, 255, 0.5);
 }
