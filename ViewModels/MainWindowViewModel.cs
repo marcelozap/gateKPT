@@ -476,7 +476,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("Export Memory", "Queue, render, track, and remember every finished asset", "06", "#9DBFB3"),
         ];
 
-        _selectedRoom = Rooms[0];
+        _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
         RefreshToolchainState();
 
         ExportPresets =
