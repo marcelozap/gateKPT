@@ -42,6 +42,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _status = "Find Scarlett, check signal, then record. Nothing else.";
 
     [ObservableProperty]
+    private string _commandResult = "Command result will show here.";
+
+    [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
 
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
@@ -219,10 +222,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var command = ChatText.Trim();
         if (string.IsNullOrWhiteSpace(command))
         {
+            CommandResult = "No command entered.";
             Status = "Type a command like: delete last version, rename hook idea, show versions.";
             return;
         }
 
+        CommandResult = $"Running: {command}";
         if (command.Contains("delete", StringComparison.OrdinalIgnoreCase))
         {
             DeleteSelectedOrLatest();
@@ -244,7 +249,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("versions", StringComparison.OrdinalIgnoreCase))
         {
             RefreshVersions();
-            Status = $"Showing {Versions.Count} version(s).";
+            CommandResult = $"Showing {Versions.Count} version(s).";
+            Status = CommandResult;
             return;
         }
 
@@ -258,7 +264,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        Status = "Command not wired yet. Working commands: delete, rename, show versions, make warmer.";
+        CommandResult = "Command not wired yet. Try: make warmer, make louder, rename chorus, delete last version.";
+        Status = CommandResult;
     }
 
     [RelayCommand]
@@ -278,14 +285,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var version = SelectedVersion ?? Versions.FirstOrDefault();
         if (version is null)
         {
+            CommandResult = "No version to delete.";
             Status = "No version to delete.";
             return;
         }
 
         var trashPath = _versions.MoveToTrash(version.Path);
-        Status = string.IsNullOrWhiteSpace(trashPath)
+        CommandResult = string.IsNullOrWhiteSpace(trashPath)
             ? "Could not move version to trash."
             : $"Moved to trash: {version.Name}";
+        Status = CommandResult;
         RefreshVersions();
     }
 
@@ -294,15 +303,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var version = SelectedVersion ?? Versions.FirstOrDefault();
         if (version is null)
         {
+            CommandResult = "No version to rename.";
             Status = "No version to rename.";
             return;
         }
 
         var newPath = _versions.RenameVersion(version.Path, label);
         CurrentFilePath = newPath;
-        Status = string.IsNullOrWhiteSpace(newPath)
+        CommandResult = string.IsNullOrWhiteSpace(newPath)
             ? "Could not rename version."
             : $"Renamed take: {Path.GetFileName(newPath)}";
+        Status = CommandResult;
         RefreshVersions();
     }
 
@@ -311,6 +322,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var sourcePath = SelectedVersion?.Path ?? CurrentFilePath;
         if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
         {
+            CommandResult = "No recording yet. Record, Stop & Save, then run the command.";
             Status = "No recording yet. Press Record, play sound, then Stop & Save first.";
             return;
         }
@@ -324,6 +336,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         if (string.IsNullOrWhiteSpace(newPath))
         {
+            CommandResult = "Could not create edit copy.";
             Status = "Could not create edit copy.";
             return;
         }
@@ -331,6 +344,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CurrentFilePath = newPath;
         RefreshVersions();
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
+        CommandResult = $"Created: {Path.GetFileName(newPath)}";
         Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
     }
 
