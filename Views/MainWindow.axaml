@@ -402,7 +402,8 @@
                                     BorderBrush="#33E37B45"
                                     BorderThickness="1"
                                     Padding="24"
-                                    Margin="0,21,0,0">
+                                    Margin="0,21,0,0"
+                                    IsVisible="False">
                                 <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="18">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                                         <StackPanel>
@@ -521,19 +522,20 @@
                                                        FontWeight="Black"
                                                        Foreground="#6FB6A6"
                                                        LetterSpacing="2.4"/>
-                                            <TextBlock Text="{Binding SessionWorkflowSignal}"
+                                            <TextBlock Text="{Binding NextRecordingMoveHeadline}"
                                                        Margin="0,5,0,0"
-                                                       FontSize="20"
+                                                       FontSize="34"
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
                                                        Foreground="#F8F0E5"/>
-                                            <TextBlock Text="{Binding SessionSelectedLaneSignal}"
+                                            <TextBlock Text="{Binding NextRecordingMoveDetail}"
                                                        Margin="0,8,0,0"
-                                                       FontSize="13"
+                                                       FontSize="15"
+                                                       LineHeight="23"
                                                        FontWeight="Bold"
                                                        TextWrapping="Wrap"
                                                        Foreground="#D9C5A5"/>
-                                            <TextBlock Text="{Binding SessionRecorderLocation}"
+                                            <TextBlock Text="{Binding SessionSelectedLaneSignal}"
                                                        Margin="0,4,0,0"
                                                        FontSize="11"
                                                        FontWeight="Bold"
@@ -541,9 +543,9 @@
                                                        Foreground="#9DBFB3"/>
                                         </StackPanel>
                                         <Button Grid.Column="1"
-                                                Content="Prep next lane"
+                                                Content="Start here"
                                                 Command="{Binding PrimeRecordingSessionCommand}"
-                                                Padding="21,14"
+                                                Padding="26,16"
                                                 Background="#6FB6A6"
                                                 Foreground="#15120D"
                                                 FontWeight="Black"
@@ -578,7 +580,8 @@
                                                 Padding="12,8"
                                                 Background="#15120D"
                                                 Foreground="#F8F0E5"
-                                                FontWeight="Black"/>
+                                                FontWeight="Black"
+                                                IsVisible="False"/>
                                     </Grid>
                                 </Grid>
                             </Border>

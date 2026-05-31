@@ -1321,6 +1321,40 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string NextRecordingMoveHeadline
+    {
+        get
+        {
+            var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath));
+            return next is null
+                ? "Play the arrangement. Save the session."
+                : $"Next: {next.Instrument}";
+        }
+    }
+
+    public string NextRecordingMoveDetail
+    {
+        get
+        {
+            var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath));
+            if (next is null)
+            {
+                return "All core lanes have audio. Listen once, stop cleanly, then save a session package.";
+            }
+
+            var role = next.Instrument switch
+            {
+                "Drums" => "Build the groove first. No harmony yet.",
+                "Guitar" => "Answer the drums. Leave air for the vocal.",
+                "Piano" => "Add color only where the groove needs lift.",
+                "Vocal" => "Record the message, not perfection.",
+                "Harmony" => "Add lift or skip it if the lead already works.",
+                _ => "Capture one clear part before adding more.",
+            };
+            return $"{role} The app will select the lane and send you to Song Builder.";
+        }
+    }
+
     public string SessionPackageSignal =>
         string.IsNullOrWhiteSpace(LastAutosavePath)
             ? $"Session package ready. Files will land in {System.IO.Path.Combine(LibraryPath, "session-packages")}."
@@ -4291,6 +4325,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(SessionActionResult));
         OnPropertyChanged(nameof(SessionRecorderLocation));
         OnPropertyChanged(nameof(SessionSelectedLaneSignal));
+        OnPropertyChanged(nameof(NextRecordingMoveHeadline));
+        OnPropertyChanged(nameof(NextRecordingMoveDetail));
     }
 
     private IEnumerable<ProjectMemoryTimelineItem> BuildProjectMemoryTimeline()
