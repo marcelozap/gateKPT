@@ -101,67 +101,98 @@
             </Border>
 
             <Border Grid.Row="1" CornerRadius="24" Background="#111315" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="16">
-                <Grid ColumnDefinitions="1.1*,1*,1*,1*" ColumnSpacing="13">
-                    <Border CornerRadius="18" Background="#10F0B868" BorderBrush="#24F0B868" BorderThickness="1" Padding="13">
+                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="13">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                         <StackPanel>
-                            <TextBlock Text="PROJECT MEMORY"
-                                       FontSize="10"
+                            <TextBlock Text="WHAT NEXT?"
+                                       FontSize="11"
                                        FontWeight="Black"
-                                       LetterSpacing="2"
+                                       LetterSpacing="2.4"
                                        Foreground="#F0B868"/>
-                            <TextBlock Text="{Binding SessionMemorySignal}"
-                                       Margin="0,6,0,0"
+                            <TextBlock Text="{Binding ArtistWorkflowSignal}"
+                                       Margin="0,5,0,0"
                                        FontSize="12"
                                        FontWeight="Bold"
                                        TextWrapping="Wrap"
                                        Foreground="#CFC4B3"/>
                         </StackPanel>
-                    </Border>
-                    <Border Grid.Column="1" CornerRadius="18" Background="#1057DAE2" BorderBrush="#2457DAE2" BorderThickness="1" Padding="13">
-                        <StackPanel>
-                            <TextBlock Text="SECTION GRID"
-                                       FontSize="10"
+                        <Border Grid.Column="1" CornerRadius="999" Background="#1257DAE2" Padding="13,8">
+                            <TextBlock Text="{Binding CurrentFileLabel}"
+                                       MaxWidth="220"
+                                       FontSize="11"
                                        FontWeight="Black"
-                                       LetterSpacing="2"
-                                       Foreground="#57DAE2"/>
-                            <TextBlock Text="{Binding SectionTimelineSignal}"
-                                       Margin="0,6,0,0"
-                                       FontSize="12"
-                                       FontWeight="Bold"
                                        TextWrapping="Wrap"
-                                       Foreground="#CFC4B3"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Grid.Column="2" CornerRadius="18" Background="#10A484FF" BorderBrush="#24A484FF" BorderThickness="1" Padding="13">
-                        <StackPanel>
-                            <TextBlock Text="VISUALS"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2"
-                                       Foreground="#A484FF"/>
-                            <TextBlock Text="Captions. Color. Motion."
-                                       Margin="0,6,0,0"
-                                       FontSize="12"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"
-                                       Foreground="#CFC4B3"/>
-                        </StackPanel>
-                    </Border>
-                    <Border Grid.Column="3" CornerRadius="18" Background="#0EF4EBDA" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="13">
-                        <StackPanel>
-                            <TextBlock Text="ROUTING"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2"
-                                       Foreground="#F4EBDA"/>
-                            <TextBlock Text="{Binding RoutingSignal}"
-                                       Margin="0,6,0,0"
-                                       FontSize="12"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"
-                                       Foreground="#CFC4B3"/>
-                        </StackPanel>
-                    </Border>
+                                       Foreground="#C6F7FA"/>
+                        </Border>
+                    </Grid>
+
+                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
+                        <Border CornerRadius="20" Background="#10F0B868" BorderBrush="#28F0B868" BorderThickness="1" Padding="13">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Capture idea" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
+                                <TextBlock Text="Voice. Loop. Sound." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
+                                <Button Content="Record"
+                                        Command="{Binding StartRecordingCommand}"
+                                        Padding="10,9"
+                                        Background="#F0B868"
+                                        Foreground="#111315"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1" CornerRadius="20" Background="#1057DAE2" BorderBrush="#2857DAE2" BorderThickness="1" Padding="13">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Choose version" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
+                                <TextBlock Text="Pick the take." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
+                                <Button Content="Open"
+                                        Command="{Binding PlaySelectedCommand}"
+                                        Padding="10,9"
+                                        Background="#57DAE2"
+                                        Foreground="#07110D"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" CornerRadius="20" Background="#10A484FF" BorderBrush="#28A484FF" BorderThickness="1" Padding="13">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Shape sound" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
+                                <TextBlock Text="Warmer. Raw. Room." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
+                                <Button Content="Load"
+                                        Command="{Binding PrimeShapeSoundCommand}"
+                                        Padding="10,9"
+                                        Background="#A484FF"
+                                        Foreground="#0B0912"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="3" CornerRadius="20" Background="#0EF4EBDA" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="13">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Make visual" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
+                                <TextBlock Text="Cover. Clip. Caption." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
+                                <Button Content="Cue"
+                                        Command="{Binding PrimeVisualCommand}"
+                                        Padding="10,9"
+                                        Background="#F4EBDA"
+                                        Foreground="#111315"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="4" CornerRadius="20" Background="#12F0B868" BorderBrush="#28F0B868" BorderThickness="1" Padding="13">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Export/share" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
+                                <TextBlock Text="Demo. Folder. Archive." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
+                                <Button Content="Prep"
+                                        Command="{Binding PrimeExportShareCommand}"
+                                        Padding="10,9"
+                                        Background="#F0B868"
+                                        Foreground="#111315"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Expander Grid.Row="2" Header="Session details" Foreground="#CFC4B3">
+                        <Border CornerRadius="18" Background="#0B0D0E" BorderBrush="#18F4EBDA" BorderThickness="1" Padding="13" Margin="0,8,0,0">
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="13">
+                                <TextBlock Text="{Binding SessionMemorySignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SectionTimelineSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                                <TextBlock Grid.Column="2" Text="{Binding RoutingSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                            </Grid>
+                        </Border>
+                    </Expander>
                 </Grid>
             </Border>
 

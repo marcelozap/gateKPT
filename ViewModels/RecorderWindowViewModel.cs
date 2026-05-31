@@ -144,6 +144,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RoutingSignal =>
         "RC-505 -> Scarlett -> GateKPT.";
 
+    public string ArtistWorkflowSignal =>
+        "Capture idea -> Choose version -> Shape sound -> Make visual -> Export/share";
+
     public RecorderWindowViewModel()
     {
         RefreshVersions();
@@ -325,6 +328,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _playback.StopAll();
         Status = "Internal playback stopped. If Windows player opened, close/pause it there.";
+    }
+
+    [RelayCommand]
+    private void PrimeShapeSound()
+    {
+        ChatText = "make it warmer";
+        Status = "Shape sound loaded.";
+        CommandResult = "Run command when ready.";
+    }
+
+    [RelayCommand]
+    private void PrimeVisual()
+    {
+        Status = "Visual direction: cover, clip, caption, color.";
+        CommandResult = "Next: capture visual note or use the visual room.";
+    }
+
+    [RelayCommand]
+    private void PrimeExportShare()
+    {
+        Status = "Export/share: mix, folder, archive.";
+        CommandResult = LayerSlots.Any(slot => !string.IsNullOrWhiteSpace(slot.Path))
+            ? "Layer deck has sound. Export mix when ready."
+            : "No layers yet. Record or assign takes first.";
     }
 
     [RelayCommand]
