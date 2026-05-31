@@ -161,7 +161,8 @@
                             Foreground="#15120D"
                             FontWeight="Black"
                             Command="{Binding StartSessionCommand}"
-                            Content="Start session"/>
+                            Content="Start session"
+                            IsVisible="False"/>
 
                     <ListBox Grid.Row="2"
                              ItemsSource="{Binding Rooms}"
