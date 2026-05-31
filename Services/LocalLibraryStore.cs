@@ -330,7 +330,8 @@ public sealed record VisualizerSettings(
     string QualityMode,
     string OutputTarget,
     bool ProjectorBlackout,
-    bool DawSafeMode)
+    bool DawSafeMode,
+    string RendererPath = "2D Avalonia preview")
 {
     public static VisualizerSettings Default => new(
         "Lyric Pulse",
@@ -342,7 +343,8 @@ public sealed record VisualizerSettings(
         "Balanced",
         "Projector",
         false,
-        true);
+        true,
+        "2D Avalonia preview");
 }
 
 public sealed record CaptionLine(string Start, string End, string Text, string Status, string Note);

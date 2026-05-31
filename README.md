@@ -28,6 +28,8 @@ Preserve lyrics, captures, takes, captions, routing notes, stems, visual presets
 
 Use live Focusrite/RC-505 input to generate always-on visual paintings that can become performance backdrops, video material, or stage visuals.
 
+The public website uses a lightweight 2D browser demo. The private desktop app can evolve into the serious 2D/3D performance engine. See [VISUAL_ENGINE_3D_PLAN.md](VISUAL_ENGINE_3D_PLAN.md).
+
 ### Video-First Music Production
 
 Support captions, lip-sync review, export planning, aspect ratios, loudness targets, and platform-ready video workflows.
@@ -72,6 +74,7 @@ MusicOS is shaped around the normal build order:
 - Review / export: rate takes, sync video, process vocal, render clips.
 - Lyric vault: save hooks, fragments, moods, tags, and pull the latest lyric into active session notes.
 - Visual system: save mode, palette, motion, lyric source, intensity, and live-meter-aware visual direction inside the project.
+- Renderer path: mark whether the current visual is an in-app 2D preview, future Skia performance renderer, standalone 3D engine, or hybrid projector pipeline.
 - Projector safety: visualizer presets include quality mode, output target, blackout, and DAW-safe mode.
 - Captions: draft lyric captions on a beat grid, defaulting to 3-beat spacing, and flag dense lines as review-needed instead of burning in bad timing.
 - Command layer: queue local actions such as `add captions`, `sync video`, `add vocal layers`, or `export reels`; destructive work drafts or queues instead of forcing changes.

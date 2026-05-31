@@ -58,7 +58,8 @@ public sealed record MusicProjectVisualPreset(
     string QualityMode,
     string OutputTarget,
     bool ProjectorBlackout,
-    bool DawSafeMode);
+    bool DawSafeMode,
+    string RendererPath = "2D Avalonia preview");
 
 public sealed record MusicProjectRoutingNote(
     string PreferredAudioInput,

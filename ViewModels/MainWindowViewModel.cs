@@ -352,6 +352,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _visualizerOutputTarget = "Projector";
 
     [ObservableProperty]
+    private string _visualizerRendererPath = "2D Avalonia preview";
+
+    [ObservableProperty]
     private bool _projectorBlackout = false;
 
     [ObservableProperty]
@@ -561,6 +564,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerNotes = visualizer.Notes;
         VisualizerQualityMode = visualizer.QualityMode;
         VisualizerOutputTarget = visualizer.OutputTarget;
+        VisualizerRendererPath = visualizer.RendererPath;
         ProjectorBlackout = visualizer.ProjectorBlackout;
         DawSafeMode = visualizer.DawSafeMode;
 
@@ -677,6 +681,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "OBS",
         "NDI future",
         "Recording preview",
+    ];
+
+    public IReadOnlyList<string> VisualizerRendererPaths { get; } =
+    [
+        "2D Avalonia preview",
+        "2D Skia performance",
+        "3D standalone engine",
+        "Hybrid projector pipeline",
     ];
 
     public IReadOnlyList<string> LayerInstruments { get; } =
@@ -1082,7 +1094,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string VisualizerPreviewDetail =>
         ProjectorBlackout
             ? "Projector blackout is armed. Visual output should go black immediately."
-            : $"{VisualizerPalette} / {VisualizerMotion} / {VisualizerQualityMode} / {VisualizerOutputTarget} / intensity {VisualizerIntensity:0}% / live meter {InputMeterLevel:0.0}%";
+            : $"{VisualizerPalette} / {VisualizerMotion} / {VisualizerQualityMode} / {VisualizerOutputTarget} / {VisualizerRendererPath} / intensity {VisualizerIntensity:0}% / live meter {InputMeterLevel:0.0}%";
+
+    public string VisualizerRendererGuidance => VisualizerRendererPath switch
+    {
+        "2D Avalonia preview" => "Safe in-app preview. Good for planning and screenshots; not the final projector engine.",
+        "2D Skia performance" => "Next upgrade path for richer 2D particles, trails, and exported visual paintings.",
+        "3D standalone engine" => "Future show renderer. Separate process, GPU-backed, restartable, and never in the audio path.",
+        "Hybrid projector pipeline" => "Long-term live setup: MusicOS controls scenes while a dedicated renderer owns projector/OBS output.",
+        _ => "Choose a renderer path before rehearsal so visual load and output expectations are clear.",
+    };
 
     public string VisualPaintingTitle =>
         VisualizerRevealMode ? "Reveal the painting" : "Painting in the background";
@@ -4268,7 +4289,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         VisualizerQualityMode,
         VisualizerOutputTarget,
         ProjectorBlackout,
-        DawSafeMode);
+        DawSafeMode,
+        VisualizerRendererPath);
+
+    partial void OnVisualizerRendererPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(VisualizerPreviewDetail));
+        OnPropertyChanged(nameof(VisualizerRendererGuidance));
+    }
 
     private PerformanceLayerItem RecommendedNextLayer()
     {
@@ -4335,7 +4363,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             VisualizerQualityMode,
             VisualizerOutputTarget,
             ProjectorBlackout,
-            DawSafeMode)],
+            DawSafeMode,
+            VisualizerRendererPath)],
         [new MusicProjectRoutingNote(
             PreferredAudioInput,
             PreferredAudioOutput,
