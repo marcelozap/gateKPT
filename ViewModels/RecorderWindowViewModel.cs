@@ -59,6 +59,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private string _lastExportedMixPath = "";
 
+    [ObservableProperty]
+    private LayerSlotItem? _selectedLayerSlot;
+
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
@@ -146,6 +149,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public RecorderWindowViewModel()
     {
+        SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshVersions();
     }
 
@@ -378,6 +382,68 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         Status = $"Assigned {Path.GetFileName(path)} to {slot.Name}.";
         CommandResult = $"Layer loaded: {slot.Name}";
+    }
+
+    [RelayCommand]
+    private void ReplaceSelectedLayer()
+    {
+        var path = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            Status = "No take selected.";
+            return;
+        }
+
+        var slot = SelectedLayerSlot ?? LayerSlots.FirstOrDefault();
+        if (slot is null)
+        {
+            Status = "No stem lane selected.";
+            return;
+        }
+
+        ReplaceLayerSlot(slot.Number, slot with
+        {
+            Path = path,
+            FileName = Path.GetFileName(path),
+            Status = "Loaded"
+        });
+
+        Status = $"Replaced {slot.Name}.";
+        CommandResult = $"{slot.Name}: {Path.GetFileName(path)}";
+    }
+
+    [RelayCommand]
+    private void OpenSelectedLayer()
+    {
+        var slot = SelectedLayerSlot;
+        if (slot is null || string.IsNullOrWhiteSpace(slot.Path) || !File.Exists(slot.Path))
+        {
+            Status = "Selected lane is empty.";
+            return;
+        }
+
+        _playback.StopAll();
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = slot.Path,
+            UseShellExecute = true
+        });
+        Status = $"Opened {slot.Name}: {slot.FileName}";
+    }
+
+    [RelayCommand]
+    private void ClearSelectedLayer()
+    {
+        var slot = SelectedLayerSlot;
+        if (slot is null)
+        {
+            Status = "No stem lane selected.";
+            return;
+        }
+
+        ReplaceLayerSlot(slot.Number, new LayerSlotItem(slot.Number, slot.Name));
+        Status = $"Cleared {slot.Name}.";
+        CommandResult = "Take file kept. Lane cleared.";
     }
 
     [RelayCommand]
@@ -797,6 +863,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         var index = LayerSlots.IndexOf(LayerSlots.First(item => item.Number == number));
         LayerSlots[index] = updated;
+        if (SelectedLayerSlot?.Number == number)
+        {
+            SelectedLayerSlot = updated;
+        }
+
         OnPropertyChanged(nameof(LayerDeckSummary));
     }
 
