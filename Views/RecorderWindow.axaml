@@ -127,7 +127,7 @@
                     </Border>
 
                     <Border CornerRadius="34" Background="#CC0B0907" BorderBrush="#446FB6A6" BorderThickness="2" Padding="24">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="16">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
                                     <TextBlock Text="2. RECORD"
@@ -200,6 +200,52 @@
                                                FontWeight="Black"
                                                TextWrapping="Wrap"
                                                Foreground="#F8F0E5"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Row="4" CornerRadius="22" Background="#1015120D" BorderBrush="#24F1C27D" BorderThickness="1" Padding="16">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="RC-505 CAPTURE MODE"
+                                               FontSize="11"
+                                               FontWeight="Black"
+                                               Foreground="#F1C27D"
+                                               LetterSpacing="2.4"/>
+                                    <TextBlock Text="{Binding Rc505CaptureGuide}"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#D9C5A5"/>
+                                    <Button Content="Record full loop"
+                                            Command="{Binding RecordFullLoopCommand}"
+                                            Padding="14,12"
+                                            HorizontalAlignment="Stretch"
+                                            Background="#F1C27D"
+                                            Foreground="#15120D"/>
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Button Content="Track 1 Drums"
+                                                Command="{Binding RecordDrumsLayerCommand}"
+                                                Padding="12,11"
+                                                Background="#6FB6A6"
+                                                Foreground="#07110D"/>
+                                        <Button Grid.Column="1"
+                                                Content="Track 2 Guitar"
+                                                Command="{Binding RecordGuitarLayerCommand}"
+                                                Padding="12,11"
+                                                Background="#6FB6A6"
+                                                Foreground="#07110D"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                                        <Button Content="Track 3 Piano"
+                                                Command="{Binding RecordPianoLayerCommand}"
+                                                Padding="12,11"
+                                                Background="#6FB6A6"
+                                                Foreground="#07110D"/>
+                                        <Button Grid.Column="1"
+                                                Content="Track 4 Vocal"
+                                                Command="{Binding RecordVocalLayerCommand}"
+                                                Padding="12,11"
+                                                Background="#6FB6A6"
+                                                Foreground="#07110D"/>
+                                    </Grid>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -276,7 +322,7 @@
                 </StackPanel>
 
                 <Border Grid.Column="1" CornerRadius="28" Background="#A80B0907" BorderBrush="#22F8F0E5" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto" RowSpacing="14">
+                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto" RowSpacing="14">
                         <TextBlock Text="VERSIONS"
                                    FontSize="11"
                                    FontWeight="Black"

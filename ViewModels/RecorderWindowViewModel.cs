@@ -20,6 +20,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly AudioTransformService _transforms = new();
     private readonly LayerMixdownService _mixdown = new();
     private bool _recordingSignalSeen;
+    private int? _activeCaptureLayerNumber;
+    private string _activeCaptureLabel = "recording";
 
     [ObservableProperty]
     private string _inputName = "Scarlett not selected";
@@ -118,6 +120,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string CommandHelp =>
         "Ask for changes in plain words: make the drums hit harder, polish the vocal, add a small room, make it warmer, clean the rumble, make a DJ-ready boost.";
 
+    public string Rc505CaptureGuide =>
+        "RC-505 flow: record the full loop, or solo one RC-505 track and capture it into the matching lane.";
+
     public RecorderWindowViewModel()
     {
         RefreshVersions();
@@ -149,6 +154,41 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void StartRecording()
     {
+        StartRecordingForLayer("recording", null);
+    }
+
+    [RelayCommand]
+    private void RecordFullLoop()
+    {
+        StartRecordingForLayer("rc505-full-loop", null);
+    }
+
+    [RelayCommand]
+    private void RecordDrumsLayer()
+    {
+        StartRecordingForLayer("rc505-track-1-drums", 1);
+    }
+
+    [RelayCommand]
+    private void RecordGuitarLayer()
+    {
+        StartRecordingForLayer("rc505-track-2-guitar", 2);
+    }
+
+    [RelayCommand]
+    private void RecordPianoLayer()
+    {
+        StartRecordingForLayer("rc505-track-3-piano", 3);
+    }
+
+    [RelayCommand]
+    private void RecordVocalLayer()
+    {
+        StartRecordingForLayer("rc505-track-4-vocal", 4);
+    }
+
+    private void StartRecordingForLayer(string label, int? layerNumber)
+    {
         if (IsRecording)
         {
             Status = "Already recording.";
@@ -165,7 +205,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         PeakPercent = 0;
         _recordingSignalSeen = false;
-        var result = _recorder.Start(InputName, _versions.TakesDirectory, "recording", peak =>
+        _activeCaptureLabel = label;
+        _activeCaptureLayerNumber = layerNumber;
+        var result = _recorder.Start(InputName, _versions.TakesDirectory, label, peak =>
         {
             Dispatcher.UIThread.Post(() =>
             {
@@ -181,7 +223,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         });
         IsRecording = result.Success;
         CurrentFilePath = result.Path;
-        Status = result.Success ? "Recording. Watch the signal number move while you play." : result.Message;
+        Status = result.Success
+            ? layerNumber is null
+                ? "Recording full RC-505 output. Watch the signal number move."
+                : $"Recording {LayerSlots.First(slot => slot.Number == layerNumber).Name}. Solo that RC-505 track now."
+            : result.Message;
     }
 
     [RelayCommand]
@@ -203,12 +249,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                     Status = $"Saved low signal take and created louder rescue: {Path.GetFileName(rescuedPath)}. Original peak {result.PeakPercent:0.0}%.";
                     RefreshVersions();
                     SelectedVersion = Versions.FirstOrDefault(item => item.Path == rescuedPath) ?? SelectedVersion;
+                    AutoAssignActiveCapture(rescuedPath);
                     return;
                 }
             }
 
             Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%.";
             RefreshVersions();
+            AutoAssignActiveCapture(result.Path);
             return;
         }
 
@@ -221,6 +269,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         Status = result.Message;
+        _activeCaptureLayerNumber = null;
+        _activeCaptureLabel = "recording";
     }
 
     [RelayCommand]
@@ -671,6 +721,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var index = LayerSlots.IndexOf(LayerSlots.First(item => item.Number == number));
         LayerSlots[index] = updated;
         OnPropertyChanged(nameof(LayerDeckSummary));
+    }
+
+    private void AutoAssignActiveCapture(string path)
+    {
+        if (_activeCaptureLayerNumber is not { } layerNumber || !File.Exists(path))
+        {
+            _activeCaptureLayerNumber = null;
+            _activeCaptureLabel = "recording";
+            return;
+        }
+
+        var slot = LayerSlots.First(item => item.Number == layerNumber);
+        ReplaceLayerSlot(layerNumber, slot with
+        {
+            Path = path,
+            FileName = Path.GetFileName(path),
+            Status = "Loaded"
+        });
+        CommandResult = $"Auto-loaded {slot.Name}: {Path.GetFileName(path)}";
+        Status = $"{Status} Auto-loaded into {slot.Name}.";
+        _activeCaptureLayerNumber = null;
+        _activeCaptureLabel = "recording";
     }
 
     partial void OnPeakPercentChanged(double value)
