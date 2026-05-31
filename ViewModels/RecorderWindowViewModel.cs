@@ -205,15 +205,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         CurrentFilePath = path;
-        var result = _playback.PlayLoop(1, path, 80);
-        Status = result.Message;
+        _playback.StopAll();
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = path,
+            UseShellExecute = true
+        });
+        Status = $"Opened in Windows player: {Path.GetFileName(path)}";
     }
 
     [RelayCommand]
     private void StopPlayback()
     {
         _playback.StopAll();
-        Status = "Playback stopped.";
+        Status = "Internal playback stopped. If Windows player opened, close/pause it there.";
     }
 
     [RelayCommand]

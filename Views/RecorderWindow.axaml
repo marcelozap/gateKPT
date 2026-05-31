@@ -174,13 +174,13 @@
                             </Grid>
 
                             <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="13">
-                                <Button Content="PLAY SELECTED"
+                                <Button Content="OPEN / PLAY FILE"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="18,13"
                                         Background="#F2EADC"
                                         Foreground="#15120D"/>
                                 <Button Grid.Column="1"
-                                        Content="STOP PLAYBACK"
+                                        Content="STOP INTERNAL"
                                         Command="{Binding StopPlaybackCommand}"
                                         Padding="18,13"
                                         Background="#2415120D"
