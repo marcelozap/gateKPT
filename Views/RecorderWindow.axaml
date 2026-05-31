@@ -316,6 +316,12 @@
                                                 Background="#57DAE2"
                                                 Foreground="#07110D"/>
                                     </Grid>
+                                    <Button Content="Track 5 Extra / Texture"
+                                            Command="{Binding RecordExtraLayerCommand}"
+                                            Padding="12,11"
+                                            HorizontalAlignment="Stretch"
+                                            Background="#A484FF"
+                                            Foreground="#0B0912"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -504,6 +510,21 @@
                                            FontWeight="Bold"
                                            TextWrapping="Wrap"
                                            Foreground="#CFC4B3"/>
+                                <Border CornerRadius="14" Background="#12F4EBDA" Padding="10">
+                                    <StackPanel>
+                                        <TextBlock Text="LAST MIX"
+                                                   FontSize="10"
+                                                   FontWeight="Black"
+                                                   LetterSpacing="2"
+                                                   Foreground="#F4EBDA"/>
+                                        <TextBlock Text="{Binding LastExportedMixLabel}"
+                                                   Margin="0,4,0,0"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#CFC4B3"/>
+                                    </StackPanel>
+                                </Border>
                                 <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                                     <Border CornerRadius="14" Background="#10F0B868" Padding="10">
                                         <TextBlock Text="DJ-ready clip"
@@ -520,6 +541,12 @@
                                                    TextWrapping="Wrap"/>
                                     </Border>
                                 </Grid>
+                                <Button Content="Open last mix"
+                                        Command="{Binding OpenExportedMixCommand}"
+                                        Padding="14,12"
+                                        HorizontalAlignment="Stretch"
+                                        Background="#A484FF"
+                                        Foreground="#0B0912"/>
                             </StackPanel>
                         </Border>
                     </Grid>

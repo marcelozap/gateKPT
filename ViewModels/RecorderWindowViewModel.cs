@@ -56,6 +56,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
 
+    [ObservableProperty]
+    private string _lastExportedMixPath = "";
+
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
@@ -63,7 +66,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         new(1, "Drums"),
         new(2, "Guitar"),
         new(3, "Piano"),
-        new(4, "Vocal")
+        new(4, "Vocal"),
+        new(5, "Extra")
     ];
 
     public string PeakLabel => $"{PeakPercent:0}%";
@@ -116,6 +120,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : $"{loaded}/{LayerSlots.Count} layer(s) ready. Export a mix to create one playable WAV.";
         }
     }
+
+    public string LastExportedMixLabel =>
+        string.IsNullOrWhiteSpace(LastExportedMixPath)
+            ? "No exported layer mix yet."
+            : Path.GetFileName(LastExportedMixPath);
 
     public string CommandHelp =>
         "Ask for changes in plain words: make the drums hit harder, polish the vocal, add a small room, make it warmer, clean the rumble, make a DJ-ready boost.";
@@ -197,6 +206,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void RecordVocalLayer()
     {
         StartRecordingForLayer("rc505-track-4-vocal", 4);
+    }
+
+    [RelayCommand]
+    private void RecordExtraLayer()
+    {
+        StartRecordingForLayer("rc505-track-5-extra", 5);
     }
 
     private void StartRecordingForLayer(string label, int? layerNumber)
@@ -322,8 +337,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        var slot = LayerSlots.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Path))
-            ?? LayerSlots.First();
+        var slot = LayerSlots.FirstOrDefault(item => string.IsNullOrWhiteSpace(item.Path));
+        if (slot is null)
+        {
+            Status = "All layer lanes are loaded. Clear the deck first, or re-record a specific RC-505 track to replace that lane.";
+            CommandResult = "Layer deck full. No silent overwrite happened.";
+            return;
+        }
+
         ReplaceLayerSlot(slot.Number, slot with
         {
             Path = path,
@@ -356,10 +377,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         CurrentFilePath = result.Path;
+        LastExportedMixPath = result.Path;
         RefreshVersions();
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == result.Path) ?? SelectedVersion;
-        Status = $"{result.Message} Open/play the exported mix from Versions.";
-        CommandResult = $"Created mix: {Path.GetFileName(result.Path)}";
+        var included = string.Join(", ", loaded.Select(slot => slot.Name));
+        Status = $"{result.Message} Included: {included}.";
+        CommandResult = $"Created mix: {Path.GetFileName(result.Path)} | Layers: {included}";
+    }
+
+    [RelayCommand]
+    private void OpenExportedMix()
+    {
+        if (string.IsNullOrWhiteSpace(LastExportedMixPath) || !File.Exists(LastExportedMixPath))
+        {
+            Status = "No exported mix found yet. Export the layer mix first.";
+            return;
+        }
+
+        _playback.StopAll();
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = LastExportedMixPath,
+            UseShellExecute = true
+        });
+        Status = $"Opened exported mix: {Path.GetFileName(LastExportedMixPath)}";
     }
 
     [RelayCommand]
@@ -786,6 +827,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentFileLabel));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+    }
+
+    partial void OnLastExportedMixPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(LastExportedMixLabel));
     }
 }
 
