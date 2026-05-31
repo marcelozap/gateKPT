@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, AudioLines, Check, Mic, MonitorUp, Music2, Play, Sparkles, Square, Waves } from "lucide-react";
+import { ArrowRight, AudioLines, Check, FileVideo, Mic, MonitorUp, Music2, Play, Sparkles, Square, Waves } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
@@ -414,6 +414,53 @@ function ProductPathStrip() {
   );
 }
 
+function CreationFlowSection() {
+  const steps = [
+    {
+      icon: AudioLines,
+      title: "Play into the rig",
+      text: "Start with drums, a loop, keys, guitar, or voice. GateKPT is designed around performing the idea first.",
+    },
+    {
+      icon: Waves,
+      title: "Shape the visual world",
+      text: "The audio signal drives motion, color, pulse, and room energy while the song is still being built.",
+    },
+    {
+      icon: FileVideo,
+      title: "Leave with assets",
+      text: "The goal is not just a cool screen. It is a song, a visual artifact, captions, clips, and a path to release.",
+    },
+  ];
+
+  return (
+    <section id="product-flow" className="bg-[#11100d] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 max-w-3xl">
+          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">How It Works</p>
+          <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
+            A creator workflow, not a screensaver.
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-white/62">
+            The visualizer is one part of GateKPT. The full direction is a local Music OS
+            for making the performance easier to capture, understand, package, and share.
+          </p>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-3">
+          {steps.map((step) => (
+            <article key={step.title} className="rounded-[1.75rem] border border-white/10 bg-black/30 p-6">
+              <step.icon className="h-7 w-7 text-[#f1c27d]" />
+              <h3 className="mt-8 text-3xl font-black tracking-[-0.055em]">{step.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-white/62">{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function GatekptLanding() {
   return (
     <div className="min-h-screen bg-[#080706] text-[#f8f0e5]">
@@ -443,18 +490,18 @@ export function GatekptLanding() {
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#try-visualizer"
+                href="#product-flow"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#f8f0e5] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] shadow-[0_18px_45px_rgba(0,0,0,0.32)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                Try visualizer
+                See the product
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </a>
               <a
-                href="#videos"
+                href="#try-visualizer"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-black/28 px-6 py-3 text-sm font-bold text-white/78 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
               >
                 <Play className="h-4 w-4" />
-                Watch the visual arc
+                Try visualizer
               </a>
             </div>
 
@@ -481,7 +528,7 @@ export function GatekptLanding() {
       </section>
 
       <ProductPathStrip />
-      <PublicVisualizerDemo />
+      <CreationFlowSection />
 
       <section className="bg-[#11100d] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1fr_0.82fr]">
@@ -515,6 +562,8 @@ export function GatekptLanding() {
           </div>
         </div>
       </section>
+
+      <PublicVisualizerDemo />
 
       <section className="bg-[#f6f0e7] px-4 py-16 text-[#15120d] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[0.78fr_1fr]">
