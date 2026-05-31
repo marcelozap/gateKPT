@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-type AudioStatus = "preview" | "starting" | "listening" | "blocked" | "unsupported";
+type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
 
 const workflow: Array<[string, string, LucideIcon]> = [
   ["Capture", "Record the sound.", Mic],
@@ -43,10 +43,26 @@ function TerrainSignalPreview() {
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const demoIntervalRef = useRef<number | null>(null);
+  const demoNodesRef = useRef<AudioNode[]>([]);
   const [status, setStatus] = useState<AudioStatus>("preview");
   const [level, setLevel] = useState(21);
 
   const stopAudio = useCallback(() => {
+    if (demoIntervalRef.current) {
+      window.clearInterval(demoIntervalRef.current);
+      demoIntervalRef.current = null;
+    }
+    demoNodesRef.current.forEach((node) => {
+      if ("stop" in node && typeof node.stop === "function") {
+        try {
+          node.stop();
+        } catch {
+          // Already stopped.
+        }
+      }
+    });
+    demoNodesRef.current = [];
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     void audioContextRef.current?.close();
@@ -173,6 +189,81 @@ function TerrainSignalPreview() {
     setStatus("preview");
   };
 
+  const startDemo = async () => {
+    try {
+      setStatus("starting");
+      stopAudio();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        setStatus("demo");
+        return;
+      }
+      const audioContext = new AudioContextClass();
+      await audioContext.resume();
+
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
+
+      const master = audioContext.createGain();
+      master.gain.value = 0.055;
+      master.connect(analyser);
+      analyser.connect(audioContext.destination);
+
+      const kick = audioContext.createOscillator();
+      const kickGain = audioContext.createGain();
+      kick.type = "sine";
+      kick.frequency.value = 72;
+      kickGain.gain.value = 0.0001;
+      kick.connect(kickGain);
+      kickGain.connect(master);
+
+      const guitar = audioContext.createOscillator();
+      const guitarGain = audioContext.createGain();
+      guitar.type = "triangle";
+      guitar.frequency.value = 196;
+      guitarGain.gain.value = 0.028;
+      guitar.connect(guitarGain);
+      guitarGain.connect(master);
+
+      const air = audioContext.createOscillator();
+      const airGain = audioContext.createGain();
+      air.type = "sine";
+      air.frequency.value = 392;
+      airGain.gain.value = 0.014;
+      air.connect(airGain);
+      airGain.connect(master);
+
+      kick.start();
+      guitar.start();
+      air.start();
+
+      let step = 0;
+      const notes = [196, 220, 247, 294, 247, 220, 196, 165];
+      demoIntervalRef.current = window.setInterval(() => {
+        const now = audioContext.currentTime;
+        const note = notes[step % notes.length];
+        guitar.frequency.setTargetAtTime(note, now, 0.025);
+        air.frequency.setTargetAtTime(note * 2, now, 0.04);
+
+        kickGain.gain.cancelScheduledValues(now);
+        kickGain.gain.setValueAtTime(0.24, now);
+        kickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+        kick.frequency.setValueAtTime(step % 4 === 0 ? 78 : 62, now);
+        kick.frequency.exponentialRampToValueAtTime(42, now + 0.16);
+        step += 1;
+      }, 260);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      demoNodesRef.current = [kick, guitar, air];
+      setStatus("demo");
+    } catch {
+      stopAudio();
+      setStatus("blocked");
+    }
+  };
+
   useEffect(() => {
     draw();
     return () => {
@@ -186,7 +277,7 @@ function TerrainSignalPreview() {
     <div className="gk-panel relative overflow-hidden rounded-[2rem]">
       <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT sound preview" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="gk-chip">{status === "listening" ? "Live sound" : "Preview"}</span>
+        <span className="gk-chip">{status === "listening" ? "Live sound" : status === "demo" ? "Demo loop" : "Preview"}</span>
         <span className="gk-chip">Signal {level}%</span>
       </div>
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
@@ -194,19 +285,25 @@ function TerrainSignalPreview() {
           <div>
             <p className="gk-label text-[#c6a96d]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              Tap the mic and watch sound become motion. Nothing is uploaded.
+              Use your mic or start the built-in loop. Nothing is uploaded.
             </p>
           </div>
-          {status === "listening" || status === "starting" ? (
+          {status === "listening" || status === "demo" || status === "starting" ? (
             <button type="button" onClick={stopMic} className="gk-button-secondary">
               <Square className="h-4 w-4" />
               Stop
             </button>
           ) : (
-            <button type="button" onClick={startMic} className="gk-button-primary">
-              <Waves className="h-4 w-4" />
-              Try locally
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={startDemo} className="gk-button-primary">
+                <Waves className="h-4 w-4" />
+                Play demo
+              </button>
+              <button type="button" onClick={startMic} className="gk-button-secondary">
+                <Mic className="h-4 w-4" />
+                Use mic
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -312,15 +409,15 @@ export function GatekptLanding() {
               Make sound visible.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              This public demo is intentionally simple: use your mic, make noise, watch the terrain respond.
+              This public demo is intentionally simple: play the demo loop, use your mic, and watch the terrain respond.
             </p>
           </div>
 
           <div className="gk-panel p-4 sm:p-5">
             <div className="grid gap-3 sm:grid-cols-3">
               {[
-                ["01", "Allow mic", "Browser only"],
-                ["02", "Play sound", "Voice or beat"],
+                ["01", "Play demo", "No gear needed"],
+                ["02", "Use mic", "Optional"],
                 ["03", "Watch motion", "Live terrain"],
               ].map(([number, title, note]) => (
                 <div key={title} className="rounded-[1.35rem] border border-white/10 bg-white/[0.035] p-5">
