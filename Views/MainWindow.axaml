@@ -532,6 +532,78 @@
                                     </Grid>
                                 </Grid>
                             </Border>
+                            <Border CornerRadius="26"
+                                    Background="#CC0B0907"
+                                    BorderBrush="#336FB6A6"
+                                    BorderThickness="1"
+                                    Padding="24"
+                                    Margin="0,13,0,0">
+                                <Grid RowDefinitions="Auto,Auto" RowSpacing="18">
+                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
+                                        <StackPanel>
+                                            <TextBlock Text="SESSION RECORDER"
+                                                       FontSize="10"
+                                                       FontWeight="Black"
+                                                       Foreground="#6FB6A6"
+                                                       LetterSpacing="2.4"/>
+                                            <TextBlock Text="{Binding SessionWorkflowSignal}"
+                                                       Margin="0,5,0,0"
+                                                       FontSize="17"
+                                                       FontWeight="Black"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#F8F0E5"/>
+                                            <TextBlock Text="{Binding SessionPackageSignal}"
+                                                       Margin="0,4,0,0"
+                                                       FontSize="11"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#D9C5A5"/>
+                                        </StackPanel>
+                                        <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <Button Content="Prime recording"
+                                                    Command="{Binding PrimeRecordingSessionCommand}"
+                                                    Padding="14,9"
+                                                    Margin="0,0,8,8"
+                                                    Background="#6FB6A6"
+                                                    Foreground="#15120D"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Export package"
+                                                    Command="{Binding ExportSessionPackageCommand}"
+                                                    Padding="14,9"
+                                                    Margin="0,0,8,8"
+                                                    Background="#F2EADC"
+                                                    Foreground="#15120D"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Open packages"
+                                                    Command="{Binding OpenSessionPackagesFolderCommand}"
+                                                    Padding="14,9"
+                                                    Margin="0,0,8,8"
+                                                    Background="#15120D"
+                                                    Foreground="#F8F0E5"
+                                                    FontWeight="Black"/>
+                                        </WrapPanel>
+                                    </Grid>
+
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding SessionWorkflowChecklist}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="12" Background="#1F6FB6A6" Padding="10,7" Margin="0,0,8,8">
+                                                    <TextBlock Text="{Binding}"
+                                                               FontSize="10"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#F8F0E5"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </Border>
                             <Border IsVisible="False" CornerRadius="24" Background="#3315120D" BorderBrush="#2615120D" BorderThickness="1" Padding="16" Margin="0,21,0,0">
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="13">
                                     <TextBlock Text="{Binding DashboardSignal}"

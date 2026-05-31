@@ -1309,6 +1309,38 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string SessionWorkflowSignal
+    {
+        get
+        {
+            var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath));
+            var lane = next is null
+                ? "All core lanes have audio. Play arrangement and save a take."
+                : $"Next capture: {next.Instrument} lane.";
+            return $"{RecordedLooperTrackCount}/5 lanes saved / {PerformanceLayers.Count} layer log(s). {lane}";
+        }
+    }
+
+    public string SessionPackageSignal =>
+        string.IsNullOrWhiteSpace(LastAutosavePath)
+            ? $"Session package ready. Files will land in {System.IO.Path.Combine(LibraryPath, "session-packages")}."
+            : $"Latest file: {System.IO.Path.GetFileName(LastAutosavePath)}";
+
+    public IReadOnlyList<string> SessionWorkflowChecklist
+    {
+        get
+        {
+            var next = LooperTracks.FirstOrDefault(track => string.IsNullOrWhiteSpace(track.StemPath));
+            return
+            [
+                FocusriteReadyForRecording ? "Input checked" : "Run 3s Focusrite test before recording.",
+                next is null ? "Core lanes captured" : $"Capture {next.Instrument} next.",
+                RecordedLooperTrackCount > 0 ? "Play arrangement after recording." : "Start with drums, not polish.",
+                "Export session package before walking away.",
+            ];
+        }
+    }
+
     public string LooperTimingSignal
     {
         get
@@ -1493,7 +1525,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     partial void OnLayerCountInBeatsChanged(int value) => OnPropertyChanged(nameof(LayerRecordingPlan));
 
-    partial void OnLastAutosavePathChanged(string value) => OnPropertyChanged(nameof(AutosaveSignal));
+    partial void OnLastAutosavePathChanged(string value)
+    {
+        OnPropertyChanged(nameof(AutosaveSignal));
+        OnPropertyChanged(nameof(SessionPackageSignal));
+    }
 
     partial void OnSelectedAutosaveFileChanged(AutosaveFileItem? value)
     {
@@ -1856,6 +1892,53 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         CaptureTitle = $"{SelectedRoom.Name} launch checklist";
         CaptureNotes = string.Join(Environment.NewLine, SessionLaunchChecklist.Select((item, index) => $"{index + 1}. {item}"));
         Status = "Session launch checklist primed in capture notes.";
+    }
+
+    [RelayCommand]
+    private void PrimeRecordingSession()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Song Builder") ?? SelectedRoom;
+        PrimeNextLooperLane();
+        CaptureTitle = $"{ProjectName} recording session";
+        CaptureNotes = string.Join(Environment.NewLine, SessionWorkflowChecklist.Select((item, index) => $"{index + 1}. {item}"));
+        Status = "Recording session primed: start with the next looper lane, then export the session package.";
+    }
+
+    [RelayCommand]
+    private void ExportSessionPackage()
+    {
+        try
+        {
+            SaveLibrary();
+            var packageDirectory = CreateSessionPackage();
+            LastAutosavePath = packageDirectory;
+            RefreshAutosaveFiles();
+            Status = $"Session package exported: {packageDirectory}";
+        }
+        catch (Exception ex)
+        {
+            Status = $"Could not export session package: {ex.Message}";
+        }
+    }
+
+    [RelayCommand]
+    private void OpenSessionPackagesFolder()
+    {
+        try
+        {
+            var packageRoot = System.IO.Path.Combine(LibraryPath, "session-packages");
+            System.IO.Directory.CreateDirectory(packageRoot);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = packageRoot,
+                UseShellExecute = true
+            });
+            Status = $"Opened session packages folder: {packageRoot}";
+        }
+        catch (Exception ex)
+        {
+            Status = $"Could not open session packages folder: {ex.Message}";
+        }
     }
 
     [RelayCommand]
@@ -3804,6 +3887,79 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshSessionRail();
     }
 
+    private string CreateSessionPackage()
+    {
+        var packageRoot = System.IO.Path.Combine(LibraryPath, "session-packages");
+        var packageDirectory = System.IO.Path.Combine(
+            packageRoot,
+            $"{AutoSaveFileNamer.Prefix}-{DateTime.Now:yyyyMMdd-HHmmss}-{AutoSaveFileNamer.Sanitize(ProjectName)}");
+        System.IO.Directory.CreateDirectory(packageDirectory);
+
+        var projectJsonPath = System.IO.Path.Combine(packageDirectory, "music-project-file.json");
+        var manifestPath = System.IO.Path.Combine(packageDirectory, "session-manifest.md");
+        var stemIndexPath = System.IO.Path.Combine(packageDirectory, "stem-index.md");
+
+        _store.SaveProjectFile(CurrentMusicProjectFile());
+        if (System.IO.File.Exists(ProjectFilePath))
+        {
+            System.IO.File.Copy(ProjectFilePath, projectJsonPath, true);
+        }
+
+        var manifest = new List<string>
+        {
+            $"# {ProjectName} Session Package",
+            "",
+            $"Created: {DateTime.Now:yyyy-MM-dd h:mm tt}",
+            $"Operator: {OperatorName}",
+            $"Tempo: {Tempo}",
+            $"Key: {KeyCenter}",
+            $"Status: {BusinessMode}",
+            $"Platform: {PlatformProfile}",
+            $"Loudness: {LoudnessTarget}",
+            "",
+            "## Session State",
+            SessionWorkflowSignal,
+            "",
+            "## Next Actions",
+        };
+        manifest.AddRange(SessionWorkflowChecklist.Select((item, index) => $"{index + 1}. {item}"));
+        manifest.Add("");
+        manifest.Add("## Latest Capture");
+        manifest.Add(RecentCaptures.FirstOrDefault() is { } capture
+            ? $"{capture.Title} / {capture.Room} / {capture.Status} / {capture.Detail}"
+            : "No capture saved yet.");
+        manifest.Add("");
+        manifest.Add("## Visual Direction");
+        manifest.Add($"{VisualizerMode} / {VisualizerPalette} / {VisualizerMotion} / {VisualizerOutputTarget}");
+        manifest.Add("");
+        manifest.Add("## Routing");
+        manifest.Add($"{PreferredAudioInput} -> {PreferredAudioOutput}");
+        manifest.Add(RoutingNotes);
+        System.IO.File.WriteAllText(manifestPath, string.Join(Environment.NewLine, manifest));
+
+        var stemIndex = new List<string>
+        {
+            $"# {ProjectName} Stem Index",
+            "",
+            "## Looper Tracks",
+        };
+        var recordedTracks = LooperTracks
+            .Where(track => !string.IsNullOrWhiteSpace(track.StemPath))
+            .Select(track => $"- Track {track.Number}: {track.Instrument} / {track.Status} / {track.DurationLabel} / {track.StemPath}")
+            .ToList();
+        stemIndex.AddRange(recordedTracks.Count > 0 ? recordedTracks : ["- No recorded looper tracks yet."]);
+        stemIndex.Add("");
+        stemIndex.Add("## Performance Layers");
+        var layers = PerformanceLayers
+            .OrderBy(layer => layer.Order)
+            .Select(layer => $"- {layer.Order}. {layer.Instrument} / {layer.BeatTarget} / {layer.EffectIntent} / {layer.DurationLabel} / {layer.StemPath}")
+            .ToList();
+        stemIndex.AddRange(layers.Count > 0 ? layers : ["- No performance layers logged yet."]);
+        System.IO.File.WriteAllText(stemIndexPath, string.Join(Environment.NewLine, stemIndex));
+
+        return manifestPath;
+    }
+
     private void RefreshLiveCue()
     {
         OnPropertyChanged(nameof(LiveCueTitle));
@@ -4105,6 +4261,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(SessionRailRoomStatus));
         OnPropertyChanged(nameof(SessionRailEnergy));
         OnPropertyChanged(nameof(ExportReadinessChecklist));
+        OnPropertyChanged(nameof(SessionWorkflowSignal));
+        OnPropertyChanged(nameof(SessionPackageSignal));
+        OnPropertyChanged(nameof(SessionWorkflowChecklist));
     }
 
     private IEnumerable<ProjectMemoryTimelineItem> BuildProjectMemoryTimeline()
