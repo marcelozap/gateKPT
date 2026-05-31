@@ -41,8 +41,8 @@
     </Window.Styles>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="18" MinWidth="560">
-            <Border CornerRadius="34" Padding="28" BorderBrush="#24F4EBDA" BorderThickness="1">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="16" MinWidth="560">
+            <Border CornerRadius="28" Padding="21" BorderBrush="#24F4EBDA" BorderThickness="1">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                         <GradientStop Color="#151719" Offset="0"/>
@@ -58,20 +58,20 @@
                                    Foreground="#F0B868"
                                    LetterSpacing="3"/>
                         <TextBlock Text="{Binding PrimaryHeadline}"
-                                   Margin="0,10,0,0"
-                                   FontSize="48"
+                                   Margin="0,6,0,0"
+                                   FontSize="38"
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
                                    Foreground="#F4EBDA"/>
                         <TextBlock Text="{Binding PrimaryDetail}"
-                                   Margin="0,10,0,0"
+                                   Margin="0,6,0,0"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    LineHeight="24"
                                    TextWrapping="Wrap"
                                Foreground="#CFC4B3"/>
                         <TextBlock Text="{Binding InputName}"
-                                   Margin="0,14,0,0"
+                                   Margin="0,10,0,0"
                                    FontSize="12"
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
@@ -79,13 +79,13 @@
                     </StackPanel>
 
                     <Border Grid.Column="1"
-                            Width="170"
-                            Height="170"
+                            Width="132"
+                            Height="132"
                             CornerRadius="999"
-                        Background="#F4EBDA">
+                            Background="#F4EBDA">
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock Text="{Binding PeakLabel}"
-                                       FontSize="44"
+                                       FontSize="36"
                                        FontWeight="Black"
                                        HorizontalAlignment="Center"
                                    Foreground="#111315"/>
@@ -102,40 +102,50 @@
 
             <Grid Grid.Row="1" ColumnDefinitions="1.05*,0.95*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
-                <Border CornerRadius="28" Background="#EAF4EBDA" Padding="22">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
-                            <TextBlock Text="1. PROVE AUDIO"
+                    <Border CornerRadius="24" Background="#B8111315" BorderBrush="#24F0B868" BorderThickness="1" Padding="18">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                                <StackPanel>
+                                    <TextBlock Text="AUDIO"
                                        FontSize="11"
                                        FontWeight="Black"
-                                   Foreground="#9A6A35"
+                                               Foreground="#F0B868"
                                        LetterSpacing="2.4"/>
+                                    <TextBlock Text="Scarlett / RC-505 input"
+                                               Margin="0,5,0,0"
+                                               FontSize="12"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#CFC4B3"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="Signal must move."
+                                           FontSize="11"
+                                           FontWeight="Black"
+                                           VerticalAlignment="Center"
+                                           Foreground="#57DAE2"/>
+                            </Grid>
                             <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="13">
                                 <Button Content="Find Scarlett"
                                         Command="{Binding FindScarlettCommand}"
                                         Padding="18,12"
-                                    Background="#111315"
-                                    Foreground="#F4EBDA"/>
+                                        Background="#24111315"
+                                        Foreground="#F4EBDA"/>
                                 <Button Grid.Column="1"
                                         Content="Check signal"
                                         Command="{Binding CheckSignalCommand}"
                                         Padding="18,12"
-                                    Background="#F0B868"
-                                    Foreground="#111315"/>
+                                        Background="#F0B868"
+                                        Foreground="#111315"/>
                             </Grid>
-                            <TextBlock Grid.Row="2"
-                                       Text="Play RC-505. Signal must move."
-                                       FontSize="12"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"
-                                   Foreground="#5A5045"/>
                         </Grid>
                     </Border>
 
-                <Border CornerRadius="34" Background="#D80D0F10" BorderBrush="#4457DAE2" BorderThickness="2" Padding="24">
+                    <Border CornerRadius="34" Background="#D80D0F10" BorderBrush="#4457DAE2" BorderThickness="2" Padding="24">
                         <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
-                                    <TextBlock Text="2. RECORD"
+                                    <TextBlock Text="CAPTURE"
                                                FontSize="11"
                                                FontWeight="Black"
                                                Foreground="#57DAE2"
