@@ -4,9 +4,10 @@ Clean public website for GateKPT.
 
 ## Role
 
-This repo is only for the public landing page:
+This repo is only for the public landing page and browser-safe demo:
 
 - product story
+- public browser visualizer demo
 - videos/media wall
 - offer/pricing
 - early access
@@ -41,6 +42,14 @@ npm run verify
 ```
 
 `verify` runs lint, TypeScript, and production build.
+
+## Legacy Archive
+
+Selected planning docs from the old `no-going-back` repo are preserved under:
+
+`legacy/no-going-back`
+
+They are reference-only and are not part of the running website.
 
 ## Deployment Plan
 

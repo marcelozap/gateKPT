@@ -46,3 +46,9 @@ If Vercel says the domain is already assigned, remove the domain from the old `n
 `marcelozap/no-going-back` was the old deployed project. It mixed the public website with XIV, Green Machine, Money Machine, APIs, and private shell routes.
 
 Do not copy the old private routes/API files into this public repo.
+
+Curated legacy notes were preserved in:
+
+```text
+legacy/no-going-back
+```
