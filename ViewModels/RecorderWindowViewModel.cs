@@ -87,7 +87,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string VersionListHint =>
         Versions.Count == 0
             ? "No takes yet. Record, then Stop & Save."
-            : $"{Versions.Count} take(s). Select one, or type: delete, rename, make warmer.";
+            : $"{Versions.Count} take(s). Select one, or type: vocal polish, drums punch, add reverb.";
+
+    public string CommandHelp =>
+        "Try: vocal polish, drums punch, piano bright, acoustic warm, drone wide, add reverb, add echo, compress, normalize, clean, brighter, darker, bass boost, louder, quieter.";
 
     public RecorderWindowViewModel()
     {
@@ -259,17 +262,21 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        if (command.Contains("warmer", StringComparison.OrdinalIgnoreCase)
-            || command.Contains("faster", StringComparison.OrdinalIgnoreCase)
-            || command.Contains("clean", StringComparison.OrdinalIgnoreCase)
-            || command.Contains("louder", StringComparison.OrdinalIgnoreCase))
+        if (command.Contains("help", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("commands", StringComparison.OrdinalIgnoreCase))
         {
-            var settings = GetEditSettings(command);
-            CreateSafeEditCopy(settings.Label, settings.Gain);
+            CommandResult = CommandHelp;
+            Status = "Showing command examples.";
             return;
         }
 
-        CommandResult = "Command not wired yet. Try: make warmer, make louder, rename chorus, delete last version.";
+        if (TryGetEditPreset(command, out var preset))
+        {
+            CreateSafeEditCopy(preset);
+            return;
+        }
+
+        CommandResult = $"Command not wired yet. {CommandHelp}";
         Status = CommandResult;
     }
 
@@ -322,7 +329,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RefreshVersions();
     }
 
-    private void CreateSafeEditCopy(string label, double gain)
+    private void CreateSafeEditCopy(AudioEditPreset preset)
     {
         var sourcePath = SelectedVersion?.Path ?? CurrentFilePath;
         if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -332,11 +339,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        var newPath = _versions.CreateVersionPath(label, ".wav");
-        var result = _transforms.CreateGainCopy(sourcePath, newPath, gain);
+        var newPath = _versions.CreateVersionPath(preset.Label, ".wav");
+        var result = _transforms.CreatePresetCopy(sourcePath, newPath, preset);
         if (!result.Success)
         {
-            newPath = _versions.CopyVersion(sourcePath, label);
+            newPath = _versions.CopyVersion(sourcePath, preset.Label);
         }
 
         if (string.IsNullOrWhiteSpace(newPath))
@@ -353,30 +360,198 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
     }
 
-    private static AudioEditSettings GetEditSettings(string command)
+    private static bool TryGetEditPreset(string command, out AudioEditPreset preset)
     {
-        if (command.Contains("warmer", StringComparison.OrdinalIgnoreCase)
-            || command.Contains("warm", StringComparison.OrdinalIgnoreCase))
+        var text = command.ToLowerInvariant();
+
+        if (text.Contains("vocal") || text.Contains("sing"))
         {
-            return new AudioEditSettings("warmer-boost", 3.0);
+            preset = new AudioEditPreset(
+                "vocal-polish",
+                "Vocal polish: cleanup high-pass, light compression, presence lift, small room.",
+                Gain: text.Contains("loud") ? 1.8 : 1.35,
+                HighPassHz: 95,
+                HighShelfDb: 3.5,
+                CompressionAmount: 0.45,
+                ReverbMs: 95,
+                ReverbMix: 0.10);
+            return true;
         }
 
-        if (command.Contains("faster", StringComparison.OrdinalIgnoreCase))
+        if (text.Contains("drum") || text.Contains("kick") || text.Contains("snare"))
         {
-            return new AudioEditSettings("faster-copy", 1.0);
+            preset = new AudioEditPreset(
+                "drums-punch",
+                "Drums punch: low-end weight, transient-style compression, light saturation.",
+                Gain: 1.45,
+                LowShelfDb: 4,
+                HighShelfDb: 1.5,
+                CompressionAmount: 0.65,
+                SaturationAmount: 0.18);
+            return true;
         }
 
-        if (command.Contains("clean", StringComparison.OrdinalIgnoreCase))
+        if (text.Contains("piano") || text.Contains("keys"))
         {
-            return new AudioEditSettings("clean-copy", 1.25);
+            preset = new AudioEditPreset(
+                "piano-bright",
+                "Piano bright: cleanup low rumble, presence lift, soft compression.",
+                Gain: 1.25,
+                HighPassHz: 70,
+                HighShelfDb: 3,
+                CompressionAmount: 0.25);
+            return true;
         }
 
-        if (command.Contains("louder", StringComparison.OrdinalIgnoreCase))
+        if (text.Contains("acoustic") || text.Contains("guitar"))
         {
-            return new AudioEditSettings("louder-boost", 6.0);
+            preset = new AudioEditPreset(
+                "acoustic-warm",
+                "Acoustic warm: body lift, harsh top trimmed, small room glue.",
+                Gain: 1.35,
+                LowShelfDb: 2.8,
+                HighShelfDb: -1.8,
+                CompressionAmount: 0.22,
+                ReverbMs: 120,
+                ReverbMix: 0.08);
+            return true;
         }
 
-        return new AudioEditSettings("edited-copy", 1.0);
+        if (text.Contains("drone") || text.Contains("pad") || text.Contains("ambient"))
+        {
+            preset = new AudioEditPreset(
+                "drone-wide",
+                "Drone wide: warmer body, darker top, long wash.",
+                Gain: 1.3,
+                LowShelfDb: 3,
+                HighShelfDb: -2,
+                ReverbMs: 280,
+                ReverbMix: 0.22,
+                EchoMs: 180,
+                EchoMix: 0.08);
+            return true;
+        }
+
+        if (text.Contains("reverb") || text.Contains("room") || text.Contains("space"))
+        {
+            preset = new AudioEditPreset(
+                "reverb-room",
+                "Added room reverb.",
+                Gain: 1.15,
+                ReverbMs: text.Contains("big") ? 260 : 140,
+                ReverbMix: text.Contains("big") ? 0.24 : 0.14);
+            return true;
+        }
+
+        if (text.Contains("echo") || text.Contains("delay"))
+        {
+            preset = new AudioEditPreset(
+                "echo-delay",
+                "Added echo delay.",
+                Gain: 1.1,
+                EchoMs: 220,
+                EchoMix: 0.22);
+            return true;
+        }
+
+        if (text.Contains("compress") || text.Contains("compressor") || text.Contains("even"))
+        {
+            preset = new AudioEditPreset(
+                "compressed",
+                "Compression: more even level and controlled peaks.",
+                Gain: 1.5,
+                CompressionAmount: 0.65);
+            return true;
+        }
+
+        if (text.Contains("normalize") || text.Contains("rescue") || text.Contains("boost"))
+        {
+            preset = new AudioEditPreset(
+                "normalized-boost",
+                "Normalized-style boost for quiet takes.",
+                Gain: 6,
+                CompressionAmount: 0.35);
+            return true;
+        }
+
+        if (text.Contains("clean") || text.Contains("noise") || text.Contains("rumble"))
+        {
+            preset = new AudioEditPreset(
+                "clean-rumble-cut",
+                "Cleaned low rumble and tightened level.",
+                Gain: 1.25,
+                HighPassHz: 110,
+                CompressionAmount: 0.20);
+            return true;
+        }
+
+        if (text.Contains("bright") || text.Contains("air") || text.Contains("clear"))
+        {
+            preset = new AudioEditPreset(
+                "brighter-air",
+                "Brighter copy with more top-end air.",
+                Gain: 1.25,
+                HighPassHz: 70,
+                HighShelfDb: 4);
+            return true;
+        }
+
+        if (text.Contains("dark") || text.Contains("soft") || text.Contains("less harsh"))
+        {
+            preset = new AudioEditPreset(
+                "darker-soft",
+                "Darker copy with softened top end.",
+                Gain: 1.15,
+                LowPassHz: 6200,
+                HighShelfDb: -3);
+            return true;
+        }
+
+        if (text.Contains("bass") || text.Contains("low end") || text.Contains("low-end"))
+        {
+            preset = new AudioEditPreset(
+                "bass-boost",
+                "Bass boost with controlled compression.",
+                Gain: 1.35,
+                LowShelfDb: 5,
+                CompressionAmount: 0.35);
+            return true;
+        }
+
+        if (text.Contains("warm") || text.Contains("warmer"))
+        {
+            preset = new AudioEditPreset(
+                "warmer",
+                "Warmer copy with more body and softer top.",
+                Gain: 1.6,
+                LowShelfDb: 3,
+                HighShelfDb: -1.5,
+                CompressionAmount: 0.18,
+                SaturationAmount: 0.08);
+            return true;
+        }
+
+        if (text.Contains("louder"))
+        {
+            preset = new AudioEditPreset(
+                "louder",
+                "Louder copy with compression to protect peaks.",
+                Gain: 4,
+                CompressionAmount: 0.45);
+            return true;
+        }
+
+        if (text.Contains("quiet") || text.Contains("lower"))
+        {
+            preset = new AudioEditPreset(
+                "quieter",
+                "Quieter copy.",
+                Gain: 0.55);
+            return true;
+        }
+
+        preset = AudioEditPreset.Flat("edited-copy", "No edit matched.");
+        return false;
     }
 
     private void RefreshVersions()
@@ -422,6 +597,4 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
     }
-
-    private sealed record AudioEditSettings(string Label, double Gain);
 }

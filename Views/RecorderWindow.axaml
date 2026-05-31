@@ -213,7 +213,7 @@
                                        Foreground="#F1C27D"
                                        LetterSpacing="2.4"/>
                             <TextBlock Grid.Row="1"
-                                       Text="Try: make warmer, make louder, rename chorus, delete last version."
+                                       Text="{Binding CommandHelp}"
                                        FontSize="12"
                                        FontWeight="Bold"
                                        TextWrapping="Wrap"
