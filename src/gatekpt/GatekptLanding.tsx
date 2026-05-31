@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Archive, Captions, Layers3, Mic, Mountain, Sparkles, Square, Waves } from "lucide-react";
+import { Archive, Captions, Cable, Film, Layers3, Mic, Mountain, Route, Sparkles, Square, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -19,6 +19,22 @@ const workflow: Array<[string, string, LucideIcon]> = [
   ["Shape", "Try warmer, raw, intimate, live room, brighter, darker.", Sparkles],
   ["Visualize", "Build cover direction, captions, and clip mood.", Captions],
   ["Export", "Prepare demo, folder, archive, or shareable version.", Archive],
+];
+
+const productSections: Array<[string, string, LucideIcon, string]> = [
+  ["Project memory", "Save takes, lyrics, captions, stems, routing notes, and export intent in one session record.", Layers3, "Saved states"],
+  ["Audio-reactive visuals", "Use live sound as a visual guide for covers, clips, projection, and performance identity.", Waves, "Signal layer"],
+  ["Video-first production", "Plan captions, clip direction, and finished media while the sound is still fresh.", Film, "Clip memory"],
+  ["Hardware-aware workflow", "Keep RC-505, Scarlett, stems, cue lanes, and routing decisions visible without turning into a settings wall.", Cable, "Rig path"],
+  ["Export memory", "Export mixes, separate stems, demos, archives, and share-ready versions.", Archive, "Final files"],
+];
+
+const cuePath = [
+  ["01", "Drums", "Capture the pulse"],
+  ["02", "Guitar", "Add movement"],
+  ["03", "Keys", "Fill the room"],
+  ["04", "Vocal", "Find the line"],
+  ["05", "Extra", "Texture or hook"],
 ];
 
 function TerrainSignalPreview() {
@@ -200,7 +216,7 @@ function TerrainSignalPreview() {
 
 export function GatekptLanding() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#07100d] text-[#e8e1d2]">
+    <main className="min-h-screen overflow-hidden bg-[#06111c] text-[#e8e1d2]">
       <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="gk-ambient" />
         <div className="relative mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1fr] lg:items-center">
@@ -215,6 +231,13 @@ export function GatekptLanding() {
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
               GateKPT records sounds, keeps versions organized, and lets an artist shape takes with simple commands.
             </p>
+            <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
+              {["Loop cues", "Stem capture", "Finished media"].map((item) => (
+                <div key={item} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/60">
+                  {item}
+                </div>
+              ))}
+            </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#workflow" className="gk-button-primary">
                 See workflow
@@ -251,6 +274,36 @@ export function GatekptLanding() {
         </div>
       </section>
 
+      <section className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
+          <div className="gk-panel p-6 sm:p-8">
+            <p className="gk-label text-[#c6a96d]">Live-loop workflow</p>
+            <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
+              Cue cards for the way a session actually builds.
+            </h2>
+            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
+              Capture drums, guitar, keys, vocal, and extra layers as separate lanes. Keep the loop map readable while the idea is moving.
+            </p>
+          </div>
+          <div className="gk-panel p-4 sm:p-5">
+            <div className="grid gap-3">
+              {cuePath.map(([number, name, note]) => (
+                <div key={number} className="gk-cue group">
+                  <span className="font-mono text-xs text-[#e8e1d2]/42">{number}</span>
+                  <div>
+                    <p className="font-black">{name}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">{note}</p>
+                  </div>
+                  <span className="ml-auto rounded-full border border-[#92bfb3]/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#92bfb3]/80 transition group-hover:border-[#c6a96d]/50 group-hover:text-[#c6a96d]">
+                    cue
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
@@ -282,6 +335,27 @@ export function GatekptLanding() {
         </div>
       </section>
 
+      <section className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-5">
+            <p className="gk-label text-[#92bfb3]">What the OS remembers</p>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Takes, sections, visuals, routing, exports.</h2>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-5">
+            {productSections.map(([title, text, Icon, meta]) => (
+              <div key={title} className="gk-card group">
+                <div className="flex items-center justify-between gap-3">
+                  <Icon className="h-5 w-5 text-[#92bfb3] transition group-hover:text-[#c6a96d]" />
+                  <span className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#e8e1d2]/42">{meta}</span>
+                </div>
+                <h3 className="mt-5 text-lg font-black tracking-[-0.03em]">{title}</h3>
+                <p className="mt-3 text-sm font-medium leading-6 text-[#e8e1d2]/62">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.75fr]">
           <div className="gk-panel p-6 sm:p-8">
@@ -295,6 +369,7 @@ export function GatekptLanding() {
             <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
               Green Machine is for trading research. GateKPT is for music sessions. Separate rooms, same XIV system.
             </p>
+            <Route className="mt-8 h-7 w-7 text-[#92bfb3]" />
           </div>
         </div>
       </section>
