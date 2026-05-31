@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 using GateKPT.MusicOS.Services;
 
 namespace GateKPT.MusicOS.ViewModels;
@@ -17,6 +18,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly BuiltInLooperPlaybackService _playback = new();
     private readonly RecorderVersionStore _versions = new();
     private readonly AudioTransformService _transforms = new();
+    private bool _recordingSignalSeen;
 
     [ObservableProperty]
     private string _inputName = "Scarlett not selected";
@@ -115,10 +117,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        var result = _recorder.Start(InputName, _versions.TakesDirectory, "recording");
+        PeakPercent = 0;
+        _recordingSignalSeen = false;
+        var result = _recorder.Start(InputName, _versions.TakesDirectory, "recording", peak =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                PeakPercent = peak;
+                if (!_recordingSignalSeen && peak >= 1)
+                {
+                    _recordingSignalSeen = true;
+                    Status = peak >= 8
+                        ? $"Recording. Signal is live: {peak:0.0}%."
+                        : $"Recording. Low signal seen: {peak:0.0}%. Turn up if playback is quiet.";
+                }
+            });
+        });
         IsRecording = result.Success;
         CurrentFilePath = result.Path;
-        Status = result.Success ? "Recording. Play the RC-505 now." : result.Message;
+        Status = result.Success ? "Recording. Watch the signal number move while you play." : result.Message;
     }
 
     [RelayCommand]

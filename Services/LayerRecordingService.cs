@@ -19,7 +19,11 @@ public sealed class LayerRecordingService : IDisposable
 
     public bool IsRecording => _capture is not null;
 
-    public LayerRecordingStartResult Start(string preferredInput, string stemDirectory, string layerName)
+    public LayerRecordingStartResult Start(
+        string preferredInput,
+        string stemDirectory,
+        string layerName,
+        Action<double>? onPeakPercent = null)
     {
         Stop();
 
@@ -48,6 +52,7 @@ public sealed class LayerRecordingService : IDisposable
                     _writer?.Flush();
                     _bytesWritten += args.BytesRecorded;
                     _peak = Math.Max(_peak, CalculatePeak(args.Buffer, args.BytesRecorded, _capture.WaveFormat));
+                    onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
                 }
             };
             _capture.StartRecording();

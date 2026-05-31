@@ -116,7 +116,7 @@
                                     Foreground="#15120D"/>
                         </WrapPanel>
                         <TextBlock Grid.Row="2"
-                                   Text="Play the RC-505 during Check signal. If the number stays 0%, fix cable/gain before recording."
+                                   Text="Play the RC-505 during Check signal. While recording, the big signal number must move or Windows is not receiving the performance."
                                    FontSize="12"
                                    FontWeight="Bold"
                                    TextWrapping="Wrap"
