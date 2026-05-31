@@ -1,5 +1,9 @@
 # GateKPT MusicOS
 
+> **Primary active GateKPT app.** This is the C#/.NET Avalonia desktop MusicOS. Use this repo for real product functionality: looper, Focusrite/RC-505 capture, take review, captions, visual painting, autosaves, and project memory.
+
+Public website work belongs in `C:\Users\Green Machine\Desktop\no-going-back` until `gatekpt.ai` is moved to a cleaner dedicated web repo.
+
 GateKPT MusicOS is a C#/.NET creative operating system for live-loop artists, combining RC-505 performance planning, local project memory, lyric/caption workflows, stem capture, and audio-reactive visual artwork.
 
 It is not a toy DAW clone, generic music app, or replacement for musicianship and hardware. It sits above the creative rig as the memory, structure, visual, and production layer for artists who build songs through live performance.
