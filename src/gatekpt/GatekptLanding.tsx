@@ -168,15 +168,15 @@ function TerrainSignalPreview() {
 
   return (
     <div className="gk-panel relative overflow-hidden rounded-[2rem]">
-      <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT terrain audio preview" />
+      <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT sound preview" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="gk-chip">{status === "listening" ? "Live terrain" : "Preview terrain"}</span>
+        <span className="gk-chip">{status === "listening" ? "Live sound" : "Preview"}</span>
         <span className="gk-chip">Signal {level}%</span>
       </div>
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#c6a96d]">Creative audio terrain</p>
+            <p className="gk-label text-[#c6a96d]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
               A browser-safe visual sketch. The private OS handles capture, versions, commands, and exports.
             </p>
@@ -210,21 +210,17 @@ export function GatekptLanding() {
               GateKPT inside XIV
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
-              Creative audio terrain for capturing ideas fast.
+              Capture ideas fast.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              GateKPT is a custom creative audio tool for capturing sessions, keeping versions organized,
-              and shaping takes with simple commands.
-            </p>
-            <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-[#e8e1d2]/52">
-              Built around personal creative workflow, not replacing artists.
+              GateKPT records sounds, keeps versions organized, and lets an artist shape takes with simple commands.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#workflow" className="gk-button-primary">
                 See workflow
               </a>
               <a href="#terrain" className="gk-button-secondary">
-                Try terrain
+                Try preview
               </a>
             </div>
           </motion.div>
@@ -239,8 +235,8 @@ export function GatekptLanding() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="gk-label text-[#92bfb3]">What do I do next with this idea?</p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Five quiet moves from raw sound to output.</h2>
+              <p className="gk-label text-[#92bfb3]">Workflow</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">From idea to version.</h2>
             </div>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
@@ -258,13 +254,12 @@ export function GatekptLanding() {
       <section id="terrain" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Creative room, not a DAW clone</p>
+            <p className="gk-label text-[#c6a96d]">Built for sessions</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Sound moves like terrain: paths, echoes, versions, memory trails.
+              Record the idea before the feeling disappears.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              The private MusicOS is local-first: record a take, keep the original, create shaped versions,
-              and export the piece without turning the session into a technical maze.
+              Record a take, keep the original, create shaped versions, and export without turning the session into a maze.
             </p>
           </div>
 
@@ -275,7 +270,7 @@ export function GatekptLanding() {
                   <span className="font-mono text-xs text-[#e8e1d2]/42">{String(index + 1).padStart(2, "0")}</span>
                   <div>
                     <p className="font-black">{item}</p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">session trail</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">saved version</p>
                   </div>
                   <span className="ml-auto rounded-full border border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/58">
                     saved
@@ -298,8 +293,7 @@ export function GatekptLanding() {
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
             <p className="gk-label text-[#92bfb3]">XIV family</p>
             <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
-              Green Machine maps research and risk terrain. GateKPT maps sound, session, and creative terrain.
-              Separate rooms, shared OS language.
+              Green Machine is for trading research. GateKPT is for music sessions. Separate rooms, same XIV system.
             </p>
           </div>
         </div>
