@@ -52,7 +52,7 @@
                 </Border.Background>
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="24">
                     <StackPanel>
-                        <TextBlock Text="GATEKPT / CREATIVE TERRAIN"
+                        <TextBlock Text="GATEKPT"
                                    FontSize="11"
                                    FontWeight="Black"
                                    Foreground="#C6A96D"
