@@ -13,6 +13,10 @@ This repo is only for the public landing page and browser-safe demo:
 - early access
 - links to the private desktop MusicOS app
 
+The current product direction is documented in:
+
+`PRODUCT_PLAN.md`
+
 Private creator OS functionality lives in:
 
 `C:\Users\Green Machine\Desktop\GateKPT-MusicOS`
