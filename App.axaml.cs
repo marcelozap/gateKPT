@@ -20,10 +20,18 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(),
-            };
+            var recorderMode = desktop.Args?.Any(arg =>
+                arg.Equals("--recorder", System.StringComparison.OrdinalIgnoreCase)) == true;
+
+            desktop.MainWindow = recorderMode
+                ? new RecorderWindow
+                {
+                    DataContext = new RecorderWindowViewModel(),
+                }
+                : new MainWindow
+                {
+                    DataContext = new MainWindowViewModel(),
+                };
         }
 
         base.OnFrameworkInitializationCompleted();
