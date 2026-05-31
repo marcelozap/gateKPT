@@ -84,7 +84,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             if (PeakPercent <= 0.01)
             {
-                return "-∞ dB";
+                return "-inf dB";
             }
 
             var db = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
@@ -167,7 +167,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "warmer, raw, distorted, intimate, live room, brighter, darker, delete";
 
     public string Rc505CaptureGuide =>
-        "Full loop or solo track.";
+        "Capture full loop or separate cue lanes.";
 
     public string SessionMemorySignal =>
         "Capture -> lanes -> mix -> visual.";
@@ -176,7 +176,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "Intro / Groove / Hook / Bridge / Outro.";
 
     public string ExportPlanningSignal =>
-        "Demo, folder, archive.";
+        "Mix, stems, demo, archive.";
 
     public string RoutingSignal =>
         "RC-505 -> Scarlett -> GateKPT.";

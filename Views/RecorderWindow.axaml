@@ -10,7 +10,7 @@
         Height="720"
         MinWidth="640"
         MinHeight="520"
-        Background="#07100D">
+        Background="#06111C">
 
     <Design.DataContext>
         <vm:RecorderWindowViewModel/>
@@ -45,9 +45,9 @@
             <Border CornerRadius="24" Padding="18" BorderBrush="#2BE8E1D2" BorderThickness="1">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                        <GradientStop Color="#14201A" Offset="0"/>
-                        <GradientStop Color="#07100D" Offset="0.58"/>
-                        <GradientStop Color="#1A1710" Offset="1"/>
+                        <GradientStop Color="#0B1B2A" Offset="0"/>
+                        <GradientStop Color="#06111C" Offset="0.58"/>
+                        <GradientStop Color="#101810" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="21">
@@ -80,7 +80,7 @@
                                        LetterSpacing="2"
                                        Foreground="#D08A56"/>
                         </Grid>
-                        <Border Grid.Row="1" CornerRadius="999" Background="#12241F" BorderBrush="#2F92BFB3" BorderThickness="1" Height="22" ClipToBounds="True">
+                        <Border Grid.Row="1" CornerRadius="999" Background="#0A2230" BorderBrush="#2F92BFB3" BorderThickness="1" Height="22" ClipToBounds="True">
                             <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
                                 <Border Grid.Column="0" Background="#92BFB3" Opacity="0.18"/>
                                 <Border Grid.Column="1" Background="#92BFB3" Opacity="0.22"/>
@@ -137,7 +137,7 @@
 
             <Grid Grid.Row="1" ColumnDefinitions="1.05*,0.95*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
-                    <Border CornerRadius="24" Background="#C40B1511" BorderBrush="#2BC6A96D" BorderThickness="1" Padding="18">
+                    <Border CornerRadius="24" Background="#C4081722" BorderBrush="#2BC6A96D" BorderThickness="1" Padding="18">
                         <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                                 <StackPanel>
@@ -164,7 +164,7 @@
                                 <Button Content="Find Scarlett"
                                         Command="{Binding FindScarlettCommand}"
                                         Padding="18,12"
-                                        Background="#1A241E"
+                                        Background="#0D2230"
                                         Foreground="#E8E1D2"/>
                                 <Button Grid.Column="1"
                                         Content="Check signal"
@@ -176,7 +176,7 @@
                         </Grid>
                     </Border>
 
-                    <Border CornerRadius="34" Background="#E00A1210" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24">
+                    <Border CornerRadius="34" Background="#E0071420" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24">
                         <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
@@ -233,7 +233,7 @@
                                         Content="STOP INTERNAL"
                                         Command="{Binding StopPlaybackCommand}"
                                         Padding="18,13"
-                                        Background="#1A241E"
+                                        Background="#0D2230"
                                         Foreground="#C9C0AD"/>
                             </Grid>
 
@@ -252,9 +252,9 @@
                                                Foreground="#E8E1D2"/>
                                 </StackPanel>
                             </Border>
-                            <Border Grid.Row="4" CornerRadius="22" Background="#10182016" BorderBrush="#33C6A96D" BorderThickness="1" Padding="16">
+                            <Border Grid.Row="4" CornerRadius="22" Background="#0D1822" BorderBrush="#33C6A96D" BorderThickness="1" Padding="16">
                                 <StackPanel Spacing="12">
-                                    <TextBlock Text="RC-505 CAPTURE MODE"
+                                    <TextBlock Text="RC CUE CAPTURE"
                                                FontSize="11"
                                                FontWeight="Black"
                                                Foreground="#C6A96D"
@@ -307,7 +307,7 @@
                         </Grid>
                     </Border>
 
-                    <Border CornerRadius="28" Background="#D90B1511" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22">
+                    <Border CornerRadius="28" Background="#D9081722" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22">
                         <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                             <StackPanel>
                                 <TextBlock Text="COMMAND"
@@ -377,7 +377,7 @@
                     </Border>
                 </StackPanel>
 
-                <Border Grid.Column="1" CornerRadius="28" Background="#C40B1511" BorderBrush="#22E8E1D2" BorderThickness="1" Padding="20">
+                <Border Grid.Column="1" CornerRadius="28" Background="#C4081722" BorderBrush="#22E8E1D2" BorderThickness="1" Padding="20">
                     <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="14">
                         <TextBlock Text="TAKES"
                                    FontSize="11"
@@ -414,7 +414,7 @@
                                 HorizontalAlignment="Stretch"
                                 Background="#E8E1D2"
                                 Foreground="#07100D"/>
-                        <Border Grid.Row="4" CornerRadius="20" Background="#111A15" BorderBrush="#3092BFB3" BorderThickness="1" Padding="16">
+                        <Border Grid.Row="4" CornerRadius="20" Background="#0D1822" BorderBrush="#3092BFB3" BorderThickness="1" Padding="16">
                             <StackPanel Spacing="10">
                                 <TextBlock Text="STEMS"
                                            FontSize="11"
@@ -472,7 +472,7 @@
                                     Content="Clear deck"
                                     Command="{Binding ClearLayerDeckCommand}"
                                     Padding="14,12"
-                                    Background="#1A241E"
+                                    Background="#0D2230"
                                     Foreground="#C9C0AD"/>
                         </Grid>
                         <Grid Grid.Row="6" ColumnDefinitions="*,*,*" ColumnSpacing="10">
@@ -491,7 +491,7 @@
                                     Content="Clear lane"
                                     Command="{Binding ClearSelectedLayerCommand}"
                                     Padding="12,11"
-                                    Background="#1A241E"
+                                    Background="#0D2230"
                                     Foreground="#C9C0AD"/>
                         </Grid>
                         <Grid Grid.Row="7" ColumnDefinitions="*,*" ColumnSpacing="10">
@@ -507,9 +507,9 @@
                                     Background="#92BFB3"
                                     Foreground="#07100D"/>
                         </Grid>
-                        <Border Grid.Row="8" CornerRadius="20" Background="#111A15" BorderBrush="#24D08A56" BorderThickness="1" Padding="16">
+                        <Border Grid.Row="8" CornerRadius="20" Background="#0D1822" BorderBrush="#24D08A56" BorderThickness="1" Padding="16">
                             <StackPanel Spacing="10">
-                                <TextBlock Text="EXPORT"
+                                <TextBlock Text="EXPORT MEMORY"
                                            FontSize="11"
                                            FontWeight="Black"
                                            Foreground="#D08A56"
@@ -575,7 +575,7 @@
                                         Command="{Binding OpenStemExportFolderCommand}"
                                         Padding="14,12"
                                         HorizontalAlignment="Stretch"
-                                        Background="#1A241E"
+                                        Background="#0D2230"
                                         Foreground="#C9C0AD"/>
                             </StackPanel>
                         </Border>
