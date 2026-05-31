@@ -141,6 +141,7 @@ function PublicVisualizerDemo() {
   const streamRef = useRef<MediaStream | null>(null);
   const [status, setStatus] = useState<"idle" | "starting" | "listening" | "blocked">("idle");
   const [level, setLevel] = useState(0);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   const drawVisualizer = useCallback(() => {
     const canvas = canvasRef.current;
@@ -249,8 +250,34 @@ function PublicVisualizerDemo() {
     render();
   }, []);
 
+  const stopDemo = useCallback(
+    (closeDemo = false) => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+      void audioContextRef.current?.close();
+      audioContextRef.current = null;
+      analyserRef.current = null;
+      setLevel(0);
+      setStatus("idle");
+
+      if (closeDemo) {
+        setIsDemoOpen(false);
+      } else {
+        requestAnimationFrame(drawVisualizer);
+      }
+    },
+    [drawVisualizer],
+  );
+
   useEffect(() => {
-    drawVisualizer();
+    if (isDemoOpen) {
+      drawVisualizer();
+    }
 
     return () => {
       if (animationRef.current) {
@@ -260,7 +287,21 @@ function PublicVisualizerDemo() {
       streamRef.current?.getTracks().forEach((track) => track.stop());
       void audioContextRef.current?.close();
     };
-  }, [drawVisualizer]);
+  }, [drawVisualizer, isDemoOpen]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !isDemoOpen) {
+        return;
+      }
+
+      stopDemo(true);
+      document.getElementById("product-flow")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isDemoOpen, stopDemo]);
 
   async function startDemo() {
     try {
@@ -290,25 +331,34 @@ function PublicVisualizerDemo() {
     }
   }
 
-  function stopDemo() {
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-    }
-
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-    void audioContextRef.current?.close();
-    audioContextRef.current = null;
-    analyserRef.current = null;
-    setLevel(0);
-    setStatus("idle");
-    drawVisualizer();
-  }
-
   return (
     <section id="try-visualizer" className="bg-[#080706] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.72fr_1fr] lg:items-stretch">
+      <div className="mx-auto max-w-6xl">
+        {!isDemoOpen ? (
+          <div className="rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(241,194,125,0.14),transparent_34%),rgba(255,255,255,0.04)] p-6 shadow-[0_26px_75px_rgba(0,0,0,0.24)] sm:p-8">
+            <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Optional Interactive Demo</p>
+                <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
+                  Open a small visualizer demo.
+                </h2>
+                <p className="mt-4 max-w-2xl text-sm leading-7 text-white/62">
+                  This is not the whole website. It is a small browser preview of the idea.
+                  You can close it anytime with the button or by pressing Esc.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDemoOpen(true)}
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#f1c27d] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] transition hover:-translate-y-0.5 hover:bg-[#ffd99b]"
+              >
+                <Waves className="h-4 w-4" />
+                Open demo
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-5 lg:grid-cols-[0.72fr_1fr] lg:items-stretch">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
           <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Public Demo</p>
           <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
@@ -332,7 +382,7 @@ function PublicVisualizerDemo() {
             ) : (
               <button
                 type="button"
-                onClick={stopDemo}
+                onClick={() => stopDemo()}
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-black/28 px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-white transition hover:-translate-y-0.5 hover:bg-white/10"
               >
                 <Square className="h-4 w-4" />
@@ -341,10 +391,10 @@ function PublicVisualizerDemo() {
             )}
             <button
               type="button"
-              onClick={stopDemo}
+              onClick={() => stopDemo(true)}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white/68 transition hover:-translate-y-0.5 hover:bg-white/10"
             >
-              Reset canvas
+              Exit demo
             </button>
           </div>
 
@@ -353,14 +403,17 @@ function PublicVisualizerDemo() {
               ? "Mic permission was blocked. Enable it in the browser to try again."
               : status === "starting"
                 ? "Starting local audio..."
-                : status === "listening"
-                  ? `Live signal level ${level}%`
-                  : "Idle painting mode. Start mic to make it react."}
+                  : status === "listening"
+                    ? `Live signal level ${level}%`
+                    : "Press Esc anytime to exit this demo."}
           </p>
         </div>
 
-        <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] border border-white/10 bg-black shadow-[0_34px_100px_rgba(0,0,0,0.42)]">
-          <canvas ref={canvasRef} className="h-full min-h-[24rem] w-full" aria-label="Audio reactive visualizer demo" />
+        <div className="relative min-h-[18rem] overflow-hidden rounded-[2rem] border border-white/10 bg-black shadow-[0_34px_100px_rgba(0,0,0,0.42)]">
+          <div className="absolute left-4 top-4 z-10 rounded-full border border-white/12 bg-black/55 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/68 backdrop-blur">
+            Esc exits demo
+          </div>
+          <canvas ref={canvasRef} className="h-full min-h-[18rem] w-full" aria-label="Audio reactive visualizer demo" />
           {status !== "listening" && (
             <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(241,194,125,0.18),rgba(0,0,0,0.72)_58%)] p-8 text-center">
               <div>
@@ -375,6 +428,8 @@ function PublicVisualizerDemo() {
             </div>
           )}
         </div>
+          </div>
+        )}
       </div>
     </section>
   );
