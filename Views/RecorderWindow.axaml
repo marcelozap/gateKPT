@@ -100,25 +100,25 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1" CornerRadius="24" Background="#111315" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="16">
-                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="13">
-                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+            <Border Grid.Row="1" CornerRadius="20" Background="#B8111315" BorderBrush="#18F4EBDA" BorderThickness="1" Padding="12">
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="10">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="13">
+                        <TextBlock Text="NEXT"
+                                   FontSize="10"
+                                   FontWeight="Black"
+                                   LetterSpacing="2.4"
+                                   VerticalAlignment="Center"
+                                   Foreground="#F0B868"/>
                         <StackPanel>
-                            <TextBlock Text="WHAT NEXT?"
-                                       FontSize="11"
-                                       FontWeight="Black"
-                                       LetterSpacing="2.4"
-                                       Foreground="#F0B868"/>
                             <TextBlock Text="{Binding ArtistWorkflowSignal}"
-                                       Margin="0,5,0,0"
                                        FontSize="12"
-                                       FontWeight="Bold"
+                                       FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#CFC4B3"/>
+                                       Foreground="#F4EBDA"/>
                         </StackPanel>
-                        <Border Grid.Column="1" CornerRadius="999" Background="#1257DAE2" Padding="13,8">
+                        <Border Grid.Column="2" CornerRadius="999" Background="#1257DAE2" Padding="12,7">
                             <TextBlock Text="{Binding CurrentFileLabel}"
-                                       MaxWidth="220"
+                                       MaxWidth="180"
                                        FontSize="11"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
@@ -126,73 +126,51 @@
                         </Border>
                     </Grid>
 
-                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="10">
-                        <Border CornerRadius="20" Background="#10F0B868" BorderBrush="#28F0B868" BorderThickness="1" Padding="13">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Capture idea" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
-                                <TextBlock Text="Voice. Loop. Sound." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
-                                <Button Content="Record"
-                                        Command="{Binding StartRecordingCommand}"
-                                        Padding="10,9"
-                                        Background="#F0B868"
-                                        Foreground="#111315"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="1" CornerRadius="20" Background="#1057DAE2" BorderBrush="#2857DAE2" BorderThickness="1" Padding="13">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Choose version" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
-                                <TextBlock Text="Pick the take." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
-                                <Button Content="Open"
-                                        Command="{Binding PlaySelectedCommand}"
-                                        Padding="10,9"
-                                        Background="#57DAE2"
-                                        Foreground="#07110D"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="2" CornerRadius="20" Background="#10A484FF" BorderBrush="#28A484FF" BorderThickness="1" Padding="13">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Shape sound" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
-                                <TextBlock Text="Warmer. Raw. Room." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
-                                <Button Content="Load"
-                                        Command="{Binding PrimeShapeSoundCommand}"
-                                        Padding="10,9"
-                                        Background="#A484FF"
-                                        Foreground="#0B0912"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="3" CornerRadius="20" Background="#0EF4EBDA" BorderBrush="#20F4EBDA" BorderThickness="1" Padding="13">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Make visual" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
-                                <TextBlock Text="Cover. Clip. Caption." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
-                                <Button Content="Cue"
-                                        Command="{Binding PrimeVisualCommand}"
-                                        Padding="10,9"
-                                        Background="#F4EBDA"
-                                        Foreground="#111315"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="4" CornerRadius="20" Background="#12F0B868" BorderBrush="#28F0B868" BorderThickness="1" Padding="13">
-                            <StackPanel Spacing="8">
-                                <TextBlock Text="Export/share" FontSize="13" FontWeight="Black" Foreground="#F4EBDA" TextWrapping="Wrap"/>
-                                <TextBlock Text="Demo. Folder. Archive." FontSize="11" FontWeight="Bold" Foreground="#CFC4B3" TextWrapping="Wrap"/>
-                                <Button Content="Prep"
-                                        Command="{Binding PrimeExportShareCommand}"
-                                        Padding="10,9"
-                                        Background="#F0B868"
-                                        Foreground="#111315"/>
-                            </StackPanel>
-                        </Border>
+                    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*,Auto" ColumnSpacing="8">
+                        <Button Content="Record"
+                                Command="{Binding StartRecordingCommand}"
+                                Padding="12,8"
+                                MinHeight="34"
+                                Background="#F0B868"
+                                Foreground="#111315"/>
+                        <Button Grid.Column="1"
+                                Content="Open take"
+                                Command="{Binding PlaySelectedCommand}"
+                                Padding="12,8"
+                                MinHeight="34"
+                                Background="#57DAE2"
+                                Foreground="#07110D"/>
+                        <Button Grid.Column="2"
+                                Content="Shape"
+                                Command="{Binding PrimeShapeSoundCommand}"
+                                Padding="12,8"
+                                MinHeight="34"
+                                Background="#A484FF"
+                                Foreground="#0B0912"/>
+                        <Button Grid.Column="3"
+                                Content="Visual"
+                                Command="{Binding PrimeVisualCommand}"
+                                Padding="12,8"
+                                MinHeight="34"
+                                Background="#F4EBDA"
+                                Foreground="#111315"/>
+                        <Button Grid.Column="4"
+                                Content="Prep export"
+                                Command="{Binding PrimeExportShareCommand}"
+                                Padding="12,8"
+                                MinHeight="34"
+                                Background="#24111315"
+                                Foreground="#CFC4B3"/>
+                        <Expander Grid.Column="5" Header="Details" Foreground="#CFC4B3">
+                            <Border CornerRadius="18" Background="#0B0D0E" BorderBrush="#18F4EBDA" BorderThickness="1" Padding="13" Margin="0,8,0,0">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding SessionMemorySignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                                    <TextBlock Text="{Binding SectionTimelineSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                                    <TextBlock Text="{Binding RoutingSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
+                                </StackPanel>
+                            </Border>
+                        </Expander>
                     </Grid>
-
-                    <Expander Grid.Row="2" Header="Session details" Foreground="#CFC4B3">
-                        <Border CornerRadius="18" Background="#0B0D0E" BorderBrush="#18F4EBDA" BorderThickness="1" Padding="13" Margin="0,8,0,0">
-                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="13">
-                                <TextBlock Text="{Binding SessionMemorySignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
-                                <TextBlock Grid.Column="1" Text="{Binding SectionTimelineSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
-                                <TextBlock Grid.Column="2" Text="{Binding RoutingSignal}" FontSize="11" FontWeight="Bold" TextWrapping="Wrap" Foreground="#CFC4B3"/>
-                            </Grid>
-                        </Border>
-                    </Expander>
                 </Grid>
             </Border>
 
