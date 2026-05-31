@@ -1,7 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, AudioLines, Check, MonitorUp, Music2, Play, Sparkles, Waves } from "lucide-react";
+import { ArrowRight, AudioLines, Check, Mic, MonitorUp, Music2, Play, Sparkles, Square, Waves } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
 
 const systemSignals = [
   "Looper audio in",
@@ -126,6 +133,209 @@ function VisualizerPreview() {
   );
 }
 
+function PublicVisualizerDemo() {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const [status, setStatus] = useState<"idle" | "listening" | "blocked">("idle");
+  const [level, setLevel] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      void audioContextRef.current?.close();
+    };
+  }, []);
+
+  async function startDemo() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
+      source.connect(analyser);
+
+      streamRef.current = stream;
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      setStatus("listening");
+      drawVisualizer();
+    } catch {
+      setStatus("blocked");
+    }
+  }
+
+  function stopDemo() {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    void audioContextRef.current?.close();
+    audioContextRef.current = null;
+    analyserRef.current = null;
+    setLevel(0);
+    setStatus("idle");
+  }
+
+  function drawVisualizer() {
+    const canvas = canvasRef.current;
+    const analyser = analyserRef.current;
+
+    if (!canvas || !analyser) {
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    const pixelRatio = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.floor(rect.width * pixelRatio));
+    canvas.height = Math.max(1, Math.floor(rect.height * pixelRatio));
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+    const width = rect.width;
+    const height = rect.height;
+    const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+    const timeData = new Uint8Array(analyser.frequencyBinCount);
+
+    const render = () => {
+      analyser.getByteFrequencyData(frequencyData);
+      analyser.getByteTimeDomainData(timeData);
+
+      const average = frequencyData.reduce((sum, value) => sum + value, 0) / frequencyData.length;
+      const pulse = average / 255;
+      setLevel(Math.round(pulse * 100));
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#050505";
+      ctx.fillRect(0, 0, width, height);
+
+      const gradient = ctx.createRadialGradient(width * 0.5, height * 0.5, 8, width * 0.5, height * 0.5, width * 0.72);
+      gradient.addColorStop(0, `rgba(255, 244, 210, ${0.28 + pulse * 0.5})`);
+      gradient.addColorStop(0.42, `rgba(241, 194, 125, ${0.18 + pulse * 0.35})`);
+      gradient.addColorStop(0.72, `rgba(55, 214, 255, ${0.12 + pulse * 0.28})`);
+      gradient.addColorStop(1, "rgba(5, 5, 5, 0)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.translate(width / 2, height / 2);
+      for (let ring = 0; ring < 5; ring += 1) {
+        ctx.beginPath();
+        const radius = 42 + ring * 38 + pulse * 58;
+        ctx.strokeStyle = ring % 2 === 0 ? `rgba(241, 194, 125, ${0.18 + pulse * 0.35})` : `rgba(55, 214, 255, ${0.14 + pulse * 0.28})`;
+        ctx.lineWidth = 1 + pulse * 3;
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.beginPath();
+      for (let index = 0; index < timeData.length; index += 1) {
+        const x = (index / (timeData.length - 1)) * width;
+        const y = height / 2 + ((timeData[index] - 128) / 128) * (54 + pulse * 90);
+        if (index === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.strokeStyle = "rgba(255, 244, 210, 0.92)";
+      ctx.lineWidth = 2 + pulse * 3;
+      ctx.shadowBlur = 26 + pulse * 46;
+      ctx.shadowColor = "rgba(241, 194, 125, 0.82)";
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      const barCount = 48;
+      const barWidth = width / barCount;
+      for (let index = 0; index < barCount; index += 1) {
+        const value = frequencyData[Math.floor((index / barCount) * frequencyData.length)] / 255;
+        const barHeight = value * height * 0.45;
+        ctx.fillStyle = index % 3 === 0 ? "rgba(55, 214, 255, 0.78)" : "rgba(241, 194, 125, 0.78)";
+        ctx.fillRect(index * barWidth, height - barHeight, Math.max(2, barWidth - 3), barHeight);
+      }
+
+      animationRef.current = requestAnimationFrame(render);
+    };
+
+    render();
+  }
+
+  return (
+    <section id="try-visualizer" className="bg-[#080706] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.72fr_1fr] lg:items-stretch">
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
+          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Public Demo</p>
+          <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
+            Try the visualizer in your browser.
+          </h2>
+          <p className="mt-5 text-sm leading-7 text-white/64">
+            Click start, allow microphone access, then sing, clap, play music, or feed audio from your setup.
+            The demo listens locally in the browser and paints from the signal.
+          </p>
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            {status !== "listening" ? (
+              <button
+                type="button"
+                onClick={startDemo}
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f1c27d] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] transition hover:-translate-y-0.5 hover:bg-[#ffd99b]"
+              >
+                <Mic className="h-4 w-4" />
+                Start visualizer
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={stopDemo}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-black/28 px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+              >
+                <Square className="h-4 w-4" />
+                Stop
+              </button>
+            )}
+          </div>
+
+          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/44">
+            {status === "blocked" ? "Mic permission was blocked. Enable it in the browser to try again." : `Signal level ${level}%`}
+          </p>
+        </div>
+
+        <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] border border-white/10 bg-black shadow-[0_34px_100px_rgba(0,0,0,0.42)]">
+          <canvas ref={canvasRef} className="h-full min-h-[24rem] w-full" aria-label="Audio reactive visualizer demo" />
+          {status !== "listening" && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(241,194,125,0.18),rgba(0,0,0,0.72)_58%)] p-8 text-center">
+              <div>
+                <Waves className="mx-auto h-10 w-10 text-[#f1c27d]" />
+                <p className="mt-4 text-sm font-bold uppercase tracking-[0.18em] text-white/72">
+                  Waiting for audio
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function GatekptLanding() {
   return (
     <div className="min-h-screen bg-[#080706] text-[#f8f0e5]">
@@ -155,10 +365,10 @@ export function GatekptLanding() {
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#early-access"
+                href="#try-visualizer"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#f8f0e5] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] shadow-[0_18px_45px_rgba(0,0,0,0.32)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                Join early access
+                Try visualizer
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </a>
               <a
@@ -191,6 +401,8 @@ export function GatekptLanding() {
           </motion.div>
         </div>
       </section>
+
+      <PublicVisualizerDemo />
 
       <section className="bg-[#11100d] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1fr_0.82fr]">
