@@ -48,7 +48,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandResult = "No command yet.";
 
     [ObservableProperty]
-    private string _assistantBrief = "Text edits. Safe copies.";
+    private string _assistantBrief = "Shape takes without losing the original.";
 
     [ObservableProperty]
     private string _commandHistory = "No commands yet.";
@@ -91,14 +91,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "Recording."
             : SignalReady
                 ? "Signal ready."
-                : "Audio check.";
+                : "Ready to capture.";
 
     public string PrimaryDetail =>
         IsRecording
             ? "Play the pass."
             : SignalReady
                 ? "Capture when ready."
-                : "Find Scarlett. Check signal.";
+                : "Check signal, then record.";
 
     public string CurrentFileLabel =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
@@ -127,7 +127,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : Path.GetFileName(LastExportedMixPath);
 
     public string CommandHelp =>
-        "Try: drums punch, vocal polish, add reverb, warmer, louder, delete.";
+        "warmer, raw, distorted, intimate, live room, brighter, darker, delete";
 
     public string Rc505CaptureGuide =>
         "Full loop or solo track.";
@@ -139,7 +139,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "Intro / Groove / Hook / Bridge / Outro.";
 
     public string ExportPlanningSignal =>
-        "Mix, review, prep.";
+        "Demo, folder, archive.";
 
     public string RoutingSignal =>
         "RC-505 -> Scarlett -> GateKPT.";
