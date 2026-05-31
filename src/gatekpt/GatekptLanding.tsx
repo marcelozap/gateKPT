@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, AudioLines, Check, Mic, MonitorUp, Music2, Play, Sparkles, Square, Waves } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -139,62 +139,13 @@ function PublicVisualizerDemo() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [status, setStatus] = useState<"idle" | "listening" | "blocked">("idle");
+  const [status, setStatus] = useState<"idle" | "starting" | "listening" | "blocked">("idle");
   const [level, setLevel] = useState(0);
 
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-
-      streamRef.current?.getTracks().forEach((track) => track.stop());
-      void audioContextRef.current?.close();
-    };
-  }, []);
-
-  async function startDemo() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      const audioContext = new AudioContextClass();
-      const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.82;
-      source.connect(analyser);
-
-      streamRef.current = stream;
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-      setStatus("listening");
-      drawVisualizer();
-    } catch {
-      setStatus("blocked");
-    }
-  }
-
-  function stopDemo() {
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-    }
-
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-    void audioContextRef.current?.close();
-    audioContextRef.current = null;
-    analyserRef.current = null;
-    setLevel(0);
-    setStatus("idle");
-  }
-
-  function drawVisualizer() {
+  const drawVisualizer = useCallback(() => {
     const canvas = canvasRef.current;
-    const analyser = analyserRef.current;
 
-    if (!canvas || !analyser) {
+    if (!canvas) {
       return;
     }
 
@@ -203,20 +154,40 @@ function PublicVisualizerDemo() {
       return;
     }
 
-    const rect = canvas.getBoundingClientRect();
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = Math.max(1, Math.floor(rect.width * pixelRatio));
-    canvas.height = Math.max(1, Math.floor(rect.height * pixelRatio));
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-
-    const width = rect.width;
-    const height = rect.height;
-    const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    const timeData = new Uint8Array(analyser.frequencyBinCount);
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
 
     const render = () => {
-      analyser.getByteFrequencyData(frequencyData);
-      analyser.getByteTimeDomainData(timeData);
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
+      const pixelRatio = window.devicePixelRatio || 1;
+      const targetWidth = Math.floor(width * pixelRatio);
+      const targetHeight = Math.floor(height * pixelRatio);
+
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+      }
+
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+      const analyser = analyserRef.current;
+      const frequencyData = analyser ? new Uint8Array(analyser.frequencyBinCount) : new Uint8Array(96);
+      const timeData = analyser ? new Uint8Array(analyser.frequencyBinCount) : new Uint8Array(96);
+
+      if (analyser) {
+        analyser.getByteFrequencyData(frequencyData);
+        analyser.getByteTimeDomainData(timeData);
+      } else {
+        const now = performance.now() / 1000;
+        for (let index = 0; index < frequencyData.length; index += 1) {
+          frequencyData[index] = 28 + Math.round(Math.sin(now * 1.6 + index * 0.34) * 18 + Math.sin(now * 0.7 + index * 0.11) * 12);
+          timeData[index] = 128 + Math.round(Math.sin(now * 1.2 + index * 0.18) * 18);
+        }
+      }
 
       const average = frequencyData.reduce((sum, value) => sum + value, 0) / frequencyData.length;
       const pulse = average / 255;
@@ -276,6 +247,63 @@ function PublicVisualizerDemo() {
     };
 
     render();
+  }, []);
+
+  useEffect(() => {
+    drawVisualizer();
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      void audioContextRef.current?.close();
+    };
+  }, [drawVisualizer]);
+
+  async function startDemo() {
+    try {
+      setStatus("starting");
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const audioContext = new AudioContextClass();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
+      source.connect(analyser);
+
+      streamRef.current = stream;
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+      setStatus("listening");
+      drawVisualizer();
+    } catch {
+      setStatus("blocked");
+    }
+  }
+
+  function stopDemo() {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    void audioContextRef.current?.close();
+    audioContextRef.current = null;
+    analyserRef.current = null;
+    setLevel(0);
+    setStatus("idle");
+    drawVisualizer();
   }
 
   return (
@@ -292,7 +320,7 @@ function PublicVisualizerDemo() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {status !== "listening" ? (
+            {status !== "listening" && status !== "starting" ? (
               <button
                 type="button"
                 onClick={startDemo}
@@ -311,10 +339,23 @@ function PublicVisualizerDemo() {
                 Stop
               </button>
             )}
+            <button
+              type="button"
+              onClick={stopDemo}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white/68 transition hover:-translate-y-0.5 hover:bg-white/10"
+            >
+              Reset canvas
+            </button>
           </div>
 
           <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-white/44">
-            {status === "blocked" ? "Mic permission was blocked. Enable it in the browser to try again." : `Signal level ${level}%`}
+            {status === "blocked"
+              ? "Mic permission was blocked. Enable it in the browser to try again."
+              : status === "starting"
+                ? "Starting local audio..."
+                : status === "listening"
+                  ? `Live signal level ${level}%`
+                  : "Idle painting mode. Start mic to make it react."}
           </p>
         </div>
 
@@ -325,12 +366,49 @@ function PublicVisualizerDemo() {
               <div>
                 <Waves className="mx-auto h-10 w-10 text-[#f1c27d]" />
                 <p className="mt-4 text-sm font-bold uppercase tracking-[0.18em] text-white/72">
-                  Waiting for audio
+                  {status === "starting" ? "Starting audio" : "Idle visual painting"}
+                </p>
+                <p className="mt-2 max-w-xs text-xs font-medium leading-5 text-white/48">
+                  The public demo becomes audio-reactive after microphone permission.
                 </p>
               </div>
             </div>
           )}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductPathStrip() {
+  const path = [
+    {
+      label: "Landing Page",
+      title: "Understand the product",
+      text: "This page is for LinkedIn, portfolio visitors, and early users to understand the music-to-visual-art idea fast.",
+    },
+    {
+      label: "Public Demo",
+      title: "Try the visualizer",
+      text: "A browser-safe mic demo lets people feel the core concept without installing your private MusicOS.",
+    },
+    {
+      label: "Private App",
+      title: "Create for real",
+      text: "The C#/.NET desktop app is the serious cockpit for rig routing, takes, lyrics, captions, visuals, and export memory.",
+    },
+  ];
+
+  return (
+    <section className="bg-[#080706] px-4 pb-8 text-[#f8f0e5] sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-6xl gap-3 rounded-[2rem] border border-white/10 bg-white/[0.035] p-3 md:grid-cols-3">
+        {path.map((item) => (
+          <article key={item.label} className="rounded-[1.5rem] border border-white/10 bg-black/28 p-5">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f1c27d]">{item.label}</p>
+            <h2 className="mt-3 text-2xl font-black tracking-[-0.05em]">{item.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-white/58">{item.text}</p>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -402,6 +480,7 @@ export function GatekptLanding() {
         </div>
       </section>
 
+      <ProductPathStrip />
       <PublicVisualizerDemo />
 
       <section className="bg-[#11100d] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
