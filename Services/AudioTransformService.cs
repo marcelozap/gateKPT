@@ -13,7 +13,7 @@ public sealed class AudioTransformService
             using var reader = new AudioFileReader(sourcePath);
             var provider = new VolumeSampleProvider(reader)
             {
-                Volume = (float)Math.Clamp(gain, 0.1, 12)
+                Volume = (float)Math.Clamp(gain, 0.1, 500)
             };
 
             WaveFileWriter.CreateWaveFile16(targetPath, provider);
@@ -23,6 +23,21 @@ public sealed class AudioTransformService
         {
             return new AudioTransformResult(false, $"Could not create audio edit: {ex.Message}");
         }
+    }
+
+    public AudioTransformResult CreateNormalizedCopy(
+        string sourcePath,
+        string targetPath,
+        double sourcePeakPercent,
+        double targetPeakPercent = 55)
+    {
+        if (sourcePeakPercent <= 0)
+        {
+            return CreateGainCopy(sourcePath, targetPath, 1);
+        }
+
+        var gain = targetPeakPercent / sourcePeakPercent;
+        return CreateGainCopy(sourcePath, targetPath, gain);
     }
 }
 

@@ -145,8 +145,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsRecording = false;
         if (result.Success)
         {
-            CurrentFilePath = result.Path;
             PeakPercent = result.PeakPercent;
+            CurrentFilePath = result.Path;
+            if (result.PeakPercent is > 0 and < 8)
+            {
+                var rescuedPath = _versions.CreateVersionPath("auto-rescued", ".wav");
+                var rescue = _transforms.CreateNormalizedCopy(result.Path, rescuedPath, result.PeakPercent);
+                if (rescue.Success)
+                {
+                    CurrentFilePath = rescuedPath;
+                    Status = $"Saved low signal take and created louder rescue: {Path.GetFileName(rescuedPath)}. Original peak {result.PeakPercent:0.0}%.";
+                    RefreshVersions();
+                    SelectedVersion = Versions.FirstOrDefault(item => item.Path == rescuedPath) ?? SelectedVersion;
+                    return;
+                }
+            }
+
             Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%.";
             RefreshVersions();
             return;
