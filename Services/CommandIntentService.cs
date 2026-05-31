@@ -23,6 +23,16 @@ public sealed class CommandIntentService
             return new CommandIntent(CommandAction.StopLooperArrangement, "Stop looper playback safely.", text);
         }
 
+        if (ContainsAny(normalized, "export arrangement", "export loop stack", "mix arrangement", "mixdown arrangement", "bounce arrangement", "bounce loop stack"))
+        {
+            return new CommandIntent(CommandAction.ExportLooperArrangement, "Export the audible looper stack into one WAV.", text);
+        }
+
+        if (ContainsAny(normalized, "delete selected", "delete autosave", "delete file", "trash selected", "trash file", "remove selected"))
+        {
+            return new CommandIntent(CommandAction.DeleteSelectedAutosave, "Move the selected autosave to trash instead of deleting permanently.", text);
+        }
+
         if (ContainsAny(normalized, "prime next lane", "next lane", "next loop", "prime loop", "prime drums", "prime drum", "prime guitar", "prime piano", "prime vocal", "prime harmony"))
         {
             return new CommandIntent(CommandAction.PrimeLooperLane, "Prime the next recordable looper lane.", text);
@@ -94,6 +104,8 @@ public enum CommandAction
     PlayLooperArrangement,
     StopLooperArrangement,
     SetLooperMode,
+    ExportLooperArrangement,
+    DeleteSelectedAutosave,
 }
 
 public sealed record CommandIntent(CommandAction Action, string SafetyNote, string Payload);

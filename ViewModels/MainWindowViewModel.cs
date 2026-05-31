@@ -31,6 +31,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly VisualPaintingExportService _visualPaintingExport = new();
     private readonly VisualRendererControlService _visualRendererControl = new();
     private readonly LayerRecordingService _layerRecorder = new();
+    private readonly LayerMixdownService _layerMixdown = new();
     private readonly BuiltInLooperPlaybackService _looperPlayback = new();
     private readonly ClickTrackService _clickTrack = new();
     private readonly FocusriteDiagnosticService _focusrite = new();
@@ -1278,6 +1279,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 : $"{ready}/{total} recorded lane(s) ready for arrangement playback.";
         }
     }
+
+    public string LooperExportSignal =>
+        string.IsNullOrWhiteSpace(LastAutosavePath)
+            ? "No bounced arrangement yet."
+            : $"Latest output: {System.IO.Path.GetFileName(LastAutosavePath)}";
 
     public IEnumerable<LooperLaneReadinessItem> LooperLaneReadiness =>
         LooperTracks.Select(track =>
@@ -2618,6 +2624,50 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ExportLooperArrangementMix()
+    {
+        var soloActive = LooperTracks.Any(track => track.Solo);
+        var playable = LooperTracks
+            .Where(track =>
+                !string.IsNullOrWhiteSpace(track.StemPath)
+                && System.IO.File.Exists(track.StemPath)
+                && !track.Muted
+                && (!soloActive || track.Solo))
+            .OrderBy(track => track.Number)
+            .ToList();
+
+        if (playable.Count == 0)
+        {
+            LooperEngineStatus = "No playable recorded lanes to export.";
+            LooperTransportStatus = "Export blocked.";
+            Status = LooperEngineStatus;
+            return;
+        }
+
+        _looperPlayback.StopAll();
+        System.IO.Directory.CreateDirectory(StemDirectory);
+        var targetPath = AutoSaveFileNamer.CreatePath(StemDirectory, "looper-arrangement-mix", ".wav");
+        var result = _layerMixdown.CreateMixdown(playable.Select(track => track.StemPath), targetPath);
+        if (!result.Success)
+        {
+            LooperEngineStatus = result.Message;
+            LooperTransportStatus = "Export failed.";
+            Status = result.Message;
+            return;
+        }
+
+        LastAutosavePath = result.Path;
+        ActiveStemPath = result.Path;
+        RefreshAutosaveFiles();
+        var included = string.Join(", ", playable.Select(track => track.Instrument));
+        LooperEngineStatus = $"{result.Message} Included: {included}.";
+        LooperTransportStatus = $"Exported arrangement WAV: {System.IO.Path.GetFileName(result.Path)}";
+        Status = LooperEngineStatus;
+        OnPropertyChanged(nameof(LooperExportSignal));
+        SaveProjectSnapshot("Looper arrangement mix exported");
+    }
+
+    [RelayCommand]
     private void ScanHardware()
     {
         var result = _hardware.Scan();
@@ -3138,6 +3188,53 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var result = _looperPlayback.PlayLoop(98, SelectedAutosaveFile.Path, 75);
         Status = result.Message;
         LooperEngineStatus = result.Message;
+    }
+
+    [RelayCommand]
+    private void DeleteSelectedAutosave()
+    {
+        if (SelectedAutosaveFile is null)
+        {
+            Status = "Select an autosave file first.";
+            return;
+        }
+
+        var selected = SelectedAutosaveFile;
+        try
+        {
+            if (!System.IO.File.Exists(selected.Path))
+            {
+                Status = "Selected autosave file no longer exists.";
+                RefreshAutosaveFiles();
+                return;
+            }
+
+            var trashDirectory = System.IO.Path.Combine(LibraryPath, "trash");
+            System.IO.Directory.CreateDirectory(trashDirectory);
+            var targetPath = System.IO.Path.Combine(trashDirectory, selected.Name);
+            if (System.IO.File.Exists(targetPath))
+            {
+                targetPath = System.IO.Path.Combine(
+                    trashDirectory,
+                    $"{System.IO.Path.GetFileNameWithoutExtension(selected.Name)}-{DateTime.Now:yyyyMMdd-HHmmss}{System.IO.Path.GetExtension(selected.Name)}");
+            }
+
+            _looperPlayback.Stop(98);
+            System.IO.File.Move(selected.Path, targetPath);
+            if (LastAutosavePath.Equals(selected.Path, StringComparison.OrdinalIgnoreCase))
+            {
+                LastAutosavePath = "";
+            }
+
+            RefreshAutosaveFiles();
+            Status = $"Moved autosave to trash: {selected.Name}";
+            OnPropertyChanged(nameof(AutosaveSignal));
+            OnPropertyChanged(nameof(SelectedAutosaveTakeSignal));
+        }
+        catch (Exception ex)
+        {
+            Status = $"Could not trash autosave: {ex.Message}";
+        }
     }
 
     [RelayCommand]
@@ -3952,6 +4049,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             case CommandAction.StopLooperArrangement:
                 StopAllLooperTracks();
                 CommandResponse = $"{intent.SafetyNote} {LooperTransportStatus}";
+                break;
+            case CommandAction.ExportLooperArrangement:
+                ExportLooperArrangementMix();
+                CommandResponse = $"{intent.SafetyNote} {LooperExportSignal}";
+                break;
+            case CommandAction.DeleteSelectedAutosave:
+                DeleteSelectedAutosave();
+                CommandResponse = intent.SafetyNote;
                 break;
             case CommandAction.SetLooperMode:
                 SetLooperModeFromCommand(intent.Payload);
