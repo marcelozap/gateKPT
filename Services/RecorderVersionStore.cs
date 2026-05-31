@@ -68,6 +68,19 @@ public sealed class RecorderVersionStore
         return target;
     }
 
+    public string CopyVersion(string sourcePath, string label)
+    {
+        Directory.CreateDirectory(TakesDirectory);
+        if (!File.Exists(sourcePath))
+        {
+            return "";
+        }
+
+        var target = AutoSaveFileNamer.CreatePath(TakesDirectory, label, Path.GetExtension(sourcePath));
+        File.Copy(sourcePath, target, false);
+        return target;
+    }
+
     private static string FormatFileSize(long bytes)
     {
         if (bytes >= 1024 * 1024)

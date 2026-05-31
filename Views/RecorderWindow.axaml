@@ -190,13 +190,19 @@
             </StackPanel>
 
             <Border Grid.Column="1" CornerRadius="28" Background="#A80B0907" BorderBrush="#22F8F0E5" BorderThickness="1" Padding="20">
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="14">
+                <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="14">
                     <TextBlock Text="VERSIONS"
                                FontSize="11"
                                FontWeight="Black"
                                Foreground="#F1C27D"
                                LetterSpacing="2.4"/>
-                    <ListBox Grid.Row="1"
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding VersionListHint}"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Foreground="#D9C5A5"/>
+                    <ListBox Grid.Row="2"
                              ItemsSource="{Binding Versions}"
                              SelectedItem="{Binding SelectedVersion}"
                              Background="Transparent"
@@ -213,7 +219,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
-                    <Button Grid.Row="2"
+                    <Button Grid.Row="3"
                             Content="Open folder"
                             Command="{Binding OpenFolderCommand}"
                             Padding="18,12"

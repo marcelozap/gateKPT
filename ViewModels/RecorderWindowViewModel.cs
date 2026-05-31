@@ -64,6 +64,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "No take saved yet."
             : Path.GetFileName(CurrentFilePath);
 
+    public string VersionListHint =>
+        Versions.Count == 0
+            ? "No takes yet. Record, then Stop & Save."
+            : $"{Versions.Count} take(s). Select one, or type: delete, rename, make warmer.";
+
     public RecorderWindowViewModel()
     {
         RefreshVersions();
@@ -193,11 +198,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("clean", StringComparison.OrdinalIgnoreCase)
             || command.Contains("louder", StringComparison.OrdinalIgnoreCase))
         {
-            Status = "Audio transform command understood, but DSP is not enabled yet. Next build will create safe edited copies.";
+            CreateSafeEditCopy(GetEditLabel(command));
             return;
         }
 
-        Status = "Command not wired yet. Working commands: delete, rename, show versions.";
+        Status = "Command not wired yet. Working commands: delete, rename, show versions, make warmer.";
     }
 
     [RelayCommand]
@@ -245,6 +250,54 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RefreshVersions();
     }
 
+    private void CreateSafeEditCopy(string label)
+    {
+        var sourcePath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+        {
+            Status = "No recording yet. Press Record, play sound, then Stop & Save first.";
+            return;
+        }
+
+        var newPath = _versions.CopyVersion(sourcePath, label);
+        if (string.IsNullOrWhiteSpace(newPath))
+        {
+            Status = "Could not create edit copy.";
+            return;
+        }
+
+        CurrentFilePath = newPath;
+        RefreshVersions();
+        SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
+        Status = $"Created safe edit copy: {Path.GetFileName(newPath)}. Original kept. DSP comes next.";
+    }
+
+    private static string GetEditLabel(string command)
+    {
+        if (command.Contains("warmer", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("warm", StringComparison.OrdinalIgnoreCase))
+        {
+            return "warmer-copy";
+        }
+
+        if (command.Contains("faster", StringComparison.OrdinalIgnoreCase))
+        {
+            return "faster-copy";
+        }
+
+        if (command.Contains("clean", StringComparison.OrdinalIgnoreCase))
+        {
+            return "clean-copy";
+        }
+
+        if (command.Contains("louder", StringComparison.OrdinalIgnoreCase))
+        {
+            return "louder-copy";
+        }
+
+        return "edited-copy";
+    }
+
     private void RefreshVersions()
     {
         Versions.Clear();
@@ -255,6 +308,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == CurrentFilePath) ?? Versions.FirstOrDefault();
         OnPropertyChanged(nameof(CurrentFileLabel));
+        OnPropertyChanged(nameof(VersionListHint));
     }
 
     partial void OnPeakPercentChanged(double value)
