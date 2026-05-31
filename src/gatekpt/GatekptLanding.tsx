@@ -11,23 +11,23 @@ declare global {
 }
 
 const systemSignals = [
-  "Free public creative tools",
-  "Music-to-visual technology",
-  "Built for artists learning by making",
-  "Private MusicOS in development",
+  "Free browser demo",
+  "No download",
+  "Audio stays local",
+  "Built to make music feel playable",
 ];
 
 const points = [
-  "GateKPT is here to make music technology feel easier, more visual, and more inspiring for creators everywhere.",
-  "The public site will offer free tools and demos that help people experiment with sound, visuals, captions, and song ideas.",
-  "The private C#/.NET MusicOS is the deeper studio cockpit where the full workflow can grow: rig, takes, lyrics, captions, visuals, and exports.",
+  "Music software can feel intimidating before you even make a sound. GateKPT starts with a simple free demo you can play with right away.",
+  "The visualizer runs in the browser and listens locally only after you press start. It is meant to feel safe, clear, and fun.",
+  "The deeper MusicOS is the long-term creator cockpit for songs, lyrics, captions, visuals, and exports.",
 ];
 
 const creators = [
-  "Loop artists using Focusrite, RC-505, keys, guitar, vocals, and drums",
-  "Singers who want the room to respond to pitch, tone, breath, and intensity",
-  "Video creators turning performances into clips, captions, and release assets",
-  "Independent artists who want to create faster without living inside a giant DAW",
+  "People curious about making sound visual",
+  "Musicians who feel slowed down by complicated DAW workflows",
+  "Singers, loopers, producers, and video creators who want faster first sparks",
+  "Anyone who wants to play with music technology without installing something sketchy",
 ];
 
 const modules = [
@@ -92,12 +92,12 @@ const stack = [
 
 function ProductHeroPanel() {
   const cards = [
-    ["Free Tools", "Let people try the idea instantly"],
-    ["MusicOS", "A private studio cockpit for deeper creation"],
-    ["Visualizer", "Turn sound into movement and artwork"],
-    ["Learning", "Make music tech easier to understand"],
-    ["Video", "Captions, clips, and shareable proof"],
-    ["Community", "Help more people create cool music"],
+    ["Try it free", "Open the browser demo"],
+    ["No download", "Nothing to install first"],
+    ["Local audio", "Your sound is not uploaded"],
+    ["Simple controls", "Start, stop, exit"],
+    ["Music + visuals", "See sound react"],
+    ["More tools coming", "Captions, ideas, clips"],
   ];
 
   return (
@@ -109,7 +109,7 @@ function ProductHeroPanel() {
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Product Snapshot</p>
             <h2 className="mt-3 text-3xl font-black leading-none tracking-[-0.055em] text-white">
-              Free creative tech. Private MusicOS.
+              Try music visuals without downloading anything.
             </h2>
           </div>
           <span className="rounded-full bg-[#f1c27d] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#15120d]">
@@ -129,8 +129,8 @@ function ProductHeroPanel() {
         <div className="mt-5 rounded-2xl border border-[#f1c27d]/20 bg-[#f1c27d]/10 p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f1c27d]">Website Role</p>
           <p className="mt-2 text-sm font-semibold leading-6 text-white/70">
-            Use this page from LinkedIn, GitHub, and your personal site to communicate the mission:
-            help people make cooler music with technology that feels accessible.
+            The goal is simple customer service for creativity: make the first step obvious,
+            safe, and fun before asking people to learn another complicated tool.
           </p>
         </div>
       </div>
@@ -345,11 +345,11 @@ function PublicVisualizerDemo() {
               <div>
                 <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Optional Interactive Demo</p>
                 <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-                  Open a small visualizer demo.
+                  Try it free in your browser.
                 </h2>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/62">
-                  This is not the whole website. It is a small browser preview of the idea.
-                  You can close it anytime with the button or by pressing Esc.
+                  No download. No account. No audio upload. Open the demo, allow the mic only if
+                  you want to, make a sound, and exit anytime with the button or Esc.
                 </p>
               </div>
               <button
@@ -358,7 +358,7 @@ function PublicVisualizerDemo() {
                 className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#f1c27d] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] transition hover:-translate-y-0.5 hover:bg-[#ffd99b]"
               >
                 <Waves className="h-4 w-4" />
-                Open demo
+                Open free demo
               </button>
             </div>
           </div>
@@ -367,11 +367,11 @@ function PublicVisualizerDemo() {
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 sm:p-8">
           <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Public Demo</p>
           <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-            Try the visualizer in your browser.
+            Make a sound. See it move.
           </h2>
           <p className="mt-5 text-sm leading-7 text-white/64">
             Click start, allow microphone access, then sing, clap, play music, or feed audio from your setup.
-            The demo listens locally in the browser and paints from the signal.
+            The demo listens locally in the browser. Nothing is uploaded.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -444,18 +444,18 @@ function ProductPathStrip() {
   const path = [
     {
       label: "Mission",
-      title: "Make creation easier",
-      text: "GateKPT exists to help more people make music, visuals, captions, and clips without feeling blocked by intimidating tools.",
+      title: "Make music tech less scary",
+      text: "GateKPT exists because music tools should invite people in instead of making them feel confused before they start.",
     },
     {
       label: "Public Tools",
-      title: "Give people something free",
-      text: "The website should offer lightweight browser tools people can try instantly, starting with the audio-reactive visualizer.",
+      title: "Let people play first",
+      text: "No sales pitch first. No download first. Open the demo, make sound, and see the idea immediately.",
     },
     {
       label: "MusicOS",
-      title: "Build the deeper studio",
-      text: "The C#/.NET desktop app is the serious cockpit for rig routing, takes, lyrics, captions, visuals, and export memory.",
+      title: "Grow into deeper creation",
+      text: "The C#/.NET desktop app is where the bigger studio workflow can grow later: lyrics, captions, rig memory, visuals, and exports.",
     },
   ];
 
@@ -499,11 +499,11 @@ function CreationFlowSection() {
         <div className="mb-8 max-w-3xl">
           <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">How It Works</p>
           <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-            Inspire first. Then help people finish.
+            Simple first. Powerful later.
           </h2>
           <p className="mt-4 text-sm leading-7 text-white/62">
-            Music is emotional, technical, and hard. GateKPT should make the technical parts
-            feel less scary so the creative part can come forward.
+            Music is emotional, technical, and hard. GateKPT should make the technical parts feel
+            less scary so people can play, learn, and create without getting buried in jargon.
           </p>
         </div>
 
@@ -547,12 +547,12 @@ function BuildStatusSection() {
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Build Status</p>
             <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-              Start free. Grow into a serious MusicOS.
+              Free tools first. Deeper MusicOS later.
             </h2>
           </div>
           <p className="max-w-md text-sm leading-7 text-[#62533f]">
-            This is the important split: the website helps the world create, while the
-            private desktop app becomes the deeper instrument for serious sessions.
+            This is the important split: the website should feel safe, useful, and generous
+            immediately. The private desktop app becomes the deeper instrument later.
           </p>
         </div>
 
@@ -592,29 +592,29 @@ export function GatekptLanding() {
             </div>
 
             <h1 className="max-w-5xl text-6xl font-black leading-[0.86] tracking-[-0.078em] sm:text-7xl lg:text-[7.4rem]">
-              Free music technology for people who want to create.
+              Music software got too complicated.
             </h1>
 
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
-              GateKPT is a music technology project built to help people make cooler songs,
-              visuals, captions, and videos without feeling locked out by complicated tools.
-              The mission is simple: give more people the spark to create.
+              GateKPT is a free creative playground for sound, visuals, and song ideas.
+              Try the visualizer in your browser. No download. No pressure.
+              Just make a sound and see it move.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a
-                href="#product-flow"
+                href="#try-visualizer"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#f8f0e5] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] shadow-[0_18px_45px_rgba(0,0,0,0.32)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                Explore the mission
+                Try the free demo
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </a>
               <a
-                href="#try-visualizer"
+                href="#product-flow"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-black/28 px-6 py-3 text-sm font-bold text-white/78 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
               >
                 <Play className="h-4 w-4" />
-                Try optional demo
+                Why GateKPT?
               </a>
             </div>
 
@@ -646,9 +646,9 @@ export function GatekptLanding() {
       <section className="bg-[#11100d] px-4 py-16 text-[#f8f0e5] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[1fr_0.82fr]">
           <div className="rounded-[2rem] border border-white/10 bg-black/55 p-6 shadow-[0_26px_75px_rgba(0,0,0,0.32)] sm:p-8">
-            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Public Surface</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Why It Exists</p>
             <h2 className="mt-4 max-w-2xl text-4xl font-black leading-[0.95] tracking-[-0.055em] sm:text-5xl">
-              The product is the sync between sound and sight.
+              Tools should help people make music, not intimidate them.
             </h2>
             <div className="mt-8 space-y-4">
               {points.map((point) => (
@@ -663,14 +663,14 @@ export function GatekptLanding() {
           </div>
 
           <div className="rounded-[2rem] border border-white/12 bg-white/10 p-6 shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur sm:p-8">
-            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Private App</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Trust</p>
             <h2 className="mt-4 text-3xl font-black leading-none tracking-[-0.055em] text-white">
-              Not a web toy. A local creator instrument.
+              Start in the browser. Leave whenever.
             </h2>
             <p className="mt-4 text-sm leading-7 text-white/68">
-              The desktop app is where the private work happens: record, route, write,
-              caption, test visuals, and keep the session memory. The website shows the
-              promise. The Music OS does the work beside the rig.
+              The first demo is intentionally small and clear: open it, start it, stop it,
+              exit it. Your audio stays local in the browser. The deeper MusicOS work can grow
+              from there without making the first step feel sketchy.
             </p>
           </div>
         </div>
@@ -683,11 +683,11 @@ export function GatekptLanding() {
           <div className="rounded-[2rem] border border-[#15120d]/10 bg-white/60 p-6 sm:p-8">
             <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Who It Is For</p>
             <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-              Built for creators who perform ideas into existence.
+              Built for people who want to create without getting buried.
             </h2>
             <p className="mt-4 text-sm leading-7 text-[#62533f]">
-              The app starts with the physical rig and the live session, not a blank timeline.
-              Play the sound, capture the layer, let the visuals react, then finish the clip.
+              Some people have a DAW and a full rig. Some people only have a browser and curiosity.
+              GateKPT should meet them where they are and make the first move easy.
             </p>
           </div>
 
@@ -801,13 +801,13 @@ export function GatekptLanding() {
       <section id="videos" className="px-4 py-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[0.9fr_1fr]">
           <div className="rounded-[2rem] border border-white/10 bg-[#15120d] p-6 text-[#f8f0e5] sm:p-8">
-            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Videos</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Videos</p>
             <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-              The proof is people creating.
+              Show the tool helping real people.
             </h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-white/64">
-              The content strategy becomes simple: show people using the tools, show the
-              music becoming visual, and show the finished clips, paintings, and songs.
+              The content strategy should feel honest: quick demos, real experiments,
+              simple tutorials, and clips of people making something they did not think they could make.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
