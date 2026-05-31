@@ -13,6 +13,8 @@ public sealed class RecorderVersionStore
 
     public string TakesDirectory => Path.Combine(RootDirectory, "takes");
 
+    public string StemsDirectory => Path.Combine(RootDirectory, "stems");
+
     public string TrashDirectory => Path.Combine(RootDirectory, "trash");
 
     public IReadOnlyList<RecorderVersionFile> ListVersions() =>
@@ -85,6 +87,29 @@ public sealed class RecorderVersionStore
     {
         Directory.CreateDirectory(TakesDirectory);
         return AutoSaveFileNamer.CreatePath(TakesDirectory, label, extension);
+    }
+
+    public string CreateStemExportDirectory()
+    {
+        var directory = Path.Combine(StemsDirectory, $"{AutoSaveFileNamer.Prefix}-{DateTime.Now:yyyyMMdd-HHmmss}-stems");
+        Directory.CreateDirectory(directory);
+        return directory;
+    }
+
+    public string CopyStemExport(string sourcePath, string targetDirectory, int laneNumber, string laneName)
+    {
+        if (!File.Exists(sourcePath))
+        {
+            return "";
+        }
+
+        Directory.CreateDirectory(targetDirectory);
+        var extension = Path.GetExtension(sourcePath);
+        var target = Path.Combine(
+            targetDirectory,
+            $"{laneNumber:00}-{AutoSaveFileNamer.Sanitize(laneName)}{extension}");
+        File.Copy(sourcePath, target, true);
+        return target;
     }
 
     private static string FormatFileSize(long bytes)

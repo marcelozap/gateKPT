@@ -60,6 +60,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _lastExportedMixPath = "";
 
     [ObservableProperty]
+    private string _lastStemExportDirectory = "";
+
+    [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
@@ -128,6 +131,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         string.IsNullOrWhiteSpace(LastExportedMixPath)
             ? "No exported layer mix yet."
             : Path.GetFileName(LastExportedMixPath);
+
+    public string LastStemExportLabel =>
+        string.IsNullOrWhiteSpace(LastStemExportDirectory)
+            ? "No stem export yet."
+            : Path.GetFileName(LastStemExportDirectory);
 
     public string CommandHelp =>
         "warmer, raw, distorted, intimate, live room, brighter, darker, delete";
@@ -473,6 +481,45 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var included = string.Join(", ", loaded.Select(slot => slot.Name));
         Status = $"{result.Message} Included: {included}.";
         CommandResult = $"Created mix: {Path.GetFileName(result.Path)} | Layers: {included}";
+    }
+
+    [RelayCommand]
+    private void ExportSeparateStems()
+    {
+        var loaded = LayerSlots.Where(slot => !string.IsNullOrWhiteSpace(slot.Path) && File.Exists(slot.Path)).ToList();
+        if (loaded.Count == 0)
+        {
+            Status = "No stems loaded.";
+            CommandResult = "Load lanes before exporting stems.";
+            return;
+        }
+
+        var targetDirectory = _versions.CreateStemExportDirectory();
+        var exported = loaded
+            .Select(slot => _versions.CopyStemExport(slot.Path, targetDirectory, slot.Number, slot.Name))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .ToList();
+
+        LastStemExportDirectory = targetDirectory;
+        Status = $"Exported {exported.Count} separate stem(s).";
+        CommandResult = $"Stem folder: {Path.GetFileName(targetDirectory)}";
+    }
+
+    [RelayCommand]
+    private void OpenStemExportFolder()
+    {
+        if (string.IsNullOrWhiteSpace(LastStemExportDirectory) || !Directory.Exists(LastStemExportDirectory))
+        {
+            Status = "No stem export folder yet.";
+            return;
+        }
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = LastStemExportDirectory,
+            UseShellExecute = true
+        });
+        Status = $"Opened stems: {Path.GetFileName(LastStemExportDirectory)}";
     }
 
     [RelayCommand]
@@ -927,6 +974,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnLastExportedMixPathChanged(string value)
     {
         OnPropertyChanged(nameof(LastExportedMixLabel));
+    }
+
+    partial void OnLastStemExportDirectoryChanged(string value)
+    {
+        OnPropertyChanged(nameof(LastStemExportLabel));
     }
 }
 
