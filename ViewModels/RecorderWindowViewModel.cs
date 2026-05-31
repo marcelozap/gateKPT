@@ -78,6 +78,32 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string PeakLabel => $"{PeakPercent:0}%";
 
+    public string PeakDecibelLabel
+    {
+        get
+        {
+            if (PeakPercent <= 0.01)
+            {
+                return "-∞ dB";
+            }
+
+            var db = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
+            return $"{db:0.0} dB";
+        }
+    }
+
+    public string MeterStateLabel =>
+        IsRecording
+            ? "REC"
+            : SignalReady
+                ? "ARMED"
+                : "IDLE";
+
+    public string MeterInputLabel =>
+        InputName.Contains("Scarlett", StringComparison.OrdinalIgnoreCase) || InputName.Contains("Focusrite", StringComparison.OrdinalIgnoreCase)
+            ? InputName
+            : "No input";
+
     public string RecorderStateLabel =>
         IsRecording
             ? "LIVE RECORDING"
@@ -943,6 +969,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnPeakPercentChanged(double value)
     {
         OnPropertyChanged(nameof(PeakLabel));
+        OnPropertyChanged(nameof(PeakDecibelLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
@@ -951,6 +978,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     partial void OnSignalReadyChanged(bool value)
     {
+        OnPropertyChanged(nameof(MeterStateLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(NextActionLabel));
@@ -958,10 +986,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     partial void OnIsRecordingChanged(bool value)
     {
+        OnPropertyChanged(nameof(MeterStateLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+    }
+
+    partial void OnInputNameChanged(string value)
+    {
+        OnPropertyChanged(nameof(MeterInputLabel));
     }
 
     partial void OnCurrentFilePathChanged(string value)

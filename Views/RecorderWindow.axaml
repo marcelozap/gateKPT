@@ -42,7 +42,7 @@
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="16" MinWidth="560">
-            <Border CornerRadius="28" Padding="21" BorderBrush="#2BE8E1D2" BorderThickness="1">
+            <Border CornerRadius="24" Padding="18" BorderBrush="#2BE8E1D2" BorderThickness="1">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                         <GradientStop Color="#14201A" Offset="0"/>
@@ -50,52 +50,87 @@
                         <GradientStop Color="#1A1710" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="24">
-                    <StackPanel>
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="21">
+                    <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="GATEKPT"
+                                   FontSize="20"
+                                   FontWeight="Black"
+                                   Foreground="#E8E1D2"
+                                   LetterSpacing="1.8"/>
+                        <TextBlock Text="{Binding MeterInputLabel}"
+                                   Margin="0,5,0,0"
+                                   MaxWidth="260"
                                    FontSize="11"
                                    FontWeight="Black"
-                                   Foreground="#C6A96D"
-                                   LetterSpacing="3"/>
-                        <TextBlock Text="{Binding PrimaryHeadline}"
-                                   Margin="0,6,0,0"
-                                   FontSize="38"
-                                   FontWeight="Black"
                                    TextWrapping="Wrap"
-                                   Foreground="#E8E1D2"/>
-                        <TextBlock Text="{Binding PrimaryDetail}"
-                                   Margin="0,6,0,0"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   LineHeight="24"
-                                   TextWrapping="Wrap"
-                               Foreground="#C9C0AD"/>
-                        <TextBlock Text="{Binding InputName}"
-                                   Margin="0,10,0,0"
-                                   FontSize="12"
-                                   FontWeight="Black"
-                                   TextWrapping="Wrap"
-                               Foreground="#92BFB3"/>
+                                   Foreground="#92BFB3"/>
                     </StackPanel>
 
-                    <Border Grid.Column="1"
-                            Width="132"
-                            Height="132"
-                            CornerRadius="999"
-                            Background="#E8E1D2">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding PeakLabel}"
-                                       FontSize="36"
+                    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" VerticalAlignment="Center">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                            <TextBlock Text="LIVE INPUT"
+                                       FontSize="10"
                                        FontWeight="Black"
-                                       HorizontalAlignment="Center"
-                                   Foreground="#07100D"/>
-                            <TextBlock Text="SIGNAL"
+                                       LetterSpacing="2.4"
+                                       Foreground="#C6A96D"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding MeterStateLabel}"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#D08A56"/>
+                        </Grid>
+                        <Border Grid.Row="1" CornerRadius="999" Background="#12241F" BorderBrush="#2F92BFB3" BorderThickness="1" Height="22" ClipToBounds="True">
+                            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
+                                <Border Grid.Column="0" Background="#92BFB3" Opacity="0.18"/>
+                                <Border Grid.Column="1" Background="#92BFB3" Opacity="0.22"/>
+                                <Border Grid.Column="2" Background="#92BFB3" Opacity="0.28"/>
+                                <Border Grid.Column="3" Background="#92BFB3" Opacity="0.34"/>
+                                <Border Grid.Column="4" Background="#92BFB3" Opacity="0.40"/>
+                                <Border Grid.Column="5" Background="#92BFB3" Opacity="0.46"/>
+                                <Border Grid.Column="6" Background="#92BFB3" Opacity="0.52"/>
+                                <Border Grid.Column="7" Background="#92BFB3" Opacity="0.58"/>
+                                <Border Grid.Column="8" Background="#92BFB3" Opacity="0.64"/>
+                                <Border Grid.Column="9" Background="#92BFB3" Opacity="0.70"/>
+                                <Border Grid.Column="10" Background="#C6A96D" Opacity="0.76"/>
+                                <Border Grid.Column="11" Background="#C6A96D" Opacity="0.82"/>
+                                <Border Grid.Column="12" Background="#C6A96D" Opacity="0.88"/>
+                                <Border Grid.Column="13" Background="#C6A96D" Opacity="0.94"/>
+                                <Border Grid.Column="14" Background="#D08A56" Opacity="0.90"/>
+                                <Border Grid.Column="15" Background="#D08A56" Opacity="0.76"/>
+                                <Border Grid.Column="16" Background="#D08A56" Opacity="0.62"/>
+                                <Border Grid.Column="17" Background="#D08A56" Opacity="0.48"/>
+                                <Border Grid.Column="18" Background="#D08A56" Opacity="0.34"/>
+                                <Border Grid.Column="19" Background="#D08A56" Opacity="0.22"/>
+                            </Grid>
+                        </Border>
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding NextActionLabel}"
+                                   FontSize="11"
+                                   FontWeight="Black"
+                                   TextWrapping="Wrap"
+                                   Foreground="#C9C0AD"/>
+                    </Grid>
+
+                    <Border Grid.Column="2"
+                            CornerRadius="20"
+                            Background="#E8E1D2"
+                            Padding="18,13"
+                            MinWidth="150">
+                        <Grid RowDefinitions="Auto,Auto" RowSpacing="2">
+                            <TextBlock Text="{Binding PeakDecibelLabel}"
+                                       FontSize="26"
+                                       FontWeight="Black"
+                                       HorizontalAlignment="Right"
+                                       Foreground="#07100D"/>
+                            <TextBlock Grid.Row="1"
+                                       Text="{Binding PeakLabel}"
                                        FontSize="11"
                                        FontWeight="Black"
-                                       LetterSpacing="2.5"
-                                       HorizontalAlignment="Center"
-                                   Foreground="#806A3F"/>
-                        </StackPanel>
+                                       LetterSpacing="2"
+                                       HorizontalAlignment="Right"
+                                       Foreground="#806A3F"/>
+                        </Grid>
                     </Border>
                 </Grid>
             </Border>
