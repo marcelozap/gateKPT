@@ -48,6 +48,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string PeakLabel => $"{PeakPercent:0}%";
 
+    public string RecorderStateLabel =>
+        IsRecording
+            ? "LIVE RECORDING"
+            : string.IsNullOrWhiteSpace(CurrentFilePath)
+                ? "WAITING"
+                : "TAKE READY";
+
+    public string NextActionLabel =>
+        IsRecording
+            ? "Press STOP & SAVE when the loop is done."
+            : SignalReady
+                ? "Press RECORD, play, then STOP & SAVE."
+                : "Press CHECK SIGNAL while the RC-505 is playing.";
+
     public string PrimaryHeadline =>
         IsRecording
             ? "Recording. Play now."
@@ -364,23 +378,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PeakLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
+        OnPropertyChanged(nameof(RecorderStateLabel));
+        OnPropertyChanged(nameof(NextActionLabel));
     }
 
     partial void OnSignalReadyChanged(bool value)
     {
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
+        OnPropertyChanged(nameof(NextActionLabel));
     }
 
     partial void OnIsRecordingChanged(bool value)
     {
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
+        OnPropertyChanged(nameof(RecorderStateLabel));
+        OnPropertyChanged(nameof(NextActionLabel));
     }
 
     partial void OnCurrentFilePathChanged(string value)
     {
         OnPropertyChanged(nameof(CurrentFileLabel));
+        OnPropertyChanged(nameof(RecorderStateLabel));
+        OnPropertyChanged(nameof(NextActionLabel));
     }
 
     private sealed record AudioEditSettings(string Label, double Gain);
