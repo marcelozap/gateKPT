@@ -11,16 +11,16 @@ declare global {
 }
 
 const systemSignals = [
-  "Looper audio in",
-  "Drums light the room",
-  "Voice shapes the color",
-  "A song becomes a visual artifact",
+  "C#/.NET desktop MusicOS",
+  "Looper-first song workflow",
+  "Captions, visuals, exports",
+  "Optional browser demo below",
 ];
 
 const points = [
-  "GateKPT is being built around the live creator loop: drums, guitar or keys, vocals, captions, visuals, export.",
-  "The visualizer is not a decoration. It is the memory of the performance, always listening while the song is being made.",
-  "The private C#/.NET desktop app keeps the rig, takes, lyrics, captions, visual presets, and export state together.",
+  "GateKPT is being built around the live creator loop: drums, guitar or keys, vocals, captions, visuals, and export.",
+  "The public website explains the product and gives visitors a small optional demo they can open and exit.",
+  "The private C#/.NET desktop app keeps the real production memory: rig, takes, lyrics, captions, visual presets, and exports.",
 ];
 
 const creators = [
@@ -65,14 +65,14 @@ const modules = [
 
 const offers = [
   {
-    name: "Visualizer OS",
-    price: "Live",
-    text: "A performance-first visual system for turning music into projected motion and saved visual artifacts.",
+    name: "MusicOS Alpha",
+    price: "Private app",
+    text: "A C#/.NET creator cockpit for song flow, lyrics, captions, visual direction, rig memory, and export planning.",
   },
   {
-    name: "Creator App",
-    price: "C#/.NET",
-    text: "A focused desktop Music OS for lyrics, takes, rig memory, captions, visual presets, and exports.",
+    name: "Visualizer Demo",
+    price: "Public web",
+    text: "A lightweight 2D browser demo people can open from LinkedIn to feel the music-to-visual-art idea.",
   },
   {
     name: "Video Pipeline",
@@ -90,43 +90,48 @@ const stack = [
   "Local-first creative memory",
 ];
 
-function VisualizerPreview() {
+function ProductHeroPanel() {
+  const cards = [
+    ["Song Builder", "Drums -> harmony -> vocals"],
+    ["Lyric Vault", "Hooks, fragments, rewrites"],
+    ["Caption Engine", "Draft first, review before burn-in"],
+    ["Visual Room", "2D/3D renderer path planning"],
+    ["Rig Routing", "Focusrite / RC-505 memory"],
+    ["Export Memory", "Clips, artwork, release tasks"],
+  ];
+
   return (
-    <div className="relative min-h-[28rem] overflow-hidden rounded-[2.125rem] border border-white/12 bg-[#050505] p-5 shadow-[0_34px_100px_rgba(0,0,0,0.42)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(55,214,255,0.34),transparent_28%),radial-gradient(circle_at_74%_24%,rgba(255,132,51,0.28),transparent_24%),radial-gradient(circle_at_48%_76%,rgba(255,236,164,0.24),transparent_34%)]" />
-      <div className="absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/15 bg-white/[0.03] shadow-[0_0_95px_rgba(241,194,125,0.22)]" />
-      <motion.div
-        aria-hidden
-        animate={{ rotate: 360 }}
-        transition={{ duration: 24, ease: "linear", repeat: Infinity }}
-        className="absolute left-1/2 top-1/2 h-80 w-80 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#f1c27d]/40"
-      />
-      <motion.div
-        aria-hidden
-        animate={{ scale: [1, 1.08, 0.98, 1], opacity: [0.76, 1, 0.68, 0.76] }}
-        transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,244,210,0.95),rgba(241,194,125,0.34)_42%,transparent_72%)]"
-      />
-      <div className="absolute inset-x-5 bottom-5 rounded-[1.5rem] border border-white/12 bg-black/42 p-4 backdrop-blur">
-        <div className="mb-4 flex items-center justify-between gap-4">
+    <div className="relative overflow-hidden rounded-[2.125rem] border border-white/12 bg-[#120f0b] p-5 shadow-[0_34px_100px_rgba(0,0,0,0.42)]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_14%,rgba(241,194,125,0.18),transparent_28%),radial-gradient(circle_at_84%_8%,rgba(55,214,255,0.14),transparent_24%)]" />
+
+      <div className="relative rounded-[1.6rem] border border-white/10 bg-black/35 p-5 backdrop-blur">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Live Canvas</p>
-            <p className="mt-1 text-sm font-semibold text-white/72">Focusrite input to GateKPT Visual Room</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Product Snapshot</p>
+            <h2 className="mt-3 text-3xl font-black leading-none tracking-[-0.055em] text-white">
+              Private creator OS. Public proof page.
+            </h2>
           </div>
           <span className="rounded-full bg-[#f1c27d] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#15120d]">
-            Painting
+            Alpha
           </span>
         </div>
-        <div className="flex h-16 items-end gap-1.5">
-          {Array.from({ length: 24 }).map((_, index) => (
-            <motion.span
-              // Stable enough for a decorative, fixed-length meter.
-              key={index}
-              animate={{ height: [`${22 + ((index * 7) % 34)}%`, `${48 + ((index * 11) % 46)}%`, `${26 + ((index * 5) % 38)}%`] }}
-              transition={{ duration: 1.2 + (index % 5) * 0.13, repeat: Infinity, ease: "easeInOut" }}
-              className="flex-1 rounded-full bg-gradient-to-t from-[#37d6ff] via-[#f1c27d] to-white"
-            />
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          {cards.map(([title, detail]) => (
+            <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+              <p className="text-sm font-black text-[#f8f0e5]">{title}</p>
+              <p className="mt-2 text-xs font-semibold leading-5 text-white/52">{detail}</p>
+            </div>
           ))}
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-[#f1c27d]/20 bg-[#f1c27d]/10 p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f1c27d]">Website Role</p>
+          <p className="mt-2 text-sm font-semibold leading-6 text-white/70">
+            Use this page from LinkedIn, GitHub, and your personal site to explain the project first.
+            The visualizer demo is a lower section, not the whole product.
+          </p>
         </div>
       </div>
     </div>
@@ -583,16 +588,17 @@ export function GatekptLanding() {
           >
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d] shadow-sm backdrop-blur">
               <Sparkles className="h-3.5 w-3.5 text-[#f1c27d]" />
-              GateKPT Visualizer OS
+              GateKPT MusicOS
             </div>
 
-            <h1 className="max-w-5xl text-6xl font-black leading-[0.86] tracking-[-0.078em] sm:text-7xl lg:text-[8.4rem]">
-              Turn live music into visual artwork.
+            <h1 className="max-w-5xl text-6xl font-black leading-[0.86] tracking-[-0.078em] sm:text-7xl lg:text-[7.4rem]">
+              A creator OS for music, visuals, and release-ready clips.
             </h1>
 
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
-              GateKPT is a C#/.NET Music OS built around the performance: plug in the rig,
-              play through the looper, shape the song, and let the visualizer paint what happened.
+              GateKPT is a C#/.NET desktop MusicOS for live-loop creators:
+              plan the song, capture layers, keep lyrics and captions together,
+              shape visuals, and package the performance into finished media.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -608,7 +614,7 @@ export function GatekptLanding() {
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-white/18 bg-black/28 px-6 py-3 text-sm font-bold text-white/78 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
               >
                 <Play className="h-4 w-4" />
-                Try visualizer
+                Try optional demo
               </a>
             </div>
 
@@ -629,7 +635,7 @@ export function GatekptLanding() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}
           >
-            <VisualizerPreview />
+            <ProductHeroPanel />
           </motion.div>
         </div>
       </section>
@@ -670,7 +676,6 @@ export function GatekptLanding() {
         </div>
       </section>
 
-      <PublicVisualizerDemo />
       <BuildStatusSection />
 
       <section className="bg-[#f6f0e7] px-4 py-16 text-[#15120d] sm:px-6 lg:px-8">
@@ -738,7 +743,7 @@ export function GatekptLanding() {
           <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Offer</p>
-              <h2 className="mt-2 text-4xl font-black tracking-[-0.06em] sm:text-5xl">Visualizer, app, videos.</h2>
+              <h2 className="mt-2 text-4xl font-black tracking-[-0.06em] sm:text-5xl">MusicOS, visual demo, videos.</h2>
             </div>
             <p className="max-w-md text-sm leading-6 text-[#62533f]">
               The website explains the visual product. The private app is the working cockpit
@@ -820,6 +825,8 @@ export function GatekptLanding() {
           </div>
         </div>
       </section>
+
+      <PublicVisualizerDemo />
 
       <section id="early-access" className="bg-[#f6f0e7] px-4 pb-20 text-[#15120d] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl rounded-[2rem] bg-[#15120d] p-6 text-[#f8f0e5] shadow-[0_26px_75px_rgba(65,48,28,0.18)] sm:p-8">
