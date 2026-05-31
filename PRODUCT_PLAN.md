@@ -1,11 +1,19 @@
 # GateKPT.ai Product Plan
 
-`gatekpt.ai` is the public landing page for GateKPT.
+`gatekpt.ai` is the public home for GateKPT: free, accessible music technology that helps people create.
+
+## Mission
+
+Help people all around the world make cooler music, visuals, captions, clips, and creative experiments with tools that feel generous, understandable, and fun.
+
+Green Machine is about trading discipline.
+
+GateKPT is about spreading love for music and technology by making creation easier.
 
 It should be both:
 
 - a credible product page for LinkedIn, GitHub, portfolio, and early users
-- a lightweight interactive demo where visitors can try the music-to-visual-art idea
+- free lightweight tools where visitors can try the music-to-visual-art idea
 
 It should not become:
 
@@ -18,20 +26,20 @@ It should not become:
 ## Locked Structure
 
 1. Hero
-   - Explain GateKPT in one sentence.
-   - Show a small visual preview.
-   - Primary CTA: see the product.
-   - Secondary CTA: try the visualizer.
+   - Explain the mission in one sentence.
+   - Communicate free music technology, not just a private app.
+   - Primary CTA: explore the mission.
+   - Secondary CTA: try the optional demo.
 
 2. Product Path
-   - Landing page: understand the product.
-   - Public demo: try a browser-safe visualizer.
-   - Private app: create for real in the C#/.NET MusicOS.
+   - Mission: make creation easier.
+   - Public tools: give people something free.
+   - MusicOS: build the deeper studio.
 
 3. How It Works
-   - Play into the rig.
-   - Shape the visual world.
-   - Leave with assets.
+   - Make sound feel visual.
+   - Teach through play.
+   - Help people finish.
 
 4. Public Demo
    - Collapsed by default.
@@ -44,7 +52,7 @@ It should not become:
 5. Product Sections
    - who it is for
    - inside the MusicOS
-   - offer / pricing direction
+   - free tools / public demos
    - technical stack
    - videos / proof
    - early access
@@ -79,4 +87,4 @@ Desktop app:
 
 ## One-Line Product Position
 
-GateKPT turns live music creation into visual artwork, then helps the artist package the session into songs, captions, clips, and release-ready assets.
+GateKPT gives people free music technology tools that make sound visual, make creation easier, and grow into a deeper MusicOS for songs, captions, clips, and release-ready creative work.

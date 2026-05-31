@@ -11,16 +11,16 @@ declare global {
 }
 
 const systemSignals = [
-  "C#/.NET desktop MusicOS",
-  "Looper-first song workflow",
-  "Captions, visuals, exports",
-  "Optional browser demo below",
+  "Free public creative tools",
+  "Music-to-visual technology",
+  "Built for artists learning by making",
+  "Private MusicOS in development",
 ];
 
 const points = [
-  "GateKPT is being built around the live creator loop: drums, guitar or keys, vocals, captions, visuals, and export.",
-  "The public website explains the product and gives visitors a small optional demo they can open and exit.",
-  "The private C#/.NET desktop app keeps the real production memory: rig, takes, lyrics, captions, visual presets, and exports.",
+  "GateKPT is here to make music technology feel easier, more visual, and more inspiring for creators everywhere.",
+  "The public site will offer free tools and demos that help people experiment with sound, visuals, captions, and song ideas.",
+  "The private C#/.NET MusicOS is the deeper studio cockpit where the full workflow can grow: rig, takes, lyrics, captions, visuals, and exports.",
 ];
 
 const creators = [
@@ -65,19 +65,19 @@ const modules = [
 
 const offers = [
   {
-    name: "MusicOS Alpha",
-    price: "Private app",
-    text: "A C#/.NET creator cockpit for song flow, lyrics, captions, visual direction, rig memory, and export planning.",
+    name: "Free Creative Tools",
+    price: "Public",
+    text: "Browser-based experiments that help anyone play with music, visuals, captions, and creative momentum.",
   },
   {
     name: "Visualizer Demo",
-    price: "Public web",
-    text: "A lightweight 2D browser demo people can open from LinkedIn to feel the music-to-visual-art idea.",
+    price: "Try it",
+    text: "A lightweight 2D browser demo people can open from LinkedIn to feel sound turn into visual motion.",
   },
   {
-    name: "Video Pipeline",
-    price: "Release",
-    text: "A faster path from live performance to captioned clips, demos, behind-the-scenes videos, and finished posts.",
+    name: "MusicOS Alpha",
+    price: "Private app",
+    text: "The deeper C#/.NET creator cockpit for songs, lyrics, rig memory, captions, visual direction, and export planning.",
   },
 ];
 
@@ -92,12 +92,12 @@ const stack = [
 
 function ProductHeroPanel() {
   const cards = [
-    ["Song Builder", "Drums -> harmony -> vocals"],
-    ["Lyric Vault", "Hooks, fragments, rewrites"],
-    ["Caption Engine", "Draft first, review before burn-in"],
-    ["Visual Room", "2D/3D renderer path planning"],
-    ["Rig Routing", "Focusrite / RC-505 memory"],
-    ["Export Memory", "Clips, artwork, release tasks"],
+    ["Free Tools", "Let people try the idea instantly"],
+    ["MusicOS", "A private studio cockpit for deeper creation"],
+    ["Visualizer", "Turn sound into movement and artwork"],
+    ["Learning", "Make music tech easier to understand"],
+    ["Video", "Captions, clips, and shareable proof"],
+    ["Community", "Help more people create cool music"],
   ];
 
   return (
@@ -109,7 +109,7 @@ function ProductHeroPanel() {
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Product Snapshot</p>
             <h2 className="mt-3 text-3xl font-black leading-none tracking-[-0.055em] text-white">
-              Private creator OS. Public proof page.
+              Free creative tech. Private MusicOS.
             </h2>
           </div>
           <span className="rounded-full bg-[#f1c27d] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#15120d]">
@@ -129,8 +129,8 @@ function ProductHeroPanel() {
         <div className="mt-5 rounded-2xl border border-[#f1c27d]/20 bg-[#f1c27d]/10 p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f1c27d]">Website Role</p>
           <p className="mt-2 text-sm font-semibold leading-6 text-white/70">
-            Use this page from LinkedIn, GitHub, and your personal site to explain the project first.
-            The visualizer demo is a lower section, not the whole product.
+            Use this page from LinkedIn, GitHub, and your personal site to communicate the mission:
+            help people make cooler music with technology that feels accessible.
           </p>
         </div>
       </div>
@@ -443,18 +443,18 @@ function PublicVisualizerDemo() {
 function ProductPathStrip() {
   const path = [
     {
-      label: "Landing Page",
-      title: "Understand the product",
-      text: "This page is for LinkedIn, portfolio visitors, and early users to understand the music-to-visual-art idea fast.",
+      label: "Mission",
+      title: "Make creation easier",
+      text: "GateKPT exists to help more people make music, visuals, captions, and clips without feeling blocked by intimidating tools.",
     },
     {
-      label: "Public Demo",
-      title: "Try the visualizer",
-      text: "A browser-safe mic demo lets people feel the core concept without installing your private MusicOS.",
+      label: "Public Tools",
+      title: "Give people something free",
+      text: "The website should offer lightweight browser tools people can try instantly, starting with the audio-reactive visualizer.",
     },
     {
-      label: "Private App",
-      title: "Create for real",
+      label: "MusicOS",
+      title: "Build the deeper studio",
       text: "The C#/.NET desktop app is the serious cockpit for rig routing, takes, lyrics, captions, visuals, and export memory.",
     },
   ];
@@ -478,18 +478,18 @@ function CreationFlowSection() {
   const steps = [
     {
       icon: AudioLines,
-      title: "Play into the rig",
-      text: "Start with drums, a loop, keys, guitar, or voice. GateKPT is designed around performing the idea first.",
+      title: "Make sound feel visual",
+      text: "Start with voice, drums, a loop, guitar, piano, or even a clap. Let people see music react immediately.",
     },
     {
       icon: Waves,
-      title: "Shape the visual world",
-      text: "The audio signal drives motion, color, pulse, and room energy while the song is still being built.",
+      title: "Teach through play",
+      text: "Instead of making music tech feel like homework, make the tool explain itself by responding to what the creator does.",
     },
     {
       icon: FileVideo,
-      title: "Leave with assets",
-      text: "The goal is not just a cool screen. It is a song, a visual artifact, captions, clips, and a path to release.",
+      title: "Help people finish",
+      text: "The bigger dream is not just cool visuals. It is helping people leave with songs, captions, clips, and confidence.",
     },
   ];
 
@@ -499,11 +499,11 @@ function CreationFlowSection() {
         <div className="mb-8 max-w-3xl">
           <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">How It Works</p>
           <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-            A creator workflow, not a screensaver.
+            Inspire first. Then help people finish.
           </h2>
           <p className="mt-4 text-sm leading-7 text-white/62">
-            The visualizer is one part of GateKPT. The full direction is a local Music OS
-            for making the performance easier to capture, understand, package, and share.
+            Music is emotional, technical, and hard. GateKPT should make the technical parts
+            feel less scary so the creative part can come forward.
           </p>
         </div>
 
@@ -525,18 +525,18 @@ function BuildStatusSection() {
   const milestones = [
     {
       label: "Now",
-      title: "Public landing + safe demo",
-      text: "GateKPT.ai explains the product and offers a lightweight 2D browser visualizer that visitors can open and exit safely.",
+      title: "Free public visualizer",
+      text: "GateKPT.ai starts with a lightweight browser tool that lets people see sound become motion without installing anything.",
     },
     {
-      label: "Private alpha",
-      title: "C#/.NET MusicOS",
-      text: "The desktop app holds the real creative workflow: looper layers, lyrics, captions, rig routing, visual presets, project memory, and exports.",
+      label: "Building",
+      title: "MusicOS creator cockpit",
+      text: "The desktop app grows the serious workflow: looper layers, lyrics, captions, rig routing, visual presets, project memory, and exports.",
     },
     {
       label: "Next",
-      title: "Performance visual engine",
-      text: "The heavier 2D/3D renderer belongs in the private app path, where it can support projector, OBS, stage safety, and saved visual artwork.",
+      title: "More free creative tools",
+      text: "The public site can expand with more small tools for captions, song ideas, visual presets, and learning music technology by making.",
     },
   ];
 
@@ -547,12 +547,12 @@ function BuildStatusSection() {
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Build Status</p>
             <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-              Public demo here. Serious creation in the desktop OS.
+              Start free. Grow into a serious MusicOS.
             </h2>
           </div>
           <p className="max-w-md text-sm leading-7 text-[#62533f]">
-            This is the important split: the website gives people the instant “I get it”
-            moment, while the private app becomes the real instrument.
+            This is the important split: the website helps the world create, while the
+            private desktop app becomes the deeper instrument for serious sessions.
           </p>
         </div>
 
@@ -592,13 +592,13 @@ export function GatekptLanding() {
             </div>
 
             <h1 className="max-w-5xl text-6xl font-black leading-[0.86] tracking-[-0.078em] sm:text-7xl lg:text-[7.4rem]">
-              A creator OS for music, visuals, and release-ready clips.
+              Free music technology for people who want to create.
             </h1>
 
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
-              GateKPT is a C#/.NET desktop MusicOS for live-loop creators:
-              plan the song, capture layers, keep lyrics and captions together,
-              shape visuals, and package the performance into finished media.
+              GateKPT is a music technology project built to help people make cooler songs,
+              visuals, captions, and videos without feeling locked out by complicated tools.
+              The mission is simple: give more people the spark to create.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -606,7 +606,7 @@ export function GatekptLanding() {
                 href="#product-flow"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#f8f0e5] px-6 py-3 text-sm font-black uppercase tracking-[0.13em] text-[#15120d] shadow-[0_18px_45px_rgba(0,0,0,0.32)] transition hover:-translate-y-0.5 hover:bg-white"
               >
-                See the product
+                Explore the mission
                 <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
               </a>
               <a
@@ -714,8 +714,8 @@ export function GatekptLanding() {
               </h2>
             </div>
             <p className="max-w-md text-sm leading-7 text-[#62533f]">
-              GateKPT makes the visualizer part of the creation process, not a final plugin
-              slapped onto the song after the energy is gone.
+              The goal is to turn music technology into something people can feel, learn,
+              and use quickly: write, play, see, caption, share, and keep going.
             </p>
           </div>
 
@@ -743,11 +743,11 @@ export function GatekptLanding() {
           <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Offer</p>
-              <h2 className="mt-2 text-4xl font-black tracking-[-0.06em] sm:text-5xl">MusicOS, visual demo, videos.</h2>
+              <h2 className="mt-2 text-4xl font-black tracking-[-0.06em] sm:text-5xl">Free tools, visual demos, MusicOS.</h2>
             </div>
             <p className="max-w-md text-sm leading-6 text-[#62533f]">
-              The website explains the visual product. The private app is the working cockpit
-              for the performance, the song, and the video assets.
+              The public site should help people try the idea. The private app is where the
+              deeper creator workflow grows.
             </p>
           </div>
 
@@ -778,9 +778,9 @@ export function GatekptLanding() {
                 Serious local architecture, simple creative surface.
               </h2>
               <p className="mt-4 text-sm leading-7 text-white/64">
-                The long-term product is not just a landing page. It is a native Music OS
-                that can sit beside the creator rig, listen to the live signal, and turn
-                sound into visuals without forcing every idea through a full studio session.
+                The long-term product is not just a landing page. It is a set of music tools
+                that make creation easier to start: browser demos for the world, and a native
+                MusicOS for deeper studio work.
               </p>
             </div>
 
@@ -803,11 +803,11 @@ export function GatekptLanding() {
           <div className="rounded-[2rem] border border-white/10 bg-[#15120d] p-6 text-[#f8f0e5] sm:p-8">
             <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Videos</p>
             <h2 className="mt-3 text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-              The proof is the reveal.
+              The proof is people creating.
             </h2>
             <p className="mt-4 max-w-3xl text-sm leading-7 text-white/64">
-              The content strategy becomes simple: show the sound being built, show the
-              visual world reacting, then reveal the final painting behind the performance.
+              The content strategy becomes simple: show people using the tools, show the
+              music becoming visual, and show the finished clips, paintings, and songs.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -834,7 +834,7 @@ export function GatekptLanding() {
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#f1c27d]">Early Access</p>
               <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
-                Build the song. Keep the painting.
+                Help the world create cooler music.
               </h2>
             </div>
             <a
@@ -846,8 +846,8 @@ export function GatekptLanding() {
             </a>
           </div>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-white/64">
-            Start with the live visualizer and creator workflow. Keep the DAW for deep
-            engineering when needed. Use GateKPT to make the first spark visible.
+            GateKPT starts with free visual music experiments and grows into a deeper MusicOS.
+            The point is to make music technology feel generous, inspiring, and usable.
           </p>
         </div>
       </section>
