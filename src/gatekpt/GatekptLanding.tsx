@@ -516,6 +516,58 @@ function CreationFlowSection() {
   );
 }
 
+function BuildStatusSection() {
+  const milestones = [
+    {
+      label: "Now",
+      title: "Public landing + safe demo",
+      text: "GateKPT.ai explains the product and offers a lightweight 2D browser visualizer that visitors can open and exit safely.",
+    },
+    {
+      label: "Private alpha",
+      title: "C#/.NET MusicOS",
+      text: "The desktop app holds the real creative workflow: looper layers, lyrics, captions, rig routing, visual presets, project memory, and exports.",
+    },
+    {
+      label: "Next",
+      title: "Performance visual engine",
+      text: "The heavier 2D/3D renderer belongs in the private app path, where it can support projector, OBS, stage safety, and saved visual artwork.",
+    },
+  ];
+
+  return (
+    <section className="bg-[#f6f0e7] px-4 py-16 text-[#15120d] sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-7 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#8d5631]">Build Status</p>
+            <h2 className="mt-3 max-w-3xl text-4xl font-black leading-none tracking-[-0.06em] sm:text-5xl">
+              Public demo here. Serious creation in the desktop OS.
+            </h2>
+          </div>
+          <p className="max-w-md text-sm leading-7 text-[#62533f]">
+            This is the important split: the website gives people the instant “I get it”
+            moment, while the private app becomes the real instrument.
+          </p>
+        </div>
+
+        <div className="grid gap-3 md:grid-cols-3">
+          {milestones.map((item) => (
+            <article
+              key={item.label}
+              className="rounded-[1.75rem] border border-[#15120d]/10 bg-white/62 p-6 shadow-[0_18px_55px_rgba(65,48,28,0.10)]"
+            >
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#8d5631]">{item.label}</p>
+              <h3 className="mt-5 text-3xl font-black tracking-[-0.055em]">{item.title}</h3>
+              <p className="mt-4 text-sm leading-7 text-[#62533f]">{item.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function GatekptLanding() {
   return (
     <div className="min-h-screen bg-[#080706] text-[#f8f0e5]">
@@ -619,6 +671,7 @@ export function GatekptLanding() {
       </section>
 
       <PublicVisualizerDemo />
+      <BuildStatusSection />
 
       <section className="bg-[#f6f0e7] px-4 py-16 text-[#15120d] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[0.78fr_1fr]">
