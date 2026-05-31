@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Captions, CircuitBoard, Layers3, Mic, Route, Sparkles, Square, Waves } from "lucide-react";
+import { Archive, Captions, Layers3, Mic, Mountain, Sparkles, Square, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -13,28 +13,22 @@ declare global {
 
 type AudioStatus = "preview" | "starting" | "listening" | "blocked" | "unsupported";
 
-const surfaces: Array<[string, string, LucideIcon]> = [
-  ["Capture", "Record full loops or solo RC-505 tracks into clean takes.", Layers3],
-  ["Shape", "Make safe versions with plain-language changes.", Sparkles],
-  ["Memory", "Keep lyrics, captions, routing notes, and export intent together.", Captions],
-  ["Visuals", "Turn sound into a live visual layer for video-first work.", Waves],
+const workflow: Array<[string, string, LucideIcon]> = [
+  ["Capture", "Record voice, loop, lyric, melody, or sound.", Mic],
+  ["Choose", "Pick the take and keep versions organized.", Layers3],
+  ["Shape", "Try warmer, raw, intimate, live room, brighter, darker.", Sparkles],
+  ["Visualize", "Build cover direction, captions, and clip mood.", Captions],
+  ["Export", "Prepare demo, folder, archive, or shareable version.", Archive],
 ];
 
-const timeline = [
-  ["01", "Drums", "Track 1", "amber"],
-  ["02", "Guitar", "Track 2", "cyan"],
-  ["03", "Piano", "Track 3", "violet"],
-  ["04", "Vocal", "Track 4", "amber"],
-];
-
-function LiveSignalPreview() {
+function TerrainSignalPreview() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const [status, setStatus] = useState<AudioStatus>("preview");
-  const [level, setLevel] = useState(28);
+  const [level, setLevel] = useState(21);
 
   const stopAudio = useCallback(() => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
@@ -65,69 +59,63 @@ function LiveSignalPreview() {
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       const analyser = analyserRef.current;
       const bins = new Uint8Array(analyser?.frequencyBinCount || 128);
-      const wave = new Uint8Array(analyser?.frequencyBinCount || 128);
 
       if (analyser) {
         analyser.getByteFrequencyData(bins);
-        analyser.getByteTimeDomainData(wave);
       } else {
         const now = performance.now() / 1000;
         for (let index = 0; index < bins.length; index += 1) {
-          bins[index] = 34 + Math.round(Math.sin(now * 1.2 + index * 0.14) * 22 + Math.sin(now * 0.42 + index * 0.05) * 16);
-          wave[index] = 128 + Math.round(Math.sin(now * 1.8 + index * 0.12) * 24 + Math.sin(now * 0.4 + index * 0.03) * 12);
+          bins[index] = 28 + Math.round(Math.sin(now * 0.8 + index * 0.11) * 18 + Math.sin(now * 0.32 + index * 0.03) * 14);
         }
       }
 
       const average = bins.reduce((sum, value) => sum + value, 0) / bins.length;
-      const pulse = Math.min(1, average / 175);
+      const pulse = Math.min(1, average / 165);
       setLevel(Math.round(pulse * 100));
 
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "#08090a";
+      const base = ctx.createLinearGradient(0, 0, width, height);
+      base.addColorStop(0, "#102018");
+      base.addColorStop(0.55, "#07100d");
+      base.addColorStop(1, "#18160f");
+      ctx.fillStyle = base;
       ctx.fillRect(0, 0, width, height);
 
-      const glow = ctx.createRadialGradient(width * 0.56, height * 0.42, 20, width * 0.56, height * 0.42, width * 0.75);
-      glow.addColorStop(0, `rgba(240, 184, 104, ${0.22 + pulse * 0.25})`);
-      glow.addColorStop(0.4, `rgba(87, 218, 226, ${0.14 + pulse * 0.16})`);
-      glow.addColorStop(0.78, `rgba(164, 132, 255, ${0.08 + pulse * 0.14})`);
-      glow.addColorStop(1, "rgba(8,9,10,0)");
-      ctx.fillStyle = glow;
+      const mist = ctx.createRadialGradient(width * 0.62, height * 0.25, 10, width * 0.62, height * 0.25, width * 0.72);
+      mist.addColorStop(0, `rgba(232, 225, 210, ${0.09 + pulse * 0.12})`);
+      mist.addColorStop(0.42, `rgba(146, 191, 179, ${0.08 + pulse * 0.12})`);
+      mist.addColorStop(1, "rgba(7, 16, 13, 0)");
+      ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
 
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "rgba(244,235,218,0.08)";
-      for (let row = 1; row < 5; row += 1) {
-        const y = (height / 5) * row;
+      for (let line = 0; line < 12; line += 1) {
+        const yBase = height * (0.22 + line * 0.058);
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
-
-      const colors = ["#f0b868", "#57dae2", "#a484ff", "#f4ebda"];
-      for (let lane = 0; lane < 4; lane += 1) {
-        const centerY = height * (0.28 + lane * 0.14);
-        ctx.beginPath();
-        for (let index = 0; index < wave.length; index += 1) {
-          const x = (index / (wave.length - 1)) * width;
-          const bin = bins[(index + lane * 13) % bins.length] / 255;
-          const y = centerY + ((wave[index] - 128) / 128) * (14 + bin * 34 + pulse * 18);
+        for (let index = 0; index < bins.length; index += 1) {
+          const x = (index / (bins.length - 1)) * width;
+          const signal = bins[(index + line * 5) % bins.length] / 255;
+          const y = yBase + Math.sin(index * 0.08 + line * 0.7 + performance.now() / 2400) * (7 + line * 0.8) - signal * (10 + pulse * 22);
           if (index === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
-        ctx.shadowBlur = 14 + pulse * 18;
-        ctx.shadowColor = colors[lane];
-        ctx.strokeStyle = colors[lane];
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = line % 3 === 0 ? "rgba(198,169,109,0.46)" : "rgba(232,225,210,0.16)";
+        ctx.lineWidth = line % 3 === 0 ? 1.4 : 1;
         ctx.stroke();
       }
 
-      ctx.shadowBlur = 0;
-      for (let mark = 0; mark < 7; mark += 1) {
-        const x = width * (0.12 + mark * 0.13);
-        ctx.fillStyle = mark % 2 === 0 ? "rgba(240,184,104,0.9)" : "rgba(87,218,226,0.75)";
-        ctx.fillRect(x, height * 0.78, 2, 36 + Math.sin(performance.now() / 700 + mark) * 10);
+      ctx.beginPath();
+      for (let index = 0; index < bins.length; index += 1) {
+        const x = (index / (bins.length - 1)) * width;
+        const y = height * 0.63 + Math.sin(index * 0.09 + performance.now() / 900) * 16 - (bins[index] / 255) * 78;
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       }
+      ctx.shadowBlur = 18 + pulse * 24;
+      ctx.shadowColor = "#92bfb3";
+      ctx.strokeStyle = "#92bfb3";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
 
       animationRef.current = requestAnimationFrame(render);
     };
@@ -152,7 +140,7 @@ function LiveSignalPreview() {
       await audioContext.resume();
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.84;
+      analyser.smoothingTimeConstant = 0.86;
       audioContext.createMediaStreamSource(stream).connect(analyser);
       streamRef.current = stream;
       audioContextRef.current = audioContext;
@@ -180,17 +168,17 @@ function LiveSignalPreview() {
 
   return (
     <div className="gk-panel relative overflow-hidden rounded-[2rem]">
-      <canvas ref={canvasRef} className="h-[34rem] w-full" aria-label="GateKPT audio reactive preview" />
+      <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT terrain audio preview" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="gk-chip">{status === "listening" ? "Live signal" : "Local preview"}</span>
+        <span className="gk-chip">{status === "listening" ? "Live terrain" : "Preview terrain"}</span>
         <span className="gk-chip">Signal {level}%</span>
       </div>
-      <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#08090a]/78 p-4 backdrop-blur-md">
+      <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#f0b868]">Audio-reactive visual layer</p>
-            <p className="mt-1 text-sm font-medium leading-6 text-[#f4ebda]/68">
-              Browser demo only. The desktop OS is built for capture, stems, captions, routing, and exports.
+            <p className="gk-label text-[#c6a96d]">Creative audio terrain</p>
+            <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
+              A browser-safe visual sketch. The private OS handles capture, versions, commands, and exports.
             </p>
           </div>
           {status === "listening" || status === "starting" ? (
@@ -200,8 +188,8 @@ function LiveSignalPreview() {
             </button>
           ) : (
             <button type="button" onClick={startMic} className="gk-button-primary">
-              <Mic className="h-4 w-4" />
-              Listen locally
+              <Waves className="h-4 w-4" />
+              Try locally
             </button>
           )}
         </div>
@@ -212,84 +200,85 @@ function LiveSignalPreview() {
 
 export function GatekptLanding() {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#08090a] text-[#f4ebda]">
+    <main className="min-h-screen overflow-hidden bg-[#07100d] text-[#e8e1d2]">
       <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="gk-ambient" />
         <div className="relative mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1fr] lg:items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
-          >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#f0b868]/25 bg-[#f0b868]/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#f0b868]">
-              <CircuitBoard className="h-3.5 w-3.5" />
-              GateKPT MusicOS
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
+              <Mountain className="h-3.5 w-3.5" />
+              GateKPT inside XIV
             </div>
-            <h1 className="max-w-4xl text-5xl font-black leading-[0.88] tracking-[-0.07em] sm:text-6xl lg:text-7xl">
-              A creative cockpit for capturing ideas fast.
+            <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
+              Creative audio terrain for capturing ideas fast.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#f4ebda]/70">
-              Built for live-loop musicians and video-first artists who need takes, stems, lyrics,
-              captions, routing, and visuals to stay connected without killing the moment.
+            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
+              GateKPT is a custom creative audio tool for capturing sessions, keeping versions organized,
+              and shaping takes with simple commands.
+            </p>
+            <p className="mt-4 max-w-xl text-sm font-semibold leading-7 text-[#e8e1d2]/52">
+              Built around personal creative workflow, not replacing artists.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#workflow" className="gk-button-primary">
                 See workflow
               </a>
-              <a href="#visual" className="gk-button-secondary">
-                Try visual layer
+              <a href="#terrain" className="gk-button-secondary">
+                Try terrain
               </a>
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}
-          >
-            <LiveSignalPreview />
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
+            <TerrainSignalPreview />
           </motion.div>
         </div>
       </section>
 
       <section id="workflow" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-4 lg:grid-cols-4">
-            {surfaces.map(([title, text, Icon]) => (
-              <div key={title as string} className="gk-card group">
-                <Icon className="h-5 w-5 text-[#57dae2] transition duration-200 group-hover:-translate-y-0.5 group-hover:text-[#f0b868]" />
-                <h2 className="mt-5 text-xl font-black tracking-[-0.03em]">{title}</h2>
-                <p className="mt-3 text-sm font-medium leading-6 text-[#f4ebda]/62">{text}</p>
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="gk-label text-[#92bfb3]">What do I do next with this idea?</p>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Five quiet moves from raw sound to output.</h2>
+            </div>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-5">
+            {workflow.map(([title, text, Icon]) => (
+              <div key={title} className="gk-card group">
+                <Icon className="h-5 w-5 text-[#92bfb3] transition duration-200 group-hover:-translate-y-0.5 group-hover:text-[#c6a96d]" />
+                <h3 className="mt-5 text-xl font-black tracking-[-0.03em]">{title}</h3>
+                <p className="mt-3 text-sm font-medium leading-6 text-[#e8e1d2]/62">{text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.8fr_1fr]">
+      <section id="terrain" className="px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#a484ff]">RC-505 cue workflow</p>
+            <p className="gk-label text-[#c6a96d]">Creative room, not a DAW clone</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Record the way the artist actually plays.
+              Sound moves like terrain: paths, echoes, versions, memory trails.
             </h2>
-            <p className="mt-5 text-sm font-medium leading-7 text-[#f4ebda]/64">
-              GateKPT is not trying to force a generic studio layout. It adapts around the rig:
-              full loop capture, solo track stems, command-shaped versions, and one exported mix.
+            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
+              The private MusicOS is local-first: record a take, keep the original, create shaped versions,
+              and export the piece without turning the session into a technical maze.
             </p>
           </div>
 
           <div className="gk-panel p-4 sm:p-5">
             <div className="grid gap-3">
-              {timeline.map(([number, label, track, accent]) => (
-                <div key={number} className={`gk-cue gk-cue-${accent}`}>
-                  <span className="font-mono text-xs text-[#f4ebda]/42">{number}</span>
+              {["Voice memo", "Loop pass", "Stem layer", "Caption route", "Demo export"].map((item, index) => (
+                <div key={item} className="gk-cue">
+                  <span className="font-mono text-xs text-[#e8e1d2]/42">{String(index + 1).padStart(2, "0")}</span>
                   <div>
-                    <p className="font-black">{label}</p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#f4ebda]/42">{track}</p>
+                    <p className="font-black">{item}</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">session trail</p>
                   </div>
-                  <span className="ml-auto rounded-full border border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#f4ebda]/58">
-                    capture
+                  <span className="ml-auto rounded-full border border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/58">
+                    saved
                   </span>
                 </div>
               ))}
@@ -298,32 +287,19 @@ export function GatekptLanding() {
         </div>
       </section>
 
-      <section id="visual" className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
+      <section className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.75fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#f0b868]">Project memory surfaces</p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {[
-                ["Lyrics + captions", "Keep words close to the sound."],
-                ["Stem capture", "Turn hardware performance into reusable takes."],
-                ["Visual preview", "Let sound drive a performance image."],
-                ["Export planning", "Prepare mixes, clips, and DJ-ready files."],
-              ].map(([title, text]) => (
-                <div key={title} className="rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[#57dae2]/40">
-                  <p className="font-black">{title}</p>
-                  <p className="mt-2 text-sm font-medium leading-6 text-[#f4ebda]/58">{text}</p>
-                </div>
-              ))}
-            </div>
+            <p className="gk-label text-[#d08a56]">Public-safe summary</p>
+            <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.045em]">
+              Creative audio tool for capturing ideas fast and shaping sessions with simple commands.
+            </h2>
           </div>
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
-            <Route className="h-8 w-8 text-[#57dae2]" />
-            <h2 className="mt-10 text-3xl font-black leading-none tracking-[-0.045em]">
-              Serious creative software should feel calm under pressure.
-            </h2>
-            <p className="mt-5 text-sm font-medium leading-7 text-[#f4ebda]/62">
-              The interface is designed for fast scanning during a session: cue cards, active states,
-              signal status, section memory, and exports all in one coherent visual system.
+            <p className="gk-label text-[#92bfb3]">XIV family</p>
+            <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
+              Green Machine maps research and risk terrain. GateKPT maps sound, session, and creative terrain.
+              Separate rooms, shared OS language.
             </p>
           </div>
         </div>

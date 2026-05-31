@@ -4,14 +4,14 @@
 
 :root {
   color-scheme: dark;
-  --gk-ink: #f4ebda;
-  --gk-muted: rgba(244, 235, 218, 0.62);
-  --gk-bg: #08090a;
-  --gk-panel: rgba(17, 19, 21, 0.78);
-  --gk-border: rgba(244, 235, 218, 0.11);
-  --gk-amber: #f0b868;
-  --gk-cyan: #57dae2;
-  --gk-violet: #a484ff;
+  --gk-ink: #e8e1d2;
+  --gk-muted: rgba(232, 225, 210, 0.62);
+  --gk-bg: #07100d;
+  --gk-panel: rgba(11, 21, 17, 0.78);
+  --gk-border: rgba(232, 225, 210, 0.11);
+  --gk-gold: #c6a96d;
+  --gk-teal: #92bfb3;
+  --gk-amber: #d08a56;
 }
 
 html,
@@ -55,33 +55,35 @@ body {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 12% 8%, rgba(240, 184, 104, 0.18), transparent 28%),
-    radial-gradient(circle at 86% 6%, rgba(87, 218, 226, 0.15), transparent 32%),
-    radial-gradient(circle at 68% 72%, rgba(164, 132, 255, 0.12), transparent 34%),
-    linear-gradient(135deg, #08090a 0%, #111315 48%, #070707 100%);
+    radial-gradient(circle at 12% 8%, rgba(198, 169, 109, 0.18), transparent 28%),
+    radial-gradient(circle at 86% 6%, rgba(146, 191, 179, 0.14), transparent 32%),
+    radial-gradient(circle at 68% 72%, rgba(208, 138, 86, 0.1), transparent 34%),
+    repeating-linear-gradient(160deg, rgba(232, 225, 210, 0.045) 0 1px, transparent 1px 34px),
+    linear-gradient(135deg, #07100d 0%, #0d1813 48%, #11100b 100%);
 }
 
 .gk-panel {
   border: 1px solid var(--gk-border);
   background:
-    linear-gradient(135deg, rgba(244, 235, 218, 0.055), rgba(244, 235, 218, 0.018)),
-    rgba(12, 13, 14, 0.9);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(244, 235, 218, 0.06);
+    linear-gradient(135deg, rgba(232, 225, 210, 0.055), rgba(232, 225, 210, 0.018)),
+    radial-gradient(circle at 20% 0%, rgba(146, 191, 179, 0.08), transparent 34%),
+    rgba(8, 15, 12, 0.92);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(232, 225, 210, 0.06);
 }
 
 .gk-card {
   border: 1px solid var(--gk-border);
   border-radius: 1.5rem;
-  background: rgba(17, 19, 21, 0.72);
+  background: rgba(11, 21, 17, 0.72);
   padding: 1.25rem;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .gk-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(87, 218, 226, 0.42);
-  background: rgba(20, 23, 25, 0.86);
-  box-shadow: 0 18px 50px rgba(87, 218, 226, 0.08);
+  border-color: rgba(146, 191, 179, 0.42);
+  background: rgba(14, 27, 22, 0.86);
+  box-shadow: 0 18px 50px rgba(146, 191, 179, 0.08);
 }
 
 .gk-button-primary,
@@ -100,26 +102,26 @@ body {
 }
 
 .gk-button-primary {
-  background: var(--gk-amber);
-  color: #12100d;
-  box-shadow: 0 10px 32px rgba(240, 184, 104, 0.15);
+  background: var(--gk-gold);
+  color: #07100d;
+  box-shadow: 0 10px 32px rgba(198, 169, 109, 0.15);
 }
 
 .gk-button-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 42px rgba(240, 184, 104, 0.24);
+  box-shadow: 0 16px 42px rgba(198, 169, 109, 0.24);
 }
 
 .gk-button-secondary {
-  border: 1px solid rgba(244, 235, 218, 0.16);
-  background: rgba(244, 235, 218, 0.04);
-  color: rgba(244, 235, 218, 0.78);
+  border: 1px solid rgba(232, 225, 210, 0.16);
+  background: rgba(232, 225, 210, 0.04);
+  color: rgba(232, 225, 210, 0.78);
 }
 
 .gk-button-secondary:hover {
   transform: translateY(-2px);
-  border-color: rgba(87, 218, 226, 0.42);
-  background: rgba(87, 218, 226, 0.08);
+  border-color: rgba(146, 191, 179, 0.42);
+  background: rgba(146, 191, 179, 0.08);
 }
 
 .gk-chip,
@@ -131,11 +133,11 @@ body {
 }
 
 .gk-chip {
-  border: 1px solid rgba(244, 235, 218, 0.14);
+  border: 1px solid rgba(232, 225, 210, 0.14);
   border-radius: 999px;
-  background: rgba(8, 9, 10, 0.68);
+  background: rgba(7, 16, 13, 0.68);
   padding: 0.45rem 0.75rem;
-  color: rgba(244, 235, 218, 0.7);
+  color: rgba(232, 225, 210, 0.7);
   backdrop-filter: blur(14px);
 }
 
@@ -143,26 +145,26 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  border: 1px solid rgba(244, 235, 218, 0.1);
+  border: 1px solid rgba(232, 225, 210, 0.1);
   border-radius: 1.35rem;
-  background: rgba(244, 235, 218, 0.035);
+  background: rgba(232, 225, 210, 0.035);
   padding: 1rem;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .gk-cue:hover {
   transform: translateY(-2px);
-  background: rgba(244, 235, 218, 0.055);
+  background: rgba(232, 225, 210, 0.055);
 }
 
 .gk-cue-amber:hover {
-  border-color: rgba(240, 184, 104, 0.5);
+  border-color: rgba(198, 169, 109, 0.5);
 }
 
 .gk-cue-cyan:hover {
-  border-color: rgba(87, 218, 226, 0.5);
+  border-color: rgba(146, 191, 179, 0.5);
 }
 
 .gk-cue-violet:hover {
-  border-color: rgba(164, 132, 255, 0.5);
+  border-color: rgba(208, 138, 86, 0.5);
 }
