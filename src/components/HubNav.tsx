@@ -3,10 +3,9 @@
 import Link from "next/link";
 
 const links = [
-  { href: "/", label: "Landing" },
-  { href: "/#pricing", label: "Offer" },
-  { href: "/#videos", label: "Videos" },
-  { href: "/#early-access", label: "Early Access" },
+  { href: "/", label: "Home" },
+  { href: "/#try-visualizer", label: "Play" },
+  { href: "/#why", label: "Why" },
 ];
 
 export function HubNav() {
