@@ -207,7 +207,7 @@ export function GatekptLanding() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
               <Mountain className="h-3.5 w-3.5" />
-              GateKPT inside XIV
+              Custom music tool
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
               Capture ideas fast.
@@ -219,7 +219,7 @@ export function GatekptLanding() {
               <a href="#workflow" className="gk-button-primary">
                 See workflow
               </a>
-              <a href="#terrain" className="gk-button-secondary">
+              <a href="#preview" className="gk-button-secondary">
                 Try preview
               </a>
             </div>
@@ -236,7 +236,7 @@ export function GatekptLanding() {
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="gk-label text-[#92bfb3]">Workflow</p>
-              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">From idea to version.</h2>
+              <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Capture. Choose. Shape. Export.</h2>
             </div>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
@@ -251,7 +251,7 @@ export function GatekptLanding() {
         </div>
       </section>
 
-      <section id="terrain" className="px-4 py-10 sm:px-6 lg:px-8">
+      <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.82fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
             <p className="gk-label text-[#c6a96d]">Built for sessions</p>
