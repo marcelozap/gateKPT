@@ -276,7 +276,7 @@
                 </StackPanel>
 
                 <Border Grid.Column="1" CornerRadius="28" Background="#A80B0907" BorderBrush="#22F8F0E5" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto,Auto" RowSpacing="14">
+                    <Grid RowDefinitions="Auto,Auto,1.2*,Auto,Auto,Auto" RowSpacing="14">
                         <TextBlock Text="VERSIONS"
                                    FontSize="11"
                                    FontWeight="Black"
@@ -369,19 +369,13 @@
                                     Background="#2415120D"
                                     Foreground="#D9C5A5"/>
                         </Grid>
-                        <Grid Grid.Row="6" ColumnDefinitions="*,*" ColumnSpacing="13">
-                            <Button Content="Play stack"
-                                    Command="{Binding PlayLayerStackCommand}"
+                        <Button Grid.Row="6"
+                                    Content="Export mix"
+                                    Command="{Binding ExportLayerMixCommand}"
                                     Padding="14,12"
+                                    HorizontalAlignment="Stretch"
                                     Background="#F1C27D"
                                     Foreground="#15120D"/>
-                            <Button Grid.Column="1"
-                                    Content="Stop stack"
-                                    Command="{Binding StopLayerStackCommand}"
-                                    Padding="14,12"
-                                    Background="#E37B45"
-                                    Foreground="#15120D"/>
-                        </Grid>
                     </Grid>
                 </Border>
             </Grid>

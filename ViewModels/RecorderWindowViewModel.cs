@@ -18,6 +18,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly BuiltInLooperPlaybackService _playback = new();
     private readonly RecorderVersionStore _versions = new();
     private readonly AudioTransformService _transforms = new();
+    private readonly LayerMixdownService _mixdown = new();
     private bool _recordingSignalSeen;
 
     [ObservableProperty]
@@ -110,7 +111,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var loaded = LayerSlots.Count(slot => !string.IsNullOrWhiteSpace(slot.Path));
             return loaded == 0
                 ? "No layers assigned yet. Select a take, then assign it to the next lane."
-                : $"{loaded}/{LayerSlots.Count} layer(s) ready. Play stack to perform over them.";
+                : $"{loaded}/{LayerSlots.Count} layer(s) ready. Export a mix to create one playable WAV.";
         }
     }
 
@@ -273,7 +274,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void PlayLayerStack()
+    private void ExportLayerMix()
     {
         var loaded = LayerSlots.Where(slot => !string.IsNullOrWhiteSpace(slot.Path) && File.Exists(slot.Path)).ToList();
         if (loaded.Count == 0)
@@ -283,19 +284,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         _playback.StopAll();
-        foreach (var slot in loaded)
+        var targetPath = _versions.CreateVersionPath("layer-mix", ".wav");
+        var result = _mixdown.CreateMixdown(loaded.Select(slot => slot.Path), targetPath);
+        if (!result.Success)
         {
-            _playback.PlayLoop(slot.Number, slot.Path, 80);
+            Status = result.Message;
+            CommandResult = "Mix export failed.";
+            return;
         }
 
-        Status = $"Playing {loaded.Count} layer(s). Record the next layer while the stack plays.";
-    }
-
-    [RelayCommand]
-    private void StopLayerStack()
-    {
-        _playback.StopAll();
-        Status = "Layer stack stopped.";
+        CurrentFilePath = result.Path;
+        RefreshVersions();
+        SelectedVersion = Versions.FirstOrDefault(item => item.Path == result.Path) ?? SelectedVersion;
+        Status = $"{result.Message} Open/play the exported mix from Versions.";
+        CommandResult = $"Created mix: {Path.GetFileName(result.Path)}";
     }
 
     [RelayCommand]
