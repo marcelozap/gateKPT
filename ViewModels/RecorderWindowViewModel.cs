@@ -126,7 +126,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : "TAKE READY";
 
     public string RecordingButtonLabel =>
-        IsRecording ? "RECORDING..." : $"RECORD {SelectedCaptureLaneLabel.ToUpperInvariant()}";
+        IsRecording ? "RECORDING..." : "RECORD";
 
     public string StopButtonLabel =>
         IsRecording ? "STOP & SAVE NOW" : "STOP & SAVE";
@@ -134,7 +134,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RecordingGuardLabel =>
         IsRecording
             ? $"REC {RecordingElapsedLabel} / {ActiveRecordingName}"
-            : $"Ready / {SelectedCaptureLaneLabel}";
+            : "Ready";
 
     public string SimpleSignalLabel =>
         PeakPercent >= 8
@@ -156,9 +156,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string CaptureInstruction =>
         IsRecording
             ? PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                ? "Recording, but no sound detected yet."
-                : "GateKPT is recording the selected lane now."
-            : $"Selected lane: {SelectedCaptureLaneLabel}. Press RECORD, then STOP & SAVE.";
+                ? "Recording, but no sound is entering. Play now or GateKPT will reject it."
+                : "GateKPT is recording now."
+            : "Press RECORD, play sound, then STOP & SAVE.";
 
     public string NextActionLabel =>
         IsRecording
@@ -313,8 +313,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void StartRecording()
     {
-        var slot = SelectedLayerSlot ?? LayerSlots.First();
-        StartRecordingForLayer($"rc505-track-{slot.Number}-{slot.Name}", slot.Number);
+        StartRecordingForLayer("take", null);
     }
 
     [RelayCommand]
@@ -1374,7 +1373,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RecordingElapsedLabel = $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
         if (elapsed.TotalSeconds >= 3 && PeakPercent < 1)
         {
-            Status = $"Still recording, but no sound is entering {InputName}. Wrong input or routing.";
+            Status = $"Recording, but no sound is entering {InputName}. Play now or stop.";
+        }
+
+        if (elapsed.TotalSeconds >= 8 && PeakPercent < 1)
+        {
+            StopRecording();
+            Status = "Auto-stopped: no sound entered for 8 seconds. No blank take kept.";
+            CommandResult = "No audio detected. Check RC-505 output, Scarlett input gain, and Windows input device.";
         }
     }
 
