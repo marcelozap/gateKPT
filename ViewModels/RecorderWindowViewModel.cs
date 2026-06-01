@@ -276,15 +276,27 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task CheckSignal()
     {
-        FindScarlett();
-        Status = "Checking 3 seconds. Play the RC-505 now.";
-        var result = await _focusrite.RunInputTestAsync(InputName, Path.Combine(_versions.RootDirectory, "diagnostics"), 3);
-        PeakPercent = result.PeakPercent;
-        SignalReady = result.PeakPercent is >= 8 and <= 88;
-        CurrentFilePath = result.Path;
-        Status = result.Success
-            ? $"{result.Message} Target is 35-75%, but anything above 8% proves signal."
-            : result.Message;
+        RefreshInputDevices();
+        Status = "Scanning every input for sound. Play the RC-505 now.";
+        var results = await _inputDevices.ProbeAllAsync(Path.Combine(_versions.RootDirectory, "diagnostics"), 2);
+        var best = results.FirstOrDefault(result => result.Success);
+        if (best is null)
+        {
+            PeakPercent = 0;
+            SignalReady = false;
+            Status = "No Windows input could be tested.";
+            return;
+        }
+
+        SelectedInputDevice = InputDevices.FirstOrDefault(device => device.Id == best.Id)
+            ?? new AudioInputDeviceItem(best.Name, best.Id, true);
+        InputName = SelectedInputDevice.Name;
+        PeakPercent = best.PeakPercent;
+        SignalReady = best.PeakPercent >= 1;
+        CurrentFilePath = best.Path;
+        Status = best.PeakPercent >= 1
+            ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%. Now press {RecordingButtonLabel}."
+            : $"No signal found. Loudest input was {best.Name} at {best.PeakPercent:0.0}%. Check RC-505 output into Scarlett input.";
         RefreshVersions();
     }
 
