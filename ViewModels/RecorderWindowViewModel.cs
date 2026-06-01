@@ -148,7 +148,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string CaptureInstruction =>
         IsRecording
-            ? "GateKPT is recording the selected lane now."
+            ? PeakPercent < 1 && RecordingElapsedLabel != "00:00"
+                ? "Recording, but no sound detected yet."
+                : "GateKPT is recording the selected lane now."
             : $"Selected lane: {SelectedCaptureLaneLabel}. Press RECORD, then STOP & SAVE.";
 
     public string NextActionLabel =>
@@ -489,6 +491,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _playback.StopAll();
         Status = "Internal playback stopped. If Windows player opened, close/pause it there.";
+    }
+
+    [RelayCommand]
+    private void TestSpeaker()
+    {
+        _playback.StopAll();
+        var result = _playback.PlayTestTone();
+        Status = result.Message;
+        CommandResult = result.Message;
     }
 
     [RelayCommand]
@@ -1354,6 +1365,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         var elapsed = DateTimeOffset.Now - _recordingStartedAt;
         RecordingElapsedLabel = $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
+        if (elapsed.TotalSeconds >= 3 && PeakPercent < 1)
+        {
+            Status = $"Still recording, but no sound is entering {InputName}. Wrong input or routing.";
+        }
     }
 
     partial void OnPeakPercentChanged(double value)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 
 namespace GateKPT.MusicOS.Services;
 
@@ -67,6 +68,31 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         }
     }
 
+    public LooperPlaybackResult PlayTestTone()
+    {
+        Stop(99);
+
+        try
+        {
+            var signal = new SignalGenerator(44100, 2)
+            {
+                Type = SignalGeneratorType.Sin,
+                Frequency = 440,
+                Gain = 0.22
+            }.Take(TimeSpan.FromSeconds(1.2));
+            var output = new WaveOutEvent();
+            output.Init(signal);
+            output.Play();
+            _playing[99] = new PlaybackHandle(null, output);
+            return new LooperPlaybackResult(true, "Speaker test playing. If you hear a beep, playback works.");
+        }
+        catch (Exception ex)
+        {
+            Stop(99);
+            return new LooperPlaybackResult(false, $"Speaker test failed: {ex.Message}");
+        }
+    }
+
     public void Stop(int trackNumber)
     {
         if (!_playing.Remove(trackNumber, out var handle))
@@ -98,7 +124,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
     public void Dispose() => StopAll();
 
-    private sealed class PlaybackHandle(AudioFileReader reader, WaveOutEvent output) : IDisposable
+    private sealed class PlaybackHandle(AudioFileReader? reader, WaveOutEvent output) : IDisposable
     {
         public PlaybackHandle(AudioFileReader reader, LoopStream loop, WaveOutEvent output)
             : this(reader, output)
@@ -110,7 +136,10 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
         public void SetVolume(double volume)
         {
-            reader.Volume = (float)Math.Clamp(volume / 100.0, 0, 1);
+            if (reader is not null)
+            {
+                reader.Volume = (float)Math.Clamp(volume / 100.0, 0, 1);
+            }
         }
 
         public void Dispose()
@@ -118,7 +147,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             output.Stop();
             output.Dispose();
             Loop?.Dispose();
-            reader.Dispose();
+            reader?.Dispose();
         }
     }
 }

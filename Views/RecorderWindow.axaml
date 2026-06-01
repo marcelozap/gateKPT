@@ -280,7 +280,7 @@
                                       Background="#E8E1D2"
                                       Foreground="#07100D"/>
 
-                            <Grid Grid.Row="4" ColumnDefinitions="*,*,*" ColumnSpacing="13">
+                            <Grid Grid.Row="4" ColumnDefinitions="*,*,*,*" ColumnSpacing="13">
                                 <Button Content="PLAY TAKE"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="18,13"
@@ -297,6 +297,12 @@
                                         Command="{Binding CheckSignalCommand}"
                                         Padding="18,13"
                                         Background="#D08A56"
+                                        Foreground="#07100D"/>
+                                <Button Grid.Column="3"
+                                        Content="BEEP"
+                                        Command="{Binding TestSpeakerCommand}"
+                                        Padding="18,13"
+                                        Background="#92BFB3"
                                         Foreground="#07100D"/>
                             </Grid>
                         </Grid>
