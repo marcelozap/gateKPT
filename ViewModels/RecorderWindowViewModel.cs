@@ -120,7 +120,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : "TAKE READY";
 
     public string RecordingButtonLabel =>
-        IsRecording ? "RECORDING..." : "RECORD";
+        IsRecording ? "RECORDING..." : $"RECORD {SelectedCaptureLaneLabel.ToUpperInvariant()}";
 
     public string StopButtonLabel =>
         IsRecording ? "STOP & SAVE NOW" : "STOP & SAVE";
@@ -129,6 +129,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsRecording
             ? $"REC {RecordingElapsedLabel} / {ActiveRecordingName}"
             : "Recorder idle.";
+
+    public string SelectedCaptureLaneLabel =>
+        SelectedLayerSlot?.Name ?? "Drums";
+
+    public string CaptureInstruction =>
+        IsRecording
+            ? "GateKPT is recording the selected lane now."
+            : $"Selected lane: {SelectedCaptureLaneLabel}. Press RECORD, then STOP & SAVE.";
 
     public string NextActionLabel =>
         IsRecording
@@ -263,7 +271,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void StartRecording()
     {
-        StartRecordingForLayer("recording", null);
+        var slot = SelectedLayerSlot ?? LayerSlots.First();
+        StartRecordingForLayer($"rc505-track-{slot.Number}-{slot.Name}", slot.Number);
     }
 
     [RelayCommand]
@@ -1323,6 +1332,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(RecordingButtonLabel));
         OnPropertyChanged(nameof(StopButtonLabel));
         OnPropertyChanged(nameof(RecordingGuardLabel));
+        OnPropertyChanged(nameof(CaptureInstruction));
     }
 
     partial void OnActiveRecordingNameChanged(string value)
@@ -1366,6 +1376,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnSelectedLayerSlotChanged(LayerSlotItem? value)
     {
         OnPropertyChanged(nameof(LastEffectChain));
+        OnPropertyChanged(nameof(SelectedCaptureLaneLabel));
+        OnPropertyChanged(nameof(CaptureInstruction));
+        OnPropertyChanged(nameof(RecordingButtonLabel));
     }
 }
 
