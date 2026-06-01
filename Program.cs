@@ -18,6 +18,12 @@ sealed class Program
             return;
         }
 
+        if (Array.Exists(args, arg => arg.Equals("--audio-probe", StringComparison.OrdinalIgnoreCase)))
+        {
+            Environment.ExitCode = new AudioProbeCliService().Run(Console.Out);
+            return;
+        }
+
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }

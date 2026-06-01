@@ -301,11 +301,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ?? new AudioInputDeviceItem(best.Name, best.Id, true);
         InputName = SelectedInputDevice.Name;
         PeakPercent = best.PeakPercent;
-        SignalReady = best.PeakPercent >= 1;
+        SignalReady = best.RmsPercent >= 0.05 || best.PeakPercent >= 1;
         CurrentFilePath = best.Path;
-        Status = best.PeakPercent >= 1
-            ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%. Now press {RecordingButtonLabel}."
-            : $"No signal found. Loudest input was {best.Name} at {best.PeakPercent:0.0}%. Check RC-505 output into Scarlett input.";
+        Status = SignalReady
+            ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Now press {RecordingButtonLabel}."
+            : $"No signal found. Loudest input was {best.Name}: peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Check RC-505 output into Scarlett input.";
         OnPropertyChanged(nameof(AudioHealthLabel));
         RefreshVersions();
     }
@@ -440,11 +440,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             PeakPercent = result.PeakPercent;
             CurrentFilePath = result.Path;
-            if (result.PeakPercent < 1)
+            if (result.RmsPercent < 0.05)
             {
                 _versions.MoveToTrash(result.Path);
                 CurrentFilePath = "";
-                Status = $"Rejected silent take. Peak {result.PeakPercent:0.0}%. No rescue copy created.";
+                Status = $"Rejected silent take. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. No rescue copy created.";
                 RefreshVersions();
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
@@ -452,7 +452,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return;
             }
 
-            Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%.";
+            Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
             RefreshVersions();
             AutoAssignActiveCapture(result.Path);
             return;

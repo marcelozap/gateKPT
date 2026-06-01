@@ -43,11 +43,15 @@ public sealed class AudioInputDeviceService
         var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).ToList();
         foreach (var device in devices)
         {
+            var deviceName = device.FriendlyName;
+            var deviceId = device.ID;
             WasapiCapture? capture = null;
             WaveFileWriter? writer = null;
             var peak = 0f;
+            var sumSquares = 0d;
+            var sampleCount = 0L;
             var bytesWritten = 0L;
-            var path = AutoSaveFileNamer.CreatePath(outputDirectory, $"probe-{SanitizeShort(device.FriendlyName)}", ".wav");
+            var path = AutoSaveFileNamer.CreatePath(outputDirectory, $"probe-{SanitizeShort(deviceName)}", ".wav");
 
             try
             {
@@ -59,7 +63,10 @@ public sealed class AudioInputDeviceService
                     writer.Write(args.Buffer, 0, args.BytesRecorded);
                     writer.Flush();
                     bytesWritten += args.BytesRecorded;
-                    peak = Math.Max(peak, CalculatePeak(args.Buffer, args.BytesRecorded, capture.WaveFormat));
+                    var stats = CalculateStats(args.Buffer, args.BytesRecorded, capture.WaveFormat);
+                    peak = Math.Max(peak, stats.Peak);
+                    sumSquares += stats.SumSquares;
+                    sampleCount += stats.SampleCount;
                 };
 
                 capture.StartRecording();
@@ -67,17 +74,18 @@ public sealed class AudioInputDeviceService
                 capture.StopRecording();
 
                 results.Add(new AudioInputProbeResult(
-                    device.FriendlyName,
-                    device.ID,
+                    deviceName,
+                    deviceId,
                     path,
                     Math.Round(peak * 100, 1),
+                    Math.Round(CalculateRmsPercent(sumSquares, sampleCount), 2),
                     bytesWritten,
                     true,
                     ""));
             }
             catch (Exception ex)
             {
-                results.Add(new AudioInputProbeResult(device.FriendlyName, device.ID, path, Math.Round(peak * 100, 1), bytesWritten, false, ex.Message));
+                results.Add(new AudioInputProbeResult(deviceName, deviceId, path, Math.Round(peak * 100, 1), Math.Round(CalculateRmsPercent(sumSquares, sampleCount), 2), bytesWritten, false, ex.Message));
             }
             finally
             {
@@ -87,7 +95,8 @@ public sealed class AudioInputDeviceService
         }
 
         return results
-            .OrderByDescending(result => result.PeakPercent)
+            .OrderByDescending(result => result.RmsPercent)
+            .ThenByDescending(result => result.PeakPercent)
             .ThenByDescending(result => result.BytesWritten)
             .ToList();
     }
@@ -112,9 +121,11 @@ public sealed class AudioInputDeviceService
         }
     }
 
-    private static float CalculatePeak(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)
+    private static AudioSignalStats CalculateStats(byte[] buffer, int bytesRecorded, WaveFormat waveFormat)
     {
         var peak = 0f;
+        var sumSquares = 0d;
+        var sampleCount = 0L;
 
         if (waveFormat.Encoding == WaveFormatEncoding.IeeeFloat && waveFormat.BitsPerSample == 32)
         {
@@ -123,23 +134,32 @@ public sealed class AudioInputDeviceService
                 var sample = BitConverter.ToSingle(buffer, index);
                 if (!float.IsNaN(sample))
                 {
-                    peak = Math.Max(peak, Math.Abs(sample));
+                    var absolute = Math.Abs(sample);
+                    peak = Math.Max(peak, absolute);
+                    sumSquares += sample * sample;
+                    sampleCount++;
                 }
             }
 
-            return Math.Clamp(peak, 0, 1);
+            return new AudioSignalStats(Math.Clamp(peak, 0, 1), sumSquares, sampleCount);
         }
 
         if (waveFormat.BitsPerSample == 16)
         {
             for (var index = 0; index + 1 < bytesRecorded; index += 2)
             {
-                peak = Math.Max(peak, Math.Abs(BitConverter.ToInt16(buffer, index) / 32768f));
+                var sample = BitConverter.ToInt16(buffer, index) / 32768f;
+                peak = Math.Max(peak, Math.Abs(sample));
+                sumSquares += sample * sample;
+                sampleCount++;
             }
         }
 
-        return Math.Clamp(peak, 0, 1);
+        return new AudioSignalStats(Math.Clamp(peak, 0, 1), sumSquares, sampleCount);
     }
+
+    private static double CalculateRmsPercent(double sumSquares, long sampleCount) =>
+        sampleCount <= 0 ? 0 : Math.Sqrt(sumSquares / sampleCount) * 100;
 
     private static string SanitizeShort(string value)
     {
@@ -159,6 +179,9 @@ public sealed record AudioInputProbeResult(
     string Id,
     string Path,
     double PeakPercent,
+    double RmsPercent,
     long BytesWritten,
     bool Success,
     string Error);
+
+internal sealed record AudioSignalStats(float Peak, double SumSquares, long SampleCount);
