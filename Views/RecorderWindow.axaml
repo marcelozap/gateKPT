@@ -135,59 +135,20 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="1.05*,0.95*" ColumnSpacing="18">
+            <Grid Grid.Row="1" ColumnDefinitions="1.15*,0.85*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
-                    <Border CornerRadius="24" Background="#C4081722" BorderBrush="#2BC6A96D" BorderThickness="1" Padding="18">
-                        <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
-                                <StackPanel>
-                                    <TextBlock Text="INPUT PATH"
-                                       FontSize="11"
-                                       FontWeight="Black"
-                                               Foreground="#C6A96D"
-                                       LetterSpacing="2.4"/>
-                                    <TextBlock Text="Scarlett / RC-505"
-                                               Margin="0,5,0,0"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"
-                                               Foreground="#C9C0AD"/>
-                                </StackPanel>
-                                <TextBlock Grid.Column="1"
-                                           Text="Signal must move"
-                                           FontSize="11"
-                                           FontWeight="Black"
-                                           VerticalAlignment="Center"
-                                           Foreground="#92BFB3"/>
-                            </Grid>
-                            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="13">
-                                <Button Content="Find Scarlett"
-                                        Command="{Binding FindScarlettCommand}"
-                                        Padding="18,12"
-                                        Background="#0D2230"
-                                        Foreground="#E8E1D2"/>
-                                <Button Grid.Column="1"
-                                        Content="Check signal"
-                                        Command="{Binding CheckSignalCommand}"
-                                        Padding="18,12"
-                                        Background="#C6A96D"
-                                        Foreground="#07100D"/>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
                     <Border CornerRadius="34" Background="#E0071420" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
-                                    <TextBlock Text="CAPTURE"
+                                    <TextBlock Text="GATEKPT RECORDER"
                                                FontSize="11"
                                                FontWeight="Black"
                                                Foreground="#92BFB3"
                                                LetterSpacing="2.4"/>
-                                    <TextBlock Text="{Binding RecorderStateLabel}"
+                                    <TextBlock Text="{Binding RecordingGuardLabel}"
                                                Margin="0,8,0,0"
-                                               FontSize="24"
+                                               FontSize="34"
                                                FontWeight="Black"
                                                TextWrapping="Wrap"
                                                Foreground="#E8E1D2"/>
@@ -199,15 +160,24 @@
                                                Foreground="#C6A96D"/>
                                 </StackPanel>
                                 <Border Grid.Column="1"
-                                        CornerRadius="999"
-                                        Padding="14,8"
-                                        Background="#1D92BFB3">
-                                    <TextBlock Text="{Binding NextActionLabel}"
-                                               MaxWidth="210"
-                                               FontSize="11"
+                                        CornerRadius="24"
+                                        Padding="18,14"
+                                        MinWidth="150"
+                                        Background="#E8E1D2">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding PeakLabel}"
+                                               FontSize="30"
                                                FontWeight="Black"
-                                               TextWrapping="Wrap"
-                                               Foreground="#D8F0EA"/>
+                                               HorizontalAlignment="Center"
+                                               Foreground="#07100D"/>
+                                        <TextBlock Text="{Binding SimpleSignalLabel}"
+                                                   Margin="0,2,0,0"
+                                                   FontSize="10"
+                                                   FontWeight="Black"
+                                                   LetterSpacing="1.8"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="#806A3F"/>
+                                    </StackPanel>
                                 </Border>
                             </Grid>
 
@@ -225,11 +195,11 @@
                                             Background="#D08A56"/>
                                     <StackPanel Grid.Column="1">
                                         <TextBlock Text="{Binding RecordingGuardLabel}"
-                                                   FontSize="16"
+                                                   FontSize="18"
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#E8E1D2"/>
-                                        <TextBlock Text="If this says REC, GateKPT is writing audio now."
+                                        <TextBlock Text="One lane. One record button. Stop saves it."
                                                    Margin="0,3,0,0"
                                                    FontSize="11"
                                                    FontWeight="Bold"
@@ -249,56 +219,62 @@
                                 <Button Content="{Binding RecordingButtonLabel}"
                                         Command="{Binding StartRecordingCommand}"
                                         Padding="28,18"
-                                        MinHeight="64"
-                                        FontSize="18"
+                                        MinHeight="89"
+                                        FontSize="24"
                                         Background="#92BFB3"
                                         Foreground="#07100D"/>
                                 <Button Grid.Column="1"
                                         Content="{Binding StopButtonLabel}"
                                         Command="{Binding StopRecordingCommand}"
                                         Padding="28,18"
-                                        MinHeight="64"
-                                        FontSize="18"
+                                        MinHeight="89"
+                                        FontSize="24"
                                         Background="#C6A96D"
                                         Foreground="#07100D"/>
                             </Grid>
 
-                            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="13">
-                                <Button Content="OPEN / PLAY FILE"
+                            <Grid Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="13">
+                                <Button Content="PLAY TAKE"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="18,13"
                                         Background="#E8E1D2"
                                         Foreground="#07100D"/>
                                 <Button Grid.Column="1"
-                                        Content="STOP INTERNAL"
-                                        Command="{Binding StopPlaybackCommand}"
+                                        Content="FIND INPUT"
+                                        Command="{Binding FindScarlettCommand}"
                                         Padding="18,13"
                                         Background="#0D2230"
                                         Foreground="#C9C0AD"/>
+                                <Button Grid.Column="2"
+                                        Content="CHECK SOUND"
+                                        Command="{Binding CheckSignalCommand}"
+                                        Padding="18,13"
+                                        Background="#D08A56"
+                                        Foreground="#07100D"/>
                             </Grid>
-
-                            <Border Grid.Row="4" CornerRadius="18" Background="#14E8E1D2" Padding="13">
-                                <StackPanel>
-                                    <TextBlock Text="CURRENT FILE"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="2"
-                                               Foreground="#92BFB3"/>
-                                    <TextBlock Text="{Binding CurrentFileLabel}"
-                                               Margin="0,5,0,0"
-                                               FontSize="13"
-                                               FontWeight="Black"
-                                               TextWrapping="Wrap"
-                                               Foreground="#E8E1D2"/>
-                                    <TextBlock Text="{Binding CurrentFilePreviewLabel}"
-                                               Margin="0,6,0,0"
-                                               FontSize="11"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"
-                                               Foreground="#92BFB3"/>
-                                </StackPanel>
-                            </Border>
                         </Grid>
+                    </Border>
+
+                    <Border CornerRadius="18" Background="#14E8E1D2" Padding="13">
+                        <StackPanel>
+                            <TextBlock Text="LAST TAKE"
+                                       FontSize="10"
+                                       FontWeight="Black"
+                                       LetterSpacing="2"
+                                       Foreground="#92BFB3"/>
+                            <TextBlock Text="{Binding CurrentFileLabel}"
+                                       Margin="0,5,0,0"
+                                       FontSize="13"
+                                       FontWeight="Black"
+                                       TextWrapping="Wrap"
+                                       Foreground="#E8E1D2"/>
+                            <TextBlock Text="{Binding CurrentFilePreviewLabel}"
+                                       Margin="0,6,0,0"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#92BFB3"/>
+                        </StackPanel>
                     </Border>
 
                     <Border CornerRadius="28" Background="#D9081722" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22">

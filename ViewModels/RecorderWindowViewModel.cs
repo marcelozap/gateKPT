@@ -128,7 +128,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RecordingGuardLabel =>
         IsRecording
             ? $"REC {RecordingElapsedLabel} / {ActiveRecordingName}"
-            : "Recorder idle.";
+            : $"Ready / {SelectedCaptureLaneLabel}";
+
+    public string SimpleSignalLabel =>
+        PeakPercent >= 8
+            ? "SOUND DETECTED"
+            : PeakPercent > 0.5
+                ? "LOW SIGNAL"
+                : "NO SOUND YET";
 
     public string SelectedCaptureLaneLabel =>
         SelectedLayerSlot?.Name ?? "Drums";
@@ -1308,6 +1315,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(PeakLabel));
         OnPropertyChanged(nameof(PeakDecibelLabel));
+        OnPropertyChanged(nameof(SimpleSignalLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
@@ -1333,6 +1341,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(StopButtonLabel));
         OnPropertyChanged(nameof(RecordingGuardLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
+        OnPropertyChanged(nameof(SimpleSignalLabel));
     }
 
     partial void OnActiveRecordingNameChanged(string value)
