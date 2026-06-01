@@ -10,7 +10,7 @@ namespace GateKPT.MusicOS.Services;
 public sealed class LayerRecordingService : IDisposable
 {
     private readonly object _gate = new();
-    private WasapiCapture? _capture;
+    private IWaveIn? _capture;
     private WaveFileWriter? _writer;
     private Stopwatch? _clock;
     private string _activePath = "";
@@ -30,18 +30,16 @@ public sealed class LayerRecordingService : IDisposable
         try
         {
             Directory.CreateDirectory(stemDirectory);
-            using var enumerator = new MMDeviceEnumerator();
-            var device = FindInputDevice(enumerator, preferredInput);
-            if (device is null)
+            var capture = CreateCapture(preferredInput, out var deviceName, out var backend);
+            if (capture is null)
             {
                 return new LayerRecordingStartResult(false, "", "No active audio input matched the preferred routing.");
             }
 
-            PrepareInputVolume(device);
             _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
             _peak = 0;
             _bytesWritten = 0;
-            _capture = new WasapiCapture(device);
+            _capture = capture;
             _writer = new WaveFileWriter(_activePath, _capture.WaveFormat);
             _clock = Stopwatch.StartNew();
             _capture.DataAvailable += (_, args) =>
@@ -57,7 +55,7 @@ public sealed class LayerRecordingService : IDisposable
             };
             _capture.StartRecording();
 
-            return new LayerRecordingStartResult(true, _activePath, $"Recording {layerName} from {device.FriendlyName}");
+            return new LayerRecordingStartResult(true, _activePath, $"Recording {layerName} from {deviceName} via {backend}");
         }
         catch (Exception ex)
         {
@@ -124,6 +122,80 @@ public sealed class LayerRecordingService : IDisposable
 
     public void Dispose() => Stop();
 
+    private static IWaveIn? CreateCapture(string preferredInput, out string deviceName, out string backend)
+    {
+        var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
+        if (waveIn is not null)
+        {
+            backend = "WaveIn";
+            return waveIn;
+        }
+
+        using var enumerator = new MMDeviceEnumerator();
+        var device = FindInputDevice(enumerator, preferredInput);
+        if (device is null)
+        {
+            deviceName = "";
+            backend = "";
+            return null;
+        }
+
+        PrepareInputVolume(device);
+        deviceName = device.FriendlyName;
+        backend = "WASAPI";
+        return new WasapiCapture(device);
+    }
+
+    private static IWaveIn? CreateWaveInCapture(string preferredInput, out string deviceName)
+    {
+        deviceName = "";
+        if (WaveInEvent.DeviceCount <= 0)
+        {
+            return null;
+        }
+
+        var selectedIndex = -1;
+        for (var index = 0; index < WaveInEvent.DeviceCount; index++)
+        {
+            var capabilities = WaveInEvent.GetCapabilities(index);
+            var name = capabilities.ProductName;
+            if (MatchesPreferredInput(name, preferredInput))
+            {
+                selectedIndex = index;
+                deviceName = name;
+                break;
+            }
+        }
+
+        if (selectedIndex < 0)
+        {
+            for (var index = 0; index < WaveInEvent.DeviceCount; index++)
+            {
+                var capabilities = WaveInEvent.GetCapabilities(index);
+                var name = capabilities.ProductName;
+                if (IsLikelyMusicInput(name))
+                {
+                    selectedIndex = index;
+                    deviceName = name;
+                    break;
+                }
+            }
+        }
+
+        if (selectedIndex < 0)
+        {
+            selectedIndex = 0;
+            deviceName = WaveInEvent.GetCapabilities(selectedIndex).ProductName;
+        }
+
+        return new WaveInEvent
+        {
+            DeviceNumber = selectedIndex,
+            WaveFormat = new WaveFormat(44100, 16, 2),
+            BufferMilliseconds = 50
+        };
+    }
+
     private static MMDevice? FindInputDevice(MMDeviceEnumerator enumerator, string preferredInput)
     {
         var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
@@ -135,14 +207,7 @@ public sealed class LayerRecordingService : IDisposable
         if (!string.IsNullOrWhiteSpace(preferredInput))
         {
             var preferred = devices.FirstOrDefault(device =>
-                device.FriendlyName.Contains(preferredInput, StringComparison.OrdinalIgnoreCase)
-                || preferredInput.Contains(device.FriendlyName, StringComparison.OrdinalIgnoreCase)
-                || preferredInput.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
-                    && device.FriendlyName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
-                || preferredInput.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
-                    && device.FriendlyName.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
-                || preferredInput.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
-                    && device.FriendlyName.Contains("rc-505", StringComparison.OrdinalIgnoreCase));
+                MatchesPreferredInput(device.FriendlyName, preferredInput));
             if (preferred is not null)
             {
                 return preferred;
@@ -156,6 +221,26 @@ public sealed class LayerRecordingService : IDisposable
                 || device.FriendlyName.Contains("boss", StringComparison.OrdinalIgnoreCase))
             ?? devices[0];
     }
+
+    private static bool MatchesPreferredInput(string deviceName, string preferredInput) =>
+        !string.IsNullOrWhiteSpace(preferredInput)
+        && (deviceName.Contains(preferredInput, StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains(deviceName, StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
+                && deviceName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
+                && deviceName.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
+                && deviceName.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains("boss", StringComparison.OrdinalIgnoreCase)
+                && deviceName.Contains("boss", StringComparison.OrdinalIgnoreCase));
+
+    private static bool IsLikelyMusicInput(string deviceName) =>
+        deviceName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
+        || deviceName.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
+        || deviceName.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
+        || deviceName.Contains("boss", StringComparison.OrdinalIgnoreCase)
+        || deviceName.Contains("usb audio", StringComparison.OrdinalIgnoreCase);
 
     private static void PrepareInputVolume(MMDevice device)
     {

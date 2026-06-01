@@ -19,6 +19,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly RecorderVersionStore _versions = new();
     private readonly AudioTransformService _transforms = new();
     private readonly LayerMixdownService _mixdown = new();
+    private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
     private int? _activeCaptureLayerNumber;
     private string _activeCaptureLabel = "recording";
@@ -34,6 +36,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isRecording = false;
+
+    [ObservableProperty]
+    private string _activeRecordingName = "Not recording";
+
+    [ObservableProperty]
+    private string _recordingElapsedLabel = "00:00";
 
     [ObservableProperty]
     private string _currentFilePath = "";
@@ -111,6 +119,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? "WAITING"
                 : "TAKE READY";
 
+    public string RecordingButtonLabel =>
+        IsRecording ? "RECORDING..." : "RECORD";
+
+    public string StopButtonLabel =>
+        IsRecording ? "STOP & SAVE NOW" : "STOP & SAVE";
+
+    public string RecordingGuardLabel =>
+        IsRecording
+            ? $"REC {RecordingElapsedLabel} / {ActiveRecordingName}"
+            : "Recorder idle.";
+
     public string NextActionLabel =>
         IsRecording
             ? "Stop when done."
@@ -136,6 +155,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         string.IsNullOrWhiteSpace(CurrentFilePath)
             ? "No take saved yet."
             : Path.GetFileName(CurrentFilePath);
+
+    public string CurrentFilePreviewLabel
+    {
+        get
+        {
+            var path = SelectedVersion?.Path ?? CurrentFilePath;
+            var preview = AudioPreviewService.Inspect(path);
+            return preview == AudioPreview.Empty
+                ? "No readable audio preview yet."
+                : $"{preview.Duration} / peak {preview.Peak} / {preview.Waveform}";
+        }
+    }
 
     public string VersionListHint =>
         Versions.Count == 0
@@ -200,6 +231,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public RecorderWindowViewModel()
     {
+        _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshVersions();
         RestoreLayerDeck();
@@ -290,6 +322,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _recordingSignalSeen = false;
         _activeCaptureLabel = label;
         _activeCaptureLayerNumber = layerNumber;
+        ActiveRecordingName = layerNumber is null
+            ? "Full loop"
+            : $"{LayerSlots.First(slot => slot.Number == layerNumber).Name} lane";
         var result = _recorder.Start(InputName, _versions.TakesDirectory, label, peak =>
         {
             Dispatcher.UIThread.Post(() =>
@@ -306,6 +341,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         });
         IsRecording = result.Success;
         CurrentFilePath = result.Path;
+        if (result.Success)
+        {
+            _recordingStartedAt = DateTimeOffset.Now;
+            RecordingElapsedLabel = "00:00";
+            _recordingTimer.Start();
+        }
+        else
+        {
+            ActiveRecordingName = "Not recording";
+        }
+
         Status = result.Success
             ? layerNumber is null
                 ? "Recording full RC-505 output. Watch the signal number move."
@@ -318,6 +364,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         var result = _recorder.Stop();
         IsRecording = false;
+        _recordingTimer.Stop();
         if (result.Success)
         {
             PeakPercent = result.PeakPercent;
@@ -354,6 +401,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Status = result.Message;
         _activeCaptureLayerNumber = null;
         _activeCaptureLabel = "recording";
+        ActiveRecordingName = "Not recording";
     }
 
     [RelayCommand]
@@ -368,12 +416,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         CurrentFilePath = path;
         _playback.StopAll();
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = path,
-            UseShellExecute = true
-        });
-        Status = $"Opened in Windows player: {Path.GetFileName(path)}";
+        var result = _playback.PlayOnce(0, path, 90);
+        Status = result.Message;
+        CommandResult = result.Success
+            ? $"Internal playback: {Path.GetFileName(path)}"
+            : result.Message;
     }
 
     [RelayCommand]
@@ -1153,6 +1200,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == CurrentFilePath) ?? Versions.FirstOrDefault();
         OnPropertyChanged(nameof(CurrentFileLabel));
+        OnPropertyChanged(nameof(CurrentFilePreviewLabel));
         OnPropertyChanged(nameof(VersionListHint));
         OnPropertyChanged(nameof(VisualPaintingSignal));
     }
@@ -1232,6 +1280,19 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Status = $"{Status} Auto-loaded into {slot.Name}.";
         _activeCaptureLayerNumber = null;
         _activeCaptureLabel = "recording";
+        ActiveRecordingName = "Not recording";
+    }
+
+    private void UpdateRecordingElapsed()
+    {
+        if (!IsRecording || _recordingStartedAt == DateTimeOffset.MinValue)
+        {
+            RecordingElapsedLabel = "00:00";
+            return;
+        }
+
+        var elapsed = DateTimeOffset.Now - _recordingStartedAt;
+        RecordingElapsedLabel = $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
     }
 
     partial void OnPeakPercentChanged(double value)
@@ -1259,6 +1320,19 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+        OnPropertyChanged(nameof(RecordingButtonLabel));
+        OnPropertyChanged(nameof(StopButtonLabel));
+        OnPropertyChanged(nameof(RecordingGuardLabel));
+    }
+
+    partial void OnActiveRecordingNameChanged(string value)
+    {
+        OnPropertyChanged(nameof(RecordingGuardLabel));
+    }
+
+    partial void OnRecordingElapsedLabelChanged(string value)
+    {
+        OnPropertyChanged(nameof(RecordingGuardLabel));
     }
 
     partial void OnInputNameChanged(string value)
@@ -1269,8 +1343,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnCurrentFilePathChanged(string value)
     {
         OnPropertyChanged(nameof(CurrentFileLabel));
+        OnPropertyChanged(nameof(CurrentFilePreviewLabel));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+    }
+
+    partial void OnSelectedVersionChanged(RecorderVersionFile? value)
+    {
+        OnPropertyChanged(nameof(CurrentFilePreviewLabel));
     }
 
     partial void OnLastExportedMixPathChanged(string value)

@@ -39,6 +39,34 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         }
     }
 
+    public LooperPlaybackResult PlayOnce(int trackNumber, string path, double volume)
+    {
+        Stop(trackNumber);
+
+        try
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return new LooperPlaybackResult(false, "No audio file selected.");
+            }
+
+            var reader = new AudioFileReader(path)
+            {
+                Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
+            };
+            var output = new WaveOutEvent();
+            output.Init(reader);
+            output.Play();
+            _playing[trackNumber] = new PlaybackHandle(reader, output);
+            return new LooperPlaybackResult(true, $"Playing: {Path.GetFileName(path)}");
+        }
+        catch (Exception ex)
+        {
+            Stop(trackNumber);
+            return new LooperPlaybackResult(false, $"Could not play audio: {ex.Message}");
+        }
+    }
+
     public void Stop(int trackNumber)
     {
         if (!_playing.Remove(trackNumber, out var handle))
@@ -70,8 +98,16 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
     public void Dispose() => StopAll();
 
-    private sealed class PlaybackHandle(AudioFileReader reader, LoopStream loop, WaveOutEvent output) : IDisposable
+    private sealed class PlaybackHandle(AudioFileReader reader, WaveOutEvent output) : IDisposable
     {
+        public PlaybackHandle(AudioFileReader reader, LoopStream loop, WaveOutEvent output)
+            : this(reader, output)
+        {
+            Loop = loop;
+        }
+
+        private LoopStream? Loop { get; }
+
         public void SetVolume(double volume)
         {
             reader.Volume = (float)Math.Clamp(volume / 100.0, 0, 1);
@@ -81,7 +117,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         {
             output.Stop();
             output.Dispose();
-            loop.Dispose();
+            Loop?.Dispose();
             reader.Dispose();
         }
     }

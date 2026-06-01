@@ -177,7 +177,7 @@
                     </Border>
 
                     <Border CornerRadius="34" Background="#E0071420" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
                                     <TextBlock Text="CAPTURE"
@@ -205,8 +205,42 @@
                                 </Border>
                             </Grid>
 
-                            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="13">
-                                <Button Content="RECORD"
+                            <Border Grid.Row="1"
+                                    CornerRadius="22"
+                                    Background="#18D08A56"
+                                    BorderBrush="#66D08A56"
+                                    BorderThickness="2"
+                                    Padding="16,13">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="13">
+                                    <Border Width="18"
+                                            Height="18"
+                                            CornerRadius="999"
+                                            VerticalAlignment="Center"
+                                            Background="#D08A56"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding RecordingGuardLabel}"
+                                                   FontSize="16"
+                                                   FontWeight="Black"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#E8E1D2"/>
+                                        <TextBlock Text="If this says REC, GateKPT is writing audio now."
+                                                   Margin="0,3,0,0"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#C9C0AD"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="2"
+                                               Text="{Binding PeakDecibelLabel}"
+                                               FontSize="18"
+                                               FontWeight="Black"
+                                               VerticalAlignment="Center"
+                                               Foreground="#D08A56"/>
+                                </Grid>
+                            </Border>
+
+                            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="13">
+                                <Button Content="{Binding RecordingButtonLabel}"
                                         Command="{Binding StartRecordingCommand}"
                                         Padding="28,18"
                                         MinHeight="64"
@@ -214,7 +248,7 @@
                                         Background="#92BFB3"
                                         Foreground="#07100D"/>
                                 <Button Grid.Column="1"
-                                        Content="STOP &amp; SAVE"
+                                        Content="{Binding StopButtonLabel}"
                                         Command="{Binding StopRecordingCommand}"
                                         Padding="28,18"
                                         MinHeight="64"
@@ -223,7 +257,7 @@
                                         Foreground="#07100D"/>
                             </Grid>
 
-                            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="13">
+                            <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="13">
                                 <Button Content="OPEN / PLAY FILE"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="18,13"
@@ -237,7 +271,7 @@
                                         Foreground="#C9C0AD"/>
                             </Grid>
 
-                            <Border Grid.Row="3" CornerRadius="18" Background="#14E8E1D2" Padding="13">
+                            <Border Grid.Row="4" CornerRadius="18" Background="#14E8E1D2" Padding="13">
                                 <StackPanel>
                                     <TextBlock Text="CURRENT FILE"
                                                FontSize="10"
@@ -250,9 +284,15 @@
                                                FontWeight="Black"
                                                TextWrapping="Wrap"
                                                Foreground="#E8E1D2"/>
+                                    <TextBlock Text="{Binding CurrentFilePreviewLabel}"
+                                               Margin="0,6,0,0"
+                                               FontSize="11"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#92BFB3"/>
                                 </StackPanel>
                             </Border>
-                            <Border Grid.Row="4" CornerRadius="22" Background="#0D1822" BorderBrush="#33C6A96D" BorderThickness="1" Padding="16">
+                            <Border Grid.Row="5" CornerRadius="22" Background="#0D1822" BorderBrush="#33C6A96D" BorderThickness="1" Padding="16">
                                 <StackPanel Spacing="12">
                                     <TextBlock Text="RC CUE CAPTURE"
                                                FontSize="11"
