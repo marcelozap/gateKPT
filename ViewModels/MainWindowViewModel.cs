@@ -96,7 +96,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             .ToList();
 
     [ObservableProperty]
-    private string _projectName = "GateKPT MusicOS";
+    private string _projectName = "GateKPT clip system";
 
     [ObservableProperty]
     private string _platformProfile = "LinkedIn / 16:9";
@@ -111,7 +111,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _loudnessTarget = "-14 LUFS";
 
     [ObservableProperty]
-    private string _businessMode = "Make music feel easier";
+    private string _businessMode = "Build video catalog";
 
     [ObservableProperty]
     private string _outputDirectory = "";
@@ -474,8 +474,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         Rooms =
         [
-            new("Performance / Reveal", "Sound becomes visual terrain", "00", "#E8E1D2"),
-            new("Song Builder", "Rhythm -> sound -> voice, one part at a time", "01", "#D08A56"),
+            new("Performance / Reveal", "Live cue card, RC-505 section control, and visual painting", "00", "#F2EADC"),
+            new("Song Builder", "Drums -> harmony -> vocals without DAW overwhelm", "01", "#E37B45"),
             new("Lyric Vault", "Hooks, fragments, titles, and themes stay findable", "02", "#EABF7A"),
             new("Caption Engine", "Draft safe lyric captions before video export", "03", "#6FB6A6"),
             new("Visual Room", "Visualizer, projector, palette, and performance presets", "04", "#D9C5A5"),
@@ -498,12 +498,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _selectedAudioPreset = AudioPresets[0];
 
         var project = _store.LoadProject();
-        ProjectName = project.ProjectName == "GateKPT clip system" ? "GateKPT MusicOS" : project.ProjectName;
+        ProjectName = project.ProjectName;
         PlatformProfile = project.PlatformProfile;
         SyncOffsetMs = project.SyncOffsetMs;
         FrameRate = project.FrameRate;
         LoudnessTarget = project.LoudnessTarget;
-        BusinessMode = project.BusinessMode == "Build video catalog" ? "Make music feel easier" : project.BusinessMode;
+        BusinessMode = project.BusinessMode;
         OutputDirectory = project.OutputDirectory;
 
         var storedCaptures = _store.LoadCaptures();
@@ -1332,7 +1332,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SignalCheckHeadline =>
         FocusritePeakPercent <= 0
-            ? "First step: make sure sound is coming in."
+            ? "First job: prove sound is entering the Scarlett."
             : FocusriteReadyForRecording
                 ? $"Signal works: {FocusritePeakPercent:0.0}% peak."
                 : $"Signal detected: {FocusritePeakPercent:0.0}% peak needs adjustment.";
@@ -1344,12 +1344,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             if (!PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
                 && !PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
             {
-                return "Find Scarlett first. Then play something and run a short test.";
+                return "Click Find Scarlett. Nothing else matters until the input is selected.";
             }
 
             if (FocusritePeakPercent <= 0)
             {
-                return "Click Record 3 sec test, then play the RC-505. If peak stays 0%, check cable, gain, or input mode.";
+                return "Click Record 3 sec test, then play the RC-505. If peak stays 0%, check cables/gain/input mode.";
             }
 
             return FocusriteReadyForRecording
