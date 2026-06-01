@@ -42,7 +42,7 @@
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="16" MinWidth="560">
-            <Border CornerRadius="24" Padding="18" BorderBrush="#2BE8E1D2" BorderThickness="1">
+            <Border CornerRadius="24" Padding="18" BorderBrush="#2BE8E1D2" BorderThickness="1" ClipToBounds="True">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                         <GradientStop Color="#0B1B2A" Offset="0"/>
@@ -51,6 +51,20 @@
                     </LinearGradientBrush>
                 </Border.Background>
                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="21">
+                    <Path Grid.ColumnSpan="3"
+                          Data="M 0 54 C 120 18, 220 88, 350 44 S 590 25, 720 72 S 880 36, 1080 58"
+                          Stroke="#33C6A96D"
+                          StrokeThickness="1.4"
+                          Stretch="Fill"
+                          VerticalAlignment="Stretch"
+                          IsHitTestVisible="False"/>
+                    <Path Grid.ColumnSpan="3"
+                          Data="M 0 86 C 150 64, 250 120, 390 76 S 660 66, 840 105 S 980 72, 1160 92"
+                          Stroke="#2692BFB3"
+                          StrokeThickness="1"
+                          Stretch="Fill"
+                          VerticalAlignment="Stretch"
+                          IsHitTestVisible="False"/>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="GATEKPT"
                                    FontSize="20"
@@ -137,8 +151,33 @@
 
             <Grid Grid.Row="1" ColumnDefinitions="1.15*,0.85*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
-                    <Border CornerRadius="34" Background="#E0071420" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24">
+                    <Border CornerRadius="34" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24" ClipToBounds="True">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#101810" Offset="0"/>
+                                <GradientStop Color="#071420" Offset="0.45"/>
+                                <GradientStop Color="#10251F" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
                         <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="16">
+                            <Path Grid.RowSpan="4"
+                                  Data="M -40 210 C 80 120, 180 250, 310 158 S 500 95, 640 175 S 830 120, 1020 160"
+                                  Stroke="#28C6A96D"
+                                  StrokeThickness="1.6"
+                                  Stretch="Fill"
+                                  IsHitTestVisible="False"/>
+                            <Path Grid.RowSpan="4"
+                                  Data="M -20 255 C 110 172, 230 295, 355 205 S 560 145, 700 230 S 870 175, 1040 220"
+                                  Stroke="#2292BFB3"
+                                  StrokeThickness="1.2"
+                                  Stretch="Fill"
+                                  IsHitTestVisible="False"/>
+                            <Path Grid.RowSpan="4"
+                                  Data="M 20 310 C 125 240, 245 348, 385 260 S 575 210, 735 285 S 895 235, 1060 280"
+                                  Stroke="#1CD08A56"
+                                  StrokeThickness="1"
+                                  Stretch="Fill"
+                                  IsHitTestVisible="False"/>
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel>
                                     <TextBlock Text="GATEKPT RECORDER"
@@ -255,7 +294,7 @@
                         </Grid>
                     </Border>
 
-                    <Border CornerRadius="18" Background="#14E8E1D2" Padding="13">
+                    <Border CornerRadius="18" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="13">
                         <StackPanel>
                             <TextBlock Text="LAST TAKE"
                                        FontSize="10"
@@ -277,8 +316,14 @@
                         </StackPanel>
                     </Border>
 
-                    <Border CornerRadius="28" Background="#D9081722" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22">
+                    <Border CornerRadius="28" Background="#D9081722" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22" ClipToBounds="True">
                         <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
+                            <Path Grid.RowSpan="7"
+                                  Data="M 0 130 C 90 88, 170 160, 260 112 S 410 86, 520 134 S 650 104, 780 122"
+                                  Stroke="#1C92BFB3"
+                                  StrokeThickness="1"
+                                  Stretch="Fill"
+                                  IsHitTestVisible="False"/>
                             <StackPanel>
                                 <TextBlock Text="COMMAND"
                                            FontSize="11"
