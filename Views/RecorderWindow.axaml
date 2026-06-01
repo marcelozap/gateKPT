@@ -228,6 +228,46 @@
                 </StackPanel>
             </Border>
 
+            <Border CornerRadius="24" Background="#D9081722" BorderBrush="#24D08A56" BorderThickness="1" Padding="16">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="EDIT COMMAND"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="2"
+                               Foreground="#D08A56"/>
+                    <TextBlock Text="Type what you want: delete selected, make warmer, louder, reverb, export mix."
+                               FontSize="11"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Foreground="#C9C0AD"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PlaceholderText="make drums warmer, delete, export mix..."
+                                 TextWrapping="Wrap"
+                                 MinHeight="46"
+                                 Background="#E8E1D2"
+                                 Foreground="#07100D"/>
+                        <Button Grid.Column="1"
+                                Content="Run"
+                                Command="{Binding RunChatCommandCommand}"
+                                Padding="20,12"
+                                MinWidth="88"
+                                Background="#D08A56"
+                                Foreground="#07100D"/>
+                    </Grid>
+                    <TextBlock Text="{Binding CommandResult}"
+                               FontSize="12"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#E8E1D2"/>
+                    <TextBlock Text="{Binding LastEffectChain}"
+                               FontSize="11"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#92BFB3"/>
+                </StackPanel>
+            </Border>
+
             <Border CornerRadius="22" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="16">
                 <StackPanel Spacing="8">
                     <TextBlock Text="AUDIO PATH"
