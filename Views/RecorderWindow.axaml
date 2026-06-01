@@ -8,7 +8,7 @@
         Title="GateKPT MusicOS"
         Width="980"
         Height="720"
-        MinWidth="640"
+        MinWidth="420"
         MinHeight="520"
         Background="#06111C">
 
@@ -25,7 +25,7 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#22E8E1D2"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="MinHeight" Value="40"/>
+            <Setter Property="MinHeight" Value="42"/>
             <Setter Property="FontWeight" Value="Black"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -38,10 +38,14 @@
             <Setter Property="CornerRadius" Value="20"/>
             <Setter Property="Padding" Value="16,12"/>
         </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="Padding" Value="14,10"/>
+        </Style>
     </Window.Styles>
 
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid RowDefinitions="Auto,*,Auto" Margin="21" RowSpacing="16" MinWidth="560">
+        <StackPanel Margin="18" Spacing="16">
             <Border CornerRadius="24" Padding="18" BorderBrush="#2BE8E1D2" BorderThickness="1" ClipToBounds="True">
                 <Border.Background>
                     <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -50,392 +54,305 @@
                         <GradientStop Color="#101810" Offset="1"/>
                     </LinearGradientBrush>
                 </Border.Background>
-                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="21">
-                    <Path Grid.ColumnSpan="3"
+                <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
+                    <Path Grid.RowSpan="2"
                           Data="M 0 54 C 120 18, 220 88, 350 44 S 590 25, 720 72 S 880 36, 1080 58"
                           Stroke="#33C6A96D"
                           StrokeThickness="1.4"
                           Stretch="Fill"
-                          VerticalAlignment="Stretch"
                           IsHitTestVisible="False"/>
-                    <Path Grid.ColumnSpan="3"
+                    <Path Grid.RowSpan="2"
                           Data="M 0 86 C 150 64, 250 120, 390 76 S 660 66, 840 105 S 980 72, 1160 92"
                           Stroke="#2692BFB3"
                           StrokeThickness="1"
                           Stretch="Fill"
-                          VerticalAlignment="Stretch"
                           IsHitTestVisible="False"/>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="GATEKPT"
-                                   FontSize="20"
-                                   FontWeight="Black"
-                                   Foreground="#E8E1D2"
-                                   LetterSpacing="1.8"/>
-                        <TextBlock Text="{Binding MeterInputLabel}"
-                                   Margin="0,5,0,0"
-                                   MaxWidth="260"
-                                   FontSize="11"
-                                   FontWeight="Black"
-                                   TextWrapping="Wrap"
-                                   Foreground="#92BFB3"/>
-                    </StackPanel>
 
-                    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto" RowSpacing="8" VerticalAlignment="Center">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
-                            <TextBlock Text="LIVE INPUT"
-                                       FontSize="10"
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                        <StackPanel>
+                            <TextBlock Text="GATEKPT"
+                                       FontSize="20"
                                        FontWeight="Black"
-                                       LetterSpacing="2.4"
-                                       Foreground="#C6A96D"/>
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding MeterStateLabel}"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2"
-                                       Foreground="#D08A56"/>
-                        </Grid>
-                        <Border Grid.Row="1" CornerRadius="999" Background="#0A2230" BorderBrush="#2F92BFB3" BorderThickness="1" Height="22" ClipToBounds="True">
-                            <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
-                                <Border Grid.Column="0" Background="#92BFB3" Opacity="0.18"/>
-                                <Border Grid.Column="1" Background="#92BFB3" Opacity="0.22"/>
-                                <Border Grid.Column="2" Background="#92BFB3" Opacity="0.28"/>
-                                <Border Grid.Column="3" Background="#92BFB3" Opacity="0.34"/>
-                                <Border Grid.Column="4" Background="#92BFB3" Opacity="0.40"/>
-                                <Border Grid.Column="5" Background="#92BFB3" Opacity="0.46"/>
-                                <Border Grid.Column="6" Background="#92BFB3" Opacity="0.52"/>
-                                <Border Grid.Column="7" Background="#92BFB3" Opacity="0.58"/>
-                                <Border Grid.Column="8" Background="#92BFB3" Opacity="0.64"/>
-                                <Border Grid.Column="9" Background="#92BFB3" Opacity="0.70"/>
-                                <Border Grid.Column="10" Background="#C6A96D" Opacity="0.76"/>
-                                <Border Grid.Column="11" Background="#C6A96D" Opacity="0.82"/>
-                                <Border Grid.Column="12" Background="#C6A96D" Opacity="0.88"/>
-                                <Border Grid.Column="13" Background="#C6A96D" Opacity="0.94"/>
-                                <Border Grid.Column="14" Background="#D08A56" Opacity="0.90"/>
-                                <Border Grid.Column="15" Background="#D08A56" Opacity="0.76"/>
-                                <Border Grid.Column="16" Background="#D08A56" Opacity="0.62"/>
-                                <Border Grid.Column="17" Background="#D08A56" Opacity="0.48"/>
-                                <Border Grid.Column="18" Background="#D08A56" Opacity="0.34"/>
-                                <Border Grid.Column="19" Background="#D08A56" Opacity="0.22"/>
-                            </Grid>
-                        </Border>
-                        <TextBlock Grid.Row="2"
-                                   Text="{Binding NextActionLabel}"
-                                   FontSize="11"
-                                   FontWeight="Black"
-                                   TextWrapping="Wrap"
-                                   Foreground="#C9C0AD"/>
-                    </Grid>
-
-                    <Border Grid.Column="2"
-                            CornerRadius="20"
-                            Background="#E8E1D2"
-                            Padding="18,13"
-                            MinWidth="150">
-                        <Grid RowDefinitions="Auto,Auto" RowSpacing="2">
-                            <TextBlock Text="{Binding PeakDecibelLabel}"
-                                       FontSize="26"
-                                       FontWeight="Black"
-                                       HorizontalAlignment="Right"
-                                       Foreground="#07100D"/>
-                            <TextBlock Grid.Row="1"
-                                       Text="{Binding PeakLabel}"
+                                       Foreground="#E8E1D2"
+                                       LetterSpacing="1.8"/>
+                            <TextBlock Text="{Binding MeterInputLabel}"
+                                       Margin="0,5,0,0"
                                        FontSize="11"
                                        FontWeight="Black"
-                                       LetterSpacing="2"
-                                       HorizontalAlignment="Right"
-                                       Foreground="#806A3F"/>
+                                       TextWrapping="Wrap"
+                                       Foreground="#92BFB3"/>
+                        </StackPanel>
+                        <Border Grid.Column="1"
+                                CornerRadius="18"
+                                Background="#E8E1D2"
+                                Padding="14,10"
+                                MinWidth="105">
+                            <StackPanel>
+                                <TextBlock Text="{Binding PeakLabel}"
+                                           FontSize="24"
+                                           FontWeight="Black"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#07100D"/>
+                                <TextBlock Text="{Binding SimpleSignalLabel}"
+                                           FontSize="9"
+                                           FontWeight="Black"
+                                           LetterSpacing="1.2"
+                                           HorizontalAlignment="Center"
+                                           Foreground="#806A3F"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border Grid.Row="1" CornerRadius="999" Background="#0A2230" BorderBrush="#2F92BFB3" BorderThickness="1" Height="18" ClipToBounds="True">
+                        <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*">
+                            <Border Grid.Column="0" Background="#92BFB3" Opacity="0.18"/>
+                            <Border Grid.Column="1" Background="#92BFB3" Opacity="0.22"/>
+                            <Border Grid.Column="2" Background="#92BFB3" Opacity="0.28"/>
+                            <Border Grid.Column="3" Background="#92BFB3" Opacity="0.34"/>
+                            <Border Grid.Column="4" Background="#92BFB3" Opacity="0.40"/>
+                            <Border Grid.Column="5" Background="#92BFB3" Opacity="0.46"/>
+                            <Border Grid.Column="6" Background="#92BFB3" Opacity="0.52"/>
+                            <Border Grid.Column="7" Background="#92BFB3" Opacity="0.58"/>
+                            <Border Grid.Column="8" Background="#92BFB3" Opacity="0.64"/>
+                            <Border Grid.Column="9" Background="#92BFB3" Opacity="0.70"/>
+                            <Border Grid.Column="10" Background="#C6A96D" Opacity="0.76"/>
+                            <Border Grid.Column="11" Background="#C6A96D" Opacity="0.82"/>
+                            <Border Grid.Column="12" Background="#C6A96D" Opacity="0.88"/>
+                            <Border Grid.Column="13" Background="#C6A96D" Opacity="0.94"/>
+                            <Border Grid.Column="14" Background="#D08A56" Opacity="0.90"/>
+                            <Border Grid.Column="15" Background="#D08A56" Opacity="0.76"/>
+                            <Border Grid.Column="16" Background="#D08A56" Opacity="0.62"/>
+                            <Border Grid.Column="17" Background="#D08A56" Opacity="0.48"/>
+                            <Border Grid.Column="18" Background="#D08A56" Opacity="0.34"/>
+                            <Border Grid.Column="19" Background="#D08A56" Opacity="0.22"/>
                         </Grid>
                     </Border>
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="1.2*,0.8*" ColumnSpacing="18">
-                <StackPanel Spacing="18">
-                    <Border CornerRadius="34" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24" ClipToBounds="True">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#101810" Offset="0"/>
-                                <GradientStop Color="#071420" Offset="0.45"/>
-                                <GradientStop Color="#10251F" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
-                            <Path Grid.RowSpan="4"
-                                  Data="M -40 210 C 80 120, 180 250, 310 158 S 500 95, 640 175 S 830 120, 1020 160"
-                                  Stroke="#28C6A96D"
-                                  StrokeThickness="1.6"
-                                  Stretch="Fill"
-                                  IsHitTestVisible="False"/>
-                            <Path Grid.RowSpan="4"
-                                  Data="M -20 255 C 110 172, 230 295, 355 205 S 560 145, 700 230 S 870 175, 1040 220"
-                                  Stroke="#2292BFB3"
-                                  StrokeThickness="1.2"
-                                  Stretch="Fill"
-                                  IsHitTestVisible="False"/>
-                            <Path Grid.RowSpan="4"
-                                  Data="M 20 310 C 125 240, 245 348, 385 260 S 575 210, 735 285 S 895 235, 1060 280"
-                                  Stroke="#1CD08A56"
-                                  StrokeThickness="1"
-                                  Stretch="Fill"
-                                  IsHitTestVisible="False"/>
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
-                                <StackPanel>
-                                    <TextBlock Text="GATEKPT RECORDER"
-                                               FontSize="11"
-                                               FontWeight="Black"
-                                               Foreground="#92BFB3"
-                                               LetterSpacing="2.4"/>
-                                    <TextBlock Text="{Binding RecordingGuardLabel}"
-                                               Margin="0,8,0,0"
-                                               FontSize="34"
-                                               FontWeight="Black"
-                                               TextWrapping="Wrap"
-                                               Foreground="#E8E1D2"/>
-                                    <TextBlock Text="{Binding CaptureInstruction}"
-                                               Margin="0,6,0,0"
-                                               FontSize="13"
-                                               FontWeight="Black"
-                                               TextWrapping="Wrap"
-                                               Foreground="#C6A96D"/>
-                                </StackPanel>
-                                <Border Grid.Column="1"
-                                        CornerRadius="24"
-                                        Padding="18,14"
-                                        MinWidth="150"
-                                        Background="#E8E1D2">
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding PeakLabel}"
-                                               FontSize="30"
-                                               FontWeight="Black"
-                                               HorizontalAlignment="Center"
-                                               Foreground="#07100D"/>
-                                        <TextBlock Text="{Binding SimpleSignalLabel}"
-                                                   Margin="0,2,0,0"
-                                                   FontSize="10"
-                                                   FontWeight="Black"
-                                                   LetterSpacing="1.8"
-                                                   HorizontalAlignment="Center"
-                                                   Foreground="#806A3F"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-
-                            <Border Grid.Row="1"
-                                    CornerRadius="22"
-                                    Background="#18D08A56"
-                                    BorderBrush="#66D08A56"
-                                    BorderThickness="2"
-                                    Padding="16,13">
-                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="13">
-                                    <Border Width="18"
-                                            Height="18"
-                                            CornerRadius="999"
-                                            VerticalAlignment="Center"
-                                            Background="#D08A56"/>
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{Binding RecordingGuardLabel}"
-                                                   FontSize="18"
-                                                   FontWeight="Black"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="#E8E1D2"/>
-                                        <TextBlock Text="One lane. One record button. Stop saves it."
-                                                   Margin="0,3,0,0"
-                                                   FontSize="11"
-                                                   FontWeight="Bold"
-                                                   TextWrapping="Wrap"
-                                                   Foreground="#C9C0AD"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="2"
-                                               Text="{Binding PeakDecibelLabel}"
-                                               FontSize="18"
-                                               FontWeight="Black"
-                                               VerticalAlignment="Center"
-                                               Foreground="#D08A56"/>
-                                </Grid>
-                            </Border>
-
-                            <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="13">
-                                <Button Content="{Binding RecordingButtonLabel}"
-                                        Command="{Binding StartRecordingCommand}"
-                                        Padding="28,18"
-                                        MinHeight="89"
-                                        FontSize="24"
-                                        Background="#92BFB3"
-                                        Foreground="#07100D"/>
-                                <Button Grid.Column="1"
-                                        Content="{Binding StopButtonLabel}"
-                                        Command="{Binding StopRecordingCommand}"
-                                        Padding="28,18"
-                                        MinHeight="89"
-                                        FontSize="24"
-                                        Background="#C6A96D"
-                                        Foreground="#07100D"/>
-                            </Grid>
-
-                            <ComboBox Grid.Row="3"
-                                      ItemsSource="{Binding InputDevices}"
-                                      SelectedItem="{Binding SelectedInputDevice}"
-                                      HorizontalAlignment="Stretch"
-                                      MinHeight="44"
-                                      Background="#E8E1D2"
-                                      Foreground="#07100D"/>
-
-                            <Grid Grid.Row="4" ColumnDefinitions="*,*,*,*" ColumnSpacing="13">
-                                <Button Content="PLAY TAKE"
-                                        Command="{Binding PlaySelectedCommand}"
-                                        Padding="18,13"
-                                        Background="#E8E1D2"
-                                        Foreground="#07100D"/>
-                                <Button Grid.Column="1"
-                                        Content="FIND INPUT"
-                                        Command="{Binding FindScarlettCommand}"
-                                        Padding="18,13"
-                                        Background="#0D2230"
-                                        Foreground="#C9C0AD"/>
-                                <Button Grid.Column="2"
-                                        Content="CHECK SOUND"
-                                        Command="{Binding CheckSignalCommand}"
-                                        Padding="18,13"
-                                        Background="#D08A56"
-                                        Foreground="#07100D"/>
-                                <Button Grid.Column="3"
-                                        Content="BEEP"
-                                        Command="{Binding TestSpeakerCommand}"
-                                        Padding="18,13"
-                                        Background="#92BFB3"
-                                        Foreground="#07100D"/>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <Border CornerRadius="22" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="16">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
-                            <StackPanel>
-                                <TextBlock Text="AUDIO PATH"
-                                           FontSize="10"
-                                           FontWeight="Black"
-                                           LetterSpacing="2"
-                                           Foreground="#92BFB3"/>
-                                <TextBlock Text="{Binding AudioHealthLabel}"
-                                           Margin="0,5,0,0"
-                                           FontSize="14"
-                                           FontWeight="Black"
-                                           TextWrapping="Wrap"
-                                           Foreground="#E8E1D2"/>
-                                <TextBlock Text="{Binding CurrentFilePreviewLabel}"
-                                           Margin="0,6,0,0"
-                                           FontSize="11"
-                                           FontWeight="Bold"
-                                           TextWrapping="Wrap"
-                                           Foreground="#C9C0AD"/>
-                            </StackPanel>
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding SimpleSignalLabel}"
-                                       FontSize="12"
+            <Border CornerRadius="34" BorderBrush="#4092BFB3" BorderThickness="2" Padding="20" ClipToBounds="True">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                        <GradientStop Color="#101810" Offset="0"/>
+                        <GradientStop Color="#071420" Offset="0.45"/>
+                        <GradientStop Color="#10251F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <StackPanel Spacing="16">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
+                        <StackPanel>
+                            <TextBlock Text="RECORDER"
+                                       FontSize="11"
                                        FontWeight="Black"
-                                       VerticalAlignment="Center"
+                                       Foreground="#92BFB3"
+                                       LetterSpacing="2.4"/>
+                            <TextBlock Text="{Binding RecordingGuardLabel}"
+                                       Margin="0,6,0,0"
+                                       FontSize="34"
+                                       FontWeight="Black"
+                                       TextWrapping="Wrap"
+                                       Foreground="#E8E1D2"/>
+                            <TextBlock Text="{Binding CaptureInstruction}"
+                                       Margin="0,6,0,0"
+                                       FontSize="13"
+                                       FontWeight="Black"
+                                       TextWrapping="Wrap"
                                        Foreground="#C6A96D"/>
-                        </Grid>
-                    </Border>
-                </StackPanel>
-
-                <Border Grid.Column="1" CornerRadius="28" Background="#C4081722" BorderBrush="#22E8E1D2" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,Auto,1.2*" RowSpacing="14">
-                        <TextBlock Text="LANES"
-                                   FontSize="11"
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding PeakDecibelLabel}"
+                                   FontSize="18"
                                    FontWeight="Black"
-                                   Foreground="#C6A96D"
-                                   LetterSpacing="2.4"/>
-                        <Border Grid.Row="1" CornerRadius="20" Background="#0D1822" BorderBrush="#3092BFB3" BorderThickness="1" Padding="16">
-                            <StackPanel Spacing="10">
-                                <TextBlock Text="{Binding LayerDeckSummary}"
-                                           FontSize="12"
-                                           FontWeight="Bold"
-                                           TextWrapping="Wrap"
-                                           Foreground="#C9C0AD"/>
-                                <ListBox ItemsSource="{Binding LayerSlots}"
-                                         SelectedItem="{Binding SelectedLayerSlot}"
-                                         Background="Transparent"
-                                         BorderThickness="0"
-                                         MaxHeight="230">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:LayerSlotItem">
-                                            <Border CornerRadius="14" Background="#12E8E1D2" Padding="10" Margin="0,0,0,8">
-                                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                                                    <TextBlock Text="{Binding Number}"
-                                                               FontSize="12"
-                                                               FontWeight="Black"
-                                                               Foreground="#C6A96D"/>
-                                                    <StackPanel Grid.Column="1">
-                                                        <TextBlock Text="{Binding Name}"
-                                                                   FontSize="12"
-                                                                   FontWeight="Black"
-                                                                   Foreground="#E8E1D2"/>
-                                                        <TextBlock Text="{Binding FileName}"
-                                                                   FontSize="10"
-                                                                   FontWeight="Bold"
-                                                                   TextWrapping="Wrap"
-                                                                   Foreground="#C9C0AD"/>
-                                                    </StackPanel>
-                                                    <TextBlock Grid.Column="2"
-                                                               Text="{Binding Status}"
-                                                               FontSize="10"
-                                                               FontWeight="Black"
-                                                               Foreground="#92BFB3"/>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </StackPanel>
-                        </Border>
-                        <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                   VerticalAlignment="Center"
+                                   Foreground="#D08A56"/>
+                    </Grid>
+
+                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <Button Content="{Binding RecordingButtonLabel}"
+                                Command="{Binding StartRecordingCommand}"
+                                Padding="28,18"
+                                MinWidth="260"
+                                MinHeight="89"
+                                Margin="0,0,13,13"
+                                FontSize="22"
+                                Background="#92BFB3"
+                                Foreground="#07100D"/>
+                        <Button Content="{Binding StopButtonLabel}"
+                                Command="{Binding StopRecordingCommand}"
+                                Padding="28,18"
+                                MinWidth="260"
+                                MinHeight="89"
+                                Margin="0,0,13,13"
+                                FontSize="22"
+                                Background="#C6A96D"
+                                Foreground="#07100D"/>
+                    </WrapPanel>
+
+                    <ComboBox ItemsSource="{Binding InputDevices}"
+                              SelectedItem="{Binding SelectedInputDevice}"
+                              HorizontalAlignment="Stretch"
+                              MinHeight="44"
+                              Background="#E8E1D2"
+                              Foreground="#07100D"/>
+
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Content="Check sound"
+                                Command="{Binding CheckSignalCommand}"
+                                Padding="18,12"
+                                MinWidth="145"
+                                Margin="0,0,10,10"
+                                Background="#D08A56"
+                                Foreground="#07100D"/>
+                        <Button Content="Play take"
+                                Command="{Binding PlaySelectedCommand}"
+                                Padding="18,12"
+                                MinWidth="145"
+                                Margin="0,0,10,10"
+                                Background="#E8E1D2"
+                                Foreground="#07100D"/>
+                        <Button Content="Beep"
+                                Command="{Binding TestSpeakerCommand}"
+                                Padding="18,12"
+                                MinWidth="105"
+                                Margin="0,0,10,10"
+                                Background="#92BFB3"
+                                Foreground="#07100D"/>
+                        <Button Content="Folder"
+                                Command="{Binding OpenFolderCommand}"
+                                Padding="18,12"
+                                MinWidth="105"
+                                Margin="0,0,10,10"
+                                Background="#0D2230"
+                                Foreground="#C9C0AD"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="22" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="16">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="AUDIO PATH"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="2"
+                               Foreground="#92BFB3"/>
+                    <TextBlock Text="{Binding AudioHealthLabel}"
+                               FontSize="14"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#E8E1D2"/>
+                    <TextBlock Text="{Binding CurrentFilePreviewLabel}"
+                               FontSize="11"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Foreground="#C9C0AD"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="28" Background="#C4081722" BorderBrush="#22E8E1D2" BorderThickness="1" Padding="18">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                        <StackPanel>
+                            <TextBlock Text="LANES"
+                                       FontSize="11"
+                                       FontWeight="Black"
+                                       Foreground="#C6A96D"
+                                       LetterSpacing="2.4"/>
+                            <TextBlock Text="{Binding LayerDeckSummary}"
+                                       Margin="0,5,0,0"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#C9C0AD"/>
+                        </StackPanel>
+                        <WrapPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="Play"
                                     Command="{Binding PlayLayerDeckCommand}"
-                                    Padding="12,11"
+                                    Padding="14,10"
+                                    MinWidth="82"
+                                    Margin="0,0,8,8"
                                     Background="#C6A96D"
                                     Foreground="#07100D"/>
-                            <Button Grid.Column="1"
-                                    Content="Export"
+                            <Button Content="Export"
                                     Command="{Binding ExportLayerMixCommand}"
-                                    Padding="12,11"
+                                    Padding="14,10"
+                                    MinWidth="82"
+                                    Margin="0,0,8,8"
                                     Background="#92BFB3"
                                     Foreground="#07100D"/>
-                            <Button Grid.Column="2"
-                                    Content="Folder"
-                                    Command="{Binding OpenFolderCommand}"
-                                    Padding="12,11"
-                                    Background="#E8E1D2"
-                                    Foreground="#07100D"/>
-                        </Grid>
-                        <ListBox Grid.Row="3"
-                                 ItemsSource="{Binding Versions}"
-                                 SelectedItem="{Binding SelectedVersion}"
-                                 Background="Transparent"
-                                 BorderThickness="0">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="svc:RecorderVersionFile">
-                                    <Border CornerRadius="18" Background="#14E8E1D2" Padding="14" Margin="0,0,0,10">
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Black" TextWrapping="Wrap" Foreground="#E8E1D2"/>
-                                            <TextBlock Text="{Binding Size}" Margin="0,5,0,0" FontSize="11" FontWeight="Bold" Foreground="#92BFB3"/>
-                                            <TextBlock Text="{Binding Modified}" FontSize="11" Foreground="#C9C0AD"/>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                        </WrapPanel>
                     </Grid>
-                </Border>
-            </Grid>
 
-            <Border Grid.Row="2" CornerRadius="18" Background="#14E8E1D2" Padding="14">
+                    <ListBox ItemsSource="{Binding LayerSlots}"
+                             SelectedItem="{Binding SelectedLayerSlot}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             MaxHeight="230">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LayerSlotItem">
+                                <Border CornerRadius="14" Background="#12E8E1D2" Padding="10" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                        <TextBlock Text="{Binding Number}"
+                                                   FontSize="12"
+                                                   FontWeight="Black"
+                                                   Foreground="#C6A96D"/>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="12"
+                                                       FontWeight="Black"
+                                                       Foreground="#E8E1D2"/>
+                                            <TextBlock Text="{Binding FileName}"
+                                                       FontSize="10"
+                                                       FontWeight="Bold"
+                                                       TextWrapping="Wrap"
+                                                       Foreground="#C9C0AD"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Status}"
+                                                   FontSize="10"
+                                                   FontWeight="Black"
+                                                   Foreground="#92BFB3"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="24" Background="#10081722" BorderBrush="#18E8E1D2" BorderThickness="1" Padding="18">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="TAKES"
+                               FontSize="11"
+                               FontWeight="Black"
+                               Foreground="#C6A96D"
+                               LetterSpacing="2.4"/>
+                    <ListBox ItemsSource="{Binding Versions}"
+                             SelectedItem="{Binding SelectedVersion}"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             MaxHeight="260">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="svc:RecorderVersionFile">
+                                <Border CornerRadius="18" Background="#14E8E1D2" Padding="14" Margin="0,0,0,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Black" TextWrapping="Wrap" Foreground="#E8E1D2"/>
+                                        <TextBlock Text="{Binding Size}" Margin="0,5,0,0" FontSize="11" FontWeight="Bold" Foreground="#92BFB3"/>
+                                        <TextBlock Text="{Binding Modified}" FontSize="11" Foreground="#C9C0AD"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="18" Background="#14E8E1D2" Padding="14">
                 <TextBlock Text="{Binding Status}"
                            FontSize="13"
                            FontWeight="Black"
                            TextWrapping="Wrap"
                            Foreground="#E8E1D2"/>
             </Border>
-        </Grid>
+        </StackPanel>
     </ScrollViewer>
 </Window>
