@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 using GateKPT.MusicOS.ViewModels;
 
 namespace GateKPT.MusicOS.Views;
@@ -11,10 +10,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        Opened += (_, _) =>
-        {
-            Dispatcher.UIThread.Post(() => MainWorkspaceScroll.Offset = default);
-        };
     }
 
     private async void BrowseVideo_Click(object? sender, RoutedEventArgs e)
