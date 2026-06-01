@@ -15,7 +15,7 @@
         Height="860"
         MinWidth="1080"
         MinHeight="720"
-        Background="#070706">
+        Background="#06111C">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -87,25 +87,25 @@
     <Grid RowDefinitions="Auto,*">
         <Grid.Background>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#070706" Offset="0"/>
-                <GradientStop Color="#15120D" Offset="0.45"/>
-                <GradientStop Color="#24150E" Offset="1"/>
+                <GradientStop Color="#06111C" Offset="0"/>
+                <GradientStop Color="#0B1B2A" Offset="0.48"/>
+                <GradientStop Color="#0D1813" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Ellipse Grid.RowSpan="2" Width="640" Height="640" Fill="#10E37B45"
+        <Ellipse Grid.RowSpan="2" Width="640" Height="640" Fill="#1292BFB3"
                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-280,-320,0,0"/>
-        <Ellipse Grid.RowSpan="2" Width="720" Height="720" Fill="#0E6FB6A6"
+        <Ellipse Grid.RowSpan="2" Width="720" Height="720" Fill="#12C6A96D"
                  HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-320,-340"/>
 
-        <Border Padding="24,16" BorderBrush="#18F8F0E5" BorderThickness="0,0,0,1" Background="#B0070706">
+        <Border Padding="24,16" BorderBrush="#18E8E1D2" BorderThickness="0,0,0,1" Background="#D006111C">
             <Grid ColumnDefinitions="260,*,Auto" VerticalAlignment="Center" ColumnSpacing="18">
                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
                     <Border Width="40" Height="40" CornerRadius="15">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#F2EADC" Offset="0"/>
-                                <GradientStop Color="#E37B45" Offset="1"/>
+                                <GradientStop Color="#E8E1D2" Offset="0"/>
+                                <GradientStop Color="#92BFB3" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
                         <Image Source="/Assets/gatekpt-icon.png"
@@ -116,7 +116,7 @@
                     </Border>
                     <StackPanel MinWidth="0">
                         <TextBlock Text="GateKPT" FontSize="16" FontWeight="Black" Foreground="#F8F0E5" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="MUSIC OS / CREATOR WORKFLOW" FontSize="10" FontWeight="Bold" Foreground="#766A5B" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="MUSIC OS / CREATIVE AUDIO WORKSPACE" FontSize="10" FontWeight="Bold" Foreground="#92BFB3" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -129,17 +129,17 @@
                     </StackPanel>
                 </Border>
 
-                <Border Grid.Column="2" CornerRadius="999" Background="#18F8F0E5" BorderBrush="#28F8F0E5" BorderThickness="1" Padding="14,8" MaxWidth="150">
-                    <TextBlock Text="{Binding OperatorName}" FontSize="12" FontWeight="Black" Foreground="#F8F0E5" TextTrimming="CharacterEllipsis"/>
+                <Border Grid.Column="2" CornerRadius="999" Background="#18E8E1D2" BorderBrush="#2892BFB3" BorderThickness="1" Padding="14,8" MaxWidth="150">
+                    <TextBlock Text="{Binding OperatorName}" FontSize="12" FontWeight="Black" Foreground="#E8E1D2" TextTrimming="CharacterEllipsis"/>
                 </Border>
             </Grid>
         </Border>
 
         <Grid Grid.Row="1" ColumnDefinitions="292,*" Margin="24" ColumnSpacing="21">
-            <Border Classes="card" Padding="20" Background="#C90D0B08" BorderBrush="#20F8F0E5">
+            <Border Classes="card" Padding="20" Background="#C4081722" BorderBrush="#2BE8E1D2">
                 <Grid RowDefinitions="Auto,Auto,*" RowSpacing="14">
                     <StackPanel>
-                        <TextBlock Classes="label" Text="ROOM DOCK"/>
+                        <TextBlock Classes="label" Text="GATEKPT"/>
                         <TextBlock Text="{Binding ActiveRoom}"
                                    Margin="0,10,0,0"
                                    FontSize="30"
@@ -372,35 +372,35 @@
                     </Grid>
                 </Border>
                 <StackPanel IsVisible="{Binding IsEditorRoom}" Spacing="18">
-                <Border CornerRadius="34" BorderBrush="#2CF8F0E5" BorderThickness="1" Padding="30" BoxShadow="0 24 70 0 #66000000">
+                <Border CornerRadius="34" BorderBrush="#2BE8E1D2" BorderThickness="1" Padding="30" BoxShadow="0 24 70 0 #66000000">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                            <GradientStop Color="#18130E" Offset="0"/>
-                            <GradientStop Color="#100E0B" Offset="0.58"/>
-                            <GradientStop Color="#101A17" Offset="1"/>
+                            <GradientStop Color="#0B1B2A" Offset="0"/>
+                            <GradientStop Color="#06111C" Offset="0.58"/>
+                            <GradientStop Color="#101810" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.Background>
 
                     <Grid RowDefinitions="Auto,Auto" RowSpacing="24">
                         <StackPanel VerticalAlignment="Center">
-                            <Border CornerRadius="999" Background="#2415120D" Padding="12,7" HorizontalAlignment="Left">
-                                <TextBlock Text="PROJECT DASHBOARD" FontSize="11" FontWeight="Black" Foreground="#EABF7A" LetterSpacing="3"/>
+                            <Border CornerRadius="999" Background="#1692BFB3" Padding="12,7" HorizontalAlignment="Left">
+                                <TextBlock Text="MUSICOS" FontSize="11" FontWeight="Black" Foreground="#C6A96D" LetterSpacing="3"/>
                             </Border>
                             <TextBlock Text="{Binding ProjectName}"
                                        Margin="0,18,0,4"
                                        FontSize="48"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#F8F0E5"/>
+                                       Foreground="#E8E1D2"/>
                             <TextBlock Text="{Binding NextCreativeAction}"
                                        Margin="0,20,0,0"
                                        FontSize="15"
                                        LineHeight="24"
                                        TextWrapping="Wrap"
-                                       Foreground="#B8AA96"/>
+                                       Foreground="#C9C0AD"/>
                             <Border CornerRadius="28"
-                                    Background="#E6F2EADC"
-                                    BorderBrush="#55E37B45"
+                                    Background="#E8E8E1D2"
+                                    BorderBrush="#5592BFB3"
                                     BorderThickness="1"
                                     Padding="24"
                                     Margin="0,21,0,0">
@@ -410,39 +410,39 @@
                                             <TextBlock Text="SIGNAL CHECK"
                                                        FontSize="11"
                                                        FontWeight="Black"
-                                                       Foreground="#8D5631"
+                                                       Foreground="#806A3F"
                                                        LetterSpacing="2.6"/>
                                             <TextBlock Text="{Binding SignalCheckHeadline}"
                                                        Margin="0,7,0,0"
                                                        FontSize="34"
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
-                                                       Foreground="#15120D"/>
+                                                       Foreground="#07100D"/>
                                             <TextBlock Text="{Binding SignalCheckDetail}"
                                                        Margin="0,8,0,0"
                                                        FontSize="15"
                                                        FontWeight="Bold"
                                                        LineHeight="22"
                                                        TextWrapping="Wrap"
-                                                       Foreground="#5D503F"/>
+                                                       Foreground="#4F5B52"/>
                                         </StackPanel>
                                         <Border Grid.Column="1"
                                                 Width="132"
                                                 Height="132"
                                                 CornerRadius="999"
-                                                Background="#15120D">
+                                                Background="#07100D">
                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding SignalCheckPeakLabel}"
                                                            FontSize="34"
                                                            FontWeight="Black"
                                                            HorizontalAlignment="Center"
-                                                           Foreground="#F2EADC"/>
+                                                           Foreground="#E8E1D2"/>
                                                 <TextBlock Text="PEAK"
                                                            FontSize="10"
                                                            FontWeight="Black"
                                                            LetterSpacing="2"
                                                            HorizontalAlignment="Center"
-                                                           Foreground="#E37B45"/>
+                                                           Foreground="#92BFB3"/>
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -452,28 +452,28 @@
                                                    FontSize="12"
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
-                                                   Foreground="#15120D"
+                                                   Foreground="#07100D"
                                                    VerticalAlignment="Center"/>
                                         <Button Grid.Column="1"
                                                 Content="Find Scarlett"
                                                 Command="{Binding AutoConfigureFocusriteCommand}"
                                                 Padding="16,10"
-                                                Background="#15120D"
-                                                Foreground="#F8F0E5"
+                                                Background="#07100D"
+                                                Foreground="#E8E1D2"
                                                 FontWeight="Black"/>
                                         <Button Grid.Column="2"
                                                 Content="Record 3 sec test"
                                                 Command="{Binding RunFocusriteInputTestCommand}"
                                                 Padding="16,10"
-                                                Background="#E37B45"
-                                                Foreground="#15120D"
+                                                Background="#D08A56"
+                                                Foreground="#07100D"
                                                 FontWeight="Black"/>
                                         <Button Grid.Column="3"
                                                 Content="Play test"
                                                 Command="{Binding PlayFocusriteTestCommand}"
                                                 Padding="16,10"
                                                 Background="#6FB6A6"
-                                                Foreground="#15120D"
+                                                Foreground="#07100D"
                                                 FontWeight="Black"/>
                                     </Grid>
 

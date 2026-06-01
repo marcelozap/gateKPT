@@ -96,7 +96,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             .ToList();
 
     [ObservableProperty]
-    private string _projectName = "GateKPT clip system";
+    private string _projectName = "GateKPT MusicOS";
 
     [ObservableProperty]
     private string _platformProfile = "LinkedIn / 16:9";
@@ -111,7 +111,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _loudnessTarget = "-14 LUFS";
 
     [ObservableProperty]
-    private string _businessMode = "Build video catalog";
+    private string _businessMode = "Creative audio workspace";
 
     [ObservableProperty]
     private string _outputDirectory = "";
@@ -474,8 +474,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         Rooms =
         [
-            new("Performance / Reveal", "Live cue card, RC-505 section control, and visual painting", "00", "#F2EADC"),
-            new("Song Builder", "Drums -> harmony -> vocals without DAW overwhelm", "01", "#E37B45"),
+            new("Performance / Reveal", "Sound becomes visual terrain", "00", "#E8E1D2"),
+            new("Song Builder", "Rhythm -> sound -> voice, one part at a time", "01", "#D08A56"),
             new("Lyric Vault", "Hooks, fragments, titles, and themes stay findable", "02", "#EABF7A"),
             new("Caption Engine", "Draft safe lyric captions before video export", "03", "#6FB6A6"),
             new("Visual Room", "Visualizer, projector, palette, and performance presets", "04", "#D9C5A5"),
@@ -498,12 +498,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _selectedAudioPreset = AudioPresets[0];
 
         var project = _store.LoadProject();
-        ProjectName = project.ProjectName;
+        ProjectName = project.ProjectName == "GateKPT clip system" ? "GateKPT MusicOS" : project.ProjectName;
         PlatformProfile = project.PlatformProfile;
         SyncOffsetMs = project.SyncOffsetMs;
         FrameRate = project.FrameRate;
         LoudnessTarget = project.LoudnessTarget;
-        BusinessMode = project.BusinessMode;
+        BusinessMode = project.BusinessMode == "Build video catalog" ? "Creative audio workspace" : project.BusinessMode;
         OutputDirectory = project.OutputDirectory;
 
         var storedCaptures = _store.LoadCaptures();
