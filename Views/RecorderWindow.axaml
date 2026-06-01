@@ -340,7 +340,7 @@
                 </StackPanel>
 
                 <Border Grid.Column="1" CornerRadius="28" Background="#C4081722" BorderBrush="#22E8E1D2" BorderThickness="1" Padding="20">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,1.2*" RowSpacing="14">
+                    <Grid RowDefinitions="Auto,Auto,Auto,1.2*" RowSpacing="14">
                         <TextBlock Text="LANES"
                                    FontSize="11"
                                    FontWeight="Black"
@@ -389,65 +389,26 @@
                                 </ListBox>
                             </StackPanel>
                         </Border>
-                        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="13">
-                            <Button Content="Assign take"
-                                    Command="{Binding AssignSelectedToNextLayerCommand}"
-                                    Padding="14,12"
-                                    Background="#92BFB3"
-                                    Foreground="#07100D"/>
-                            <Button Grid.Column="1"
-                                    Content="Clear deck"
-                                    Command="{Binding ClearLayerDeckCommand}"
-                                    Padding="14,12"
-                                    Background="#0D2230"
-                                    Foreground="#C9C0AD"/>
-                        </Grid>
-                        <Grid Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="10">
-                            <Button Content="Play deck"
+                        <Grid Grid.Row="2" ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                            <Button Content="Play"
                                     Command="{Binding PlayLayerDeckCommand}"
                                     Padding="12,11"
                                     Background="#C6A96D"
                                     Foreground="#07100D"/>
                             <Button Grid.Column="1"
-                                    Content="Open lane"
-                                    Command="{Binding OpenSelectedLayerCommand}"
-                                    Padding="12,11"
-                                    Background="#E8E1D2"
-                                    Foreground="#07100D"/>
-                            <Button Grid.Column="2"
-                                    Content="Clear lane"
-                                    Command="{Binding ClearSelectedLayerCommand}"
-                                    Padding="12,11"
-                                    Background="#0D2230"
-                                    Foreground="#C9C0AD"/>
-                        </Grid>
-                        <Grid Grid.Row="4" ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Button Content="Stop deck"
-                                    Command="{Binding StopPlaybackCommand}"
-                                    Padding="12,11"
-                                    Background="#0D2230"
-                                    Foreground="#C9C0AD"/>
-                            <Button Grid.Column="1"
-                                    Content="Export mix"
+                                    Content="Export"
                                     Command="{Binding ExportLayerMixCommand}"
-                                    Padding="12,11"
-                                    Background="#C6A96D"
-                                    Foreground="#07100D"/>
-                        </Grid>
-                        <Grid Grid.Row="5" ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Button Content="Export stems"
-                                    Command="{Binding ExportSeparateStemsCommand}"
                                     Padding="12,11"
                                     Background="#92BFB3"
                                     Foreground="#07100D"/>
-                            <Button Grid.Column="1"
-                                    Content="Open folder"
+                            <Button Grid.Column="2"
+                                    Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="12,11"
                                     Background="#E8E1D2"
                                     Foreground="#07100D"/>
                         </Grid>
-                        <ListBox Grid.Row="6"
+                        <ListBox Grid.Row="3"
                                  ItemsSource="{Binding Versions}"
                                  SelectedItem="{Binding SelectedVersion}"
                                  Background="Transparent"
