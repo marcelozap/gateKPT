@@ -143,6 +143,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? "LOW SIGNAL"
                 : "NO SOUND YET";
 
+    public string AudioHealthLabel =>
+        SelectedInputDevice is null
+            ? "Input not selected."
+            : SignalReady
+                ? $"Ready: {SelectedInputDevice.Name}"
+                : $"Input: {SelectedInputDevice.Name}. Press CHECK SOUND.";
+
     public string SelectedCaptureLaneLabel =>
         SelectedLayerSlot?.Name ?? "Drums";
 
@@ -299,6 +306,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Status = best.PeakPercent >= 1
             ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%. Now press {RecordingButtonLabel}."
             : $"No signal found. Loudest input was {best.Name} at {best.PeakPercent:0.0}%. Check RC-505 output into Scarlett input.";
+        OnPropertyChanged(nameof(AudioHealthLabel));
         RefreshVersions();
     }
 
@@ -1376,6 +1384,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PeakLabel));
         OnPropertyChanged(nameof(PeakDecibelLabel));
         OnPropertyChanged(nameof(SimpleSignalLabel));
+        OnPropertyChanged(nameof(AudioHealthLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
@@ -1402,6 +1411,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(RecordingGuardLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
         OnPropertyChanged(nameof(SimpleSignalLabel));
+        OnPropertyChanged(nameof(AudioHealthLabel));
     }
 
     partial void OnActiveRecordingNameChanged(string value)
@@ -1453,6 +1463,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnSelectedInputDeviceChanged(AudioInputDeviceItem? value)
     {
         InputName = value?.Name ?? "No input selected";
+        OnPropertyChanged(nameof(AudioHealthLabel));
     }
 }
 

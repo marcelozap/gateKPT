@@ -149,7 +149,7 @@
                 </Grid>
             </Border>
 
-            <Grid Grid.Row="1" ColumnDefinitions="1.15*,0.85*" ColumnSpacing="18">
+            <Grid Grid.Row="1" ColumnDefinitions="1.2*,0.8*" ColumnSpacing="18">
                 <StackPanel Spacing="18">
                     <Border CornerRadius="34" BorderBrush="#4092BFB3" BorderThickness="2" Padding="24" ClipToBounds="True">
                         <Border.Background>
@@ -308,115 +308,33 @@
                         </Grid>
                     </Border>
 
-                    <Border CornerRadius="18" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="13">
-                        <StackPanel>
-                            <TextBlock Text="LAST TAKE"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2"
-                                       Foreground="#92BFB3"/>
-                            <TextBlock Text="{Binding CurrentFileLabel}"
-                                       Margin="0,5,0,0"
-                                       FontSize="13"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#E8E1D2"/>
-                            <TextBlock Text="{Binding CurrentFilePreviewLabel}"
-                                       Margin="0,6,0,0"
-                                       FontSize="11"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"
-                                       Foreground="#92BFB3"/>
-                        </StackPanel>
-                    </Border>
-
-                    <Border CornerRadius="28" Background="#D9081722" BorderBrush="#24E8E1D2" BorderThickness="1" Padding="22" ClipToBounds="True">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
-                            <Path Grid.RowSpan="7"
-                                  Data="M 0 130 C 90 88, 170 160, 260 112 S 410 86, 520 134 S 650 104, 780 122"
-                                  Stroke="#1C92BFB3"
-                                  StrokeThickness="1"
-                                  Stretch="Fill"
-                                  IsHitTestVisible="False"/>
+                    <Border CornerRadius="22" Background="#14E8E1D2" BorderBrush="#22C6A96D" BorderThickness="1" Padding="16">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
                             <StackPanel>
-                                <TextBlock Text="COMMAND"
-                                           FontSize="11"
+                                <TextBlock Text="AUDIO PATH"
+                                           FontSize="10"
                                            FontWeight="Black"
-                                           Foreground="#D08A56"
-                                           LetterSpacing="2.4"/>
-                                <TextBlock Text="{Binding AssistantBrief}"
-                                           Margin="0,7,0,0"
-                                           FontSize="12"
+                                           LetterSpacing="2"
+                                           Foreground="#92BFB3"/>
+                                <TextBlock Text="{Binding AudioHealthLabel}"
+                                           Margin="0,5,0,0"
+                                           FontSize="14"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#E8E1D2"/>
+                                <TextBlock Text="{Binding CurrentFilePreviewLabel}"
+                                           Margin="0,6,0,0"
+                                           FontSize="11"
                                            FontWeight="Bold"
                                            TextWrapping="Wrap"
                                            Foreground="#C9C0AD"/>
                             </StackPanel>
-                            <TextBlock Grid.Row="1"
-                                       Text="{Binding CommandHelp}"
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding SimpleSignalLabel}"
                                        FontSize="12"
-                                       FontWeight="Bold"
-                                       TextWrapping="Wrap"
-                                       Foreground="#C9C0AD"/>
-                                    <TextBox Grid.Row="2"
-                                     Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="drums punch, vocal polish, add reverb..."
-                                     TextWrapping="Wrap"
-                                     MinHeight="48"
-                                     Background="#E8E1D2"
-                                     Foreground="#07100D"/>
-                            <Button Grid.Row="3"
-                                    Content="Run command"
-                                    Command="{Binding RunChatCommandCommand}"
-                                    Padding="18,12"
-                                    HorizontalAlignment="Stretch"
-                                    Background="#D08A56"
-                                    Foreground="#07100D"/>
-                            <Border Grid.Row="4" CornerRadius="16" Background="#18D08A56" Padding="13">
-                                <StackPanel>
-                                    <TextBlock Text="COMMAND RESULT"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="2"
-                                               Foreground="#D08A56"/>
-                                    <TextBlock Text="{Binding CommandResult}"
-                                               Margin="0,5,0,0"
-                                               FontSize="12"
-                                               FontWeight="Black"
-                                               TextWrapping="Wrap"
-                                               Foreground="#E8E1D2"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Row="5" CornerRadius="16" Background="#1292BFB3" Padding="13">
-                                <StackPanel>
-                                    <TextBlock Text="LANE CHAIN"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="2"
-                                               Foreground="#92BFB3"/>
-                                    <TextBlock Text="{Binding LastEffectChain}"
-                                               Margin="0,5,0,0"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"
-                                               Foreground="#C9C0AD"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Row="6" CornerRadius="16" Background="#10C6A96D" Padding="13">
-                                <StackPanel>
-                                    <TextBlock Text="HISTORY"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="2"
-                                               Foreground="#C6A96D"/>
-                                    <TextBlock Text="{Binding CommandHistory}"
-                                               Margin="0,5,0,0"
-                                               MaxHeight="86"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               TextWrapping="Wrap"
-                                               Foreground="#C9C0AD"/>
-                                </StackPanel>
-                            </Border>
+                                       FontWeight="Black"
+                                       VerticalAlignment="Center"
+                                       Foreground="#C6A96D"/>
                         </Grid>
                     </Border>
                 </StackPanel>
