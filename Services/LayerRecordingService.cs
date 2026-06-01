@@ -124,25 +124,24 @@ public sealed class LayerRecordingService : IDisposable
 
     private static IWaveIn? CreateCapture(string preferredInput, out string deviceName, out string backend)
     {
-        var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
-        if (waveIn is not null)
-        {
-            backend = "WaveIn";
-            return waveIn;
-        }
-
         using var enumerator = new MMDeviceEnumerator();
         var device = FindInputDevice(enumerator, preferredInput);
         if (device is null)
         {
-            deviceName = "";
+            var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
+            if (waveIn is not null)
+            {
+                backend = "WaveIn";
+                return waveIn;
+            }
+
             backend = "";
             return null;
         }
 
         PrepareInputVolume(device);
         deviceName = device.FriendlyName;
-        backend = "WASAPI";
+        backend = "WASAPI explicit";
         return new WasapiCapture(device);
     }
 
@@ -208,6 +207,14 @@ public sealed class LayerRecordingService : IDisposable
         {
             var preferred = devices.FirstOrDefault(device =>
                 MatchesPreferredInput(device.FriendlyName, preferredInput));
+            if (preferred is not null)
+            {
+                return preferred;
+            }
+
+            preferred = devices.FirstOrDefault(device =>
+                preferredInput.Contains(device.ID, StringComparison.OrdinalIgnoreCase)
+                || device.ID.Contains(preferredInput, StringComparison.OrdinalIgnoreCase));
             if (preferred is not null)
             {
                 return preferred;

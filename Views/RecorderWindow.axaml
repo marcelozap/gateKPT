@@ -159,7 +159,7 @@
                                 <GradientStop Color="#10251F" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="16">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                             <Path Grid.RowSpan="4"
                                   Data="M -40 210 C 80 120, 180 250, 310 158 S 500 95, 640 175 S 830 120, 1020 160"
                                   Stroke="#28C6A96D"
@@ -272,7 +272,15 @@
                                         Foreground="#07100D"/>
                             </Grid>
 
-                            <Grid Grid.Row="3" ColumnDefinitions="*,*,*" ColumnSpacing="13">
+                            <ComboBox Grid.Row="3"
+                                      ItemsSource="{Binding InputDevices}"
+                                      SelectedItem="{Binding SelectedInputDevice}"
+                                      HorizontalAlignment="Stretch"
+                                      MinHeight="44"
+                                      Background="#E8E1D2"
+                                      Foreground="#07100D"/>
+
+                            <Grid Grid.Row="4" ColumnDefinitions="*,*,*" ColumnSpacing="13">
                                 <Button Content="PLAY TAKE"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="18,13"

@@ -19,6 +19,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly RecorderVersionStore _versions = new();
     private readonly AudioTransformService _transforms = new();
     private readonly LayerMixdownService _mixdown = new();
+    private readonly AudioInputDeviceService _inputDevices = new();
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -27,6 +28,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _inputName = "Scarlett not selected";
+
+    [ObservableProperty]
+    private AudioInputDeviceItem? _selectedInputDevice;
 
     [ObservableProperty]
     private double _peakPercent = 0;
@@ -74,6 +78,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private LayerSlotItem? _selectedLayerSlot;
 
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
+
+    public ObservableCollection<AudioInputDeviceItem> InputDevices { get; } = [];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
     [
@@ -248,6 +254,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
+        RefreshInputDevices();
         RefreshVersions();
         RestoreLayerDeck();
     }
@@ -255,9 +262,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void FindScarlett()
     {
-        var selection = _focusrite.Detect();
-        InputName = selection.HasInput ? selection.InputName : "Scarlett input not found";
-        Status = selection.Summary;
+        RefreshInputDevices();
+        if (SelectedInputDevice is not null)
+        {
+            InputName = SelectedInputDevice.Name;
+            Status = $"Input selected: {SelectedInputDevice.Name}";
+            return;
+        }
+
+        Status = "No active recording input found in Windows.";
     }
 
     [RelayCommand]
@@ -326,13 +339,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        FindScarlett();
-        if (!InputName.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
-            && !InputName.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
+        if (SelectedInputDevice is null)
         {
-            Status = "Scarlett input not selected. Click Find Scarlett first.";
+            RefreshInputDevices();
+        }
+
+        if (SelectedInputDevice is null)
+        {
+            Status = "No input selected. Click FIND INPUT and choose the real Scarlett/RC-505 input.";
             return;
         }
+
+        InputName = SelectedInputDevice.Id;
 
         PeakPercent = 0;
         _recordingSignalSeen = false;
@@ -373,6 +391,21 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? "Recording full RC-505 output. Watch the signal number move."
                 : $"Recording {LayerSlots.First(slot => slot.Number == layerNumber).Name}. Solo that RC-505 track now."
             : result.Message;
+    }
+
+    private void RefreshInputDevices()
+    {
+        var currentId = SelectedInputDevice?.Id;
+        InputDevices.Clear();
+        foreach (var device in _inputDevices.ListInputs())
+        {
+            InputDevices.Add(device);
+        }
+
+        SelectedInputDevice = InputDevices.FirstOrDefault(device => device.Id == currentId)
+            ?? InputDevices.FirstOrDefault(device => device.IsPreferred)
+            ?? InputDevices.FirstOrDefault();
+        InputName = SelectedInputDevice?.Name ?? "No input selected";
     }
 
     [RelayCommand]
@@ -1388,6 +1421,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(SelectedCaptureLaneLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
         OnPropertyChanged(nameof(RecordingButtonLabel));
+    }
+
+    partial void OnSelectedInputDeviceChanged(AudioInputDeviceItem? value)
+    {
+        InputName = value?.Name ?? "No input selected";
     }
 }
 
