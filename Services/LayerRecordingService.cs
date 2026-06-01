@@ -38,7 +38,8 @@ public sealed class LayerRecordingService : IDisposable
             Directory.CreateDirectory(_candidateDirectory);
             _peak = 0;
 
-            foreach (var candidate in CreateCaptureCandidates(preferredInput))
+            var candidate = CreateWasapiCaptureCandidate(preferredInput);
+            if (candidate is not null)
             {
                 TryStartCandidate(candidate, layerName, onPeakPercent);
             }
@@ -103,6 +104,7 @@ public sealed class LayerRecordingService : IDisposable
 
         var best = captures
             .Where(capture => File.Exists(capture.Path))
+            .Where(capture => GetAudioDurationSeconds(capture.Path) >= Math.Max(0.75, elapsed.TotalSeconds * 0.65))
             .Select(capture => capture with { RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount) })
             .OrderByDescending(capture => capture.RmsPercent)
             .ThenByDescending(capture => capture.Peak * 100)
@@ -111,7 +113,8 @@ public sealed class LayerRecordingService : IDisposable
 
         if (best is null || !File.Exists(best.Path))
         {
-            return new LayerRecordingStopResult(false, "", FormatElapsed(elapsed), 0, 0, "No recording file was written.");
+            MoveCandidatesToArchive(captures, "rejected-captures");
+            return new LayerRecordingStopResult(false, "", FormatElapsed(elapsed), 0, 0, "No full-length recording file was written. GateKPT refused to save a broken fragment.");
         }
 
         var peakPercent = Math.Round(best.Peak * 100, 1);
@@ -204,15 +207,8 @@ public sealed class LayerRecordingService : IDisposable
         }
     }
 
-    private static IReadOnlyList<CaptureCandidate> CreateCaptureCandidates(string preferredInput)
+    private static CaptureCandidate? CreateWasapiCaptureCandidate(string preferredInput)
     {
-        var candidates = new List<CaptureCandidate>();
-        var waveIn = CreateWaveInCapture(preferredInput, out var waveName);
-        if (waveIn is not null)
-        {
-            candidates.Add(new CaptureCandidate(waveIn, waveName, "WaveIn stereo"));
-        }
-
         try
         {
             using var enumerator = new MMDeviceEnumerator();
@@ -220,63 +216,14 @@ public sealed class LayerRecordingService : IDisposable
             if (device is not null)
             {
                 PrepareInputVolume(device);
-                candidates.Add(new CaptureCandidate(new WasapiCapture(device), device.FriendlyName, "WASAPI raw"));
+                return new CaptureCandidate(new WasapiCapture(device), device.FriendlyName, "WASAPI raw");
             }
         }
         catch
         {
-            // WaveIn is usually enough; WASAPI is a fallback candidate.
         }
 
-        return candidates;
-    }
-
-    private static IWaveIn? CreateWaveInCapture(string preferredInput, out string deviceName)
-    {
-        deviceName = "";
-        if (WaveInEvent.DeviceCount <= 0)
-        {
-            return null;
-        }
-
-        var selectedIndex = -1;
-        for (var index = 0; index < WaveInEvent.DeviceCount; index++)
-        {
-            var name = WaveInEvent.GetCapabilities(index).ProductName;
-            if (MatchesPreferredInput(name, preferredInput))
-            {
-                selectedIndex = index;
-                deviceName = name;
-                break;
-            }
-        }
-
-        if (selectedIndex < 0)
-        {
-            for (var index = 0; index < WaveInEvent.DeviceCount; index++)
-            {
-                var name = WaveInEvent.GetCapabilities(index).ProductName;
-                if (IsLikelyMusicInput(name))
-                {
-                    selectedIndex = index;
-                    deviceName = name;
-                    break;
-                }
-            }
-        }
-
-        if (selectedIndex < 0)
-        {
-            selectedIndex = 0;
-            deviceName = WaveInEvent.GetCapabilities(selectedIndex).ProductName;
-        }
-
-        return new WaveInEvent
-        {
-            DeviceNumber = selectedIndex,
-            WaveFormat = new WaveFormat(44100, 16, 2),
-            BufferMilliseconds = 35
-        };
+        return null;
     }
 
     private static MMDevice? FindInputDevice(MMDeviceEnumerator enumerator, string preferredInput)
@@ -426,6 +373,19 @@ public sealed class LayerRecordingService : IDisposable
 
     private static double CalculateRmsPercent(double sumSquares, long sampleCount) =>
         sampleCount <= 0 ? 0 : Math.Sqrt(sumSquares / sampleCount) * 100;
+
+    private static double GetAudioDurationSeconds(string path)
+    {
+        try
+        {
+            using var reader = new AudioFileReader(path);
+            return reader.TotalTime.TotalSeconds;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
 
     private static string FormatElapsed(TimeSpan elapsed) =>
         $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";

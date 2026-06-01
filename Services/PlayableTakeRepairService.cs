@@ -22,8 +22,13 @@ public sealed class PlayableTakeRepairService
                 return new PlayableTakeRepairResult(false, sourcePath, "Recorded file had no readable channels.");
             }
 
+            if (stats.DurationSeconds < 0.75)
+            {
+                return new PlayableTakeRepairResult(false, sourcePath, $"Recorded fragment was too short ({stats.DurationSeconds:0.00}s). Refused to call it a take.");
+            }
+
             var selected = stats.Channels
-                .Where(channel => channel.Rms > 0.0005f && channel.Rms < 0.25f && channel.Peak < 0.98f)
+                .Where(channel => channel.Rms > 0.0005f && channel.Rms < 0.25f && channel.Peak < 0.95f)
                 .OrderByDescending(channel => channel.Rms)
                 .FirstOrDefault();
 
@@ -59,7 +64,7 @@ public sealed class PlayableTakeRepairService
             return new PlayableTakeRepairResult(
                 true,
                 sourcePath,
-                $"Playable take repaired from channel {selected.Index + 1}. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%. Raw capture archived.");
+                $"Playable take repaired from channel {selected.Index + 1}. Duration {stats.DurationSeconds:0.0}s. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%. Raw capture archived.");
         }
         catch (Exception ex)
         {
@@ -90,6 +95,7 @@ public sealed class PlayableTakeRepairService
         }
 
         return new AudioChannelInspection(
+            reader.TotalTime.TotalSeconds,
             Enumerable.Range(0, channels)
                 .Select(index => new AudioChannelStats(
                     index,
@@ -135,6 +141,6 @@ public sealed class PlayableTakeRepairService
 
 public sealed record PlayableTakeRepairResult(bool Success, string Path, string Message);
 
-internal sealed record AudioChannelInspection(AudioChannelStats[] Channels);
+internal sealed record AudioChannelInspection(double DurationSeconds, AudioChannelStats[] Channels);
 
 internal sealed record AudioChannelStats(int Index, float Peak, float Rms);
