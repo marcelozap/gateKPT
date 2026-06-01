@@ -20,6 +20,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly AudioTransformService _transforms = new();
     private readonly LayerMixdownService _mixdown = new();
     private readonly AudioInputDeviceService _inputDevices = new();
+    private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -451,9 +452,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return;
             }
 
-            Status = $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
+            var repair = _takeRepair.RepairToPlayableStereo(result.Path);
+            CurrentFilePath = repair.Path;
+            Status = repair.Success
+                ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
+                : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
             RefreshVersions();
-            AutoAssignActiveCapture(result.Path);
+            AutoAssignActiveCapture(CurrentFilePath);
             return;
         }
 
