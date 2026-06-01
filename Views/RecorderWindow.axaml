@@ -196,34 +196,20 @@
                               Foreground="#07100D"/>
 
                     <WrapPanel Orientation="Horizontal">
-                        <Button Content="Check sound"
-                                Command="{Binding CheckSignalCommand}"
-                                Padding="18,12"
-                                MinWidth="145"
-                                Margin="0,0,10,10"
-                                Background="#D08A56"
-                                Foreground="#07100D"/>
-                        <Button Content="Play take"
+                        <Button Content="Open take"
                                 Command="{Binding PlaySelectedCommand}"
                                 Padding="18,12"
-                                MinWidth="145"
+                                MinWidth="150"
                                 Margin="0,0,10,10"
                                 Background="#E8E1D2"
-                                Foreground="#07100D"/>
-                        <Button Content="Beep"
-                                Command="{Binding TestSpeakerCommand}"
-                                Padding="18,12"
-                                MinWidth="105"
-                                Margin="0,0,10,10"
-                                Background="#92BFB3"
                                 Foreground="#07100D"/>
                         <Button Content="Folder"
                                 Command="{Binding OpenFolderCommand}"
                                 Padding="18,12"
-                                MinWidth="105"
+                                MinWidth="150"
                                 Margin="0,0,10,10"
-                                Background="#0D2230"
-                                Foreground="#C9C0AD"/>
+                                Background="#92BFB3"
+                                Foreground="#07100D"/>
                     </WrapPanel>
                 </StackPanel>
             </Border>

@@ -148,7 +148,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "Input not selected."
             : SignalReady
                 ? $"Ready: {SelectedInputDevice.Name}"
-                : $"Input: {SelectedInputDevice.Name}. Press CHECK SOUND.";
+                : $"Input: {SelectedInputDevice.Name}. If the meter moves, record.";
 
     public string SelectedCaptureLaneLabel =>
         SelectedLayerSlot?.Name ?? "Drums";
@@ -484,11 +484,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         CurrentFilePath = path;
         _playback.StopAll();
-        var result = _playback.PlayOnce(0, path, 90);
-        Status = result.Message;
-        CommandResult = result.Success
-            ? $"Internal playback: {Path.GetFileName(path)}"
-            : result.Message;
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = path,
+            UseShellExecute = true
+        });
+        Status = $"Opened take in Windows: {Path.GetFileName(path)}";
+        CommandResult = "Playback uses Windows now. If it is silent there, the file is actually silent.";
     }
 
     [RelayCommand]
