@@ -164,7 +164,24 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : Path.GetFileName(LastStemExportDirectory);
 
     public string CommandHelp =>
-        "warmer, raw, distorted, intimate, live room, brighter, darker, delete";
+        "drums warmer, guitar wider, vocal intimate, add reverb, louder, raw, delete";
+
+    public string LastEffectChain =>
+        SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
+            ? $"{slot.Name}: {slot.EffectChain}"
+            : "No lane effect yet.";
+
+    public string VisualPaintingSignal
+    {
+        get
+        {
+            var takes = Versions.Count;
+            var layers = LayerSlots.Count(slot => !string.IsNullOrWhiteSpace(slot.Path));
+            return layers == 0
+                ? takes == 0 ? "Blank canvas." : $"{takes} take(s) saved."
+                : $"{layers} lane(s), {takes} take(s). Visual mix can grow from this.";
+        }
+    }
 
     public string Rc505CaptureGuide =>
         "Capture full loop or separate cue lanes.";
@@ -466,6 +483,34 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void PlayLayerDeck()
+    {
+        var loaded = LayerSlots.Where(slot => !string.IsNullOrWhiteSpace(slot.Path) && File.Exists(slot.Path)).ToList();
+        if (loaded.Count == 0)
+        {
+            Status = "No lanes loaded. Record or assign takes first.";
+            CommandResult = "Layer deck is empty.";
+            return;
+        }
+
+        _playback.StopAll();
+        var messages = loaded
+            .Select(slot => _playback.PlayLoop(slot.Number, slot.Path, 80))
+            .ToList();
+
+        var failed = messages.FirstOrDefault(result => !result.Success);
+        if (failed is not null)
+        {
+            Status = failed.Message;
+            CommandResult = "Some lanes could not play.";
+            return;
+        }
+
+        Status = $"Playing {loaded.Count} loop lane(s). Use STOP INTERNAL to stop.";
+        CommandResult = $"Looping deck: {string.Join(", ", loaded.Select(slot => slot.Name))}";
+    }
+
+    [RelayCommand]
     private void ClearSelectedLayer()
     {
         var slot = SelectedLayerSlot;
@@ -711,6 +756,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var newPath = _versions.CreateVersionPath(preset.Label, ".wav");
+        if (TryCreateLayerEditCopy(preset, out var layerResult))
+        {
+            CommandResult = layerResult;
+            return;
+        }
+
         var result = _transforms.CreatePresetCopy(sourcePath, newPath, preset);
         if (!result.Success)
         {
@@ -729,6 +780,65 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
         CommandResult = $"Created: {Path.GetFileName(newPath)}";
         Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
+        OnPropertyChanged(nameof(VisualPaintingSignal));
+    }
+
+    private bool TryCreateLayerEditCopy(AudioEditPreset preset, out string message)
+    {
+        message = "";
+        var slot = ResolveTargetLayer(preset);
+        if (slot is null || string.IsNullOrWhiteSpace(slot.Path) || !File.Exists(slot.Path))
+        {
+            return false;
+        }
+
+        var newPath = _versions.CreateVersionPath($"{slot.Name}-{preset.Label}", ".wav");
+        var result = _transforms.CreatePresetCopy(slot.Path, newPath, preset);
+        if (!result.Success || !File.Exists(newPath))
+        {
+            message = $"Could not process {slot.Name}: {result.Message}";
+            Status = message;
+            return true;
+        }
+
+        ReplaceLayerSlot(slot.Number, slot with
+        {
+            Path = newPath,
+            FileName = Path.GetFileName(newPath),
+            Status = "Edited",
+            EffectChain = preset.Description
+        });
+
+        CurrentFilePath = newPath;
+        RefreshVersions();
+        SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
+        Status = $"Processed {slot.Name}: {Path.GetFileName(newPath)}. Original kept in takes.";
+        OnPropertyChanged(nameof(LastEffectChain));
+        OnPropertyChanged(nameof(VisualPaintingSignal));
+        message = $"{slot.Name} chain: {preset.Description}";
+        return true;
+    }
+
+    private LayerSlotItem? ResolveTargetLayer(AudioEditPreset preset)
+    {
+        if (!string.IsNullOrWhiteSpace(preset.TargetLayer))
+        {
+            var targeted = LayerSlots.FirstOrDefault(slot =>
+                slot.Name.Equals(preset.TargetLayer, StringComparison.OrdinalIgnoreCase));
+            if (targeted is not null)
+            {
+                return targeted;
+            }
+        }
+
+        if (ChatText.Contains("lane", StringComparison.OrdinalIgnoreCase)
+            || ChatText.Contains("stem", StringComparison.OrdinalIgnoreCase)
+            || ChatText.Contains("track", StringComparison.OrdinalIgnoreCase))
+        {
+            return SelectedLayerSlot;
+        }
+
+        return null;
     }
 
     private void AddCommandHistory(string command)
@@ -753,7 +863,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 HighShelfDb: 3.5,
                 CompressionAmount: 0.45,
                 ReverbMs: 95,
-                ReverbMix: 0.10);
+                ReverbMix: 0.10,
+                TargetLayer: "Vocal");
             return true;
         }
 
@@ -808,14 +919,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         if (text.Contains("drum") || text.Contains("kick") || text.Contains("snare"))
         {
+            var warm = text.Contains("warm") || text.Contains("round") || text.Contains("less harsh");
             preset = new AudioEditPreset(
-                "drums-punch",
-                "Drums punch: low-end weight, transient-style compression, light saturation.",
-                Gain: 1.45,
-                LowShelfDb: 4,
-                HighShelfDb: 1.5,
-                CompressionAmount: 0.65,
-                SaturationAmount: 0.18);
+                warm ? "drums-warmer" : "drums-punch",
+                warm
+                    ? "Drums warmer: more body, softer top, controlled punch."
+                    : "Drums punch: low-end weight, transient-style compression, light saturation.",
+                Gain: warm ? 1.35 : 1.45,
+                LowShelfDb: warm ? 3.5 : 4,
+                HighShelfDb: warm ? -1.2 : 1.5,
+                CompressionAmount: warm ? 0.48 : 0.65,
+                SaturationAmount: warm ? 0.12 : 0.18,
+                TargetLayer: "Drums");
             return true;
         }
 
@@ -826,22 +941,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 "Piano bright: cleanup low rumble, presence lift, soft compression.",
                 Gain: 1.25,
                 HighPassHz: 70,
-                HighShelfDb: 3,
-                CompressionAmount: 0.25);
+                HighShelfDb: text.Contains("warm") ? -0.8 : 3,
+                CompressionAmount: 0.25,
+                ReverbMs: text.Contains("room") || text.Contains("wide") ? 150 : 0,
+                ReverbMix: text.Contains("room") || text.Contains("wide") ? 0.10 : 0,
+                TargetLayer: "Piano");
             return true;
         }
 
         if (text.Contains("acoustic") || text.Contains("guitar"))
         {
             preset = new AudioEditPreset(
-                "acoustic-warm",
-                "Acoustic warm: body lift, harsh top trimmed, small room glue.",
+                text.Contains("wide") ? "guitar-wide" : "acoustic-warm",
+                text.Contains("wide")
+                    ? "Guitar wide: warm body, short delay, small room."
+                    : "Acoustic warm: body lift, harsh top trimmed, small room glue.",
                 Gain: 1.35,
                 LowShelfDb: 2.8,
                 HighShelfDb: -1.8,
                 CompressionAmount: 0.22,
-                ReverbMs: 120,
-                ReverbMix: 0.08);
+                ReverbMs: text.Contains("wide") ? 170 : 120,
+                ReverbMix: text.Contains("wide") ? 0.12 : 0.08,
+                EchoMs: text.Contains("wide") ? 95 : 0,
+                EchoMix: text.Contains("wide") ? 0.06 : 0,
+                TargetLayer: "Guitar");
             return true;
         }
 
@@ -993,6 +1116,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == CurrentFilePath) ?? Versions.FirstOrDefault();
         OnPropertyChanged(nameof(CurrentFileLabel));
         OnPropertyChanged(nameof(VersionListHint));
+        OnPropertyChanged(nameof(VisualPaintingSignal));
     }
 
     private void ReplaceLayerSlot(int number, LayerSlotItem updated)
@@ -1005,6 +1129,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         OnPropertyChanged(nameof(LayerDeckSummary));
+        OnPropertyChanged(nameof(LastEffectChain));
+        OnPropertyChanged(nameof(VisualPaintingSignal));
     }
 
     private void AutoAssignActiveCapture(string path)
@@ -1077,6 +1203,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(LastStemExportLabel));
     }
+
+    partial void OnSelectedLayerSlotChanged(LayerSlotItem? value)
+    {
+        OnPropertyChanged(nameof(LastEffectChain));
+    }
 }
 
 public sealed record LayerSlotItem(
@@ -1084,4 +1215,5 @@ public sealed record LayerSlotItem(
     string Name,
     string Path = "",
     string FileName = "Empty",
-    string Status = "Empty");
+    string Status = "Empty",
+    string EffectChain = "");

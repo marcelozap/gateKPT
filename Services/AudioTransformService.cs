@@ -198,7 +198,8 @@ public sealed record AudioEditPreset(
     double EchoMs = 0,
     double EchoMix = 0,
     double ReverbMs = 0,
-    double ReverbMix = 0)
+    double ReverbMix = 0,
+    string TargetLayer = "")
 {
     public static AudioEditPreset Flat(string label, string description) => new(label, description);
 }
