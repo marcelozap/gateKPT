@@ -136,17 +136,17 @@ public sealed class LayerRecordingService : IDisposable
 
     private static IWaveIn? CreateCapture(string preferredInput, out string deviceName, out string backend)
     {
+        var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
+        if (waveIn is not null)
+        {
+            backend = "WaveIn stereo";
+            return waveIn;
+        }
+
         using var enumerator = new MMDeviceEnumerator();
         var device = FindInputDevice(enumerator, preferredInput);
         if (device is null)
         {
-            var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
-            if (waveIn is not null)
-            {
-                backend = "WaveIn";
-                return waveIn;
-            }
-
             backend = "";
             return null;
         }
