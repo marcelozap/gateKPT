@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace GateKPT.MusicOS.Services;
 
@@ -23,6 +24,8 @@ public sealed class RecorderVersionStore
     public string StemsDirectory => Path.Combine(RootDirectory, "stems");
 
     public string TrashDirectory => Path.Combine(RootDirectory, "trash");
+
+    public string LayerDeckPath => Path.Combine(RootDirectory, "layer-deck.json");
 
     public IReadOnlyList<RecorderVersionFile> ListVersions() =>
         Directory.Exists(TakesDirectory)
@@ -119,6 +122,34 @@ public sealed class RecorderVersionStore
         return target;
     }
 
+    public IReadOnlyList<StoredLayerSlot> LoadLayerDeck()
+    {
+        try
+        {
+            if (!File.Exists(LayerDeckPath))
+            {
+                return [];
+            }
+
+            var json = File.ReadAllText(LayerDeckPath);
+            return JsonSerializer.Deserialize<List<StoredLayerSlot>>(json) ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    public void SaveLayerDeck(IEnumerable<StoredLayerSlot> slots)
+    {
+        Directory.CreateDirectory(RootDirectory);
+        var json = JsonSerializer.Serialize(slots, new JsonSerializerOptions
+        {
+            WriteIndented = true
+        });
+        File.WriteAllText(LayerDeckPath, json);
+    }
+
     private static string FormatFileSize(long bytes)
     {
         if (bytes >= 1024 * 1024)
@@ -131,3 +162,11 @@ public sealed class RecorderVersionStore
 }
 
 public sealed record RecorderVersionFile(string Name, string Path, string Size, string Modified);
+
+public sealed record StoredLayerSlot(
+    int Number,
+    string Name,
+    string Path,
+    string FileName,
+    string Status,
+    string EffectChain);

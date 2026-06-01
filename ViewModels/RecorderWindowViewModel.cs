@@ -202,6 +202,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshVersions();
+        RestoreLayerDeck();
     }
 
     [RelayCommand]
@@ -622,6 +623,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         OnPropertyChanged(nameof(LayerDeckSummary));
+        PersistLayerDeck();
         Status = "Layer deck cleared. Takes are still saved in Versions.";
     }
 
@@ -683,6 +685,32 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase))
         {
             ExportLayerMix();
+            return;
+        }
+
+        if (command.Contains("play deck", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("play stack", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("play layers", StringComparison.OrdinalIgnoreCase))
+        {
+            PlayLayerDeck();
+            return;
+        }
+
+        if (command.Contains("stop deck", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("stop stack", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("stop layers", StringComparison.OrdinalIgnoreCase))
+        {
+            StopPlayback();
+            CommandResult = "Layer deck stopped.";
+            return;
+        }
+
+        if (command.Contains("assign", StringComparison.OrdinalIgnoreCase)
+            && (command.Contains("lane", StringComparison.OrdinalIgnoreCase)
+                || command.Contains("layer", StringComparison.OrdinalIgnoreCase)
+                || command.Contains("stem", StringComparison.OrdinalIgnoreCase)))
+        {
+            AssignSelectedToNextLayer();
             return;
         }
 
@@ -756,7 +784,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var newPath = _versions.CreateVersionPath(preset.Label, ".wav");
-        if (TryCreateLayerEditCopy(preset, out var layerResult))
+        if (TryCreateLayerEditCopy(preset, sourcePath, out var layerResult))
         {
             CommandResult = layerResult;
             return;
@@ -783,17 +811,27 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VisualPaintingSignal));
     }
 
-    private bool TryCreateLayerEditCopy(AudioEditPreset preset, out string message)
+    private bool TryCreateLayerEditCopy(AudioEditPreset preset, string fallbackSourcePath, out string message)
     {
         message = "";
         var slot = ResolveTargetLayer(preset);
-        if (slot is null || string.IsNullOrWhiteSpace(slot.Path) || !File.Exists(slot.Path))
+        if (slot is null)
         {
             return false;
         }
 
+        var sourcePath = !string.IsNullOrWhiteSpace(slot.Path) && File.Exists(slot.Path)
+            ? slot.Path
+            : fallbackSourcePath;
+        if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+        {
+            message = $"No source take for {slot.Name}. Record/select a take first.";
+            Status = message;
+            return true;
+        }
+
         var newPath = _versions.CreateVersionPath($"{slot.Name}-{preset.Label}", ".wav");
-        var result = _transforms.CreatePresetCopy(slot.Path, newPath, preset);
+        var result = _transforms.CreatePresetCopy(sourcePath, newPath, preset);
         if (!result.Success || !File.Exists(newPath))
         {
             message = $"Could not process {slot.Name}: {result.Message}";
@@ -1131,6 +1169,47 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LayerDeckSummary));
         OnPropertyChanged(nameof(LastEffectChain));
         OnPropertyChanged(nameof(VisualPaintingSignal));
+        PersistLayerDeck();
+    }
+
+    private void RestoreLayerDeck()
+    {
+        var stored = _versions.LoadLayerDeck();
+        foreach (var saved in stored)
+        {
+            if (string.IsNullOrWhiteSpace(saved.Path) || !File.Exists(saved.Path))
+            {
+                continue;
+            }
+
+            var slot = LayerSlots.FirstOrDefault(item => item.Number == saved.Number);
+            if (slot is null)
+            {
+                continue;
+            }
+
+            ReplaceLayerSlot(saved.Number, slot with
+            {
+                Path = saved.Path,
+                FileName = string.IsNullOrWhiteSpace(saved.FileName) ? Path.GetFileName(saved.Path) : saved.FileName,
+                Status = string.IsNullOrWhiteSpace(saved.Status) ? "Loaded" : saved.Status,
+                EffectChain = saved.EffectChain
+            });
+        }
+
+        OnPropertyChanged(nameof(LayerDeckSummary));
+        OnPropertyChanged(nameof(VisualPaintingSignal));
+    }
+
+    private void PersistLayerDeck()
+    {
+        _versions.SaveLayerDeck(LayerSlots.Select(slot => new StoredLayerSlot(
+            slot.Number,
+            slot.Name,
+            slot.Path,
+            slot.FileName,
+            slot.Status,
+            slot.EffectChain)));
     }
 
     private void AutoAssignActiveCapture(string path)

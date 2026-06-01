@@ -60,9 +60,20 @@ public sealed class BackendSelfTestService
             .ToList();
         Require(exported.Count == stems.Length && exported.All(File.Exists), "exported separate stems", failures);
 
+        versions.SaveLayerDeck([
+            new StoredLayerSlot(1, "Drums", edited, Path.GetFileName(edited), "Edited", "Self-test warmer copy."),
+            new StoredLayerSlot(2, "Guitar", stems[1], Path.GetFileName(stems[1]), "Loaded", "")
+        ]);
+        var restoredDeck = versions.LoadLayerDeck();
+        Require(
+            restoredDeck.Count == 2
+            && restoredDeck.Any(slot => slot.Name == "Drums" && slot.Path == edited && slot.Status == "Edited"),
+            "saved and restored layer deck memory",
+            failures);
+
         if (failures.Count == 0)
         {
-            output.WriteLine("PASS: recording file pipeline, edit copies, mix export, and stem export are functional.");
+            output.WriteLine("PASS: recording file pipeline, edit copies, mix export, stem export, and layer deck memory are functional.");
             output.WriteLine($"Stem export folder: {exportDirectory}");
             return 0;
         }
