@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,16 +11,13 @@ namespace GateKPT.MusicOS.Services;
 public sealed class LayerRecordingService : IDisposable
 {
     private readonly object _gate = new();
-    private IWaveIn? _capture;
-    private WaveFileWriter? _writer;
+    private readonly List<ActiveCapture> _captures = [];
     private Stopwatch? _clock;
     private string _activePath = "";
+    private string _candidateDirectory = "";
     private float _peak;
-    private double _sumSquares;
-    private long _sampleCount;
-    private long _bytesWritten;
 
-    public bool IsRecording => _capture is not null;
+    public bool IsRecording => _captures.Count > 0;
 
     public LayerRecordingStartResult Start(
         string preferredInput,
@@ -32,129 +30,205 @@ public sealed class LayerRecordingService : IDisposable
         try
         {
             Directory.CreateDirectory(stemDirectory);
-            var capture = CreateCapture(preferredInput, out var deviceName, out var backend);
-            if (capture is null)
+            _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
+            _candidateDirectory = Path.Combine(
+                Path.GetDirectoryName(stemDirectory) ?? stemDirectory,
+                "capture-candidates",
+                DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+            Directory.CreateDirectory(_candidateDirectory);
+            _peak = 0;
+
+            foreach (var candidate in CreateCaptureCandidates(preferredInput))
             {
-                return new LayerRecordingStartResult(false, "", "No active audio input matched the preferred routing.");
+                TryStartCandidate(candidate, layerName, onPeakPercent);
             }
 
-            _activePath = AutoSaveFileNamer.CreatePath(stemDirectory, layerName, ".wav");
-            _peak = 0;
-            _sumSquares = 0;
-            _sampleCount = 0;
-            _bytesWritten = 0;
-            _capture = capture;
-            _writer = new WaveFileWriter(_activePath, _capture.WaveFormat);
-            _clock = Stopwatch.StartNew();
-            _capture.DataAvailable += (_, args) =>
+            if (_captures.Count == 0)
             {
-                lock (_gate)
-                {
-                    _writer?.Write(args.Buffer, 0, args.BytesRecorded);
-                    _writer?.Flush();
-                    _bytesWritten += args.BytesRecorded;
-                    var stats = CalculateStats(args.Buffer, args.BytesRecorded, _capture.WaveFormat);
-                    _peak = Math.Max(_peak, stats.Peak);
-                    _sumSquares += stats.SumSquares;
-                    _sampleCount += stats.SampleCount;
-                    onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
-                }
-            };
-            _capture.StartRecording();
+                ResetState();
+                return new LayerRecordingStartResult(false, "", "No capture backend started. GateKPT did not record.");
+            }
 
-            return new LayerRecordingStartResult(true, _activePath, $"Recording {layerName} from {deviceName} via {backend}");
+            _clock = Stopwatch.StartNew();
+            return new LayerRecordingStartResult(
+                true,
+                _activePath,
+                $"Recording {layerName} with {_captures.Count} capture path(s): {string.Join(", ", _captures.Select(capture => capture.Backend))}");
         }
         catch (Exception ex)
         {
             Stop();
-            return new LayerRecordingStartResult(false, "", $"Could not start layer recording: {ex.Message}");
+            return new LayerRecordingStartResult(false, "", $"Could not start recording: {ex.Message}");
         }
     }
 
     public LayerRecordingStopResult Stop()
     {
-        if (_capture is null && _writer is null)
+        if (_captures.Count == 0)
         {
-            return new LayerRecordingStopResult(false, "", "00:00", 0, 0, "No active layer recording.");
+            return new LayerRecordingStopResult(false, "", "00:00", 0, 0, "No active recording.");
         }
 
-        var path = _activePath;
         var elapsed = _clock?.Elapsed ?? TimeSpan.Zero;
-        var peakPercent = Math.Round(_peak * 100, 1);
-        var rmsPercent = Math.Round(CalculateRmsPercent(_sumSquares, _sampleCount), 2);
-        var bytesWritten = _bytesWritten;
+        var path = _activePath;
+        var captures = _captures.ToList();
 
-        try
+        foreach (var capture in captures)
         {
-            _capture?.StopRecording();
-        }
-        catch
-        {
-            // Device may already be disconnected; keep the partial WAV if it exists.
+            try
+            {
+                capture.Input.StopRecording();
+            }
+            catch
+            {
+                // Keep whatever was written; this is a defensive recorder.
+            }
         }
 
         lock (_gate)
         {
-            _writer?.Dispose();
-            _writer = null;
+            foreach (var capture in captures)
+            {
+                capture.Writer.Dispose();
+                capture.Input.Dispose();
+            }
+
+            _captures.Clear();
         }
 
-        _capture?.Dispose();
-        _capture = null;
         _clock = null;
         _activePath = "";
+        _candidateDirectory = "";
         _peak = 0;
-        _sumSquares = 0;
-        _sampleCount = 0;
-        _bytesWritten = 0;
 
-        if (File.Exists(path) && (elapsed.TotalSeconds < 0.75 || bytesWritten < 4096 || peakPercent < 0.05 || rmsPercent < 0.05))
+        var best = captures
+            .Where(capture => File.Exists(capture.Path))
+            .Select(capture => capture with { RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount) })
+            .OrderByDescending(capture => capture.RmsPercent)
+            .ThenByDescending(capture => capture.Peak * 100)
+            .ThenByDescending(capture => capture.BytesWritten)
+            .FirstOrDefault();
+
+        if (best is null || !File.Exists(best.Path))
         {
-            return new LayerRecordingStopResult(
-                false,
-                path,
-                $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}",
-                peakPercent,
-                rmsPercent,
-                $"Silent take rejected. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%. Check signal first, then record while sound is playing.");
+            return new LayerRecordingStopResult(false, "", FormatElapsed(elapsed), 0, 0, "No recording file was written.");
         }
 
+        var peakPercent = Math.Round(best.Peak * 100, 1);
+        var rmsPercent = Math.Round(best.RmsPercent, 2);
+
+        if (elapsed.TotalSeconds < 0.75 || best.BytesWritten < 4096 || peakPercent < 0.05 || rmsPercent < 0.05)
+        {
+            MoveCandidatesToArchive(captures, "rejected-captures");
+            return new LayerRecordingStopResult(
+                false,
+                best.Path,
+                FormatElapsed(elapsed),
+                peakPercent,
+                rmsPercent,
+                $"Rejected: no usable audio. Best path was {best.Backend}, peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%.");
+        }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        File.Move(best.Path, path);
+        MoveCandidatesToArchive(captures.Where(capture => capture.Path != best.Path), "rejected-captures");
+
         return new LayerRecordingStopResult(
-            File.Exists(path),
+            true,
             path,
-            $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}",
+            FormatElapsed(elapsed),
             peakPercent,
             rmsPercent,
-            File.Exists(path)
-                ? rmsPercent < 0.5
-                    ? $"Saved low-signal stem: {path}. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%. Turn up Scarlett/RC-505 input if playback is quiet."
-                    : $"Saved stem: {path}. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%."
-                : "Recording stopped before a stem file was written.");
+            $"Saved from {best.Backend}. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%.");
     }
 
     public void Dispose() => Stop();
 
-    private static IWaveIn? CreateCapture(string preferredInput, out string deviceName, out string backend)
+    private void TryStartCandidate(CaptureCandidate candidate, string layerName, Action<double>? onPeakPercent)
     {
-        var waveIn = CreateWaveInCapture(preferredInput, out deviceName);
+        try
+        {
+            var path = AutoSaveFileNamer.CreatePath(
+                _candidateDirectory,
+                $"{layerName}-{SanitizeShort(candidate.Backend)}",
+                ".wav");
+            var writer = new WaveFileWriter(path, candidate.Input.WaveFormat);
+            var active = new ActiveCapture(
+                candidate.Input,
+                writer,
+                path,
+                candidate.DeviceName,
+                candidate.Backend,
+                0,
+                0,
+                0,
+                0);
+
+            candidate.Input.DataAvailable += (_, args) =>
+            {
+                lock (_gate)
+                {
+                    var index = _captures.IndexOf(active);
+                    if (index < 0)
+                    {
+                        return;
+                    }
+
+                    writer.Write(args.Buffer, 0, args.BytesRecorded);
+                    writer.Flush();
+                    var stats = CalculateStats(args.Buffer, args.BytesRecorded, candidate.Input.WaveFormat);
+                    var updated = _captures[index] with
+                    {
+                        Peak = Math.Max(_captures[index].Peak, stats.Peak),
+                        SumSquares = _captures[index].SumSquares + stats.SumSquares,
+                        SampleCount = _captures[index].SampleCount + stats.SampleCount,
+                        BytesWritten = _captures[index].BytesWritten + args.BytesRecorded
+                    };
+                    _captures[index] = updated;
+                    _peak = Math.Max(_peak, updated.Peak);
+                    onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
+                }
+            };
+
+            candidate.Input.StartRecording();
+            _captures.Add(active);
+        }
+        catch
+        {
+            candidate.Input.Dispose();
+        }
+    }
+
+    private static IReadOnlyList<CaptureCandidate> CreateCaptureCandidates(string preferredInput)
+    {
+        var candidates = new List<CaptureCandidate>();
+        var waveIn = CreateWaveInCapture(preferredInput, out var waveName);
         if (waveIn is not null)
         {
-            backend = "WaveIn stereo";
-            return waveIn;
+            candidates.Add(new CaptureCandidate(waveIn, waveName, "WaveIn stereo"));
         }
 
-        using var enumerator = new MMDeviceEnumerator();
-        var device = FindInputDevice(enumerator, preferredInput);
-        if (device is null)
+        try
         {
-            backend = "";
-            return null;
+            using var enumerator = new MMDeviceEnumerator();
+            var device = FindInputDevice(enumerator, preferredInput);
+            if (device is not null)
+            {
+                PrepareInputVolume(device);
+                candidates.Add(new CaptureCandidate(new WasapiCapture(device), device.FriendlyName, "WASAPI raw"));
+            }
+        }
+        catch
+        {
+            // WaveIn is usually enough; WASAPI is a fallback candidate.
         }
 
-        PrepareInputVolume(device);
-        deviceName = device.FriendlyName;
-        backend = "WASAPI explicit";
-        return new WasapiCapture(device);
+        return candidates;
     }
 
     private static IWaveIn? CreateWaveInCapture(string preferredInput, out string deviceName)
@@ -168,8 +242,7 @@ public sealed class LayerRecordingService : IDisposable
         var selectedIndex = -1;
         for (var index = 0; index < WaveInEvent.DeviceCount; index++)
         {
-            var capabilities = WaveInEvent.GetCapabilities(index);
-            var name = capabilities.ProductName;
+            var name = WaveInEvent.GetCapabilities(index).ProductName;
             if (MatchesPreferredInput(name, preferredInput))
             {
                 selectedIndex = index;
@@ -182,8 +255,7 @@ public sealed class LayerRecordingService : IDisposable
         {
             for (var index = 0; index < WaveInEvent.DeviceCount; index++)
             {
-                var capabilities = WaveInEvent.GetCapabilities(index);
-                var name = capabilities.ProductName;
+                var name = WaveInEvent.GetCapabilities(index).ProductName;
                 if (IsLikelyMusicInput(name))
                 {
                     selectedIndex = index;
@@ -203,7 +275,7 @@ public sealed class LayerRecordingService : IDisposable
         {
             DeviceNumber = selectedIndex,
             WaveFormat = new WaveFormat(44100, 16, 2),
-            BufferMilliseconds = 50
+            BufferMilliseconds = 35
         };
     }
 
@@ -217,8 +289,7 @@ public sealed class LayerRecordingService : IDisposable
 
         if (!string.IsNullOrWhiteSpace(preferredInput))
         {
-            var preferred = devices.FirstOrDefault(device =>
-                MatchesPreferredInput(device.FriendlyName, preferredInput));
+            var preferred = devices.FirstOrDefault(device => MatchesPreferredInput(device.FriendlyName, preferredInput));
             if (preferred is not null)
             {
                 return preferred;
@@ -233,12 +304,33 @@ public sealed class LayerRecordingService : IDisposable
             }
         }
 
-        return devices.FirstOrDefault(device =>
-                device.FriendlyName.Contains("focusrite", StringComparison.OrdinalIgnoreCase)
-                || device.FriendlyName.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
-                || device.FriendlyName.Contains("rc-505", StringComparison.OrdinalIgnoreCase)
-                || device.FriendlyName.Contains("boss", StringComparison.OrdinalIgnoreCase))
-            ?? devices[0];
+        return devices.FirstOrDefault(device => IsLikelyMusicInput(device.FriendlyName)) ?? devices[0];
+    }
+
+    private static void MoveCandidatesToArchive(IEnumerable<ActiveCapture> captures, string archiveName)
+    {
+        foreach (var capture in captures)
+        {
+            if (!File.Exists(capture.Path))
+            {
+                continue;
+            }
+
+            var root = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(capture.Path) ?? "") ?? "")
+                ?? Path.GetDirectoryName(capture.Path)
+                ?? ".";
+            var archive = Path.Combine(root, archiveName);
+            Directory.CreateDirectory(archive);
+            var target = Path.Combine(archive, Path.GetFileName(capture.Path));
+            if (File.Exists(target))
+            {
+                target = Path.Combine(
+                    archive,
+                    $"{Path.GetFileNameWithoutExtension(capture.Path)}-{DateTime.Now:HHmmss}{Path.GetExtension(capture.Path)}");
+            }
+
+            File.Move(capture.Path, target);
+        }
     }
 
     private static bool MatchesPreferredInput(string deviceName, string preferredInput) =>
@@ -270,7 +362,7 @@ public sealed class LayerRecordingService : IDisposable
         }
         catch
         {
-            // Some drivers block software gain changes; hardware gain still controls the final level.
+            // Some drivers block software gain changes.
         }
     }
 
@@ -334,8 +426,42 @@ public sealed class LayerRecordingService : IDisposable
 
     private static double CalculateRmsPercent(double sumSquares, long sampleCount) =>
         sampleCount <= 0 ? 0 : Math.Sqrt(sumSquares / sampleCount) * 100;
+
+    private static string FormatElapsed(TimeSpan elapsed) =>
+        $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
+
+    private static string SanitizeShort(string value)
+    {
+        var safe = new string(value.Select(character => char.IsLetterOrDigit(character) ? character : '-').ToArray());
+        return safe.Length <= 32 ? safe : safe[..32];
+    }
+
+    private void ResetState()
+    {
+        _captures.Clear();
+        _clock = null;
+        _activePath = "";
+        _candidateDirectory = "";
+        _peak = 0;
+    }
 }
 
 public sealed record LayerRecordingStartResult(bool Success, string Path, string Message);
 
 public sealed record LayerRecordingStopResult(bool Success, string Path, string DurationLabel, double PeakPercent, double RmsPercent, string Message);
+
+internal sealed record CaptureCandidate(IWaveIn Input, string DeviceName, string Backend);
+
+internal sealed record ActiveCapture(
+    IWaveIn Input,
+    WaveFileWriter Writer,
+    string Path,
+    string DeviceName,
+    string Backend,
+    float Peak,
+    double SumSquares,
+    long SampleCount,
+    long BytesWritten)
+{
+    public double RmsPercent { get; init; }
+}
