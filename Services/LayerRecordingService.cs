@@ -105,7 +105,11 @@ public sealed class LayerRecordingService : IDisposable
         var best = captures
             .Where(capture => File.Exists(capture.Path))
             .Where(capture => GetAudioDurationSeconds(capture.Path) >= Math.Max(0.75, elapsed.TotalSeconds * 0.65))
-            .Select(capture => capture with { RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount) })
+            .Select(capture =>
+            {
+                capture.RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount);
+                return capture;
+            })
             .OrderByDescending(capture => capture.RmsPercent)
             .ThenByDescending(capture => capture.Peak * 100)
             .ThenByDescending(capture => capture.BytesWritten)
@@ -166,18 +170,13 @@ public sealed class LayerRecordingService : IDisposable
                 writer,
                 path,
                 candidate.DeviceName,
-                candidate.Backend,
-                0,
-                0,
-                0,
-                0);
+                candidate.Backend);
 
             candidate.Input.DataAvailable += (_, args) =>
             {
                 lock (_gate)
                 {
-                    var index = _captures.IndexOf(active);
-                    if (index < 0)
+                    if (!_captures.Contains(active))
                     {
                         return;
                     }
@@ -185,15 +184,11 @@ public sealed class LayerRecordingService : IDisposable
                     writer.Write(args.Buffer, 0, args.BytesRecorded);
                     writer.Flush();
                     var stats = CalculateStats(args.Buffer, args.BytesRecorded, candidate.Input.WaveFormat);
-                    var updated = _captures[index] with
-                    {
-                        Peak = Math.Max(_captures[index].Peak, stats.Peak),
-                        SumSquares = _captures[index].SumSquares + stats.SumSquares,
-                        SampleCount = _captures[index].SampleCount + stats.SampleCount,
-                        BytesWritten = _captures[index].BytesWritten + args.BytesRecorded
-                    };
-                    _captures[index] = updated;
-                    _peak = Math.Max(_peak, updated.Peak);
+                    active.Peak = Math.Max(active.Peak, stats.Peak);
+                    active.SumSquares += stats.SumSquares;
+                    active.SampleCount += stats.SampleCount;
+                    active.BytesWritten += args.BytesRecorded;
+                    _peak = Math.Max(_peak, active.Peak);
                     onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
                 }
             };
@@ -412,16 +407,30 @@ public sealed record LayerRecordingStopResult(bool Success, string Path, string 
 
 internal sealed record CaptureCandidate(IWaveIn Input, string DeviceName, string Backend);
 
-internal sealed record ActiveCapture(
-    IWaveIn Input,
-    WaveFileWriter Writer,
-    string Path,
-    string DeviceName,
-    string Backend,
-    float Peak,
-    double SumSquares,
-    long SampleCount,
-    long BytesWritten)
+internal sealed class ActiveCapture(
+    IWaveIn input,
+    WaveFileWriter writer,
+    string path,
+    string deviceName,
+    string backend)
 {
-    public double RmsPercent { get; init; }
+    public IWaveIn Input { get; } = input;
+
+    public WaveFileWriter Writer { get; } = writer;
+
+    public string Path { get; } = path;
+
+    public string DeviceName { get; } = deviceName;
+
+    public string Backend { get; } = backend;
+
+    public float Peak { get; set; }
+
+    public double SumSquares { get; set; }
+
+    public long SampleCount { get; set; }
+
+    public long BytesWritten { get; set; }
+
+    public double RmsPercent { get; set; }
 }

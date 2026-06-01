@@ -24,6 +24,12 @@ sealed class Program
             return;
         }
 
+        if (Array.Exists(args, arg => arg.Equals("--recording-smoke-test", StringComparison.OrdinalIgnoreCase)))
+        {
+            Environment.ExitCode = new RecordingSmokeTestCliService().Run(Console.Out);
+            return;
+        }
+
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
     }
