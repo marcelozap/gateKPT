@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 
@@ -10,6 +11,22 @@ namespace GateKPT.MusicOS.Services;
 public sealed class BuiltInLooperPlaybackService : IDisposable
 {
     private readonly Dictionary<int, PlaybackHandle> _playing = [];
+
+    public string DefaultOutputName
+    {
+        get
+        {
+            try
+            {
+                using var enumerator = new MMDeviceEnumerator();
+                return enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).FriendlyName;
+            }
+            catch
+            {
+                return "Windows default output";
+            }
+        }
+    }
 
     public LooperPlaybackResult PlayLoop(int trackNumber, string path, double volume)
     {
@@ -27,7 +44,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
             var loop = new LoopStream(reader);
-            var output = new WaveOutEvent();
+            var output = CreateOutput();
             output.Init(loop);
             output.Play();
             _playing[trackNumber] = new PlaybackHandle(reader, loop, output);
@@ -55,7 +72,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             {
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
-            var output = new WaveOutEvent();
+            var output = CreateOutput();
             output.Init(reader);
             output.Play();
             _playing[trackNumber] = new PlaybackHandle(reader, output);
@@ -80,7 +97,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Frequency = 440,
                 Gain = 0.22
             }.Take(TimeSpan.FromSeconds(1.2));
-            var output = new WaveOutEvent();
+            var output = CreateOutput();
             output.Init(signal);
             output.Play();
             _playing[99] = new PlaybackHandle(null, output);
@@ -124,9 +141,23 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
     public void Dispose() => StopAll();
 
-    private sealed class PlaybackHandle(AudioFileReader? reader, WaveOutEvent output) : IDisposable
+    private static IWavePlayer CreateOutput()
     {
-        public PlaybackHandle(AudioFileReader reader, LoopStream loop, WaveOutEvent output)
+        try
+        {
+            using var enumerator = new MMDeviceEnumerator();
+            var device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            return new WasapiOut(device, AudioClientShareMode.Shared, true, 100);
+        }
+        catch
+        {
+            return new WaveOutEvent();
+        }
+    }
+
+    private sealed class PlaybackHandle(AudioFileReader? reader, IWavePlayer output) : IDisposable
+    {
+        public PlaybackHandle(AudioFileReader reader, LoopStream loop, IWavePlayer output)
             : this(reader, output)
         {
             Loop = loop;

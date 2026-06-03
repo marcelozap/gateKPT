@@ -198,7 +198,7 @@
                                     FontSize="17"
                                     Background="#C6A96D"
                                     Foreground="#07110E"/>
-                            <Button Content="Open take"
+                            <Button Content="Play latest"
                                     Command="{Binding PlaySelectedCommand}"
                                     Padding="21,13"
                                     MinWidth="145"

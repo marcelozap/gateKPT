@@ -544,10 +544,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var metrics = AudioPreviewService.InspectMetrics(path);
         var result = _playback.PlayOnce(0, path, 100);
         Status = result.Success
-            ? $"Playing take inside GateKPT: {Path.GetFileName(path)}"
+            ? $"Playing latest inside GateKPT -> {_playback.DefaultOutputName}: {Path.GetFileName(path)}"
             : result.Message;
         CommandResult = result.Success
-            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%."
+            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {_playback.DefaultOutputName}."
             : result.Message;
     }
 
@@ -564,7 +564,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _playback.StopAll();
         var result = _playback.PlayTestTone();
         Status = result.Message;
-        CommandResult = result.Message;
+        CommandResult = $"{result.Message} Output: {_playback.DefaultOutputName}.";
     }
 
     [RelayCommand]
