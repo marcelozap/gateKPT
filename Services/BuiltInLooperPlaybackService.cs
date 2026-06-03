@@ -160,18 +160,19 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Gain = 0.45
             }.Take(TimeSpan.FromSeconds(1.5));
             WaveFileWriter.CreateWaveFile16(path, signal);
+            var chrome = StartBrowserAudio(path);
+            if (chrome.Success)
+            {
+                return new LooperPlaybackResult(true, "Opened speaker test WAV in Chrome.");
+            }
+
             var ffplay = StartFfplay(path);
             if (ffplay.Success)
             {
                 return new LooperPlaybackResult(true, "Playing speaker test with ffplay.");
             }
 
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = path,
-                UseShellExecute = true
-            });
-            return new LooperPlaybackResult(true, "Opened speaker test in Windows player.");
+            return new LooperPlaybackResult(false, "Could not start Chrome or ffplay for the speaker test.");
         }
         catch (Exception ex)
         {
@@ -188,16 +189,56 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 return new LooperPlaybackResult(false, "No audio file selected.");
             }
 
+            var chrome = StartBrowserAudio(path);
+            if (chrome.Success)
+            {
+                return new LooperPlaybackResult(true, $"Opened WAV in Chrome: {Path.GetFileName(path)}");
+            }
+
             Process.Start(new ProcessStartInfo
             {
-                FileName = path,
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{path}\"",
                 UseShellExecute = true
             });
-            return new LooperPlaybackResult(true, $"Opened in Windows player: {Path.GetFileName(path)}");
+            return new LooperPlaybackResult(true, $"Selected WAV in folder: {Path.GetFileName(path)}");
         }
         catch (Exception ex)
         {
             return new LooperPlaybackResult(false, $"Could not open audio in Windows player: {ex.Message}");
+        }
+    }
+
+    private static LooperPlaybackResult StartBrowserAudio(string path)
+    {
+        try
+        {
+            var uri = new Uri(path).AbsoluteUri;
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "chrome.exe",
+                Arguments = $"\"{uri}\"",
+                UseShellExecute = true
+            });
+            return new LooperPlaybackResult(true, "Chrome started.");
+        }
+        catch
+        {
+            try
+            {
+                var uri = new Uri(path).AbsoluteUri;
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "msedge.exe",
+                    Arguments = $"\"{uri}\"",
+                    UseShellExecute = true
+                });
+                return new LooperPlaybackResult(true, "Edge started.");
+            }
+            catch (Exception ex)
+            {
+                return new LooperPlaybackResult(false, ex.Message);
+            }
         }
     }
 
