@@ -68,10 +68,10 @@ public sealed class RecordingSmokeTestCliService
         }
 
         var repaired = AudioPreviewService.InspectMetrics(repair.Path);
-        output.WriteLine($"Playable: duration={repaired.Duration:mm\\:ss}, peak={repaired.PeakPercent:0.0}%, waveform={repaired.Waveform}");
-        if (!repaired.Success || repaired.Duration.TotalSeconds < 0.75 || repaired.PeakPercent < 0.1)
+        output.WriteLine($"Playable: duration={repaired.Duration:mm\\:ss}, peak={repaired.PeakPercent:0.0}%, RMS={repaired.RmsPercent:0.00}%, waveform={repaired.Waveform}");
+        if (!repaired.Success || repaired.Duration.TotalSeconds < 0.75 || repaired.PeakPercent < 1.5 || repaired.RmsPercent < 0.25)
         {
-            output.WriteLine("FAIL: repaired take is still blank or unreadable.");
+            output.WriteLine("FAIL: repaired take does not contain enough sustained signal.");
             return 7;
         }
 

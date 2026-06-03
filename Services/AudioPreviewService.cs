@@ -28,6 +28,8 @@ public static class AudioPreviewService
         {
             using var reader = new AudioFileReader(path);
             var peak = 0f;
+            var sumSquares = 0d;
+            var sampleCount = 0L;
             var binPeaks = new float[Math.Max(4, bins)];
             var buffer = new float[Math.Max(reader.WaveFormat.SampleRate / 5, 4096)];
             var totalSamples = Math.Max(1, reader.Length / Math.Max(1, sizeof(float)));
@@ -37,18 +39,23 @@ public static class AudioPreviewService
             {
                 for (var index = 0; index < read; index++)
                 {
-                    var value = Math.Abs(buffer[index]);
+                    var sample = float.IsFinite(buffer[index]) ? buffer[index] : 0;
+                    var value = Math.Abs(sample);
                     peak = Math.Max(peak, value);
+                    sumSquares += sample * sample;
+                    sampleCount++;
                     var bin = (int)Math.Clamp(samplesReadTotal * binPeaks.Length / totalSamples, 0, binPeaks.Length - 1);
                     binPeaks[bin] = Math.Max(binPeaks[bin], value);
                     samplesReadTotal++;
                 }
             }
 
+            var rms = sampleCount <= 0 ? 0 : Math.Sqrt(sumSquares / sampleCount);
             return new AudioPreviewMetrics(
                 true,
                 reader.TotalTime,
                 Math.Clamp(peak * 100, 0, 100),
+                Math.Clamp(rms * 100, 0, 100),
                 BuildWaveform(binPeaks));
         }
         catch
@@ -81,7 +88,7 @@ public sealed record AudioPreview(string Duration, string Peak, string Waveform)
     public static AudioPreview Empty { get; } = new("--:--", "-", "________________");
 }
 
-public sealed record AudioPreviewMetrics(bool Success, TimeSpan Duration, double PeakPercent, string Waveform)
+public sealed record AudioPreviewMetrics(bool Success, TimeSpan Duration, double PeakPercent, double RmsPercent, string Waveform)
 {
-    public static AudioPreviewMetrics Empty { get; } = new(false, TimeSpan.Zero, 0, "________________");
+    public static AudioPreviewMetrics Empty { get; } = new(false, TimeSpan.Zero, 0, 0, "________________");
 }

@@ -7,6 +7,10 @@ namespace GateKPT.MusicOS.Services;
 
 public sealed class PlayableTakeRepairService
 {
+    private const float MinimumUsablePeak = 0.015f;
+    private const float MinimumUsableRms = 0.0025f;
+    private const float MaximumCleanGain = 4f;
+
     public PlayableTakeRepairResult RepairToPlayableStereo(string sourcePath)
     {
         if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
@@ -27,22 +31,25 @@ public sealed class PlayableTakeRepairService
                 return new PlayableTakeRepairResult(false, sourcePath, $"Recorded fragment was too short ({stats.DurationSeconds:0.00}s). Refused to call it a take.");
             }
 
-            var selected = stats.Channels
-                .Where(channel => channel.Rms > 0.0005f && channel.Rms < 0.25f && channel.Peak < 0.95f)
-                .OrderByDescending(channel => channel.Rms)
-                .FirstOrDefault();
+            var usableChannels = stats.Channels
+                .Where(IsUsableSignal)
+                .OrderBy(channel => channel.Index)
+                .ToArray();
 
-            if (selected is null)
+            if (usableChannels.Length == 0)
             {
-                selected = stats.Channels
-                    .Where(channel => channel.Rms > 0.0005f && channel.Rms < 0.35f)
-                    .OrderByDescending(channel => channel.Rms)
-                    .FirstOrDefault()
-                    ?? stats.Channels.OrderByDescending(channel => channel.Rms).First();
+                var strongest = stats.Channels.OrderByDescending(channel => channel.Rms).First();
+                return new PlayableTakeRepairResult(
+                    false,
+                    sourcePath,
+                    $"No real input signal found. Strongest channel {strongest.Index + 1}: peak {strongest.Peak * 100:0.0}%, RMS {strongest.Rms * 100:0.00}%.");
             }
 
             var cleanPath = BuildCleanPath(sourcePath);
-            WriteCleanStereoCopy(sourcePath, cleanPath, selected.Index, selected.Peak);
+            var routing = BuildStereoRouting(stats.Channels, usableChannels);
+            var sourcePeak = Math.Max(routing.Left.Peak, routing.Right.Peak);
+            var gain = sourcePeak > 0.001f ? Math.Min(MaximumCleanGain, 0.70f / sourcePeak) : 1f;
+            WriteCleanStereoCopy(sourcePath, cleanPath, routing.Left.Index, routing.Right.Index, gain);
 
             var rawDirectory = Path.Combine(
                 Path.GetDirectoryName(Path.GetDirectoryName(sourcePath)) ?? Path.GetDirectoryName(sourcePath)!,
@@ -59,12 +66,13 @@ public sealed class PlayableTakeRepairService
             File.Move(sourcePath, rawPath);
             File.Move(cleanPath, sourcePath);
 
-            var rmsPercent = selected.Rms * 100;
-            var peakPercent = selected.Peak * 100;
+            var leftRms = routing.Left.Rms * 100;
+            var rightRms = routing.Right.Rms * 100;
+            var peakPercent = sourcePeak * 100;
             return new PlayableTakeRepairResult(
                 true,
                 sourcePath,
-                $"Playable take repaired from channel {selected.Index + 1}. Duration {stats.DurationSeconds:0.0}s. Peak {peakPercent:0.0}%, RMS {rmsPercent:0.00}%. Raw capture archived.");
+                $"Playable stereo take verified. Duration {stats.DurationSeconds:0.0}s. Input L ch {routing.Left.Index + 1} RMS {leftRms:0.00}%, R ch {routing.Right.Index + 1} RMS {rightRms:0.00}%, peak {peakPercent:0.0}%. Raw capture archived.");
         }
         catch (Exception ex)
         {
@@ -104,11 +112,40 @@ public sealed class PlayableTakeRepairService
                 .ToArray());
     }
 
-    private static void WriteCleanStereoCopy(string sourcePath, string cleanPath, int sourceChannel, float sourcePeak)
+    private static bool IsUsableSignal(AudioChannelStats channel) =>
+        channel.Peak >= MinimumUsablePeak && channel.Rms >= MinimumUsableRms && channel.Peak < 0.98f && channel.Rms < 0.35f;
+
+    private static StereoRouting BuildStereoRouting(AudioChannelStats[] allChannels, AudioChannelStats[] usableChannels)
+    {
+        if (usableChannels.Length >= 2)
+        {
+            return new StereoRouting(usableChannels[0], usableChannels[1]);
+        }
+
+        var strongest = usableChannels[0];
+        if (allChannels.Length >= 2)
+        {
+            var partner = allChannels
+                .Where(channel => channel.Index != strongest.Index)
+                .Where(IsUsableSignal)
+                .OrderByDescending(channel => channel.Rms)
+                .FirstOrDefault();
+
+            if (partner is not null)
+            {
+                return strongest.Index < partner.Index
+                    ? new StereoRouting(strongest, partner)
+                    : new StereoRouting(partner, strongest);
+            }
+        }
+
+        return new StereoRouting(strongest, strongest);
+    }
+
+    private static void WriteCleanStereoCopy(string sourcePath, string cleanPath, int leftChannel, int rightChannel, float gain)
     {
         using var reader = new AudioFileReader(sourcePath);
         var channels = Math.Max(1, reader.WaveFormat.Channels);
-        var gain = sourcePeak > 0.001f ? Math.Min(12f, 0.82f / sourcePeak) : 1f;
         var outputFormat = new WaveFormat(reader.WaveFormat.SampleRate, 16, 2);
         using var writer = new WaveFileWriter(cleanPath, outputFormat);
         var readBuffer = new float[Math.Max(4096, reader.WaveFormat.SampleRate * channels / 2)];
@@ -120,18 +157,29 @@ public sealed class PlayableTakeRepairService
             var outputIndex = 0;
             for (var frame = 0; frame < frames; frame++)
             {
-                var sampleIndex = frame * channels + Math.Clamp(sourceChannel, 0, channels - 1);
-                var sample = float.IsFinite(readBuffer[sampleIndex]) ? readBuffer[sampleIndex] * gain : 0;
-                var pcm = (short)Math.Clamp(sample * short.MaxValue, short.MinValue, short.MaxValue);
-                writeBuffer[outputIndex++] = (byte)(pcm & 0xff);
-                writeBuffer[outputIndex++] = (byte)((pcm >> 8) & 0xff);
-                writeBuffer[outputIndex++] = (byte)(pcm & 0xff);
-                writeBuffer[outputIndex++] = (byte)((pcm >> 8) & 0xff);
+                var frameStart = frame * channels;
+                var left = ReadSample(readBuffer, frameStart, channels, leftChannel) * gain;
+                var right = ReadSample(readBuffer, frameStart, channels, rightChannel) * gain;
+                var leftPcm = ToPcm16(left);
+                var rightPcm = ToPcm16(right);
+                writeBuffer[outputIndex++] = (byte)(leftPcm & 0xff);
+                writeBuffer[outputIndex++] = (byte)((leftPcm >> 8) & 0xff);
+                writeBuffer[outputIndex++] = (byte)(rightPcm & 0xff);
+                writeBuffer[outputIndex++] = (byte)((rightPcm >> 8) & 0xff);
             }
 
             writer.Write(writeBuffer, 0, outputIndex);
         }
     }
+
+    private static float ReadSample(float[] buffer, int frameStart, int channels, int channel)
+    {
+        var sample = buffer[frameStart + Math.Clamp(channel, 0, channels - 1)];
+        return float.IsFinite(sample) ? sample : 0;
+    }
+
+    private static short ToPcm16(float sample) =>
+        (short)Math.Clamp(sample * short.MaxValue, short.MinValue, short.MaxValue);
 
     private static string BuildCleanPath(string sourcePath) =>
         Path.Combine(
@@ -144,3 +192,5 @@ public sealed record PlayableTakeRepairResult(bool Success, string Path, string 
 internal sealed record AudioChannelInspection(double DurationSeconds, AudioChannelStats[] Channels);
 
 internal sealed record AudioChannelStats(int Index, float Peak, float Rms);
+
+internal sealed record StereoRouting(AudioChannelStats Left, AudioChannelStats Right);

@@ -486,8 +486,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var repair = _takeRepair.RepairToPlayableStereo(result.Path);
             CurrentFilePath = repair.Path;
             var metrics = AudioPreviewService.InspectMetrics(CurrentFilePath);
-            WriteDiagnostic($"REPAIR | success={repair.Success} | path={repair.Path} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | waveform={metrics.Waveform} | message={repair.Message}");
-            if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.1)
+            WriteDiagnostic($"REPAIR | success={repair.Success} | path={repair.Path} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}% | waveform={metrics.Waveform} | message={repair.Message}");
+            if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 1.5 || metrics.RmsPercent < 0.25)
             {
                 if (File.Exists(CurrentFilePath))
                 {
@@ -495,8 +495,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 }
 
                 CurrentFilePath = "";
-                Status = $"Rejected broken take. {repair.Message} Preview: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%.";
-                CommandResult = "No take saved. GateKPT refused to keep blank/broken audio.";
+                Status = $"Rejected weak take. {repair.Message} Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
+                CommandResult = "No take saved. GateKPT only keeps audio with real sustained signal now.";
                 RefreshVersions();
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
@@ -507,8 +507,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             Status = repair.Success
                 ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
                 : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
-            CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, {metrics.Waveform}";
-            WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}%");
+            CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%, {metrics.Waveform}";
+            WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
             RefreshVersions();
             AutoAssignActiveCapture(CurrentFilePath);
             return;
@@ -1039,7 +1039,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         foreach (var version in Versions.ToList())
         {
             var metrics = AudioPreviewService.InspectMetrics(version.Path);
-            if (!metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.1)
+            if (!metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 1.5 || metrics.RmsPercent < 0.25)
             {
                 _versions.MoveToTrash(version.Path);
                 moved++;
@@ -1049,7 +1049,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         if (!string.IsNullOrWhiteSpace(CurrentFilePath))
         {
             var current = AudioPreviewService.InspectMetrics(CurrentFilePath);
-            if (!current.Success || current.Duration.TotalSeconds < 0.75 || current.PeakPercent < 0.1)
+            if (!current.Success || current.Duration.TotalSeconds < 0.75 || current.PeakPercent < 1.5 || current.RmsPercent < 0.25)
             {
                 CurrentFilePath = "";
             }
