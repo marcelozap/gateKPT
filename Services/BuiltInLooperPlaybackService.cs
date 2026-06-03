@@ -160,12 +160,6 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Gain = 0.45
             }.Take(TimeSpan.FromSeconds(1.5));
             WaveFileWriter.CreateWaveFile16(path, signal);
-            var browser = OpenBrowserAudioPlayer(path, "GateKPT speaker test");
-            if (browser.Success)
-            {
-                return browser;
-            }
-
             var ffplay = StartFfplay(path);
             if (ffplay.Success)
             {
@@ -194,18 +188,6 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 return new LooperPlaybackResult(false, "No audio file selected.");
             }
 
-            var browser = OpenBrowserAudioPlayer(path, Path.GetFileName(path));
-            if (browser.Success)
-            {
-                return browser;
-            }
-
-            var ffplay = StartFfplay(path);
-            if (ffplay.Success)
-            {
-                return new LooperPlaybackResult(true, $"Playing with ffplay: {Path.GetFileName(path)}");
-            }
-
             Process.Start(new ProcessStartInfo
             {
                 FileName = path,
@@ -216,79 +198,6 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         catch (Exception ex)
         {
             return new LooperPlaybackResult(false, $"Could not open audio in Windows player: {ex.Message}");
-        }
-    }
-
-    private static LooperPlaybackResult OpenBrowserAudioPlayer(string audioPath, string title)
-    {
-        try
-        {
-            var playerPath = Path.Combine(Path.GetTempPath(), "gatekpt-audio-player.html");
-            var audioUri = new Uri(audioPath).AbsoluteUri;
-            var safeTitle = System.Net.WebUtility.HtmlEncode(title);
-            var html = $$"""
-                <!doctype html>
-                <html lang="en">
-                <head>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <title>GateKPT Audio</title>
-                  <style>
-                    :root { color-scheme: dark; }
-                    body {
-                      margin: 0;
-                      min-height: 100vh;
-                      display: grid;
-                      place-items: center;
-                      background:
-                        radial-gradient(circle at 20% 15%, rgba(198,169,109,.18), transparent 32rem),
-                        linear-gradient(135deg, #07110e, #0d1c22 52%, #130f0a);
-                      color: #f1eadc;
-                      font: 700 18px/1.45 Georgia, serif;
-                    }
-                    main {
-                      width: min(720px, calc(100vw - 42px));
-                      border: 1px solid rgba(198,169,109,.32);
-                      border-radius: 28px;
-                      padding: 34px;
-                      background: rgba(7,17,14,.72);
-                      box-shadow: 0 24px 80px rgba(0,0,0,.42);
-                    }
-                    small {
-                      color: #c6a96d;
-                      letter-spacing: .22em;
-                      text-transform: uppercase;
-                    }
-                    h1 {
-                      margin: 10px 0 21px;
-                      font-size: clamp(32px, 7vw, 72px);
-                      line-height: .92;
-                    }
-                    audio { width: 100%; }
-                    p { color: #9fc9bf; margin: 18px 0 0; }
-                  </style>
-                </head>
-                <body>
-                  <main>
-                    <small>GateKPT playback</small>
-                    <h1>{{safeTitle}}</h1>
-                    <audio controls autoplay src="{{audioUri}}"></audio>
-                    <p>If it does not start automatically, press play here. This uses browser audio because Chrome works on this PC.</p>
-                  </main>
-                </body>
-                </html>
-                """;
-            File.WriteAllText(playerPath, html);
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = playerPath,
-                UseShellExecute = true
-            });
-            return new LooperPlaybackResult(true, $"Opened browser player: {Path.GetFileName(audioPath)}");
-        }
-        catch (Exception ex)
-        {
-            return new LooperPlaybackResult(false, ex.Message);
         }
     }
 
