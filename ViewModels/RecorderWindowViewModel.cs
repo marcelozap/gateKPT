@@ -68,6 +68,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandHistory = "No commands yet.";
 
     [ObservableProperty]
+    private string _signalProbeSummary = "Run Check signal before the first take.";
+
+    [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
 
     [ObservableProperty]
@@ -246,7 +249,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : Path.GetFileName(LastVideoOutputPath);
 
     public string CommandHelp =>
-        "drums warmer, guitar wider, vocal intimate, add reverb, louder, raw, delete";
+        "drums warmer, guitar wider, vocal intimate, add reverb, louder, raw, delete, clean blanks";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -323,12 +326,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         InputName = SelectedInputDevice.Name;
         PeakPercent = best.PeakPercent;
         SignalReady = best.RmsPercent >= 0.05 || best.PeakPercent >= 1;
-        CurrentFilePath = best.Path;
+        SignalProbeSummary = $"Probe: {best.Name} | peak {best.PeakPercent:0.0}% | RMS {best.RmsPercent:0.00}%";
         Status = SignalReady
             ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Now press {RecordingButtonLabel}."
             : $"No signal found. Loudest input was {best.Name}: peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Check RC-505 output into Scarlett input.";
         OnPropertyChanged(nameof(AudioHealthLabel));
-        RefreshVersions();
     }
 
     [RelayCommand]
@@ -474,9 +476,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
             var repair = _takeRepair.RepairToPlayableStereo(result.Path);
             CurrentFilePath = repair.Path;
+            var metrics = AudioPreviewService.InspectMetrics(CurrentFilePath);
+            if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.1)
+            {
+                if (File.Exists(CurrentFilePath))
+                {
+                    _versions.MoveToTrash(CurrentFilePath);
+                }
+
+                CurrentFilePath = "";
+                Status = $"Rejected broken take. {repair.Message} Preview: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%.";
+                CommandResult = "No take saved. GateKPT refused to keep blank/broken audio.";
+                RefreshVersions();
+                _activeCaptureLayerNumber = null;
+                _activeCaptureLabel = "recording";
+                ActiveRecordingName = "Not recording";
+                return;
+            }
+
             Status = repair.Success
                 ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
                 : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
+            CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, {metrics.Waveform}";
             RefreshVersions();
             AutoAssignActiveCapture(CurrentFilePath);
             return;
@@ -861,6 +882,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
+        if (command.Contains("clean blanks", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("remove blanks", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("trash blanks", StringComparison.OrdinalIgnoreCase))
+        {
+            CleanBlankTakes();
+            return;
+        }
+
         if (command.Contains("rename", StringComparison.OrdinalIgnoreCase))
         {
             var label = command
@@ -967,6 +996,35 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : $"Moved to trash: {version.Name}";
         Status = CommandResult;
         RefreshVersions();
+    }
+
+    private void CleanBlankTakes()
+    {
+        var moved = 0;
+        foreach (var version in Versions.ToList())
+        {
+            var metrics = AudioPreviewService.InspectMetrics(version.Path);
+            if (!metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.1)
+            {
+                _versions.MoveToTrash(version.Path);
+                moved++;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(CurrentFilePath))
+        {
+            var current = AudioPreviewService.InspectMetrics(CurrentFilePath);
+            if (!current.Success || current.Duration.TotalSeconds < 0.75 || current.PeakPercent < 0.1)
+            {
+                CurrentFilePath = "";
+            }
+        }
+
+        RefreshVersions();
+        CommandResult = moved == 0
+            ? "No blank takes found."
+            : $"Moved {moved} blank/broken take(s) to trash.";
+        Status = CommandResult;
     }
 
     private void RenameSelected(string label)

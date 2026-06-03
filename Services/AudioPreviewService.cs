@@ -8,9 +8,20 @@ public static class AudioPreviewService
 {
     public static AudioPreview Inspect(string path, int bins = 16)
     {
+        var metrics = InspectMetrics(path, bins);
+        return metrics.Success
+            ? new AudioPreview(
+                $"{(int)metrics.Duration.TotalMinutes:00}:{metrics.Duration.Seconds:00}",
+                $"{Math.Clamp(metrics.PeakPercent, 0, 100):0}%",
+                metrics.Waveform)
+            : AudioPreview.Empty;
+    }
+
+    public static AudioPreviewMetrics InspectMetrics(string path, int bins = 16)
+    {
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
         {
-            return AudioPreview.Empty;
+            return AudioPreviewMetrics.Empty;
         }
 
         try
@@ -34,14 +45,15 @@ public static class AudioPreviewService
                 }
             }
 
-            return new AudioPreview(
-                $"{(int)reader.TotalTime.TotalMinutes:00}:{reader.TotalTime.Seconds:00}",
-                $"{Math.Clamp(peak * 100, 0, 100):0}%",
+            return new AudioPreviewMetrics(
+                true,
+                reader.TotalTime,
+                Math.Clamp(peak * 100, 0, 100),
                 BuildWaveform(binPeaks));
         }
         catch
         {
-            return AudioPreview.Empty;
+            return AudioPreviewMetrics.Empty;
         }
     }
 
@@ -67,4 +79,9 @@ public static class AudioPreviewService
 public sealed record AudioPreview(string Duration, string Peak, string Waveform)
 {
     public static AudioPreview Empty { get; } = new("--:--", "-", "________________");
+}
+
+public sealed record AudioPreviewMetrics(bool Success, TimeSpan Duration, double PeakPercent, string Waveform)
+{
+    public static AudioPreviewMetrics Empty { get; } = new(false, TimeSpan.Zero, 0, "________________");
 }

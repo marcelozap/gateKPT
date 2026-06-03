@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
@@ -84,6 +85,11 @@ public sealed class LayerRecordingService : IDisposable
             {
                 // Keep whatever was written; this is a defensive recorder.
             }
+        }
+
+        foreach (var capture in captures)
+        {
+            capture.Stopped.Wait(TimeSpan.FromMilliseconds(1500));
         }
 
         lock (_gate)
@@ -192,9 +198,10 @@ public sealed class LayerRecordingService : IDisposable
                     onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
                 }
             };
+            candidate.Input.RecordingStopped += (_, _) => active.Stopped.Set();
 
-            candidate.Input.StartRecording();
             _captures.Add(active);
+            candidate.Input.StartRecording();
         }
         catch
         {
@@ -433,4 +440,6 @@ internal sealed class ActiveCapture(
     public long BytesWritten { get; set; }
 
     public double RmsPercent { get; set; }
+
+    public ManualResetEventSlim Stopped { get; } = new(false);
 }
