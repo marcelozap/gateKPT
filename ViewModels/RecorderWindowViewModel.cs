@@ -561,6 +561,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
             RefreshVersions();
             AutoAssignActiveCapture(CurrentFilePath);
+            SelectFileInExplorer(CurrentFilePath);
             IsRecorderBusy = false;
             return;
         }
@@ -1118,6 +1119,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Status = $"Opened {_versions.TakesDirectory}";
+    }
+
+    private static void SelectFileInExplorer(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{path}\"",
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            // Folder button remains available if Explorer cannot select the file.
+        }
     }
 
     [RelayCommand]
