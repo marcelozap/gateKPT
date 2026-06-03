@@ -36,7 +36,8 @@ public sealed class PlayableTakeRepairService
 
             var usableChannels = stats.Channels
                 .Where(IsUsableSignal)
-                .OrderByDescending(ChannelScore)
+                .OrderBy(channel => channel.Index == 0 ? 0 : 1)
+                .ThenByDescending(ChannelScore)
                 .ToArray();
 
             if (usableChannels.Length == 0)
@@ -132,6 +133,12 @@ public sealed class PlayableTakeRepairService
 
     private static StereoRouting BuildStereoRouting(AudioChannelStats[] allChannels, AudioChannelStats[] usableChannels)
     {
+        var inputOne = usableChannels.FirstOrDefault(channel => channel.Index == 0);
+        if (inputOne is not null)
+        {
+            return new StereoRouting(inputOne, inputOne);
+        }
+
         if (usableChannels.Length >= 2)
         {
             return new StereoRouting(usableChannels[0], usableChannels[1]);
