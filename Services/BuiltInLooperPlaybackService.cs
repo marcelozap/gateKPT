@@ -90,6 +90,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             {
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
+            ForceCurrentProcessVolumeToMax();
             var output = CreateOutput(outputDeviceId);
             output.Init(reader);
             output.Play();
@@ -109,6 +110,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
         try
         {
+            ForceCurrentProcessVolumeToMax();
             var outputs = new List<IWavePlayer>();
             var labels = new List<string>();
             foreach (var candidate in CreateTestOutputCandidates(outputDeviceId))
@@ -304,6 +306,32 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         catch
         {
             return new WaveOutEvent();
+        }
+    }
+
+    private static void ForceCurrentProcessVolumeToMax()
+    {
+        try
+        {
+            var processId = Process.GetCurrentProcess().Id;
+            using var enumerator = new MMDeviceEnumerator();
+            foreach (var device in enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active))
+            {
+                var sessions = device.AudioSessionManager.Sessions;
+                for (var i = 0; i < sessions.Count; i++)
+                {
+                    using var session = sessions[i];
+                    if (session.GetProcessID == processId)
+                    {
+                        session.SimpleAudioVolume.Mute = false;
+                        session.SimpleAudioVolume.Volume = 1.0f;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Windows sometimes locks mixer state; playback still continues through normal fallbacks.
         }
     }
 
