@@ -66,6 +66,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandResult = "No command yet.";
 
     [ObservableProperty]
+    private bool _isCommandBusy = false;
+
+    [ObservableProperty]
     private string _assistantBrief = "Shape takes without losing the original.";
 
     [ObservableProperty]
@@ -901,24 +904,31 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void RunChatCommand()
+    private async Task RunChatCommand()
     {
-        RunUserCommand(ChatText.Trim());
+        await RunUserCommandAsync(ChatText.Trim());
     }
 
     [RelayCommand]
-    private void QuickWarmer() => RunUserCommand("make warmer");
+    private void QuickWarmer() => StageCommand("make warmer");
 
     [RelayCommand]
-    private void QuickLouder() => RunUserCommand("make louder");
+    private void QuickLouder() => StageCommand("make louder");
 
     [RelayCommand]
-    private void QuickReverb() => RunUserCommand("add reverb");
+    private void QuickReverb() => StageCommand("add reverb");
 
     [RelayCommand]
-    private void QuickDelete() => RunUserCommand("delete last");
+    private void QuickDelete() => StageCommand("delete last");
 
-    private void RunUserCommand(string command)
+    private void StageCommand(string command)
+    {
+        ChatText = command;
+        CommandResult = $"Ready: \"{command}\". Press Do it when you want me to change the take.";
+        Status = "Command staged. Nothing changed yet.";
+    }
+
+    private async Task RunUserCommandAsync(string command)
     {
         if (string.IsNullOrWhiteSpace(command))
         {
@@ -930,9 +940,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CommandResult = $"I heard: \"{command}\"";
         AddCommandHistory(command);
         ChatText = command;
+        IsCommandBusy = true;
+        CommandResult = $"Working on: \"{command}\"...";
+        await Task.Delay(180);
         if (command.Contains("delete", StringComparison.OrdinalIgnoreCase))
         {
             DeleteSelectedOrLatest();
+            IsCommandBusy = false;
             return;
         }
 
@@ -941,6 +955,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("trash blanks", StringComparison.OrdinalIgnoreCase))
         {
             CleanBlankTakes();
+            IsCommandBusy = false;
             return;
         }
 
@@ -952,6 +967,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 .Replace("take", "", StringComparison.OrdinalIgnoreCase)
                 .Trim();
             RenameSelected(string.IsNullOrWhiteSpace(label) ? "renamed-take" : label);
+            IsCommandBusy = false;
             return;
         }
 
@@ -963,6 +979,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? "No takes yet."
                 : $"I found {Versions.Count} take(s). Pick one, then play or shape it.";
             Status = CommandResult;
+            IsCommandBusy = false;
             return;
         }
 
@@ -971,6 +988,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             CommandResult = CommandHelp;
             Status = "Showing command examples.";
+            IsCommandBusy = false;
             return;
         }
 
@@ -978,6 +996,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("separate stems", StringComparison.OrdinalIgnoreCase))
         {
             ExportSeparateStems();
+            IsCommandBusy = false;
             return;
         }
 
@@ -985,6 +1004,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase))
         {
             ExportLayerMix();
+            IsCommandBusy = false;
             return;
         }
 
@@ -993,6 +1013,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("play layers", StringComparison.OrdinalIgnoreCase))
         {
             PlayLayerDeck();
+            IsCommandBusy = false;
             return;
         }
 
@@ -1002,6 +1023,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             StopPlayback();
             CommandResult = "Layer deck stopped.";
+            IsCommandBusy = false;
             return;
         }
 
@@ -1011,17 +1033,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 || command.Contains("stem", StringComparison.OrdinalIgnoreCase)))
         {
             AssignSelectedToNextLayer();
+            IsCommandBusy = false;
             return;
         }
 
         if (TryGetEditPreset(command, out var preset))
         {
             CreateSafeEditCopy(preset);
+            IsCommandBusy = false;
             return;
         }
 
         CommandResult = $"I saved that as a note for this session. If you want me to change audio, say something like: {CommandHelp}";
         Status = "Saved as a note. No audio was changed.";
+        IsCommandBusy = false;
     }
 
     [RelayCommand]
