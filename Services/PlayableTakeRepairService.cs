@@ -9,7 +9,10 @@ public sealed class PlayableTakeRepairService
 {
     private const float MinimumUsablePeak = 0.015f;
     private const float MinimumUsableRms = 0.0025f;
-    private const float MaximumCleanGain = 4f;
+    private const float MaximumRepairablePeak = 64f;
+    private const float MaximumRepairableRms = 32f;
+    private const float TargetRms = 0.10f;
+    private const float MaximumCleanGain = 10f;
 
     public PlayableTakeRepairResult RepairToPlayableStereo(string sourcePath)
     {
@@ -33,7 +36,7 @@ public sealed class PlayableTakeRepairService
 
             var usableChannels = stats.Channels
                 .Where(IsUsableSignal)
-                .OrderBy(channel => channel.Index)
+                .OrderByDescending(ChannelScore)
                 .ToArray();
 
             if (usableChannels.Length == 0)
@@ -47,9 +50,9 @@ public sealed class PlayableTakeRepairService
 
             var cleanPath = BuildCleanPath(sourcePath);
             var routing = BuildStereoRouting(stats.Channels, usableChannels);
-            var sourcePeak = Math.Max(routing.Left.Peak, routing.Right.Peak);
-            var gain = sourcePeak > 0.001f ? Math.Min(MaximumCleanGain, 0.70f / sourcePeak) : 1f;
-            WriteCleanStereoCopy(sourcePath, cleanPath, routing.Left.Index, routing.Right.Index, gain);
+            var leftGain = CalculateChannelGain(routing.Left);
+            var rightGain = CalculateChannelGain(routing.Right);
+            WriteCleanStereoCopy(sourcePath, cleanPath, routing.Left.Index, routing.Right.Index, leftGain, rightGain);
 
             var rawDirectory = Path.Combine(
                 Path.GetDirectoryName(Path.GetDirectoryName(sourcePath)) ?? Path.GetDirectoryName(sourcePath)!,
@@ -68,7 +71,7 @@ public sealed class PlayableTakeRepairService
 
             var leftRms = routing.Left.Rms * 100;
             var rightRms = routing.Right.Rms * 100;
-            var peakPercent = sourcePeak * 100;
+            var peakPercent = Math.Max(routing.Left.Peak, routing.Right.Peak) * 100;
             return new PlayableTakeRepairResult(
                 true,
                 sourcePath,
@@ -113,7 +116,19 @@ public sealed class PlayableTakeRepairService
     }
 
     private static bool IsUsableSignal(AudioChannelStats channel) =>
-        channel.Peak >= MinimumUsablePeak && channel.Rms >= MinimumUsableRms && channel.Peak < 0.98f && channel.Rms < 0.35f;
+        float.IsFinite(channel.Peak)
+        && float.IsFinite(channel.Rms)
+        && channel.Peak >= MinimumUsablePeak
+        && channel.Rms >= MinimumUsableRms
+        && channel.Peak <= MaximumRepairablePeak
+        && channel.Rms <= MaximumRepairableRms;
+
+    private static double ChannelScore(AudioChannelStats channel)
+    {
+        var normalizedRms = channel.Peak <= 0.001f ? channel.Rms : channel.Rms / channel.Peak;
+        var levelScore = Math.Log10(1 + Math.Max(channel.Rms, 0));
+        return levelScore + Math.Clamp(normalizedRms, 0, 1);
+    }
 
     private static StereoRouting BuildStereoRouting(AudioChannelStats[] allChannels, AudioChannelStats[] usableChannels)
     {
@@ -128,7 +143,7 @@ public sealed class PlayableTakeRepairService
             var partner = allChannels
                 .Where(channel => channel.Index != strongest.Index)
                 .Where(IsUsableSignal)
-                .OrderByDescending(channel => channel.Rms)
+                .OrderByDescending(ChannelScore)
                 .FirstOrDefault();
 
             if (partner is not null)
@@ -142,7 +157,17 @@ public sealed class PlayableTakeRepairService
         return new StereoRouting(strongest, strongest);
     }
 
-    private static void WriteCleanStereoCopy(string sourcePath, string cleanPath, int leftChannel, int rightChannel, float gain)
+    private static float CalculateChannelGain(AudioChannelStats channel)
+    {
+        if (channel.Rms <= 0.0001f)
+        {
+            return 1f;
+        }
+
+        return Math.Min(MaximumCleanGain, TargetRms / channel.Rms);
+    }
+
+    private static void WriteCleanStereoCopy(string sourcePath, string cleanPath, int leftChannel, int rightChannel, float leftGain, float rightGain)
     {
         using var reader = new AudioFileReader(sourcePath);
         var channels = Math.Max(1, reader.WaveFormat.Channels);
@@ -158,8 +183,8 @@ public sealed class PlayableTakeRepairService
             for (var frame = 0; frame < frames; frame++)
             {
                 var frameStart = frame * channels;
-                var left = ReadSample(readBuffer, frameStart, channels, leftChannel) * gain;
-                var right = ReadSample(readBuffer, frameStart, channels, rightChannel) * gain;
+                var left = Limit(ReadSample(readBuffer, frameStart, channels, leftChannel) * leftGain);
+                var right = Limit(ReadSample(readBuffer, frameStart, channels, rightChannel) * rightGain);
                 var leftPcm = ToPcm16(left);
                 var rightPcm = ToPcm16(right);
                 writeBuffer[outputIndex++] = (byte)(leftPcm & 0xff);
@@ -180,6 +205,16 @@ public sealed class PlayableTakeRepairService
 
     private static short ToPcm16(float sample) =>
         (short)Math.Clamp(sample * short.MaxValue, short.MinValue, short.MaxValue);
+
+    private static float Limit(float sample)
+    {
+        if (!float.IsFinite(sample))
+        {
+            return 0;
+        }
+
+        return (float)Math.Tanh(sample);
+    }
 
     private static string BuildCleanPath(string sourcePath) =>
         Path.Combine(
