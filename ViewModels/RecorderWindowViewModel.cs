@@ -22,6 +22,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly AudioInputDeviceService _inputDevices = new();
     private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
+    private readonly RecorderDiagnosticLog _diagnostics;
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -69,6 +70,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _signalProbeSummary = "Run Check signal before the first take.";
+
+    [ObservableProperty]
+    private string _lastRecorderDiagnostic = "No recorder diagnostic yet.";
 
     [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
@@ -285,6 +289,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public RecorderWindowViewModel()
     {
+        _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshInputDevices();
@@ -327,6 +332,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         PeakPercent = best.PeakPercent;
         SignalReady = best.RmsPercent >= 0.05 || best.PeakPercent >= 1;
         SignalProbeSummary = $"Probe: {best.Name} | peak {best.PeakPercent:0.0}% | RMS {best.RmsPercent:0.00}%";
+        WriteDiagnostic($"CHECK SIGNAL | selected={best.Name} | peak={best.PeakPercent:0.0}% | rms={best.RmsPercent:0.00}% | bytes={best.BytesWritten} | ready={SignalReady}");
         Status = SignalReady
             ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Now press {RecordingButtonLabel}."
             : $"No signal found. Loudest input was {best.Name}: peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Check RC-505 output into Scarlett input.";
@@ -394,7 +400,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        InputName = SelectedInputDevice.Id;
+        InputName = SelectedInputDevice.Name;
 
         PeakPercent = 0;
         _recordingSignalSeen = false;
@@ -419,6 +425,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         });
         IsRecording = result.Success;
         CurrentFilePath = result.Path;
+        WriteDiagnostic($"START | success={result.Success} | input={SelectedInputDevice.Name} | label={label} | path={result.Path} | message={result.Message}");
         if (result.Success)
         {
             _recordingStartedAt = DateTimeOffset.Now;
@@ -458,6 +465,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var result = _recorder.Stop();
         IsRecording = false;
         _recordingTimer.Stop();
+        WriteDiagnostic($"STOP | success={result.Success} | path={result.Path} | duration={result.DurationLabel} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}% | message={result.Message}");
         if (result.Success)
         {
             PeakPercent = result.PeakPercent;
@@ -467,6 +475,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 _versions.MoveToTrash(result.Path);
                 CurrentFilePath = "";
                 Status = $"Rejected silent take. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. No rescue copy created.";
+                WriteDiagnostic($"REJECT SILENT | raw={result.Path} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}%");
                 RefreshVersions();
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
@@ -477,6 +486,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var repair = _takeRepair.RepairToPlayableStereo(result.Path);
             CurrentFilePath = repair.Path;
             var metrics = AudioPreviewService.InspectMetrics(CurrentFilePath);
+            WriteDiagnostic($"REPAIR | success={repair.Success} | path={repair.Path} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | waveform={metrics.Waveform} | message={repair.Message}");
             if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.1)
             {
                 if (File.Exists(CurrentFilePath))
@@ -498,6 +508,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
                 : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
             CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, {metrics.Waveform}";
+            WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}%");
             RefreshVersions();
             AutoAssignActiveCapture(CurrentFilePath);
             return;
@@ -512,6 +523,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         Status = result.Message;
+        WriteDiagnostic($"STOP FAILED | message={result.Message}");
         _activeCaptureLayerNumber = null;
         _activeCaptureLabel = "recording";
         ActiveRecordingName = "Not recording";
@@ -978,6 +990,29 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Status = $"Opened {_versions.TakesDirectory}";
+    }
+
+    [RelayCommand]
+    private void OpenDiagnostics()
+    {
+        Directory.CreateDirectory(_versions.RootDirectory);
+        if (!File.Exists(_diagnostics.Path))
+        {
+            File.WriteAllText(_diagnostics.Path, "No diagnostics written yet." + Environment.NewLine);
+        }
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = _diagnostics.Path,
+            UseShellExecute = true
+        });
+        Status = $"Opened recorder diagnostics: {_diagnostics.Path}";
+    }
+
+    private void WriteDiagnostic(string message)
+    {
+        LastRecorderDiagnostic = message;
+        _diagnostics.Write(message);
     }
 
     private void DeleteSelectedOrLatest()

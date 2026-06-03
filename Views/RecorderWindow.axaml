@@ -224,6 +224,13 @@
                                 Margin="0,0,10,10"
                                 Background="#92BFB3"
                                 Foreground="#07100D"/>
+                        <Button Content="Log"
+                                Command="{Binding OpenDiagnosticsCommand}"
+                                Padding="18,12"
+                                MinWidth="120"
+                                Margin="0,0,10,10"
+                                Background="#0D2230"
+                                Foreground="#C9C0AD"/>
                     </WrapPanel>
                 </StackPanel>
             </Border>
@@ -290,6 +297,11 @@
                                FontWeight="Bold"
                                TextWrapping="Wrap"
                                Foreground="#C9C0AD"/>
+                    <TextBlock Text="{Binding LastRecorderDiagnostic}"
+                               FontSize="11"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#C6A96D"/>
                 </StackPanel>
             </Border>
 
