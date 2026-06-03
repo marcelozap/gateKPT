@@ -240,7 +240,7 @@
                                     Foreground="#07110E"/>
                         </WrapPanel>
 
-                        <Grid Grid.Row="3" ColumnDefinitions="*,*,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowDefinitions="Auto">
+                        <Grid Grid.Row="3" ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="8" RowDefinitions="Auto">
                             <ComboBox ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="44"/>
@@ -249,27 +249,13 @@
                                       SelectedItem="{Binding SelectedOutputDevice}"
                                       MinHeight="44"/>
                             <Button Grid.Column="2"
-                                    Content="{Binding MonitorButtonLabel}"
-                                    Command="{Binding ToggleMonitorCommand}"
-                                    Padding="18,11"
-                                    MinWidth="112"
-                                    Background="#8DB7AD"
-                                    Foreground="#07110E"/>
-                            <Button Grid.Column="3"
-                                    Content="Beep"
-                                    Command="{Binding TestSpeakerCommand}"
-                                    Padding="18,11"
-                                    MinWidth="86"
-                                    Background="#203C36"
-                                    Foreground="#E8E1D2"/>
-                            <Button Grid.Column="4"
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="18,11"
                                     MinWidth="92"
                                     Background="#203C36"
                                     Foreground="#E8E1D2"/>
-                            <Button Grid.Column="5"
+                            <Button Grid.Column="3"
                                     Content="Log"
                                     Command="{Binding OpenDiagnosticsCommand}"
                                     Padding="18,11"

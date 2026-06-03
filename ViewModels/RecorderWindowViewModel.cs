@@ -205,7 +205,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : PeakPercent < 20
                     ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
                     : "GateKPT is recording now."
-            : "Press RECORD, play sound, then STOP & SAVE.";
+            : "Meter moving means input is live. Record, save, open folder.";
 
     public string NextActionLabel =>
         IsRecording
