@@ -21,6 +21,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly LayerMixdownService _mixdown = new();
     private readonly AudioInputDeviceService _inputDevices = new();
     private readonly PlayableTakeRepairService _takeRepair = new();
+    private readonly PhoneVideoWorkflowService _phoneVideo = new();
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -74,6 +75,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _lastStemExportDirectory = "";
+
+    [ObservableProperty]
+    private string _phoneVideoPath = "";
+
+    [ObservableProperty]
+    private string _lastVideoOutputPath = "";
+
+    [ObservableProperty]
+    private string _videoWorkflowStatus = "Find latest phone video, then pair it with the selected GateKPT take.";
 
     [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
@@ -224,6 +234,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         string.IsNullOrWhiteSpace(LastStemExportDirectory)
             ? "No stem export yet."
             : Path.GetFileName(LastStemExportDirectory);
+
+    public string PhoneVideoLabel =>
+        string.IsNullOrWhiteSpace(PhoneVideoPath)
+            ? "No phone video selected."
+            : Path.GetFileName(PhoneVideoPath);
+
+    public string LastVideoOutputLabel =>
+        string.IsNullOrWhiteSpace(LastVideoOutputPath)
+            ? "No video output yet."
+            : Path.GetFileName(LastVideoOutputPath);
 
     public string CommandHelp =>
         "drums warmer, guitar wider, vocal intimate, add reverb, louder, raw, delete";
@@ -740,6 +760,71 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Status = $"Opened exported mix: {Path.GetFileName(LastExportedMixPath)}";
+    }
+
+    [RelayCommand]
+    private void FindLatestPhoneVideo()
+    {
+        var result = _phoneVideo.FindLatestVideo();
+        if (result.Success)
+        {
+            PhoneVideoPath = result.Path;
+        }
+
+        VideoWorkflowStatus = result.Message;
+        Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void OptimizePhoneVideo()
+    {
+        if (string.IsNullOrWhiteSpace(PhoneVideoPath))
+        {
+            FindLatestPhoneVideo();
+        }
+
+        var result = _phoneVideo.OptimizeVideo(PhoneVideoPath);
+        if (result.Success)
+        {
+            PhoneVideoPath = result.Path;
+            LastVideoOutputPath = result.Path;
+        }
+
+        VideoWorkflowStatus = result.Message;
+        Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void RenderPhoneVideoWithTake()
+    {
+        if (string.IsNullOrWhiteSpace(PhoneVideoPath))
+        {
+            FindLatestPhoneVideo();
+        }
+
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            VideoWorkflowStatus = "No GateKPT take selected. Record or select a playable take first.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        var result = _phoneVideo.RenderWithGateKptAudio(PhoneVideoPath, audioPath);
+        if (result.Success)
+        {
+            LastVideoOutputPath = result.Path;
+        }
+
+        VideoWorkflowStatus = result.Message;
+        Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void OpenVideoOutputFolder()
+    {
+        _phoneVideo.OpenOutputFolder();
+        Status = $"Opened {_phoneVideo.OutputDirectory}";
     }
 
     [RelayCommand]
@@ -1460,6 +1545,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnLastStemExportDirectoryChanged(string value)
     {
         OnPropertyChanged(nameof(LastStemExportLabel));
+    }
+
+    partial void OnPhoneVideoPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(PhoneVideoLabel));
+    }
+
+    partial void OnLastVideoOutputPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(LastVideoOutputLabel));
     }
 
     partial void OnSelectedLayerSlotChanged(LayerSlotItem? value)

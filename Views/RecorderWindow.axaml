@@ -274,6 +274,66 @@
                 </StackPanel>
             </Border>
 
+            <Border CornerRadius="24" Background="#10081722" BorderBrush="#2292BFB3" BorderThickness="1" Padding="16">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="PHONE VIDEO"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="2"
+                               Foreground="#92BFB3"/>
+                    <TextBlock Text="Use phone video for the shot. Use GateKPT for clean RC-505 audio."
+                               FontSize="12"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#E8E1D2"/>
+                    <TextBlock Text="{Binding PhoneVideoLabel}"
+                               FontSize="11"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Foreground="#C6A96D"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <Button Content="Find video"
+                                Command="{Binding FindLatestPhoneVideoCommand}"
+                                Padding="16,11"
+                                MinWidth="130"
+                                Margin="0,0,10,10"
+                                Background="#92BFB3"
+                                Foreground="#07100D"/>
+                        <Button Content="Smooth copy"
+                                Command="{Binding OptimizePhoneVideoCommand}"
+                                Padding="16,11"
+                                MinWidth="130"
+                                Margin="0,0,10,10"
+                                Background="#E8E1D2"
+                                Foreground="#07100D"/>
+                        <Button Content="Use take audio"
+                                Command="{Binding RenderPhoneVideoWithTakeCommand}"
+                                Padding="16,11"
+                                MinWidth="145"
+                                Margin="0,0,10,10"
+                                Background="#D08A56"
+                                Foreground="#07100D"/>
+                        <Button Content="Video folder"
+                                Command="{Binding OpenVideoOutputFolderCommand}"
+                                Padding="16,11"
+                                MinWidth="130"
+                                Margin="0,0,10,10"
+                                Background="#0D2230"
+                                Foreground="#C9C0AD"/>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding VideoWorkflowStatus}"
+                               FontSize="12"
+                               FontWeight="Black"
+                               TextWrapping="Wrap"
+                               Foreground="#C9C0AD"/>
+                    <TextBlock Text="{Binding LastVideoOutputLabel}"
+                               FontSize="11"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Foreground="#92BFB3"/>
+                </StackPanel>
+            </Border>
+
             <Border CornerRadius="24" Background="#10081722" BorderBrush="#18E8E1D2" BorderThickness="1" Padding="18">
                 <StackPanel Spacing="12">
                     <TextBlock Text="TAKES"
