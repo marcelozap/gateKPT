@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Threading;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
@@ -28,6 +29,10 @@ public sealed class LayerRecordingService : IDisposable
         Action<double>? onPeakPercent = null)
     {
         Stop();
+        if (OperatingSystem.IsWindows())
+        {
+            StopOrphanedGateKptFfmpegRecorders();
+        }
 
         try
         {
@@ -641,6 +646,32 @@ public sealed class LayerRecordingService : IDisposable
         _activePath = "";
         _candidateDirectory = "";
         _peak = 0;
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static void StopOrphanedGateKptFfmpegRecorders()
+    {
+        try
+        {
+            using var searcher = new System.Management.ManagementObjectSearcher(
+                "SELECT ProcessId, CommandLine FROM Win32_Process WHERE Name = 'ffmpeg.exe'");
+            foreach (var item in searcher.Get().Cast<System.Management.ManagementObject>())
+            {
+                var commandLine = item["CommandLine"]?.ToString() ?? "";
+                if (!commandLine.Contains("GateKPT Recorder", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var processId = Convert.ToInt32(item["ProcessId"]);
+                using var process = Process.GetProcessById(processId);
+                process.Kill(true);
+            }
+        }
+        catch
+        {
+            // This is hygiene only; normal recording should still attempt to start.
+        }
     }
 }
 

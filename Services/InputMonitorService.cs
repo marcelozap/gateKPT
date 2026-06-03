@@ -24,21 +24,32 @@ public sealed class InputMonitorService : IDisposable
             using var enumerator = new MMDeviceEnumerator();
             var input = FindDevice(enumerator, DataFlow.Capture, inputDeviceId)
                 ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
-            var outputDevice = FindDevice(enumerator, DataFlow.Render, outputDeviceId)
-                ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-
             _capture = new WasapiCapture(input);
             _buffer = new BufferedWaveProvider(_capture.WaveFormat)
             {
-                BufferDuration = TimeSpan.FromMilliseconds(500),
+                BufferDuration = TimeSpan.FromMilliseconds(700),
                 DiscardOnBufferOverflow = true
             };
-            _output = new WasapiOut(outputDevice, AudioClientShareMode.Shared, true, 80);
-            _output.Init(_buffer);
+
+            _output = CreateMonitorOutput(enumerator, outputDeviceId);
+            try
+            {
+                _output.Init(_buffer);
+            }
+            catch
+            {
+                _output.Dispose();
+                _output = new WaveOutEvent
+                {
+                    DesiredLatency = 120
+                };
+                _output.Init(_buffer);
+            }
+
             _capture.DataAvailable += (_, args) => _buffer.AddSamples(args.Buffer, 0, args.BytesRecorded);
             _output.Play();
             _capture.StartRecording();
-            return new LooperPlaybackResult(true, $"Monitoring {input.FriendlyName} -> {outputDevice.FriendlyName}.");
+            return new LooperPlaybackResult(true, $"Monitoring {input.FriendlyName}. Use Scarlett Direct Monitor if this echoes.");
         }
         catch (Exception ex)
         {
@@ -78,6 +89,23 @@ public sealed class InputMonitorService : IDisposable
         return enumerator
             .EnumerateAudioEndPoints(flow, DeviceState.Active)
             .FirstOrDefault(device => device.ID == deviceId);
+    }
+
+    private static IWavePlayer CreateMonitorOutput(MMDeviceEnumerator enumerator, string outputDeviceId)
+    {
+        try
+        {
+            var outputDevice = FindDevice(enumerator, DataFlow.Render, outputDeviceId)
+                ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            return new WasapiOut(outputDevice, AudioClientShareMode.Shared, true, 120);
+        }
+        catch
+        {
+            return new WaveOutEvent
+            {
+                DesiredLatency = 120
+            };
+        }
     }
 
     private static void ForceCurrentProcessVolumeToMax()

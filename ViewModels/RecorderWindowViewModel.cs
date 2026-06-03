@@ -201,7 +201,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string CaptureInstruction =>
         IsRecording
             ? PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                ? "Recording, but no sound is entering. Play now or GateKPT will reject it."
+                ? "No usable signal yet. Play now or stop this take."
                 : PeakPercent < 20
                     ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
                     : "GateKPT is recording now."
@@ -1760,6 +1760,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnRecordingElapsedLabelChanged(string value)
     {
         OnPropertyChanged(nameof(RecordingGuardLabel));
+        OnPropertyChanged(nameof(CaptureInstruction));
     }
 
     partial void OnInputNameChanged(string value)
