@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NAudio.CoreAudioApi;
@@ -144,6 +145,53 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         {
             Stop(99);
             return new LooperPlaybackResult(false, $"Speaker test failed: {ex.Message}");
+        }
+    }
+
+    public LooperPlaybackResult OpenTestToneInWindowsPlayer()
+    {
+        try
+        {
+            var path = Path.Combine(Path.GetTempPath(), "gatekpt-speaker-test.wav");
+            var signal = new SignalGenerator(44100, 2)
+            {
+                Type = SignalGeneratorType.Sin,
+                Frequency = 880,
+                Gain = 0.45
+            }.Take(TimeSpan.FromSeconds(1.5));
+            WaveFileWriter.CreateWaveFile16(path, signal);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+            return new LooperPlaybackResult(true, "Opened speaker test in Windows player.");
+        }
+        catch (Exception ex)
+        {
+            return new LooperPlaybackResult(false, $"Windows player test failed: {ex.Message}");
+        }
+    }
+
+    public LooperPlaybackResult OpenAudioInWindowsPlayer(string path)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return new LooperPlaybackResult(false, "No audio file selected.");
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true
+            });
+            return new LooperPlaybackResult(true, $"Opened in Windows player: {Path.GetFileName(path)}");
+        }
+        catch (Exception ex)
+        {
+            return new LooperPlaybackResult(false, $"Could not open audio in Windows player: {ex.Message}");
         }
     }
 

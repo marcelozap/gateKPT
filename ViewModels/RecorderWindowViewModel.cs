@@ -585,14 +585,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CurrentFilePath = path;
         _playback.StopAll();
         var metrics = AudioPreviewService.InspectMetrics(path);
-        var outputId = SelectedOutputDevice?.Id ?? "";
-        var outputName = _playback.GetOutputName(outputId);
-        var result = _playback.PlayOnce(0, path, 100, outputId);
+        var result = _playback.OpenAudioInWindowsPlayer(path);
         Status = result.Success
-            ? $"Playing latest inside GateKPT -> {outputName}: {Path.GetFileName(path)}"
+            ? $"Opened take in Windows player: {Path.GetFileName(path)}"
             : result.Message;
         CommandResult = result.Success
-            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {outputName}."
+            ? $"Take opened: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%."
             : result.Message;
     }
 
@@ -607,11 +605,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void TestSpeaker()
     {
         _playback.StopAll();
-        var outputId = SelectedOutputDevice?.Id ?? "";
-        var outputName = _playback.GetOutputName(outputId);
-        var result = _playback.PlayTestTone(outputId);
+        var result = _playback.OpenTestToneInWindowsPlayer();
         Status = result.Message;
-        CommandResult = $"{result.Message} Output: {outputName}.";
+        CommandResult = result.Success
+            ? "If Windows player makes sound, GateKPT playback is confirmed through the system route."
+            : result.Message;
     }
 
     [RelayCommand]
