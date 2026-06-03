@@ -541,13 +541,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         CurrentFilePath = path;
         _playback.StopAll();
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = path,
-            UseShellExecute = true
-        });
-        Status = $"Opened take in Windows: {Path.GetFileName(path)}";
-        CommandResult = "Playback uses Windows now. If it is silent there, the file is actually silent.";
+        var metrics = AudioPreviewService.InspectMetrics(path);
+        var result = _playback.PlayOnce(0, path, 100);
+        Status = result.Success
+            ? $"Playing take inside GateKPT: {Path.GetFileName(path)}"
+            : result.Message;
+        CommandResult = result.Success
+            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%."
+            : result.Message;
     }
 
     [RelayCommand]
