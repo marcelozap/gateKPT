@@ -108,17 +108,37 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
         try
         {
-            var signal = new SignalGenerator(44100, 2)
+            var outputs = new List<IWavePlayer>();
+            var labels = new List<string>();
+            foreach (var candidate in CreateTestOutputCandidates(outputDeviceId))
             {
-                Type = SignalGeneratorType.Sin,
-                Frequency = 440,
-                Gain = 0.22
-            }.Take(TimeSpan.FromSeconds(1.2));
-            var output = CreateOutput(outputDeviceId);
-            output.Init(signal);
-            output.Play();
-            _playing[99] = new PlaybackHandle(null, output);
-            return new LooperPlaybackResult(true, "Speaker test playing. If you hear a beep, playback works.");
+                try
+                {
+                    var output = candidate.Create();
+                    var signal = new SignalGenerator(44100, 2)
+                    {
+                        Type = SignalGeneratorType.Sin,
+                        Frequency = 880,
+                        Gain = 0.35
+                    }.Take(TimeSpan.FromSeconds(1.4));
+                    output.Init(signal);
+                    output.Play();
+                    outputs.Add(output);
+                    labels.Add(candidate.Label);
+                }
+                catch
+                {
+                    // Try every safe Windows output path; one silent endpoint should not kill the test.
+                }
+            }
+
+            if (outputs.Count == 0)
+            {
+                return new LooperPlaybackResult(false, "Speaker test failed: no Windows output path accepted audio.");
+            }
+
+            _playing[99] = new PlaybackHandle(outputs);
+            return new LooperPlaybackResult(true, $"Speaker test playing through {string.Join(" + ", labels)}.");
         }
         catch (Exception ex)
         {
@@ -173,6 +193,30 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         }
     }
 
+    private static IEnumerable<OutputCandidate> CreateTestOutputCandidates(string outputDeviceId)
+    {
+        var selectedId = outputDeviceId;
+        if (!string.IsNullOrWhiteSpace(selectedId))
+        {
+            yield return new OutputCandidate("selected output", () =>
+            {
+                using var enumerator = new MMDeviceEnumerator();
+                var selected = FindOutput(enumerator, selectedId)
+                    ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                return new WasapiOut(selected, AudioClientShareMode.Shared, true, 100);
+            });
+        }
+
+        yield return new OutputCandidate("Windows default", () =>
+        {
+            using var enumerator = new MMDeviceEnumerator();
+            var device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            return new WasapiOut(device, AudioClientShareMode.Shared, true, 100);
+        });
+
+        yield return new OutputCandidate("legacy WaveOut", () => new WaveOutEvent());
+    }
+
     private static MMDevice? FindOutput(MMDeviceEnumerator enumerator, string outputDeviceId)
     {
         if (string.IsNullOrWhiteSpace(outputDeviceId))
@@ -185,30 +229,55 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             .FirstOrDefault(device => device.ID == outputDeviceId);
     }
 
-    private sealed class PlaybackHandle(AudioFileReader? reader, IWavePlayer output) : IDisposable
+    private sealed record OutputCandidate(string Label, Func<IWavePlayer> Create);
+
+    private sealed class PlaybackHandle : IDisposable
     {
+        private readonly AudioFileReader? _reader;
+        private readonly IReadOnlyList<IWavePlayer> _outputs;
+
+        public PlaybackHandle(AudioFileReader? reader, IWavePlayer output)
+            : this(reader, [output])
+        {
+        }
+
         public PlaybackHandle(AudioFileReader reader, LoopStream loop, IWavePlayer output)
-            : this(reader, output)
+            : this(reader, [output])
         {
             Loop = loop;
+        }
+
+        public PlaybackHandle(IReadOnlyList<IWavePlayer> outputs)
+            : this(null, outputs)
+        {
+        }
+
+        private PlaybackHandle(AudioFileReader? reader, IReadOnlyList<IWavePlayer> outputs)
+        {
+            _reader = reader;
+            _outputs = outputs;
         }
 
         private LoopStream? Loop { get; }
 
         public void SetVolume(double volume)
         {
-            if (reader is not null)
+            if (_reader is not null)
             {
-                reader.Volume = (float)Math.Clamp(volume / 100.0, 0, 1);
+                _reader.Volume = (float)Math.Clamp(volume / 100.0, 0, 1);
             }
         }
 
         public void Dispose()
         {
-            output.Stop();
-            output.Dispose();
+            foreach (var output in _outputs)
+            {
+                output.Stop();
+                output.Dispose();
+            }
+
             Loop?.Dispose();
-            reader?.Dispose();
+            _reader?.Dispose();
         }
     }
 }
