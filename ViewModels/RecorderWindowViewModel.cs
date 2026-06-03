@@ -69,6 +69,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private bool _isCommandBusy = false;
 
     [ObservableProperty]
+    private bool _isRecorderBusy = false;
+
+    [ObservableProperty]
     private string _assistantBrief = "Shape takes without losing the original.";
 
     [ObservableProperty]
@@ -156,6 +159,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string StopButtonLabel =>
         IsRecording ? "■ SAVE NOW" : "■ SAVE";
+
+    public bool IsBusy => IsRecorderBusy || IsCommandBusy;
+
+    public string BusyLabel =>
+        IsRecorderBusy
+            ? "Saving audio..."
+            : IsCommandBusy
+                ? "Shaping take..."
+                : "";
 
     public string RecordingGuardLabel =>
         IsRecording
@@ -418,6 +430,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         ActiveRecordingName = layerNumber is null
             ? "Full loop"
             : $"{LayerSlots.First(slot => slot.Number == layerNumber).Name} lane";
+        IsRecorderBusy = true;
         var result = _recorder.Start(InputName, _versions.TakesDirectory, label, peak =>
         {
             Dispatcher.UIThread.Post(() =>
@@ -433,6 +446,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             });
         });
         IsRecording = result.Success;
+        IsRecorderBusy = false;
         CurrentFilePath = result.Path;
         WriteDiagnostic($"START | success={result.Success} | input={SelectedInputDevice.Name} | label={label} | path={result.Path} | message={result.Message}");
         if (result.Success)
@@ -483,9 +497,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void StopRecording()
+    private async Task StopRecording()
     {
-        var result = _recorder.Stop();
+        IsRecorderBusy = true;
+        await Task.Delay(80);
+        var result = await Task.Run(() => _recorder.Stop());
         IsRecording = false;
         _recordingTimer.Stop();
         WriteDiagnostic($"STOP | success={result.Success} | path={result.Path} | duration={result.DurationLabel} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}% | message={result.Message}");
@@ -503,6 +519,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
                 ActiveRecordingName = "Not recording";
+                IsRecorderBusy = false;
                 return;
             }
 
@@ -524,6 +541,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
                 ActiveRecordingName = "Not recording";
+                IsRecorderBusy = false;
                 return;
             }
 
@@ -534,6 +552,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
             RefreshVersions();
             AutoAssignActiveCapture(CurrentFilePath);
+            IsRecorderBusy = false;
             return;
         }
 
@@ -550,6 +569,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _activeCaptureLayerNumber = null;
         _activeCaptureLabel = "recording";
         ActiveRecordingName = "Not recording";
+        IsRecorderBusy = false;
     }
 
     [RelayCommand]
@@ -1631,7 +1651,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         if (elapsed.TotalSeconds >= 8 && PeakPercent < 1)
         {
-            StopRecording();
+            _ = StopRecording();
             Status = "Auto-stopped: no sound entered for 8 seconds. No blank take kept.";
             CommandResult = "No audio detected. Check RC-505 output, Scarlett input gain, and Windows input device.";
         }
@@ -1670,6 +1690,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CaptureInstruction));
         OnPropertyChanged(nameof(SimpleSignalLabel));
         OnPropertyChanged(nameof(AudioHealthLabel));
+    }
+
+    partial void OnIsCommandBusyChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsBusy));
+        OnPropertyChanged(nameof(BusyLabel));
+    }
+
+    partial void OnIsRecorderBusyChanged(bool value)
+    {
+        OnPropertyChanged(nameof(IsBusy));
+        OnPropertyChanged(nameof(BusyLabel));
     }
 
     partial void OnActiveRecordingNameChanged(string value)

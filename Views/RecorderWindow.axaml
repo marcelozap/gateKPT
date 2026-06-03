@@ -181,13 +181,34 @@
                             </Border>
                         </Grid>
 
-                        <ProgressBar Grid.Row="1"
-                                     Minimum="0"
-                                     Maximum="100"
-                                     Value="{Binding PeakPercent}"/>
+                        <Grid Grid.Row="1">
+                            <ProgressBar Minimum="0"
+                                         Maximum="100"
+                                         Value="{Binding PeakPercent}"/>
+                            <Border IsVisible="{Binding IsBusy}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    CornerRadius="999"
+                                    Padding="13,8"
+                                    Background="#E607110E"
+                                    BorderBrush="#66C6A96D"
+                                    BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <ProgressBar IsIndeterminate="True"
+                                                 Width="42"
+                                                 Height="6"
+                                                 Background="#203C36"
+                                                 Foreground="#C6A96D"/>
+                                    <TextBlock Text="{Binding BusyLabel}"
+                                               FontSize="11"
+                                               FontWeight="Black"
+                                               Foreground="#E8E1D2"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
 
                         <WrapPanel Grid.Row="2" Orientation="Horizontal">
-                            <Button Content="✓ Signal"
+                            <Button Content="OK Signal"
                                     Command="{Binding CheckSignalCommand}"
                                     Padding="21,13"
                                     MinWidth="150"
@@ -210,7 +231,7 @@
                                     FontSize="17"
                                     Background="#C6A96D"
                                     Foreground="#07110E"/>
-                            <Button Content="▶ Play"
+                            <Button Content="Play"
                                     Command="{Binding PlaySelectedCommand}"
                                     Padding="21,13"
                                     MinWidth="145"
@@ -228,7 +249,7 @@
                                       SelectedItem="{Binding SelectedOutputDevice}"
                                       MinHeight="44"/>
                             <Button Grid.Column="2"
-                                    Content="♪ Beep"
+                                    Content="Beep"
                                     Command="{Binding TestSpeakerCommand}"
                                     Padding="18,11"
                                     MinWidth="86"
@@ -403,14 +424,14 @@
                                        TextWrapping="Wrap"
                                        Foreground="#E8E1D2"/>
                             <WrapPanel Orientation="Horizontal">
-                                <Button Content="♪ Beep"
+                                <Button Content="Beep"
                                         Command="{Binding TestSpeakerCommand}"
                                         Padding="16,11"
                                         MinWidth="118"
                                         Margin="0,0,8,8"
                                         Background="#203C36"
                                         Foreground="#E8E1D2"/>
-                                <Button Content="▶ Play"
+                                <Button Content="Play"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="16,11"
                                         MinWidth="118"
