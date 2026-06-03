@@ -22,6 +22,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly AudioInputDeviceService _inputDevices = new();
     private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
+    private readonly InputMonitorService _monitor = new();
     private readonly RecorderDiagnosticLog _diagnostics;
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
@@ -46,6 +47,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isRecording = false;
+
+    [ObservableProperty]
+    private bool _isMonitoring = false;
 
     [ObservableProperty]
     private string _activeRecordingName = "Not recording";
@@ -160,6 +164,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string StopButtonLabel =>
         IsRecording ? "■ SAVE NOW" : "■ SAVE";
 
+    public string MonitorButtonLabel =>
+        IsMonitoring ? "MONITOR ON" : "Monitor";
+
     public bool IsBusy => IsRecorderBusy || IsCommandBusy;
 
     public string BusyLabel =>
@@ -195,7 +202,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsRecording
             ? PeakPercent < 1 && RecordingElapsedLabel != "00:00"
                 ? "Recording, but no sound is entering. Play now or GateKPT will reject it."
-                : "GateKPT is recording now."
+                : PeakPercent < 20
+                    ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
+                    : "GateKPT is recording now."
             : "Press RECORD, play sound, then STOP & SAVE.";
 
     public string NextActionLabel =>
@@ -612,6 +621,36 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var result = _playback.PlayTestTone(outputId);
         Status = result.Message;
         CommandResult = $"{result.Message} Output: {outputName}.";
+    }
+
+    [RelayCommand]
+    private void ToggleMonitor()
+    {
+        if (IsMonitoring)
+        {
+            _monitor.Stop();
+            IsMonitoring = false;
+            Status = "Monitor off. Recording can still capture silently.";
+            CommandResult = "Direct Monitor off + GateKPT Monitor off means you will not hear yourself while recording.";
+            return;
+        }
+
+        if (SelectedInputDevice is null)
+        {
+            RefreshInputDevices();
+        }
+
+        if (SelectedOutputDevice is null)
+        {
+            RefreshOutputDevices();
+        }
+
+        var result = _monitor.Start(SelectedInputDevice?.Id ?? "", SelectedOutputDevice?.Id ?? "");
+        IsMonitoring = result.Success;
+        Status = result.Message;
+        CommandResult = result.Success
+            ? "Monitor is live. If you hear doubling/echo, turn it off and use Scarlett Direct Monitor instead."
+            : result.Message;
     }
 
     [RelayCommand]
@@ -1648,6 +1687,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             Status = $"Recording, but no sound is entering {InputName}. Play now or stop.";
         }
+        else if (elapsed.TotalSeconds >= 3 && PeakPercent < 20)
+        {
+            Status = $"Recording quiet signal from {InputName}: {PeakPercent:0.0}%. It will save, but may play back soft.";
+        }
 
         if (elapsed.TotalSeconds >= 8 && PeakPercent < 1)
         {
@@ -1702,6 +1745,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(IsBusy));
         OnPropertyChanged(nameof(BusyLabel));
+    }
+
+    partial void OnIsMonitoringChanged(bool value)
+    {
+        OnPropertyChanged(nameof(MonitorButtonLabel));
     }
 
     partial void OnActiveRecordingNameChanged(string value)
