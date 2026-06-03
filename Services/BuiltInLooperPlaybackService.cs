@@ -160,6 +160,12 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Gain = 0.45
             }.Take(TimeSpan.FromSeconds(1.5));
             WaveFileWriter.CreateWaveFile16(path, signal);
+            var ffplay = StartFfplay(path);
+            if (ffplay.Success)
+            {
+                return new LooperPlaybackResult(true, "Playing speaker test with ffplay.");
+            }
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = path,
@@ -182,6 +188,12 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 return new LooperPlaybackResult(false, "No audio file selected.");
             }
 
+            var ffplay = StartFfplay(path);
+            if (ffplay.Success)
+            {
+                return new LooperPlaybackResult(true, $"Playing with ffplay: {Path.GetFileName(path)}");
+            }
+
             Process.Start(new ProcessStartInfo
             {
                 FileName = path,
@@ -192,6 +204,25 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         catch (Exception ex)
         {
             return new LooperPlaybackResult(false, $"Could not open audio in Windows player: {ex.Message}");
+        }
+    }
+
+    private static LooperPlaybackResult StartFfplay(string path)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "ffplay",
+                Arguments = $"-nodisp -autoexit -loglevel quiet \"{path}\"",
+                CreateNoWindow = true,
+                UseShellExecute = false
+            });
+            return new LooperPlaybackResult(true, "ffplay started.");
+        }
+        catch (Exception ex)
+        {
+            return new LooperPlaybackResult(false, ex.Message);
         }
     }
 
