@@ -57,7 +57,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _currentFilePath = "";
 
     [ObservableProperty]
-    private string _chatText = "make drums warmer";
+    private string _chatText = "";
 
     [ObservableProperty]
     private string _status = "Ready.";
@@ -149,10 +149,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : "TAKE READY";
 
     public string RecordingButtonLabel =>
-        IsRecording ? "RECORDING..." : "RECORD";
+        IsRecording ? "● RECORDING" : "● RECORD";
 
     public string StopButtonLabel =>
-        IsRecording ? "STOP & SAVE NOW" : "STOP & SAVE";
+        IsRecording ? "■ SAVE NOW" : "■ SAVE";
 
     public string RecordingGuardLabel =>
         IsRecording
@@ -258,7 +258,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : Path.GetFileName(LastVideoOutputPath);
 
     public string CommandHelp =>
-        "drums warmer, guitar wider, vocal intimate, add reverb, louder, raw, delete, clean blanks";
+        "Try: make warmer, louder, add reverb, clean it, delete last, play latest.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -903,16 +903,33 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void RunChatCommand()
     {
-        var command = ChatText.Trim();
+        RunUserCommand(ChatText.Trim());
+    }
+
+    [RelayCommand]
+    private void QuickWarmer() => RunUserCommand("make warmer");
+
+    [RelayCommand]
+    private void QuickLouder() => RunUserCommand("make louder");
+
+    [RelayCommand]
+    private void QuickReverb() => RunUserCommand("add reverb");
+
+    [RelayCommand]
+    private void QuickDelete() => RunUserCommand("delete last");
+
+    private void RunUserCommand(string command)
+    {
         if (string.IsNullOrWhiteSpace(command))
         {
-            CommandResult = "No command entered.";
-            Status = "Type a command like: delete last version, rename hook idea, show versions.";
+            CommandResult = "Tell me what you want changed. Example: make warmer, louder, add reverb, delete last.";
+            Status = "Waiting for a command.";
             return;
         }
 
-        CommandResult = $"Running: {command}";
+        CommandResult = $"I heard: \"{command}\"";
         AddCommandHistory(command);
+        ChatText = command;
         if (command.Contains("delete", StringComparison.OrdinalIgnoreCase))
         {
             DeleteSelectedOrLatest();
@@ -942,7 +959,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("versions", StringComparison.OrdinalIgnoreCase))
         {
             RefreshVersions();
-            CommandResult = $"Showing {Versions.Count} version(s).";
+            CommandResult = Versions.Count == 0
+                ? "No takes yet."
+                : $"I found {Versions.Count} take(s). Pick one, then play or shape it.";
             Status = CommandResult;
             return;
         }
@@ -1001,8 +1020,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        CommandResult = $"Command not wired yet. {CommandHelp}";
-        Status = CommandResult;
+        CommandResult = $"I saved that as a note for this session. If you want me to change audio, say something like: {CommandHelp}";
+        Status = "Saved as a note. No audio was changed.";
     }
 
     [RelayCommand]
@@ -1139,8 +1158,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CurrentFilePath = newPath;
         RefreshVersions();
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == newPath) ?? SelectedVersion;
-        CommandResult = $"Created: {Path.GetFileName(newPath)}";
-        Status = $"Created edit copy: {Path.GetFileName(newPath)}. Original kept. {result.Message}";
+        CommandResult = $"Made a new version: {preset.Description} Original kept. Press Play latest to hear it.";
+        Status = $"New version ready: {Path.GetFileName(newPath)}";
         OnPropertyChanged(nameof(VisualPaintingSignal));
     }
 
