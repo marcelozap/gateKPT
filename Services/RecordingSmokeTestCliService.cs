@@ -9,6 +9,7 @@ public sealed class RecordingSmokeTestCliService
 {
     private readonly LayerRecordingService _recorder = new();
     private readonly AudioInputDeviceService _inputs = new();
+    private readonly PlayableTakeRepairService _repair = new();
 
     public int Run(TextWriter output)
     {
@@ -58,7 +59,23 @@ public sealed class RecordingSmokeTestCliService
             return 5;
         }
 
-        output.WriteLine("PASS: recorder captured a multi-second file.");
+        var repair = _repair.RepairToPlayableStereo(stop.Path);
+        output.WriteLine(repair.Message);
+        if (!repair.Success || !File.Exists(repair.Path))
+        {
+            output.WriteLine("FAIL: recorder captured audio, but could not repair it into a playable stereo take.");
+            return 6;
+        }
+
+        var repaired = AudioPreviewService.InspectMetrics(repair.Path);
+        output.WriteLine($"Playable: duration={repaired.Duration:mm\\:ss}, peak={repaired.PeakPercent:0.0}%, waveform={repaired.Waveform}");
+        if (!repaired.Success || repaired.Duration.TotalSeconds < 0.75 || repaired.PeakPercent < 0.1)
+        {
+            output.WriteLine("FAIL: repaired take is still blank or unreadable.");
+            return 7;
+        }
+
+        output.WriteLine("PASS: recorder captured and repaired a playable stereo take.");
         return 0;
     }
 }
