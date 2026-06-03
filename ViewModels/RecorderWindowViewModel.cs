@@ -36,6 +36,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private AudioInputDeviceItem? _selectedInputDevice;
 
     [ObservableProperty]
+    private AudioOutputDeviceItem? _selectedOutputDevice;
+
+    [ObservableProperty]
     private double _peakPercent = 0;
 
     [ObservableProperty]
@@ -98,6 +101,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
     public ObservableCollection<AudioInputDeviceItem> InputDevices { get; } = [];
+
+    public ObservableCollection<AudioOutputDeviceItem> OutputDevices { get; } = [];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
     [
@@ -293,6 +298,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshInputDevices();
+        RefreshOutputDevices();
         RefreshVersions();
         RestoreLayerDeck();
     }
@@ -459,6 +465,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         InputName = SelectedInputDevice?.Name ?? "No input selected";
     }
 
+    private void RefreshOutputDevices()
+    {
+        var currentId = SelectedOutputDevice?.Id;
+        OutputDevices.Clear();
+        foreach (var device in _playback.ListOutputs())
+        {
+            OutputDevices.Add(device);
+        }
+
+        SelectedOutputDevice = OutputDevices.FirstOrDefault(device => device.Id == currentId)
+            ?? OutputDevices.FirstOrDefault(device => device.IsDefault)
+            ?? OutputDevices.FirstOrDefault();
+    }
+
     [RelayCommand]
     private void StopRecording()
     {
@@ -542,12 +562,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CurrentFilePath = path;
         _playback.StopAll();
         var metrics = AudioPreviewService.InspectMetrics(path);
-        var result = _playback.PlayOnce(0, path, 100);
+        var outputId = SelectedOutputDevice?.Id ?? "";
+        var outputName = _playback.GetOutputName(outputId);
+        var result = _playback.PlayOnce(0, path, 100, outputId);
         Status = result.Success
-            ? $"Playing latest inside GateKPT -> {_playback.DefaultOutputName}: {Path.GetFileName(path)}"
+            ? $"Playing latest inside GateKPT -> {outputName}: {Path.GetFileName(path)}"
             : result.Message;
         CommandResult = result.Success
-            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {_playback.DefaultOutputName}."
+            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {outputName}."
             : result.Message;
     }
 
@@ -562,9 +584,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void TestSpeaker()
     {
         _playback.StopAll();
-        var result = _playback.PlayTestTone();
+        var outputId = SelectedOutputDevice?.Id ?? "";
+        var outputName = _playback.GetOutputName(outputId);
+        var result = _playback.PlayTestTone(outputId);
         Status = result.Message;
-        CommandResult = $"{result.Message} Output: {_playback.DefaultOutputName}.";
+        CommandResult = $"{result.Message} Output: {outputName}.";
     }
 
     [RelayCommand]

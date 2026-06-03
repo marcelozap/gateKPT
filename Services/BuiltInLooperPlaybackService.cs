@@ -12,23 +12,40 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 {
     private readonly Dictionary<int, PlaybackHandle> _playing = [];
 
-    public string DefaultOutputName
+    public IReadOnlyList<AudioOutputDeviceItem> ListOutputs()
     {
-        get
+        try
         {
-            try
-            {
-                using var enumerator = new MMDeviceEnumerator();
-                return enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).FriendlyName;
-            }
-            catch
-            {
-                return "Windows default output";
-            }
+            using var enumerator = new MMDeviceEnumerator();
+            var defaultId = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID;
+            return enumerator
+                .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
+                .Select(device => new AudioOutputDeviceItem(device.FriendlyName, device.ID, device.ID == defaultId))
+                .OrderByDescending(device => device.IsDefault)
+                .ThenBy(device => device.Name, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+        }
+        catch
+        {
+            return [];
         }
     }
 
-    public LooperPlaybackResult PlayLoop(int trackNumber, string path, double volume)
+    public string GetOutputName(string outputDeviceId)
+    {
+        try
+        {
+            using var enumerator = new MMDeviceEnumerator();
+            var device = FindOutput(enumerator, outputDeviceId);
+            return device?.FriendlyName ?? "Windows default output";
+        }
+        catch
+        {
+            return "Windows default output";
+        }
+    }
+
+    public LooperPlaybackResult PlayLoop(int trackNumber, string path, double volume, string outputDeviceId = "")
     {
         Stop(trackNumber);
 
@@ -44,7 +61,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
             var loop = new LoopStream(reader);
-            var output = CreateOutput();
+            var output = CreateOutput(outputDeviceId);
             output.Init(loop);
             output.Play();
             _playing[trackNumber] = new PlaybackHandle(reader, loop, output);
@@ -57,7 +74,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         }
     }
 
-    public LooperPlaybackResult PlayOnce(int trackNumber, string path, double volume)
+    public LooperPlaybackResult PlayOnce(int trackNumber, string path, double volume, string outputDeviceId = "")
     {
         Stop(trackNumber);
 
@@ -72,7 +89,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             {
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
-            var output = CreateOutput();
+            var output = CreateOutput(outputDeviceId);
             output.Init(reader);
             output.Play();
             _playing[trackNumber] = new PlaybackHandle(reader, output);
@@ -85,7 +102,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         }
     }
 
-    public LooperPlaybackResult PlayTestTone()
+    public LooperPlaybackResult PlayTestTone(string outputDeviceId = "")
     {
         Stop(99);
 
@@ -97,7 +114,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Frequency = 440,
                 Gain = 0.22
             }.Take(TimeSpan.FromSeconds(1.2));
-            var output = CreateOutput();
+            var output = CreateOutput(outputDeviceId);
             output.Init(signal);
             output.Play();
             _playing[99] = new PlaybackHandle(null, output);
@@ -141,18 +158,31 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 
     public void Dispose() => StopAll();
 
-    private static IWavePlayer CreateOutput()
+    private static IWavePlayer CreateOutput(string outputDeviceId)
     {
         try
         {
             using var enumerator = new MMDeviceEnumerator();
-            var device = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            var device = FindOutput(enumerator, outputDeviceId)
+                ?? enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
             return new WasapiOut(device, AudioClientShareMode.Shared, true, 100);
         }
         catch
         {
             return new WaveOutEvent();
         }
+    }
+
+    private static MMDevice? FindOutput(MMDeviceEnumerator enumerator, string outputDeviceId)
+    {
+        if (string.IsNullOrWhiteSpace(outputDeviceId))
+        {
+            return null;
+        }
+
+        return enumerator
+            .EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active)
+            .FirstOrDefault(device => device.ID == outputDeviceId);
     }
 
     private sealed class PlaybackHandle(AudioFileReader? reader, IWavePlayer output) : IDisposable
@@ -184,6 +214,11 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
 }
 
 public sealed record LooperPlaybackResult(bool Success, string Message);
+
+public sealed record AudioOutputDeviceItem(string Name, string Id, bool IsDefault)
+{
+    public override string ToString() => IsDefault ? $"{Name} (default)" : Name;
+}
 
 internal sealed class LoopStream(WaveStream sourceStream) : WaveStream
 {
