@@ -40,6 +40,25 @@ public sealed class RecorderVersionStore
                 .ToList()
             : [];
 
+    public int MoveNonAudioArtifactsToTrash()
+    {
+        if (!Directory.Exists(TakesDirectory))
+        {
+            return 0;
+        }
+
+        var moved = 0;
+        foreach (var path in Directory.GetFiles(TakesDirectory).Where(path => !path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!string.IsNullOrWhiteSpace(MoveToTrash(path)))
+            {
+                moved++;
+            }
+        }
+
+        return moved;
+    }
+
     public string CreateRecordingPath(string label)
     {
         Directory.CreateDirectory(TakesDirectory);

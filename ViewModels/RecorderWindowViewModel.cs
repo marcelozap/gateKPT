@@ -1522,6 +1522,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     private void RefreshVersions()
     {
+        _versions.MoveNonAudioArtifactsToTrash();
         Versions.Clear();
         foreach (var version in _versions.ListVersions())
         {

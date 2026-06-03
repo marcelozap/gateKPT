@@ -39,8 +39,7 @@ public sealed class LayerRecordingService : IDisposable
             Directory.CreateDirectory(_candidateDirectory);
             _peak = 0;
 
-            var candidate = CreateWasapiCaptureCandidate(preferredInput);
-            if (candidate is not null)
+            foreach (var candidate in CreateCaptureCandidates(preferredInput))
             {
                 TryStartCandidate(candidate, layerName, onPeakPercent);
             }
@@ -116,7 +115,9 @@ public sealed class LayerRecordingService : IDisposable
                 capture.RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount);
                 return capture;
             })
-            .OrderByDescending(capture => capture.RmsPercent)
+            .OrderBy(capture => IsPreferredBackend(capture.Backend) ? 0 : 1)
+            .ThenByDescending(capture => IsSaneCapture(capture) ? 1 : 0)
+            .ThenByDescending(capture => capture.RmsPercent)
             .ThenByDescending(capture => capture.Peak * 100)
             .ThenByDescending(capture => capture.BytesWritten)
             .FirstOrDefault();
@@ -209,6 +210,49 @@ public sealed class LayerRecordingService : IDisposable
         }
     }
 
+    private static IEnumerable<CaptureCandidate> CreateCaptureCandidates(string preferredInput)
+    {
+        var waveIn = CreateWaveInCaptureCandidate(preferredInput);
+        if (waveIn is not null)
+        {
+            yield return waveIn;
+        }
+
+        var wasapi = CreateWasapiCaptureCandidate(preferredInput);
+        if (wasapi is not null)
+        {
+            yield return wasapi;
+        }
+    }
+
+    private static CaptureCandidate? CreateWaveInCaptureCandidate(string preferredInput)
+    {
+        try
+        {
+            var deviceNumber = FindWaveInDeviceNumber(preferredInput);
+            if (deviceNumber < 0)
+            {
+                return null;
+            }
+
+            var info = WaveInEvent.GetCapabilities(deviceNumber);
+            return new CaptureCandidate(
+                new WaveInEvent
+                {
+                    DeviceNumber = deviceNumber,
+                    WaveFormat = new WaveFormat(44100, 16, 2),
+                    BufferMilliseconds = 50,
+                    NumberOfBuffers = 4,
+                },
+                info.ProductName,
+                "WaveIn Scarlett stereo");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private static CaptureCandidate? CreateWasapiCaptureCandidate(string preferredInput)
     {
         try
@@ -226,6 +270,26 @@ public sealed class LayerRecordingService : IDisposable
         }
 
         return null;
+    }
+
+    private static int FindWaveInDeviceNumber(string preferredInput)
+    {
+        var fallback = -1;
+        for (var index = 0; index < WaveInEvent.DeviceCount; index++)
+        {
+            var info = WaveInEvent.GetCapabilities(index);
+            if (fallback < 0 && IsLikelyMusicInput(info.ProductName))
+            {
+                fallback = index;
+            }
+
+            if (MatchesPreferredInput(info.ProductName, preferredInput))
+            {
+                return index;
+            }
+        }
+
+        return fallback;
     }
 
     private static MMDevice? FindInputDevice(MMDeviceEnumerator enumerator, string preferredInput)
@@ -375,6 +439,13 @@ public sealed class LayerRecordingService : IDisposable
 
     private static double CalculateRmsPercent(double sumSquares, long sampleCount) =>
         sampleCount <= 0 ? 0 : Math.Sqrt(sumSquares / sampleCount) * 100;
+
+    private static bool IsPreferredBackend(string backend) =>
+        backend.Contains("wavein", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsSaneCapture(ActiveCapture capture) =>
+        capture.Peak is >= 0.005f and <= 1.05f
+        && capture.RmsPercent is >= 0.05 and <= 60;
 
     private static double GetAudioDurationSeconds(string path)
     {
