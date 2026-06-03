@@ -14,11 +14,12 @@ public sealed class LayerRecordingService : IDisposable
     private readonly object _gate = new();
     private readonly List<ActiveCapture> _captures = [];
     private Stopwatch? _clock;
+    private Process? _ffmpegProcess;
     private string _activePath = "";
     private string _candidateDirectory = "";
     private float _peak;
 
-    public bool IsRecording => _captures.Count > 0;
+    public bool IsRecording => _ffmpegProcess is not null || _captures.Count > 0;
 
     public LayerRecordingStartResult Start(
         string preferredInput,
@@ -38,6 +39,13 @@ public sealed class LayerRecordingService : IDisposable
                 DateTime.Now.ToString("yyyyMMdd-HHmmss"));
             Directory.CreateDirectory(_candidateDirectory);
             _peak = 0;
+
+            if (TryStartFfmpegDirectShowCapture(preferredInput, _activePath, out var ffmpegMessage))
+            {
+                _clock = Stopwatch.StartNew();
+                onPeakPercent?.Invoke(12);
+                return new LayerRecordingStartResult(true, _activePath, ffmpegMessage);
+            }
 
             foreach (var candidate in CreateCaptureCandidates(preferredInput))
             {
@@ -65,6 +73,11 @@ public sealed class LayerRecordingService : IDisposable
 
     public LayerRecordingStopResult Stop()
     {
+        if (_ffmpegProcess is not null)
+        {
+            return StopFfmpegCapture();
+        }
+
         if (_captures.Count == 0)
         {
             return new LayerRecordingStopResult(false, "", "00:00", 0, 0, "No active recording.");
@@ -162,6 +175,126 @@ public sealed class LayerRecordingService : IDisposable
     }
 
     public void Dispose() => Stop();
+
+    private bool TryStartFfmpegDirectShowCapture(string preferredInput, string outputPath, out string message)
+    {
+        message = "";
+        if (!IsLikelyMusicInput(preferredInput))
+        {
+            return false;
+        }
+
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(outputPath) ?? ".");
+            var deviceName = ResolveDirectShowAudioDeviceName(preferredInput);
+            if (string.IsNullOrWhiteSpace(deviceName))
+            {
+                return false;
+            }
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "ffmpeg",
+                Arguments = $"-y -hide_banner -f dshow -i audio=\"{deviceName}\" -ac 2 -ar 44100 \"{outputPath}\"",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+            };
+
+            _ffmpegProcess = Process.Start(startInfo);
+            if (_ffmpegProcess is null)
+            {
+                return false;
+            }
+
+            _ = _ffmpegProcess.StandardError.ReadToEndAsync();
+            _ = _ffmpegProcess.StandardOutput.ReadToEndAsync();
+            message = $"Recording with FFmpeg DirectShow: {deviceName}";
+            return true;
+        }
+        catch
+        {
+            _ffmpegProcess = null;
+            return false;
+        }
+    }
+
+    private LayerRecordingStopResult StopFfmpegCapture()
+    {
+        var elapsed = _clock?.Elapsed ?? TimeSpan.Zero;
+        var path = _activePath;
+        var process = _ffmpegProcess;
+        _ffmpegProcess = null;
+        _clock = null;
+        _activePath = "";
+        _candidateDirectory = "";
+        _peak = 0;
+
+        if (process is null)
+        {
+            return new LayerRecordingStopResult(false, path, FormatElapsed(elapsed), 0, 0, "No FFmpeg recording process was active.");
+        }
+
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.StandardInput.WriteLine("q");
+                process.StandardInput.Flush();
+            }
+
+            if (!process.WaitForExit(4000) && !process.HasExited)
+            {
+                process.Kill(true);
+                process.WaitForExit(1500);
+            }
+        }
+        catch
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(true);
+                }
+            }
+            catch
+            {
+            }
+        }
+        finally
+        {
+            process.Dispose();
+        }
+
+        var metrics = AudioPreviewService.InspectMetrics(path);
+        if (!metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 0.5 || metrics.RmsPercent < 0.05)
+        {
+            if (File.Exists(path))
+            {
+                MoveFileToArchive(path, "rejected-captures");
+            }
+
+            return new LayerRecordingStopResult(
+                false,
+                path,
+                FormatElapsed(elapsed),
+                metrics.PeakPercent,
+                metrics.RmsPercent,
+                $"FFmpeg captured no usable Scarlett audio. Peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.");
+        }
+
+        return new LayerRecordingStopResult(
+            true,
+            path,
+            FormatElapsed(elapsed),
+            metrics.PeakPercent,
+            metrics.RmsPercent,
+            $"Saved from FFmpeg DirectShow Scarlett. Peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.");
+    }
 
     private void TryStartCandidate(CaptureCandidate candidate, string layerName, Action<double>? onPeakPercent)
     {
@@ -344,6 +477,38 @@ public sealed class LayerRecordingService : IDisposable
 
             File.Move(capture.Path, target);
         }
+    }
+
+    private static void MoveFileToArchive(string path, string archiveName)
+    {
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        var root = Path.GetDirectoryName(Path.GetDirectoryName(path) ?? "") ?? Path.GetDirectoryName(path) ?? ".";
+        var archive = Path.Combine(root, archiveName);
+        Directory.CreateDirectory(archive);
+        var target = Path.Combine(archive, Path.GetFileName(path));
+        if (File.Exists(target))
+        {
+            target = Path.Combine(
+                archive,
+                $"{Path.GetFileNameWithoutExtension(path)}-{DateTime.Now:HHmmss}{Path.GetExtension(path)}");
+        }
+
+        File.Move(path, target);
+    }
+
+    private static string ResolveDirectShowAudioDeviceName(string preferredInput)
+    {
+        if (preferredInput.Contains("scarlett", StringComparison.OrdinalIgnoreCase)
+            || preferredInput.Contains("focusrite", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Microphone (Scarlett 2i2 4th Gen)";
+        }
+
+        return preferredInput;
     }
 
     private static bool MatchesPreferredInput(string deviceName, string preferredInput) =>
