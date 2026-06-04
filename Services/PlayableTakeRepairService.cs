@@ -36,10 +36,10 @@ public sealed class PlayableTakeRepairService
 
             var usableChannels = stats.Channels
                 .Where(IsUsableSignal)
-                .OrderBy(channel => channel.Index == 0 ? 0 : 1)
+                .OrderBy(channel => IsClippedBlock(channel) ? 1 : 0)
+                .ThenBy(channel => channel.Index == 0 ? 0 : 1)
                 .ThenByDescending(ChannelScore)
                 .ToArray();
-            var clippedChannels = stats.Channels.Where(IsClippedBlock).ToArray();
 
             if (usableChannels.Length == 0)
             {
@@ -48,16 +48,6 @@ public sealed class PlayableTakeRepairService
                     false,
                     sourcePath,
                     $"No real input signal found. Strongest channel {strongest.Index + 1}: peak {strongest.Peak * 100:0.0}%, RMS {strongest.Rms * 100:0.00}%.");
-            }
-
-            var bestUsable = usableChannels.OrderByDescending(ChannelScore).First();
-            if (clippedChannels.Length > 0 && bestUsable.Peak < 0.10f && bestUsable.Rms < 0.02f)
-            {
-                var clipped = clippedChannels[0];
-                return new PlayableTakeRepairResult(
-                    false,
-                    sourcePath,
-                    $"Scarlett input {clipped.Index + 1} is overloaded/clipping, and the other channel is too quiet to trust. Turn Scarlett gain down and turn INST off if RC-505 is plugged into Scarlett.");
             }
 
             var cleanPath = BuildCleanPath(sourcePath);
@@ -139,7 +129,7 @@ public sealed class PlayableTakeRepairService
             return false;
         }
 
-        return !IsClippedBlock(channel);
+        return true;
     }
 
     private static bool IsClippedBlock(AudioChannelStats channel) =>
