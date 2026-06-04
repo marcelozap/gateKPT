@@ -106,6 +106,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _videoWorkflowStatus = "Find latest phone video, then pair it with the selected GateKPT take.";
 
     [ObservableProperty]
+    private int _videoAudioOffsetMs = 0;
+
+    [ObservableProperty]
+    private string _videoExportPreset = "short";
+
+    [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
     [ObservableProperty]
@@ -328,11 +334,23 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string VideoLayerDetail =>
         string.IsNullOrWhiteSpace(LastVideoOutputPath)
-            ? "Find phone video, then pair it with the latest GateKPT audio take."
+            ? $"Sync {VideoSyncLabel}. Preset: {VideoExportPresetLabel}."
             : $"Export ready: {Path.GetFileName(LastVideoOutputPath)}";
 
+    public string VideoSyncLabel =>
+        VideoAudioOffsetMs == 0
+            ? "audio starts at video start"
+            : VideoAudioOffsetMs > 0
+                ? $"audio later by {VideoAudioOffsetMs} ms"
+                : $"audio earlier by {Math.Abs(VideoAudioOffsetMs)} ms";
+
+    public string VideoExportPresetLabel =>
+        VideoExportPreset.Equals("short", StringComparison.OrdinalIgnoreCase)
+            ? "vertical short"
+            : "same shape";
+
     public string CommandHelp =>
-        "Try: make warmer, cyber vocal, add reverb, delete last, make post clip.";
+        "Try: make warmer, cyber vocal, audio earlier, audio later, make post clip.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -994,7 +1012,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        var result = _phoneVideo.RenderWithGateKptAudio(PhoneVideoPath, audioPath);
+        var result = _phoneVideo.RenderWithGateKptAudio(PhoneVideoPath, audioPath, VideoAudioOffsetMs, VideoExportPreset);
         if (result.Success)
         {
             LastVideoOutputPath = result.Path;
@@ -1049,11 +1067,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 videoPath = found.Path;
             }
 
-            var result = await Task.Run(() => _phoneVideo.RenderWithGateKptAudio(videoPath, audioPath));
+            var offset = VideoAudioOffsetMs;
+            var preset = VideoExportPreset;
+            var result = await Task.Run(() => _phoneVideo.RenderWithGateKptAudio(videoPath, audioPath, offset, preset));
             if (result.Success)
             {
                 LastVideoOutputPath = result.Path;
-                VideoWorkflowStatus = $"Post clip ready: {Path.GetFileName(result.Path)}";
+                VideoWorkflowStatus = $"Post clip ready: {Path.GetFileName(result.Path)} / {VideoSyncLabel}.";
                 Status = VideoWorkflowStatus;
                 _phoneVideo.OpenOutputFolder();
                 return;
@@ -1092,6 +1112,40 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         });
         Status = $"Opened post clip: {Path.GetFileName(LastVideoOutputPath)}";
         VideoWorkflowStatus = Status;
+    }
+
+    [RelayCommand]
+    private void AudioEarlier()
+    {
+        VideoAudioOffsetMs = Math.Max(VideoAudioOffsetMs - 100, -3000);
+        VideoWorkflowStatus = $"Sync set: {VideoSyncLabel}. Re-export with Make post clip.";
+        Status = VideoWorkflowStatus;
+    }
+
+    [RelayCommand]
+    private void AudioLater()
+    {
+        VideoAudioOffsetMs = Math.Min(VideoAudioOffsetMs + 100, 3000);
+        VideoWorkflowStatus = $"Sync set: {VideoSyncLabel}. Re-export with Make post clip.";
+        Status = VideoWorkflowStatus;
+    }
+
+    [RelayCommand]
+    private void ResetVideoSync()
+    {
+        VideoAudioOffsetMs = 0;
+        VideoWorkflowStatus = $"Sync reset: {VideoSyncLabel}.";
+        Status = VideoWorkflowStatus;
+    }
+
+    [RelayCommand]
+    private void ToggleVideoPreset()
+    {
+        VideoExportPreset = VideoExportPreset.Equals("short", StringComparison.OrdinalIgnoreCase)
+            ? "same"
+            : "short";
+        VideoWorkflowStatus = $"Video preset: {VideoExportPresetLabel}.";
+        Status = VideoWorkflowStatus;
     }
 
     [RelayCommand]
@@ -1221,6 +1275,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             IsCommandBusy = false;
             await MakePostClip();
+            return;
+        }
+
+        if (command.Contains("audio earlier", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("sound earlier", StringComparison.OrdinalIgnoreCase))
+        {
+            AudioEarlier();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("audio later", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("sound later", StringComparison.OrdinalIgnoreCase))
+        {
+            AudioLater();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("reset sync", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("no offset", StringComparison.OrdinalIgnoreCase))
+        {
+            ResetVideoSync();
+            IsCommandBusy = false;
             return;
         }
 
@@ -2008,6 +2086,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnLastVideoOutputPathChanged(string value)
     {
         OnPropertyChanged(nameof(LastVideoOutputLabel));
+        OnPropertyChanged(nameof(VideoLayerDetail));
+    }
+
+    partial void OnVideoAudioOffsetMsChanged(int value)
+    {
+        OnPropertyChanged(nameof(VideoSyncLabel));
+        OnPropertyChanged(nameof(VideoLayerDetail));
+    }
+
+    partial void OnVideoExportPresetChanged(string value)
+    {
+        OnPropertyChanged(nameof(VideoExportPresetLabel));
         OnPropertyChanged(nameof(VideoLayerDetail));
     }
 
