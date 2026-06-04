@@ -116,13 +116,23 @@ public sealed class PlayableTakeRepairService
                 .ToArray());
     }
 
-    private static bool IsUsableSignal(AudioChannelStats channel) =>
-        float.IsFinite(channel.Peak)
-        && float.IsFinite(channel.Rms)
-        && channel.Peak >= MinimumUsablePeak
-        && channel.Rms >= MinimumUsableRms
-        && channel.Peak <= MaximumRepairablePeak
-        && channel.Rms <= MaximumRepairableRms;
+    private static bool IsUsableSignal(AudioChannelStats channel)
+    {
+        if (!float.IsFinite(channel.Peak)
+            || !float.IsFinite(channel.Rms)
+            || channel.Peak < MinimumUsablePeak
+            || channel.Rms < MinimumUsableRms
+            || channel.Peak > MaximumRepairablePeak
+            || channel.Rms > MaximumRepairableRms)
+        {
+            return false;
+        }
+
+        // A Scarlett input can report a full-scale clipped block when a hardware
+        // channel is overloaded. That is "loud" but not a usable take.
+        var clippedBlock = channel.Peak >= 0.98f && channel.Rms >= 0.25f;
+        return !clippedBlock;
+    }
 
     private static double ChannelScore(AudioChannelStats channel)
     {
