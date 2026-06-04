@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace GateKPT.MusicOS.Services;
 
@@ -130,13 +131,39 @@ public sealed class PhoneVideoWorkflowService
                 return PhoneVideoResult.Fail("FFmpeg timed out after 5 minutes.");
             }
 
-            return process.ExitCode == 0 && File.Exists(outputPath)
-                ? PhoneVideoResult.Ok(outputPath, $"{successMessage} {Path.GetFileName(outputPath)}")
-                : PhoneVideoResult.Fail($"FFmpeg failed. {stderr.Trim()}");
+            if (process.ExitCode == 0 && File.Exists(outputPath))
+            {
+                WriteManifest(outputPath, args, successMessage);
+                return PhoneVideoResult.Ok(outputPath, $"{successMessage} {Path.GetFileName(outputPath)}");
+            }
+
+            return PhoneVideoResult.Fail($"FFmpeg failed. {stderr.Trim()}");
         }
         catch (Exception ex)
         {
             return PhoneVideoResult.Fail($"Video render failed: {ex.Message}");
+        }
+    }
+
+    private static void WriteManifest(string outputPath, string ffmpegArgs, string action)
+    {
+        try
+        {
+            var manifestPath = Path.ChangeExtension(outputPath, ".gatekpt.json");
+            var manifest = new PhoneVideoExportManifest(
+                DateTimeOffset.Now,
+                action,
+                outputPath,
+                ffmpegArgs);
+            var json = JsonSerializer.Serialize(manifest, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            File.WriteAllText(manifestPath, json);
+        }
+        catch
+        {
+            // Export success matters more than the sidecar receipt.
         }
     }
 
@@ -182,3 +209,9 @@ public sealed record PhoneVideoResult(bool Success, string Path, string Message)
 
     public static PhoneVideoResult Fail(string message) => new(false, "", message);
 }
+
+public sealed record PhoneVideoExportManifest(
+    DateTimeOffset CreatedAt,
+    string Action,
+    string OutputPath,
+    string FfmpegArgs);
