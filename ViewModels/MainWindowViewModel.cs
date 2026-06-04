@@ -303,6 +303,36 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _looperTransportStatus = "Transport idle.";
 
     [ObservableProperty]
+    private string _worldMemoryType = "Phrase";
+
+    [ObservableProperty]
+    private string _worldMemoryLanguage = "";
+
+    [ObservableProperty]
+    private string _worldMemoryPhrase = "";
+
+    [ObservableProperty]
+    private string _worldMemoryMeaning = "";
+
+    [ObservableProperty]
+    private string _worldMemoryPlace = "";
+
+    [ObservableProperty]
+    private string _worldMemoryPerson = "";
+
+    [ObservableProperty]
+    private string _worldMemoryFood = "";
+
+    [ObservableProperty]
+    private string _worldMemoryRhythm = "";
+
+    [ObservableProperty]
+    private string _worldMemorySongIdea = "";
+
+    [ObservableProperty]
+    private string _worldMemoryNotes = "";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -518,6 +548,25 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                     new("Best phrase", "Take 03 has clean consonants on the hook", "Review", "Takes"),
                 ]);
         CompletionHistory = new ObservableCollection<ProjectCompletionRecord>(_store.LoadCompletionHistory());
+        var storedWorldMemories = _store.LoadWorldMemory();
+        WorldMemories = new ObservableCollection<WorldMemoryItem>(
+            storedWorldMemories.Count > 0
+                ? storedWorldMemories
+                :
+                [
+                    new(
+                        DateTime.Now.ToString("yyyy-MM-dd"),
+                        "Song seed",
+                        "",
+                        "",
+                        "",
+                        "Orlando",
+                        "",
+                        "",
+                        "RC-505 groove",
+                        "Turn a real place into a hook.",
+                        "First World Memory seed.")
+                ]);
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -616,6 +665,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<CaptureItem> RecentCaptures { get; }
 
     public ObservableCollection<ProjectCompletionRecord> CompletionHistory { get; }
+
+    public ObservableCollection<WorldMemoryItem> WorldMemories { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -2012,8 +2063,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void PrimeWorldPhrase()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        CaptureTitle = "Phrase / pronunciation";
-        CaptureNotes = "Language: \nPhrase: \nMeaning: \nHow it sounds: \nSong idea:";
+        WorldMemoryType = "Phrase";
+        WorldMemoryLanguage = "";
+        WorldMemoryPhrase = "";
+        WorldMemoryMeaning = "";
+        WorldMemoryRhythm = "";
+        WorldMemorySongIdea = "";
+        WorldMemoryNotes = "How it sounds / how to pronounce it:";
         Status = "Primed World Memory phrase capture.";
     }
 
@@ -2021,8 +2077,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void PrimeWorldPersonPlace()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        CaptureTitle = "Person / place memory";
-        CaptureNotes = "Where: \nWho: \nWhat they taught me: \nSound or rhythm: \nPossible lyric:";
+        WorldMemoryType = "Person / place";
+        WorldMemoryPlace = "";
+        WorldMemoryPerson = "";
+        WorldMemoryRhythm = "";
+        WorldMemorySongIdea = "";
+        WorldMemoryNotes = "What they taught me / what the place felt like:";
         Status = "Primed World Memory person/place capture.";
     }
 
@@ -2030,8 +2090,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void PrimeWorldFood()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        CaptureTitle = "Food / culture note";
-        CaptureNotes = "Food: \nPlace: \nFeeling: \nWords/phrases: \nMusic color:";
+        WorldMemoryType = "Food";
+        WorldMemoryFood = "";
+        WorldMemoryPlace = "";
+        WorldMemoryPhrase = "";
+        WorldMemorySongIdea = "";
+        WorldMemoryNotes = "Feeling / ritual / texture / color:";
         Status = "Primed World Memory food capture.";
     }
 
@@ -2039,9 +2103,65 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void PrimeWorldSongSeed()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        CaptureTitle = "World song seed";
-        CaptureNotes = "Culture/source: \nInstrument/rhythm: \nLanguage idea: \nHook emotion: \nVideo idea:";
+        WorldMemoryType = "Song seed";
+        WorldMemoryRhythm = "";
+        WorldMemoryLanguage = "";
+        WorldMemorySongIdea = "";
+        WorldMemoryNotes = "Instrument / hook emotion / video idea:";
         Status = "Primed World Memory song seed.";
+    }
+
+    [RelayCommand]
+    private void SaveWorldMemory()
+    {
+        var item = new WorldMemoryItem(
+            DateTime.Now.ToString("yyyy-MM-dd h:mm tt"),
+            WorldMemoryType,
+            WorldMemoryLanguage.Trim(),
+            WorldMemoryPhrase.Trim(),
+            WorldMemoryMeaning.Trim(),
+            WorldMemoryPlace.Trim(),
+            WorldMemoryPerson.Trim(),
+            WorldMemoryFood.Trim(),
+            WorldMemoryRhythm.Trim(),
+            WorldMemorySongIdea.Trim(),
+            WorldMemoryNotes.Trim());
+
+        WorldMemories.Insert(0, item);
+        while (WorldMemories.Count > 50)
+        {
+            WorldMemories.RemoveAt(WorldMemories.Count - 1);
+        }
+
+        _store.SaveWorldMemory(WorldMemories);
+        RecentCaptures.Insert(0, new CaptureItem(
+            $"World Memory / {item.Type}",
+            item.Summary,
+            DateTime.Now.ToString("h:mm tt"),
+            "World Memory"));
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        _store.SaveCaptures(RecentCaptures);
+        SaveProjectSnapshot("World memory saved");
+        Status = $"Saved World Memory: {item.Type}";
+    }
+
+    [RelayCommand]
+    private void ClearWorldMemory()
+    {
+        WorldMemoryLanguage = "";
+        WorldMemoryPhrase = "";
+        WorldMemoryMeaning = "";
+        WorldMemoryPlace = "";
+        WorldMemoryPerson = "";
+        WorldMemoryFood = "";
+        WorldMemoryRhythm = "";
+        WorldMemorySongIdea = "";
+        WorldMemoryNotes = "";
+        Status = "World Memory fields cleared.";
     }
 
     [RelayCommand]
@@ -2061,6 +2181,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SavePerformanceLayers(PerformanceLayers);
         _store.SaveInstrumentChannels(InstrumentChannels);
         _store.SaveLooperTracks(LooperTracks);
+        _store.SaveWorldMemory(WorldMemories);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }
@@ -5074,7 +5195,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             item.Mode,
             item.TakeCount,
             item.LastAction,
-            item.TakeArchive)).ToList());
+            item.TakeArchive)).ToList(),
+        WorldMemories.Select(item => new MusicProjectWorldMemory(
+            item.CreatedAt,
+            item.Type,
+            item.Language,
+            item.Phrase,
+            item.Meaning,
+            item.Place,
+            item.Person,
+            item.Food,
+            item.Rhythm,
+            item.SongIdea,
+            item.Notes)).ToList());
 
     private void UpdateCaptionStatus()
     {
@@ -5090,6 +5223,47 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
 
 public sealed record CaptureItem(string Title, string Detail, string Status, string Room);
+
+public sealed record WorldMemoryItem(
+    string CreatedAt,
+    string Type,
+    string Language,
+    string Phrase,
+    string Meaning,
+    string Place,
+    string Person,
+    string Food,
+    string Rhythm,
+    string SongIdea,
+    string Notes)
+{
+    public string Title =>
+        string.IsNullOrWhiteSpace(Phrase)
+            ? string.IsNullOrWhiteSpace(SongIdea)
+                ? Type
+                : SongIdea
+            : Phrase;
+
+    public string Summary
+    {
+        get
+        {
+            var parts = new[]
+            {
+                string.IsNullOrWhiteSpace(Language) ? "" : Language,
+                string.IsNullOrWhiteSpace(Place) ? "" : Place,
+                string.IsNullOrWhiteSpace(Person) ? "" : Person,
+                string.IsNullOrWhiteSpace(Food) ? "" : Food,
+                string.IsNullOrWhiteSpace(Rhythm) ? "" : Rhythm,
+                string.IsNullOrWhiteSpace(Meaning) ? "" : Meaning,
+                string.IsNullOrWhiteSpace(SongIdea) ? "" : SongIdea,
+            }.Where(part => !string.IsNullOrWhiteSpace(part));
+
+            var summary = string.Join(" / ", parts);
+            return string.IsNullOrWhiteSpace(summary) ? Notes : summary;
+        }
+    }
+}
 
 public sealed record WaveformBar(int Index, int Height);
 

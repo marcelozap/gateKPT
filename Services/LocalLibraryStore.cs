@@ -55,6 +55,8 @@ public sealed class LocalLibraryStore
 
     private string CompletionHistoryPath => Path.Combine(LibraryDirectory, "completion-history.json");
 
+    private string WorldMemoryPath => Path.Combine(LibraryDirectory, "world-memory.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -259,6 +261,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<ProjectCompletionRecord> LoadCompletionHistory() => LoadList<ProjectCompletionRecord>(CompletionHistoryPath);
 
     public void SaveCompletionHistory(IEnumerable<ProjectCompletionRecord> records) => SaveList(CompletionHistoryPath, records);
+
+    public IReadOnlyList<WorldMemoryItem> LoadWorldMemory() => LoadList<WorldMemoryItem>(WorldMemoryPath);
+
+    public void SaveWorldMemory(IEnumerable<WorldMemoryItem> items) => SaveList(WorldMemoryPath, items);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

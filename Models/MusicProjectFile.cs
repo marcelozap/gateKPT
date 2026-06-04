@@ -20,9 +20,23 @@ public sealed record MusicProjectFile(
     IReadOnlyList<MusicProjectRoutingNote> RoutingNotes,
     IReadOnlyList<MusicProjectExportTask> ExportTasks,
     string ModifiedAt,
-    IReadOnlyList<MusicProjectLooperTrack>? LooperTracks = null);
+    IReadOnlyList<MusicProjectLooperTrack>? LooperTracks = null,
+    IReadOnlyList<MusicProjectWorldMemory>? WorldMemories = null);
 
 public sealed record MusicProjectCapture(string Title, string Detail, string Status, string Room);
+
+public sealed record MusicProjectWorldMemory(
+    string CreatedAt,
+    string Type,
+    string Language,
+    string Phrase,
+    string Meaning,
+    string Place,
+    string Person,
+    string Food,
+    string Rhythm,
+    string SongIdea,
+    string Notes);
 
 public sealed record MusicProjectLyric(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt);
 

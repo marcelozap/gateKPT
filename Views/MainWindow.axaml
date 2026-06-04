@@ -439,24 +439,60 @@
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#203C36"/>
-                                        <TextBox Text="{Binding CaptureTitle}"
-                                                 PlaceholderText="Memory title"
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                                            <TextBox Text="{Binding WorldMemoryType}"
+                                                     PlaceholderText="Type: phrase, place, food, song seed"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Column="1"
+                                                     Text="{Binding WorldMemoryLanguage}"
+                                                     PlaceholderText="Language"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="1"
+                                                     Text="{Binding WorldMemoryPhrase}"
+                                                     PlaceholderText="Phrase / word / title"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="1"
+                                                     Grid.Column="1"
+                                                     Text="{Binding WorldMemoryMeaning}"
+                                                     PlaceholderText="Meaning"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="2"
+                                                     Text="{Binding WorldMemoryPlace}"
+                                                     PlaceholderText="Place"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="2"
+                                                     Grid.Column="1"
+                                                     Text="{Binding WorldMemoryPerson}"
+                                                     PlaceholderText="Person"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="3"
+                                                     Text="{Binding WorldMemoryFood}"
+                                                     PlaceholderText="Food / ritual"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="3"
+                                                     Grid.Column="1"
+                                                     Text="{Binding WorldMemoryRhythm}"
+                                                     PlaceholderText="Rhythm / instrument"
+                                                     MinHeight="44"/>
+                                        </Grid>
+                                        <TextBox Text="{Binding WorldMemorySongIdea}"
+                                                 PlaceholderText="Song idea / hook / video idea"
                                                  MinHeight="44"/>
-                                        <TextBox Text="{Binding CaptureNotes}"
-                                                 PlaceholderText="Phrase, person, place, food, rhythm, language, feeling..."
+                                        <TextBox Text="{Binding WorldMemoryNotes}"
+                                                 PlaceholderText="Feeling, pronunciation, story, what to practice..."
                                                  AcceptsReturn="True"
                                                  TextWrapping="Wrap"
-                                                 MinHeight="180"/>
+                                                 MinHeight="110"/>
                                         <WrapPanel>
                                             <Button Content="Save memory"
-                                                    Command="{Binding SaveCaptureCommand}"
+                                                    Command="{Binding SaveWorldMemoryCommand}"
                                                     Padding="18,12"
                                                     Margin="0,0,8,8"
                                                     Background="#07110E"
                                                     Foreground="#E8E1D2"
                                                     FontWeight="Black"/>
                                             <Button Content="Clear"
-                                                    Command="{Binding ClearCaptureCommand}"
+                                                    Command="{Binding ClearWorldMemoryCommand}"
                                                     Padding="18,12"
                                                     Margin="0,0,8,8"
                                                     Background="#203C36"
@@ -473,14 +509,14 @@
                                                    FontWeight="Black"
                                                    LetterSpacing="2.5"
                                                    Foreground="#C6A96D"/>
-                                        <ItemsControl ItemsSource="{Binding RecentCaptures}">
+                                        <ItemsControl ItemsSource="{Binding WorldMemories}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate x:DataType="vm:CaptureItem">
+                                                <DataTemplate x:DataType="vm:WorldMemoryItem">
                                                     <Border CornerRadius="18" Padding="13" Margin="0,0,0,10" Background="#13000000" BorderBrush="#1F8DB7AD" BorderThickness="1">
                                                         <StackPanel>
                                                             <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
-                                                            <TextBlock Text="{Binding Detail}" Margin="0,4,0,0" FontSize="11" TextWrapping="Wrap" Foreground="#9DBFB3"/>
-                                                            <TextBlock Text="{Binding Room}" Margin="0,5,0,0" FontSize="10" FontWeight="Black" Foreground="#C6A96D"/>
+                                                            <TextBlock Text="{Binding Summary}" Margin="0,4,0,0" FontSize="11" TextWrapping="Wrap" Foreground="#9DBFB3"/>
+                                                            <TextBlock Text="{Binding CreatedAt}" Margin="0,5,0,0" FontSize="10" FontWeight="Black" Foreground="#C6A96D"/>
                                                         </StackPanel>
                                                     </Border>
                                                 </DataTemplate>
