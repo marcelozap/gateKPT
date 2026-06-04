@@ -332,7 +332,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : $"Export ready: {Path.GetFileName(LastVideoOutputPath)}";
 
     public string CommandHelp =>
-        "Try: make warmer, louder, add reverb, clean it, delete last, play latest.";
+        "Try: make warmer, cyber vocal, add reverb, delete last, make post clip.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1005,6 +1005,70 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task MakePostClip()
+    {
+        if (IsCommandBusy || IsRecorderBusy || IsRecording)
+        {
+            Status = "Finish the current recording/action first.";
+            return;
+        }
+
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            VideoWorkflowStatus = "Record or select a GateKPT take first.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        var audio = AudioPreviewService.InspectMetrics(audioPath);
+        if (!audio.Success || audio.Duration.TotalSeconds < 0.75 || audio.RmsPercent < 0.10)
+        {
+            VideoWorkflowStatus = "Selected take does not look usable yet. Record one clean take first.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        IsCommandBusy = true;
+        VideoWorkflowStatus = "Building post clip...";
+        Status = "Finding phone video and pairing it with GateKPT audio.";
+        try
+        {
+            var videoPath = PhoneVideoPath;
+            if (string.IsNullOrWhiteSpace(videoPath) || !File.Exists(videoPath))
+            {
+                var found = await Task.Run(() => _phoneVideo.FindLatestVideo());
+                if (!found.Success)
+                {
+                    VideoWorkflowStatus = found.Message;
+                    Status = found.Message;
+                    return;
+                }
+
+                PhoneVideoPath = found.Path;
+                videoPath = found.Path;
+            }
+
+            var result = await Task.Run(() => _phoneVideo.RenderWithGateKptAudio(videoPath, audioPath));
+            if (result.Success)
+            {
+                LastVideoOutputPath = result.Path;
+                VideoWorkflowStatus = $"Post clip ready: {Path.GetFileName(result.Path)}";
+                Status = VideoWorkflowStatus;
+                _phoneVideo.OpenOutputFolder();
+                return;
+            }
+
+            VideoWorkflowStatus = result.Message;
+            Status = result.Message;
+        }
+        finally
+        {
+            IsCommandBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private void OpenVideoOutputFolder()
     {
         _phoneVideo.OpenOutputFolder();
@@ -1128,6 +1192,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             ExportLayerMix();
             IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("post clip", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("cover video", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("make video", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("use phone video", StringComparison.OrdinalIgnoreCase))
+        {
+            IsCommandBusy = false;
+            await MakePostClip();
             return;
         }
 
