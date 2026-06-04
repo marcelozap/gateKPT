@@ -11,8 +11,8 @@ public sealed class PlayableTakeRepairService
     private const float MinimumUsableRms = 0.0025f;
     private const float MaximumRepairablePeak = 64f;
     private const float MaximumRepairableRms = 32f;
-    private const float TargetRms = 0.10f;
-    private const float MaximumCleanGain = 10f;
+    private const float TargetRms = 0.24f;
+    private const float MaximumCleanGain = 30f;
 
     public PlayableTakeRepairResult RepairToPlayableStereo(string sourcePath)
     {
@@ -76,7 +76,7 @@ public sealed class PlayableTakeRepairService
             return new PlayableTakeRepairResult(
                 true,
                 sourcePath,
-                $"Playable stereo take verified. Duration {stats.DurationSeconds:0.0}s. Input L ch {routing.Left.Index + 1} RMS {leftRms:0.00}%, R ch {routing.Right.Index + 1} RMS {rightRms:0.00}%, peak {peakPercent:0.0}%. Raw capture archived.");
+                $"Playable stereo take boosted and verified. Duration {stats.DurationSeconds:0.0}s. Input L ch {routing.Left.Index + 1} RMS {leftRms:0.00}%, R ch {routing.Right.Index + 1} RMS {rightRms:0.00}%, peak {peakPercent:0.0}%. Raw capture archived.");
         }
         catch (Exception ex)
         {
