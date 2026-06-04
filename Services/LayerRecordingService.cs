@@ -45,16 +45,24 @@ public sealed class LayerRecordingService : IDisposable
             Directory.CreateDirectory(_candidateDirectory);
             _peak = 0;
 
-            if (TryStartFfmpegDirectShowCapture(preferredInput, _activePath, out var ffmpegMessage))
-            {
-                _clock = Stopwatch.StartNew();
-                onPeakPercent?.Invoke(12);
-                return new LayerRecordingStartResult(true, _activePath, ffmpegMessage);
-            }
-
             foreach (var candidate in CreateCaptureCandidates(preferredInput))
             {
                 TryStartCandidate(candidate, layerName, onPeakPercent);
+            }
+
+            if (_captures.Count > 0)
+            {
+                _clock = Stopwatch.StartNew();
+                return new LayerRecordingStartResult(
+                    true,
+                    _activePath,
+                    $"Recording {layerName} with live metering: {string.Join(", ", _captures.Select(capture => capture.Backend))}");
+            }
+
+            if (TryStartFfmpegDirectShowCapture(preferredInput, _activePath, out var ffmpegMessage))
+            {
+                _clock = Stopwatch.StartNew();
+                return new LayerRecordingStartResult(true, _activePath, $"{ffmpegMessage}. Meter verifies after save.");
             }
 
             if (_captures.Count == 0)
@@ -63,11 +71,8 @@ public sealed class LayerRecordingService : IDisposable
                 return new LayerRecordingStartResult(false, "", "No capture backend started. GateKPT did not record.");
             }
 
-            _clock = Stopwatch.StartNew();
-            return new LayerRecordingStartResult(
-                true,
-                _activePath,
-                $"Recording {layerName} with {_captures.Count} capture path(s): {string.Join(", ", _captures.Select(capture => capture.Backend))}");
+            ResetState();
+            return new LayerRecordingStartResult(false, "", "Recorder entered an unexpected state and stopped safely.");
         }
         catch (Exception ex)
         {
