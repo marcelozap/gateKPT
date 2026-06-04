@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GateKPT.MusicOS.ViewModels"
         xmlns:svc="using:GateKPT.MusicOS.Services"
@@ -235,9 +235,13 @@
                                     Foreground="#07110E"/>
                         </WrapPanel>
 
-                        <Grid Grid.Row="3" ColumnDefinitions="*" ColumnSpacing="8" RowDefinitions="Auto">
+                        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto">
+                            <ComboBox ItemsSource="{Binding CaptureLanes}"
+                                      SelectedItem="{Binding SelectedCaptureLane}"
+                                      MinHeight="44"/>
                             <ComboBox ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
+                                      Grid.Column="1"
                                       MinHeight="44"/>
                         </Grid>
 
@@ -317,7 +321,7 @@
                                     Margin="0,0,8,8"
                                     Background="#203C36"
                                     Foreground="#E8E1D2"/>
-                            <Button Content="× Delete"
+                            <Button Content="Delete"
                                     Command="{Binding QuickDeleteCommand}"
                                     Padding="14,9"
                                     MinWidth="82"
@@ -383,31 +387,41 @@
                             BorderThickness="1"
                             Background="#CC07110E">
                         <StackPanel Spacing="13">
-                            <TextBlock Text="HEAR IT"
+                            <TextBlock Text="LATEST TAKE"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
                                        Foreground="#C6A96D"/>
-                            <TextBlock Text="No beep means output is wrong. Change the second dropdown, then press Beep."
-                                       FontSize="13"
+                            <TextBlock Text="{Binding LatestTakeTitle}"
+                                       FontSize="18"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
                                        Foreground="#E8E1D2"/>
+                            <TextBlock Text="{Binding LatestTakeDetail}"
+                                       FontSize="13"
+                                       FontWeight="Black"
+                                       TextWrapping="Wrap"
+                                       Foreground="#8DB7AD"/>
+                            <TextBlock Text="Use the command box to make a new version. Original stays safe."
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#E8E1D2"/>
                             <WrapPanel Orientation="Horizontal">
-                                <Button Content="Beep"
-                                        Command="{Binding TestSpeakerCommand}"
-                                        Padding="16,11"
-                                        MinWidth="118"
-                                        Margin="0,0,8,8"
-                                        Background="#203C36"
-                                        Foreground="#E8E1D2"/>
-                                <Button Content="Play"
+                                <Button Content="Play latest"
                                         Command="{Binding PlaySelectedCommand}"
                                         Padding="16,11"
-                                        MinWidth="118"
+                                        MinWidth="132"
                                         Margin="0,0,8,8"
                                         Background="#203C36"
                                         Foreground="#E8E1D2"/>
+                                <Button Content="Open folder"
+                                        Command="{Binding OpenFolderCommand}"
+                                        Padding="16,11"
+                                        MinWidth="132"
+                                        Margin="0,0,8,8"
+                                        Background="#F2EEE3"
+                                        Foreground="#07110E"/>
                             </WrapPanel>
                             <TextBlock Text="{Binding CommandHelp}"
                                        FontSize="11"
@@ -421,3 +435,4 @@
         </ScrollViewer>
     </Grid>
 </Window>
+

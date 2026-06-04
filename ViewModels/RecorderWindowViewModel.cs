@@ -108,11 +108,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
+    [ObservableProperty]
+    private CaptureLaneItem? _selectedCaptureLane;
+
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
     public ObservableCollection<AudioInputDeviceItem> InputDevices { get; } = [];
 
     public ObservableCollection<AudioOutputDeviceItem> OutputDevices { get; } = [];
+
+    public ObservableCollection<CaptureLaneItem> CaptureLanes { get; } =
+    [
+        new("Full Loop", "full-loop", "Whole RC-505 pass", null),
+        new("Drums", "drums", "Groove first", 1),
+        new("Guitar / Keys", "guitar-keys", "Harmony or movement", 2),
+        new("Vocals", "vocals", "Lead line or hook", 4)
+    ];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
     [
@@ -200,7 +211,30 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : $"Input: {SelectedInputDevice.Name}. If the meter moves, record.";
 
     public string SelectedCaptureLaneLabel =>
-        SelectedLayerSlot?.Name ?? "Drums";
+        SelectedCaptureLane?.Name ?? "Full Loop";
+
+    public string SelectedCaptureLaneDetail =>
+        SelectedCaptureLane?.Detail ?? "Whole RC-505 pass";
+
+    public string LatestTakeTitle =>
+        string.IsNullOrWhiteSpace(CurrentFilePath)
+            ? "No take saved yet."
+            : Path.GetFileName(CurrentFilePath);
+
+    public string LatestTakeDetail
+    {
+        get
+        {
+            var path = SelectedVersion?.Path ?? CurrentFilePath;
+            var preview = AudioPreviewService.Inspect(path);
+            if (preview == AudioPreview.Empty)
+            {
+                return "Record one take, then shape it.";
+            }
+
+            return $"{SelectedCaptureLaneLabel} / {preview.Duration} / peak {preview.Peak}";
+        }
+    }
 
     public string CaptureInstruction =>
         IsRecording
@@ -211,7 +245,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                     : PeakPercent < 20
                         ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
                         : "GateKPT is recording now."
-            : "Record one clean take. GateKPT verifies it after stop.";
+            : $"Ready: {SelectedCaptureLaneLabel}. Record, play, stop.";
 
     public string NextActionLabel =>
         IsRecording
@@ -326,6 +360,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
+        SelectedCaptureLane = CaptureLanes.FirstOrDefault();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         RefreshInputDevices();
         RefreshOutputDevices();
@@ -378,7 +413,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void StartRecording()
     {
-        StartRecordingForLayer("take", null);
+        var lane = SelectedCaptureLane ?? CaptureLanes.First();
+        StartRecordingForLayer(lane.FileLabel, lane.LayerNumber);
     }
 
     [RelayCommand]
@@ -1818,6 +1854,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(CurrentFileLabel));
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
+        OnPropertyChanged(nameof(LatestTakeTitle));
+        OnPropertyChanged(nameof(LatestTakeDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
     }
@@ -1825,6 +1863,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnSelectedVersionChanged(RecorderVersionFile? value)
     {
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
+        OnPropertyChanged(nameof(LatestTakeTitle));
+        OnPropertyChanged(nameof(LatestTakeDetail));
     }
 
     partial void OnLastExportedMixPathChanged(string value)
@@ -1850,9 +1890,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnSelectedLayerSlotChanged(LayerSlotItem? value)
     {
         OnPropertyChanged(nameof(LastEffectChain));
-        OnPropertyChanged(nameof(SelectedCaptureLaneLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
         OnPropertyChanged(nameof(RecordingButtonLabel));
+    }
+
+    partial void OnSelectedCaptureLaneChanged(CaptureLaneItem? value)
+    {
+        OnPropertyChanged(nameof(SelectedCaptureLaneLabel));
+        OnPropertyChanged(nameof(SelectedCaptureLaneDetail));
+        OnPropertyChanged(nameof(CaptureInstruction));
+        OnPropertyChanged(nameof(LatestTakeDetail));
     }
 
     partial void OnSelectedInputDeviceChanged(AudioInputDeviceItem? value)
@@ -1869,3 +1916,12 @@ public sealed record LayerSlotItem(
     string FileName = "Empty",
     string Status = "Empty",
     string EffectChain = "");
+
+public sealed record CaptureLaneItem(
+    string Name,
+    string FileLabel,
+    string Detail,
+    int? LayerNumber)
+{
+    public override string ToString() => Name;
+}
