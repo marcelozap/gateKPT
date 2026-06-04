@@ -481,6 +481,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("Visual Room", "Visualizer, projector, palette, and performance presets", "04", "#D9C5A5"),
             new("Rig Routing", "Focusrite, RC-505, MIDI, monitoring, and live input memory", "05", "#F2EADC"),
             new("Export Memory", "Queue, render, track, and remember every finished asset", "06", "#9DBFB3"),
+            new("World Memory", "People, languages, food, places, and song seeds", "07", "#8DB7AD"),
         ];
 
         _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
@@ -1617,7 +1618,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public bool IsPerformanceRevealRoom => SelectedRoom.Name == "Performance / Reveal";
 
-    public bool IsEditorRoom => !IsPerformanceRevealRoom;
+    public bool IsWorldMemoryRoom => SelectedRoom.Name == "World Memory";
+
+    public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom;
+
+    public string WorldMemorySignal =>
+        "Travel, language, food, and music notes become songs instead of disappearing.";
+
+    public string WorldMemoryPrompt =>
+        "Save the phrase, rhythm, person, place, food, or feeling. GateKPT can turn it into a hook later.";
 
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
@@ -1997,6 +2006,42 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         CaptureTitle = $"{SelectedRoom.Name} capture";
         CaptureNotes = "";
         Status = "Capture cleared";
+    }
+
+    [RelayCommand]
+    private void PrimeWorldPhrase()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
+        CaptureTitle = "Phrase / pronunciation";
+        CaptureNotes = "Language: \nPhrase: \nMeaning: \nHow it sounds: \nSong idea:";
+        Status = "Primed World Memory phrase capture.";
+    }
+
+    [RelayCommand]
+    private void PrimeWorldPersonPlace()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
+        CaptureTitle = "Person / place memory";
+        CaptureNotes = "Where: \nWho: \nWhat they taught me: \nSound or rhythm: \nPossible lyric:";
+        Status = "Primed World Memory person/place capture.";
+    }
+
+    [RelayCommand]
+    private void PrimeWorldFood()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
+        CaptureTitle = "Food / culture note";
+        CaptureNotes = "Food: \nPlace: \nFeeling: \nWords/phrases: \nMusic color:";
+        Status = "Primed World Memory food capture.";
+    }
+
+    [RelayCommand]
+    private void PrimeWorldSongSeed()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
+        CaptureTitle = "World song seed";
+        CaptureNotes = "Culture/source: \nInstrument/rhythm: \nLanguage idea: \nHook emotion: \nVideo idea:";
+        Status = "Primed World Memory song seed.";
     }
 
     [RelayCommand]

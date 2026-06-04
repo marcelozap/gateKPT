@@ -371,6 +371,127 @@
                         </Border>
                     </Grid>
                 </Border>
+                <StackPanel IsVisible="{Binding IsWorldMemoryRoom}" Spacing="18">
+                    <Border CornerRadius="34"
+                            BorderBrush="#338DB7AD"
+                            BorderThickness="1"
+                            Padding="30"
+                            BoxShadow="0 24 70 0 #66000000">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#0B1B2A" Offset="0"/>
+                                <GradientStop Color="#07110E" Offset="0.55"/>
+                                <GradientStop Color="#17120D" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="21">
+                            <StackPanel>
+                                <TextBlock Classes="label" Text="WORLD MEMORY"/>
+                                <TextBlock Text="Music is the passport."
+                                           Margin="0,10,0,0"
+                                           FontSize="44"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#F8F0E5"/>
+                                <TextBlock Text="{Binding WorldMemorySignal}"
+                                           Margin="0,10,0,0"
+                                           FontSize="15"
+                                           FontWeight="Bold"
+                                           TextWrapping="Wrap"
+                                           Foreground="#8DB7AD"/>
+                            </StackPanel>
+
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" ColumnSpacing="13">
+                                <Button Content="Phrase"
+                                        Command="{Binding PrimeWorldPhraseCommand}"
+                                        Padding="18,14"
+                                        Background="#8DB7AD"
+                                        Foreground="#07110E"
+                                        FontWeight="Black"/>
+                                <Button Grid.Column="1"
+                                        Content="Person / place"
+                                        Command="{Binding PrimeWorldPersonPlaceCommand}"
+                                        Padding="18,14"
+                                        Background="#203C36"
+                                        Foreground="#E8E1D2"
+                                        FontWeight="Black"/>
+                                <Button Grid.Column="2"
+                                        Content="Food"
+                                        Command="{Binding PrimeWorldFoodCommand}"
+                                        Padding="18,14"
+                                        Background="#C6A96D"
+                                        Foreground="#07110E"
+                                        FontWeight="Black"/>
+                                <Button Grid.Column="3"
+                                        Content="Song seed"
+                                        Command="{Binding PrimeWorldSongSeedCommand}"
+                                        Padding="18,14"
+                                        Background="#E37B45"
+                                        Foreground="#15120D"
+                                        FontWeight="Black"/>
+                            </Grid>
+
+                            <Grid Grid.Row="2" ColumnDefinitions="1.15*,0.85*" ColumnSpacing="21">
+                                <Border CornerRadius="28" Padding="21" Background="#D9F8F0E5" BorderBrush="#338DB7AD" BorderThickness="1">
+                                    <StackPanel Spacing="13">
+                                        <TextBlock Text="{Binding WorldMemoryPrompt}"
+                                                   FontSize="13"
+                                                   FontWeight="Black"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#203C36"/>
+                                        <TextBox Text="{Binding CaptureTitle}"
+                                                 PlaceholderText="Memory title"
+                                                 MinHeight="44"/>
+                                        <TextBox Text="{Binding CaptureNotes}"
+                                                 PlaceholderText="Phrase, person, place, food, rhythm, language, feeling..."
+                                                 AcceptsReturn="True"
+                                                 TextWrapping="Wrap"
+                                                 MinHeight="180"/>
+                                        <WrapPanel>
+                                            <Button Content="Save memory"
+                                                    Command="{Binding SaveCaptureCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#07110E"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Clear"
+                                                    Command="{Binding ClearCaptureCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#203C36"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="1" CornerRadius="28" Padding="21" Background="#A807110E" BorderBrush="#22F8F0E5" BorderThickness="1">
+                                    <StackPanel Spacing="13">
+                                        <TextBlock Text="RECENT MEMORY"
+                                                   FontSize="11"
+                                                   FontWeight="Black"
+                                                   LetterSpacing="2.5"
+                                                   Foreground="#C6A96D"/>
+                                        <ItemsControl ItemsSource="{Binding RecentCaptures}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:CaptureItem">
+                                                    <Border CornerRadius="18" Padding="13" Margin="0,0,0,10" Background="#13000000" BorderBrush="#1F8DB7AD" BorderThickness="1">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Title}" FontSize="13" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                            <TextBlock Text="{Binding Detail}" Margin="0,4,0,0" FontSize="11" TextWrapping="Wrap" Foreground="#9DBFB3"/>
+                                                            <TextBlock Text="{Binding Room}" Margin="0,5,0,0" FontSize="10" FontWeight="Black" Foreground="#C6A96D"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </StackPanel>
                 <StackPanel IsVisible="{Binding IsEditorRoom}" Spacing="18">
                 <Border CornerRadius="34" BorderBrush="#2BE8E1D2" BorderThickness="1" Padding="30" BoxShadow="0 24 70 0 #66000000">
                     <Border.Background>
