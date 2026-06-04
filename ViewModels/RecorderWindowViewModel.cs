@@ -528,7 +528,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             {
                 _versions.MoveToTrash(result.Path);
                 CurrentFilePath = "";
-                Status = $"Rejected silent take. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. No rescue copy created.";
+                Status = $"NO TAKE SAVED. GateKPT heard silence: peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
+                CommandResult = "No take saved. Play sound after pressing RECORD, then press STOP.";
+                SignalProbeSummary = "Folder is empty because the last take had no usable audio.";
                 WriteDiagnostic($"REJECT SILENT | raw={result.Path} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}%");
                 RefreshVersions();
                 _activeCaptureLayerNumber = null;
@@ -550,8 +552,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 }
 
                 CurrentFilePath = "";
-                Status = $"Rejected weak take. {repair.Message} Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
-                CommandResult = "No take saved. GateKPT only keeps audio with real sustained signal now.";
+                var isClipping = repair.Message.Contains("overloaded", StringComparison.OrdinalIgnoreCase)
+                    || repair.Message.Contains("clipping", StringComparison.OrdinalIgnoreCase);
+                Status = isClipping
+                    ? "NO TAKE SAVED. Scarlett input is clipping. Lower input gain until the meter stays below 80%."
+                    : $"NO TAKE SAVED. {repair.Message}";
+                CommandResult = isClipping
+                    ? "GateKPT rejected this on purpose: clipping makes a file that looks loud but sounds wrong. Lower Scarlett gain, record again."
+                    : $"No take saved. Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
+                SignalProbeSummary = isClipping
+                    ? "Folder is empty because the last take clipped."
+                    : "Folder is empty because GateKPT rejected the last take.";
                 RefreshVersions();
                 _activeCaptureLayerNumber = null;
                 _activeCaptureLabel = "recording";
