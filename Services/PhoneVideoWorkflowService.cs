@@ -85,6 +85,60 @@ public sealed class PhoneVideoWorkflowService
         return RunFfmpeg(args, outputPath, $"Rendered phone video with GateKPT audio ({FormatOffsetLabel(audioOffsetMs)}).");
     }
 
+    public PhoneVideoSyncResult SuggestSyncOffset(string videoPath, string audioPath)
+    {
+        if (!File.Exists(videoPath))
+        {
+            return PhoneVideoSyncResult.Fail("Video file missing.");
+        }
+
+        if (!File.Exists(audioPath))
+        {
+            return PhoneVideoSyncResult.Fail("GateKPT audio take missing.");
+        }
+
+        var ffmpeg = ResolveTool("ffmpeg.exe");
+        if (string.IsNullOrWhiteSpace(ffmpeg))
+        {
+            return PhoneVideoSyncResult.Fail("FFmpeg not found. Install FFmpeg before auto sync.");
+        }
+
+        var tempDirectory = Path.Combine(Path.GetTempPath(), "GateKPT", "sync");
+        Directory.CreateDirectory(tempDirectory);
+        var stamp = DateTime.Now.ToString("yyyyMMdd-HHmmss-fff");
+        var videoAudioPath = Path.Combine(tempDirectory, $"{stamp}-video.wav");
+        var cleanAudioPath = Path.Combine(tempDirectory, $"{stamp}-clean.wav");
+
+        var videoExtract = ExtractMonoWav(ffmpeg, videoPath, videoAudioPath);
+        if (!videoExtract.Success)
+        {
+            return PhoneVideoSyncResult.Fail($"Could not read phone video audio. {videoExtract.Message}");
+        }
+
+        var cleanExtract = ExtractMonoWav(ffmpeg, audioPath, cleanAudioPath);
+        if (!cleanExtract.Success)
+        {
+            return PhoneVideoSyncResult.Fail($"Could not read GateKPT audio. {cleanExtract.Message}");
+        }
+
+        var videoHit = FindFirstTransientMs(videoAudioPath);
+        var cleanHit = FindFirstTransientMs(cleanAudioPath);
+        TryDelete(videoAudioPath);
+        TryDelete(cleanAudioPath);
+
+        if (videoHit is null || cleanHit is null)
+        {
+            return PhoneVideoSyncResult.Fail("Could not find a clear clap/hit in both files. Add one loud hit at the start next time.");
+        }
+
+        var offset = Math.Clamp(videoHit.Value - cleanHit.Value, -3000, 3000);
+        return PhoneVideoSyncResult.Ok(
+            offset,
+            videoHit.Value,
+            cleanHit.Value,
+            $"Suggested sync: {FormatOffsetLabel(offset)}. Video hit {videoHit.Value} ms / GateKPT hit {cleanHit.Value} ms.");
+    }
+
     public void OpenOutputFolder()
     {
         Directory.CreateDirectory(OutputDirectory);
@@ -138,6 +192,110 @@ public sealed class PhoneVideoWorkflowService
         catch (Exception ex)
         {
             return PhoneVideoResult.Fail($"Video render failed: {ex.Message}");
+        }
+    }
+
+    private static PhoneVideoResult ExtractMonoWav(string ffmpeg, string sourcePath, string outputPath)
+    {
+        try
+        {
+            using var process = Process.Start(new ProcessStartInfo
+            {
+                FileName = ffmpeg,
+                Arguments = $"-y -hide_banner -i \"{sourcePath}\" -vn -ac 1 -ar 44100 -t 90 \"{outputPath}\"",
+                CreateNoWindow = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+            });
+
+            if (process is null)
+            {
+                return PhoneVideoResult.Fail("Could not start FFmpeg.");
+            }
+
+            var stderr = process.StandardError.ReadToEnd();
+            if (!process.WaitForExit(TimeSpan.FromMinutes(2)))
+            {
+                process.Kill(entireProcessTree: true);
+                return PhoneVideoResult.Fail("FFmpeg audio extraction timed out.");
+            }
+
+            return process.ExitCode == 0 && File.Exists(outputPath)
+                ? PhoneVideoResult.Ok(outputPath, "Extracted audio.")
+                : PhoneVideoResult.Fail(stderr.Trim());
+        }
+        catch (Exception ex)
+        {
+            return PhoneVideoResult.Fail(ex.Message);
+        }
+    }
+
+    private static int? FindFirstTransientMs(string wavPath)
+    {
+        try
+        {
+            using var reader = new NAudio.Wave.AudioFileReader(wavPath);
+            var sampleRate = reader.WaveFormat.SampleRate;
+            var channels = reader.WaveFormat.Channels;
+            var windowFrames = Math.Max(128, sampleRate / 100);
+            var buffer = new float[windowFrames * channels];
+            var elapsedFrames = 0;
+            var noiseFloor = 0.015;
+            var bestRms = 0.0;
+
+            while (true)
+            {
+                var read = reader.Read(buffer, 0, buffer.Length);
+                if (read <= 0)
+                {
+                    break;
+                }
+
+                var sum = 0.0;
+                for (var index = 0; index < read; index += channels)
+                {
+                    var sample = Math.Abs(buffer[index]);
+                    sum += sample * sample;
+                }
+
+                var frames = Math.Max(1, read / channels);
+                var rms = Math.Sqrt(sum / frames);
+                bestRms = Math.Max(bestRms, rms);
+                var threshold = Math.Max(0.08, Math.Max(noiseFloor * 5, bestRms * 0.42));
+                if (elapsedFrames > sampleRate / 5 && rms >= threshold)
+                {
+                    return (int)Math.Round(elapsedFrames * 1000.0 / sampleRate);
+                }
+
+                if (elapsedFrames < sampleRate * 2)
+                {
+                    noiseFloor = Math.Max(noiseFloor, rms);
+                }
+
+                elapsedFrames += frames;
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch
+        {
+            // Temporary sync files are best-effort cleanup.
         }
     }
 
@@ -258,6 +416,20 @@ public sealed record PhoneVideoResult(bool Success, string Path, string Message)
     public static PhoneVideoResult Ok(string path, string message) => new(true, path, message);
 
     public static PhoneVideoResult Fail(string message) => new(false, "", message);
+}
+
+public sealed record PhoneVideoSyncResult(
+    bool Success,
+    int OffsetMs,
+    int VideoTransientMs,
+    int AudioTransientMs,
+    string Message)
+{
+    public static PhoneVideoSyncResult Ok(int offsetMs, int videoTransientMs, int audioTransientMs, string message) =>
+        new(true, offsetMs, videoTransientMs, audioTransientMs, message);
+
+    public static PhoneVideoSyncResult Fail(string message) =>
+        new(false, 0, 0, 0, message);
 }
 
 public sealed record PhoneVideoExportManifest(

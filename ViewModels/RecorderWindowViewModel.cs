@@ -1139,6 +1139,61 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task AutoSyncPostClip()
+    {
+        if (IsCommandBusy || IsRecorderBusy || IsRecording)
+        {
+            Status = "Finish the current recording/action first.";
+            return;
+        }
+
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            VideoWorkflowStatus = "Record or select a GateKPT take first.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        IsCommandBusy = true;
+        VideoWorkflowStatus = "Looking for first loud hit in video and take...";
+        Status = VideoWorkflowStatus;
+        try
+        {
+            var videoPath = PhoneVideoPath;
+            if (string.IsNullOrWhiteSpace(videoPath) || !File.Exists(videoPath))
+            {
+                var found = await Task.Run(() => _phoneVideo.FindLatestVideo());
+                if (!found.Success)
+                {
+                    VideoWorkflowStatus = found.Message;
+                    Status = found.Message;
+                    return;
+                }
+
+                PhoneVideoPath = found.Path;
+                videoPath = found.Path;
+            }
+
+            var sync = await Task.Run(() => _phoneVideo.SuggestSyncOffset(videoPath, audioPath));
+            if (!sync.Success)
+            {
+                VideoWorkflowStatus = sync.Message;
+                Status = sync.Message;
+                return;
+            }
+
+            VideoAudioOffsetMs = sync.OffsetMs;
+            VideoWorkflowStatus = $"{sync.Message} Re-export with Make post clip.";
+            Status = VideoWorkflowStatus;
+        }
+        finally
+        {
+            IsCommandBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private void ToggleVideoPreset()
     {
         VideoExportPreset = VideoExportPreset.Equals("short", StringComparison.OrdinalIgnoreCase)
@@ -1299,6 +1354,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             ResetVideoSync();
             IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("auto sync", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("sync video", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("sync audio", StringComparison.OrdinalIgnoreCase))
+        {
+            IsCommandBusy = false;
+            await AutoSyncPostClip();
             return;
         }
 
