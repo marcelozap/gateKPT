@@ -242,6 +242,36 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
     }
 
+    public string PostReadySignal
+    {
+        get
+        {
+            var path = SelectedVersion?.Path ?? CurrentFilePath;
+            var metrics = AudioPreviewService.InspectMetrics(path);
+            if (!metrics.Success)
+            {
+                return "Post check: record/select a take.";
+            }
+
+            if (metrics.Duration.TotalSeconds < 8)
+            {
+                return "Post check: very short take.";
+            }
+
+            if (metrics.RmsPercent < 0.20)
+            {
+                return "Post check: quiet. Try louder or normalize.";
+            }
+
+            if (metrics.PeakPercent > 96)
+            {
+                return "Post check: hot. Watch for clipping.";
+            }
+
+            return $"Post check: ready enough. {metrics.Duration:mm\\:ss}, RMS {metrics.RmsPercent:0.00}%.";
+        }
+    }
+
     public string CaptureInstruction =>
         IsRecording
             ? PeakPercent >= 96
@@ -2119,6 +2149,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
+        OnPropertyChanged(nameof(PostReadySignal));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
     }
@@ -2128,6 +2159,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
+        OnPropertyChanged(nameof(PostReadySignal));
     }
 
     partial void OnLastExportedMixPathChanged(string value)

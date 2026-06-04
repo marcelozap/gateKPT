@@ -402,6 +402,11 @@
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
                                        Foreground="#8DB7AD"/>
+                            <TextBlock Text="{Binding PostReadySignal}"
+                                       FontSize="12"
+                                       FontWeight="Black"
+                                       TextWrapping="Wrap"
+                                       Foreground="#C6A96D"/>
                             <TextBlock Text="Use the command box to make a new version. Original stays safe."
                                        FontSize="12"
                                        FontWeight="SemiBold"
