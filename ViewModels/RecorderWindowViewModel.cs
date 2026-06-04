@@ -321,6 +321,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "No video output yet."
             : Path.GetFileName(LastVideoOutputPath);
 
+    public string VideoLayerTitle =>
+        string.IsNullOrWhiteSpace(PhoneVideoPath)
+            ? "No phone video linked yet."
+            : Path.GetFileName(PhoneVideoPath);
+
+    public string VideoLayerDetail =>
+        string.IsNullOrWhiteSpace(LastVideoOutputPath)
+            ? "Find phone video, then pair it with the latest GateKPT audio take."
+            : $"Export ready: {Path.GetFileName(LastVideoOutputPath)}";
+
     public string CommandHelp =>
         "Try: make warmer, louder, add reverb, clean it, delete last, play latest.";
 
@@ -1403,6 +1413,24 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         var text = command.ToLowerInvariant();
 
+        if (text.Contains("cyber") || text.Contains("electric") || text.Contains("glitch") || text.Contains("future"))
+        {
+            preset = new AudioEditPreset(
+                text.Contains("vocal") || text.Contains("voice") ? "cyber-vocal" : "cyber-texture",
+                "Cyber texture: tighter lows, bright edge, controlled saturation, and short digital room.",
+                Gain: 1.35,
+                HighPassHz: 120,
+                HighShelfDb: 4.5,
+                CompressionAmount: 0.42,
+                SaturationAmount: 0.22,
+                EchoMs: 85,
+                EchoMix: 0.10,
+                ReverbMs: 130,
+                ReverbMix: 0.11,
+                TargetLayer: text.Contains("vocal") || text.Contains("voice") ? "Vocal" : "");
+            return true;
+        }
+
         if (text.Contains("vocal") || text.Contains("sing"))
         {
             preset = new AudioEditPreset(
@@ -1880,11 +1908,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnPhoneVideoPathChanged(string value)
     {
         OnPropertyChanged(nameof(PhoneVideoLabel));
+        OnPropertyChanged(nameof(VideoLayerTitle));
+        OnPropertyChanged(nameof(VideoLayerDetail));
     }
 
     partial void OnLastVideoOutputPathChanged(string value)
     {
         OnPropertyChanged(nameof(LastVideoOutputLabel));
+        OnPropertyChanged(nameof(VideoLayerDetail));
     }
 
     partial void OnSelectedLayerSlotChanged(LayerSlotItem? value)
