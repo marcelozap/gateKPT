@@ -39,6 +39,7 @@ public sealed class PlayableTakeRepairService
                 .OrderBy(channel => channel.Index == 0 ? 0 : 1)
                 .ThenByDescending(ChannelScore)
                 .ToArray();
+            var clippedChannels = stats.Channels.Where(IsClippedBlock).ToArray();
 
             if (usableChannels.Length == 0)
             {
@@ -47,6 +48,16 @@ public sealed class PlayableTakeRepairService
                     false,
                     sourcePath,
                     $"No real input signal found. Strongest channel {strongest.Index + 1}: peak {strongest.Peak * 100:0.0}%, RMS {strongest.Rms * 100:0.00}%.");
+            }
+
+            var bestUsable = usableChannels.OrderByDescending(ChannelScore).First();
+            if (clippedChannels.Length > 0 && bestUsable.Peak < 0.10f && bestUsable.Rms < 0.02f)
+            {
+                var clipped = clippedChannels[0];
+                return new PlayableTakeRepairResult(
+                    false,
+                    sourcePath,
+                    $"Scarlett input {clipped.Index + 1} is overloaded/clipping, and the other channel is too quiet to trust. Turn Scarlett gain down and turn INST off if RC-505 is plugged into Scarlett.");
             }
 
             var cleanPath = BuildCleanPath(sourcePath);
@@ -128,11 +139,11 @@ public sealed class PlayableTakeRepairService
             return false;
         }
 
-        // A Scarlett input can report a full-scale clipped block when a hardware
-        // channel is overloaded. That is "loud" but not a usable take.
-        var clippedBlock = channel.Peak >= 0.98f && channel.Rms >= 0.25f;
-        return !clippedBlock;
+        return !IsClippedBlock(channel);
     }
+
+    private static bool IsClippedBlock(AudioChannelStats channel) =>
+        channel.Peak >= 0.98f && channel.Rms >= 0.25f;
 
     private static double ChannelScore(AudioChannelStats channel)
     {
