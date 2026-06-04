@@ -1076,6 +1076,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void OpenLatestPostClip()
+    {
+        if (string.IsNullOrWhiteSpace(LastVideoOutputPath) || !File.Exists(LastVideoOutputPath))
+        {
+            Status = "No post clip exported yet.";
+            VideoWorkflowStatus = Status;
+            return;
+        }
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = LastVideoOutputPath,
+            UseShellExecute = true
+        });
+        Status = $"Opened post clip: {Path.GetFileName(LastVideoOutputPath)}";
+        VideoWorkflowStatus = Status;
+    }
+
+    [RelayCommand]
     private void ClearLayerDeck()
     {
         _playback.StopAll();
