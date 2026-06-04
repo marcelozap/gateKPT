@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -82,7 +82,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandHistory = "No commands yet.";
 
     [ObservableProperty]
-    private string _signalProbeSummary = "Run Check signal before the first take.";
+    private string _signalProbeSummary = "Record one take. GateKPT verifies the audio when you stop.";
 
     [ObservableProperty]
     private string _lastRecorderDiagnostic = "No recorder diagnostic yet.";
@@ -158,11 +158,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? "WAITING"
                 : "TAKE READY";
 
-    public string RecordingButtonLabel =>
-        IsRecording ? "● RECORDING" : "● RECORD";
+    public string RecordingButtonLabel => IsRecording ? "RECORDING" : "RECORD";
 
-    public string StopButtonLabel =>
-        IsRecording ? "■ SAVE NOW" : "■ SAVE";
+    public string StopButtonLabel => "STOP";
+
+    public bool CanStartRecording => !IsRecording && !IsBusy;
+
+    public bool CanStopRecording => IsRecording && !IsRecorderBusy;
 
     public string MonitorButtonLabel =>
         IsMonitoring ? "MONITOR ON" : "Monitor";
@@ -182,11 +184,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : "Ready";
 
     public string SimpleSignalLabel =>
-        PeakPercent >= 8
-            ? "SOUND DETECTED"
-            : PeakPercent > 0.5
-                ? "LOW SIGNAL"
-                : "NO SOUND YET";
+        PeakPercent >= 96
+            ? "CLIPPING"
+            : PeakPercent >= 8
+                ? "SOUND DETECTED"
+                : PeakPercent > 0.5
+                    ? "LOW SIGNAL"
+                    : "NO SOUND YET";
 
     public string AudioHealthLabel =>
         SelectedInputDevice is null
@@ -200,19 +204,21 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string CaptureInstruction =>
         IsRecording
-            ? PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                ? "No usable signal yet. Play now or stop this take."
-                : PeakPercent < 20
-                    ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
-                    : "GateKPT is recording now."
-            : "Meter moving means input is live. Record, save, open folder.";
+            ? PeakPercent >= 96
+                ? "Too hot. Lower Scarlett gain if the ring is red."
+                : PeakPercent < 1 && RecordingElapsedLabel != "00:00"
+                    ? "No usable signal yet. Play now or stop this take."
+                    : PeakPercent < 20
+                        ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
+                        : "GateKPT is recording now."
+            : "Record one clean take. GateKPT verifies it after stop.";
 
     public string NextActionLabel =>
         IsRecording
             ? "Stop when done."
             : SignalReady
                 ? "Record the take."
-                : "Check signal.";
+                : "Record.";
 
     public string PrimaryHeadline =>
         IsRecording
@@ -226,7 +232,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "Play the pass."
             : SignalReady
                 ? "Capture when ready."
-                : "Check signal, then record.";
+                : "Record, then GateKPT verifies.";
 
     public string CurrentFileLabel =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
@@ -1752,6 +1758,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(NextActionLabel));
         OnPropertyChanged(nameof(RecordingButtonLabel));
         OnPropertyChanged(nameof(StopButtonLabel));
+        OnPropertyChanged(nameof(CanStartRecording));
+        OnPropertyChanged(nameof(CanStopRecording));
         OnPropertyChanged(nameof(RecordingGuardLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
         OnPropertyChanged(nameof(SimpleSignalLabel));
@@ -1762,12 +1770,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(IsBusy));
         OnPropertyChanged(nameof(BusyLabel));
+        OnPropertyChanged(nameof(CanStartRecording));
+        OnPropertyChanged(nameof(CanStopRecording));
     }
 
     partial void OnIsRecorderBusyChanged(bool value)
     {
         OnPropertyChanged(nameof(IsBusy));
         OnPropertyChanged(nameof(BusyLabel));
+        OnPropertyChanged(nameof(CanStartRecording));
+        OnPropertyChanged(nameof(CanStopRecording));
     }
 
     partial void OnIsMonitoringChanged(bool value)

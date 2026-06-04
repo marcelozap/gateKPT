@@ -210,6 +210,7 @@
                         <WrapPanel Grid.Row="2" Orientation="Horizontal">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
+                                    IsVisible="{Binding CanStartRecording}"
                                     Padding="34,16"
                                     MinWidth="230"
                                     Margin="0,0,8,8"
@@ -218,6 +219,7 @@
                                     Foreground="#E8E1D2"/>
                             <Button Content="{Binding StopButtonLabel}"
                                     Command="{Binding StopRecordingCommand}"
+                                    IsVisible="{Binding CanStopRecording}"
                                     Padding="34,16"
                                     MinWidth="230"
                                     Margin="0,0,8,8"
