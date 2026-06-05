@@ -126,6 +126,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public ObservableCollection<AudioOutputDeviceItem> OutputDevices { get; } = [];
 
+    public ObservableCollection<double> SignalBars { get; } = [];
+
     public ObservableCollection<CaptureLaneItem> CaptureLanes { get; } =
     [
         new("Full Loop", "full-loop", "Whole RC-505 pass", null),
@@ -450,6 +452,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
+        for (var index = 0; index < 48; index++)
+        {
+            SignalBars.Add(10 + (index % 6) * 2);
+        }
+
         SelectedCaptureLane = CaptureLanes.FirstOrDefault();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
         SelectedVocalPreset = VocalPresets.FirstOrDefault();
@@ -2266,6 +2273,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     partial void OnPeakPercentChanged(double value)
     {
+        PushSignalBar(value);
         OnPropertyChanged(nameof(PeakLabel));
         OnPropertyChanged(nameof(PeakDecibelLabel));
         OnPropertyChanged(nameof(SimpleSignalLabel));
@@ -2274,6 +2282,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+    }
+
+    private void PushSignalBar(double peak)
+    {
+        if (SignalBars.Count == 0)
+        {
+            return;
+        }
+
+        var normalized = Math.Clamp(peak / 100.0, 0, 1);
+        var wave = Math.Sin((DateTimeOffset.Now.ToUnixTimeMilliseconds() / 120.0) + SignalBars.Count) * 0.22;
+        var height = 8 + (normalized * 74) + Math.Abs(wave * 24);
+        if (peak < 0.5)
+        {
+            height = 8 + Math.Abs(wave * 9);
+        }
+
+        SignalBars.RemoveAt(0);
+        SignalBars.Add(Math.Clamp(height, 6, 92));
     }
 
     partial void OnSignalReadyChanged(bool value)
