@@ -96,7 +96,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             .ToList();
 
     [ObservableProperty]
-    private string _projectName = "GateKPT MusicOS";
+    private string _projectName = "Late Night Florida";
 
     [ObservableProperty]
     private string _platformProfile = "LinkedIn / 16:9";
@@ -111,7 +111,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _loudnessTarget = "-14 LUFS";
 
     [ObservableProperty]
-    private string _businessMode = "Creative audio workspace";
+    private string _businessMode = "Songs from the Central FL training ground";
 
     [ObservableProperty]
     private string _outputDirectory = "";
@@ -504,14 +504,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         Rooms =
         [
-            new("Performance / Reveal", "Sound becomes visual terrain", "00", "#E8E1D2"),
-            new("Song Builder", "Rhythm -> sound -> voice, one part at a time", "01", "#D08A56"),
-            new("Lyric Vault", "Hooks, fragments, titles, and themes stay findable", "02", "#EABF7A"),
-            new("Caption Engine", "Draft safe lyric captions before video export", "03", "#6FB6A6"),
-            new("Visual Room", "Visualizer, projector, palette, and performance presets", "04", "#D9C5A5"),
-            new("Rig Routing", "Focusrite, RC-505, MIDI, monitoring, and live input memory", "05", "#F2EADC"),
-            new("Export Memory", "Queue, render, track, and remember every finished asset", "06", "#9DBFB3"),
-            new("World Memory", "People, languages, food, places, and song seeds", "07", "#8DB7AD"),
+            new("Performance / Reveal", "Turn the take into night terrain", "00", "#E8E1D2"),
+            new("Song Builder", "Drums -> guitar -> vocal, one layer at a time", "01", "#D08A56"),
+            new("Lyric Vault", "Hooks, Spanglish lines, and pressure notes", "02", "#EABF7A"),
+            new("Caption Engine", "Short captions for covers and field clips", "03", "#6FB6A6"),
+            new("Visual Room", "Moon, roads, lakes, storms, and waveform terrain", "04", "#D9C5A5"),
+            new("Rig Routing", "Focusrite, RC-505, controller, and live input memory", "05", "#F2EADC"),
+            new("Export Memory", "Clips, demos, archives, and drops coming soon", "06", "#9DBFB3"),
+            new("World Memory", "Field recordings, places, phrases, and song seeds", "07", "#8DB7AD"),
         ];
 
         _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
@@ -529,12 +529,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _selectedAudioPreset = AudioPresets[0];
 
         var project = _store.LoadProject();
-        ProjectName = project.ProjectName == "GateKPT clip system" ? "GateKPT MusicOS" : project.ProjectName;
+        ProjectName = project.ProjectName == "GateKPT clip system" || project.ProjectName == "GateKPT MusicOS"
+            ? "Late Night Florida"
+            : project.ProjectName;
         PlatformProfile = project.PlatformProfile;
         SyncOffsetMs = project.SyncOffsetMs;
         FrameRate = project.FrameRate;
         LoudnessTarget = project.LoudnessTarget;
-        BusinessMode = project.BusinessMode == "Build video catalog" ? "Creative audio workspace" : project.BusinessMode;
+        BusinessMode = project.BusinessMode == "Build video catalog" || project.BusinessMode == "Creative audio workspace"
+            ? "Songs from the Central FL training ground"
+            : project.BusinessMode;
         OutputDirectory = project.OutputDirectory;
 
         var storedCaptures = _store.LoadCaptures();
@@ -556,16 +560,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 [
                     new(
                         DateTime.Now.ToString("yyyy-MM-dd"),
-                        "Song seed",
+                        "Field note",
                         "",
                         "",
                         "",
                         "Orlando",
                         "",
-                        "",
-                        "RC-505 groove",
-                        "Turn a real place into a hook.",
-                        "First World Memory seed.")
+                        "Late drive",
+                        "Rain / insects / guitar",
+                        "Turn a real Central FL night into a hook.",
+                        "Late Night Florida begins.")
                 ]);
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
@@ -1674,10 +1678,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom;
 
     public string WorldMemorySignal =>
-        "Travel, language, food, and music notes become songs instead of disappearing.";
+        "Central FL nights, trails, lakes, storms, phrases, and loops become the artist archive.";
 
     public string WorldMemoryPrompt =>
-        "Save the phrase, rhythm, person, place, food, or feeling. GateKPT can turn it into a hook later.";
+        "Save the place, sound, phrase, cover idea, rhythm, or feeling. GateKPT can turn it into a hook later.";
 
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
@@ -2063,52 +2067,52 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void PrimeWorldPhrase()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        WorldMemoryType = "Phrase";
+        WorldMemoryType = "Spanglish phrase";
         WorldMemoryLanguage = "";
         WorldMemoryPhrase = "";
         WorldMemoryMeaning = "";
         WorldMemoryRhythm = "";
         WorldMemorySongIdea = "";
-        WorldMemoryNotes = "How it sounds / how to pronounce it:";
-        Status = "Primed World Memory phrase capture.";
+        WorldMemoryNotes = "How it sounds / who would feel this line:";
+        Status = "Primed Spanglish phrase capture.";
     }
 
     [RelayCommand]
     private void PrimeWorldPersonPlace()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        WorldMemoryType = "Person / place";
-        WorldMemoryPlace = "";
+        WorldMemoryType = "Place / field sound";
+        WorldMemoryPlace = "Orlando / Central FL";
         WorldMemoryPerson = "";
         WorldMemoryRhythm = "";
         WorldMemorySongIdea = "";
-        WorldMemoryNotes = "What they taught me / what the place felt like:";
-        Status = "Primed World Memory person/place capture.";
+        WorldMemoryNotes = "Trail, lake, car, gym, storm, parking lot, or room. What did it sound like?";
+        Status = "Primed Late Night Florida field note.";
     }
 
     [RelayCommand]
     private void PrimeWorldFood()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        WorldMemoryType = "Food";
+        WorldMemoryType = "Ritual";
         WorldMemoryFood = "";
-        WorldMemoryPlace = "";
+        WorldMemoryPlace = "Central FL";
         WorldMemoryPhrase = "";
         WorldMemorySongIdea = "";
-        WorldMemoryNotes = "Feeling / ritual / texture / color:";
-        Status = "Primed World Memory food capture.";
+        WorldMemoryNotes = "Food, gym recovery, night drive, shower melody, walk, or after-work reset:";
+        Status = "Primed ritual capture.";
     }
 
     [RelayCommand]
     private void PrimeWorldSongSeed()
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
-        WorldMemoryType = "Song seed";
-        WorldMemoryRhythm = "";
+        WorldMemoryType = "Cover / song seed";
+        WorldMemoryRhythm = "Late Night Chrome vocal";
         WorldMemoryLanguage = "";
         WorldMemorySongIdea = "";
-        WorldMemoryNotes = "Instrument / hook emotion / video idea:";
-        Status = "Primed World Memory song seed.";
+        WorldMemoryNotes = "Cover, hook, visual setting, and where this lives: trail, lake, car, room, storm.";
+        Status = "Primed Late Night Florida song seed.";
     }
 
     [RelayCommand]

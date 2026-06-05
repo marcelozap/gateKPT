@@ -116,7 +116,7 @@
                     </Border>
                     <StackPanel MinWidth="0">
                         <TextBlock Text="GateKPT" FontSize="16" FontWeight="Black" Foreground="#F8F0E5" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="MUSIC OS / CREATIVE AUDIO WORKSPACE" FontSize="10" FontWeight="Bold" Foreground="#92BFB3" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="LATE NIGHT FLORIDA / TRAINING GROUND" FontSize="10" FontWeight="Bold" Foreground="#92BFB3" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -139,7 +139,7 @@
             <Border Classes="card" Padding="20" Background="#C4081722" BorderBrush="#2BE8E1D2">
                 <Grid RowDefinitions="Auto,Auto,*" RowSpacing="14">
                     <StackPanel>
-                        <TextBlock Classes="label" Text="GATEKPT"/>
+                        <TextBlock Classes="label" Text="LATE NIGHT FLORIDA"/>
                         <TextBlock Text="{Binding ActiveRoom}"
                                    Margin="0,10,0,0"
                                    FontSize="30"
@@ -387,7 +387,7 @@
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="21">
                             <StackPanel>
                                 <TextBlock Classes="label" Text="WORLD MEMORY"/>
-                                <TextBlock Text="Music is the passport."
+                                <TextBlock Text="Save the night."
                                            Margin="0,10,0,0"
                                            FontSize="44"
                                            FontWeight="Black"
@@ -441,7 +441,7 @@
                                                    Foreground="#203C36"/>
                                         <Grid ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
                                             <TextBox Text="{Binding WorldMemoryType}"
-                                                     PlaceholderText="Type: phrase, place, food, song seed"
+                                                     PlaceholderText="Type: field sound, phrase, cover seed"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Column="1"
                                                      Text="{Binding WorldMemoryLanguage}"
@@ -449,7 +449,7 @@
                                                      MinHeight="44"/>
                                             <TextBox Grid.Row="1"
                                                      Text="{Binding WorldMemoryPhrase}"
-                                                     PlaceholderText="Phrase / word / title"
+                                                     PlaceholderText="Phrase / hook / field sound"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Row="1"
                                                      Grid.Column="1"
@@ -467,19 +467,19 @@
                                                      MinHeight="44"/>
                                             <TextBox Grid.Row="3"
                                                      Text="{Binding WorldMemoryFood}"
-                                                     PlaceholderText="Food / ritual"
+                                                     PlaceholderText="Ritual / food / reset"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Row="3"
                                                      Grid.Column="1"
                                                      Text="{Binding WorldMemoryRhythm}"
-                                                     PlaceholderText="Rhythm / instrument"
+                                                     PlaceholderText="Rhythm / instrument / preset"
                                                      MinHeight="44"/>
                                         </Grid>
                                         <TextBox Text="{Binding WorldMemorySongIdea}"
-                                                 PlaceholderText="Song idea / hook / video idea"
+                                                 PlaceholderText="Cover, hook, visual, or post idea"
                                                  MinHeight="44"/>
                                         <TextBox Text="{Binding WorldMemoryNotes}"
-                                                 PlaceholderText="Feeling, pronunciation, story, what to practice..."
+                                                 PlaceholderText="Trail, lake, storm, room, car, gym, pressure, language, or feeling..."
                                                  AcceptsReturn="True"
                                                  TextWrapping="Wrap"
                                                  MinHeight="110"/>

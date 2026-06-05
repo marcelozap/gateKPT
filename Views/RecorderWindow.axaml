@@ -99,7 +99,7 @@
                         <TextBlock Text="GateKPT"
                                    FontSize="25"
                                    FontWeight="Black"/>
-                        <TextBlock Text="record sound, save the take, shape it"
+                        <TextBlock Text="Late Night Florida / capture the training ground"
                                    Margin="0,4,0,0"
                                    FontSize="12"
                                    FontWeight="Black"
@@ -142,7 +142,7 @@
 
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                             <StackPanel>
-                                <TextBlock Text="CAPTURE"
+                                <TextBlock Text="FIELD CAPTURE"
                                            FontSize="11"
                                            FontWeight="Black"
                                            LetterSpacing="2.4"
@@ -273,7 +273,7 @@
                     <StackPanel Spacing="13">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Tell GateKPT: make warmer, louder, add reverb, delete last..."
+                                     PlaceholderText="Tell GateKPT: late night chrome, warmer, room, delete last..."
                                      MinHeight="48"/>
                             <Button Grid.Column="1"
                                     Content="Do it"
@@ -295,7 +295,7 @@
                                 Background="#1207110E">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13" RowDefinitions="Auto,Auto">
                                 <StackPanel Spacing="5">
-                                    <TextBlock Text="VOCAL PRESET PACK"
+                                    <TextBlock Text="LATE NIGHT VOCAL PRESETS"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
@@ -410,7 +410,7 @@
                             BorderThickness="1"
                             Background="#CC07110E">
                         <StackPanel Spacing="10">
-                            <TextBlock Text="LATEST TAKES"
+                            <TextBlock Text="TRAINING GROUND TAKES"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
@@ -515,7 +515,7 @@
                         Background="#D907110E">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                         <StackPanel Spacing="8">
-                            <TextBlock Text="VIDEO LAYER"
+                            <TextBlock Text="POST CLIP"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
