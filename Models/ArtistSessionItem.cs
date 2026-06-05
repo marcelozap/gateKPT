@@ -1,0 +1,26 @@
+namespace GateKPT.MusicOS.Models;
+
+public sealed record ArtistSessionItem(
+    string Id,
+    string Title,
+    string MissionType,
+    string CoverOrOriginal,
+    string Language,
+    string Mood,
+    string SoundLane,
+    string PersonalityTone,
+    string TerrainLocation,
+    string ContentPillar,
+    string VocalPreset,
+    string GuitarLoopPath,
+    string FieldSoundPathOrNote,
+    string VocalTakePath,
+    string VideoPath,
+    string ExportPath,
+    string Caption,
+    string Hashtags,
+    string PlatformChecklist,
+    string PostStatus,
+    string Notes,
+    string CreatedAt,
+    string UpdatedAt);

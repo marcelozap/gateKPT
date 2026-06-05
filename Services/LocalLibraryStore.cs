@@ -57,6 +57,8 @@ public sealed class LocalLibraryStore
 
     private string WorldMemoryPath => Path.Combine(LibraryDirectory, "world-memory.json");
 
+    private string ArtistSessionsPath => Path.Combine(LibraryDirectory, "artist-sessions.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -265,6 +267,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<WorldMemoryItem> LoadWorldMemory() => LoadList<WorldMemoryItem>(WorldMemoryPath);
 
     public void SaveWorldMemory(IEnumerable<WorldMemoryItem> items) => SaveList(WorldMemoryPath, items);
+
+    public IReadOnlyList<ArtistSessionItem> LoadArtistSessions() => LoadList<ArtistSessionItem>(ArtistSessionsPath);
+
+    public void SaveArtistSessions(IEnumerable<ArtistSessionItem> sessions) => SaveList(ArtistSessionsPath, sessions);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

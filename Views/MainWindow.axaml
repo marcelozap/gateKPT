@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GateKPT.MusicOS.ViewModels"
         xmlns:svc="using:GateKPT.MusicOS.Services"
+        xmlns:model="using:GateKPT.MusicOS.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -608,6 +609,33 @@
                                                            Foreground="#35544D"/>
                                             </StackPanel>
                                         </Border>
+                                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                            <TextBox Text="{Binding ContentLanguage}"
+                                                     PlaceholderText="Language: English, Spanish, Korean, Italian"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Column="1"
+                                                     Text="{Binding ContentTerrain}"
+                                                     PlaceholderText="Terrain: car, trail, lake, parking lot, room, gym, storm"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="1"
+                                                     Text="{Binding ContentPillar}"
+                                                     PlaceholderText="Pillar: Cover, Process, World, Look, Build"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="1"
+                                                     Grid.Column="1"
+                                                     Text="{Binding ContentPostStatus}"
+                                                     PlaceholderText="Post status"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="2"
+                                                     Text="{Binding ContentCta}"
+                                                     PlaceholderText="CTA/question"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="2"
+                                                     Grid.Column="1"
+                                                     Text="{Binding ContentHashtags}"
+                                                     PlaceholderText="Hashtags"
+                                                     MinHeight="44"/>
+                                        </Grid>
                                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                                             <Border CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
                                                 <StackPanel Spacing="6">
@@ -731,6 +759,20 @@
                                                     Background="#8DB7AD"
                                                     Foreground="#07110E"
                                                     FontWeight="Black"/>
+                                            <Button Content="Field note"
+                                                    Command="{Binding PrimeFloridaFieldNoteCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#D9F8F0E5"
+                                                    Foreground="#07110E"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Phone cover"
+                                                    Command="{Binding PrimePhoneVideoCoverCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#203C36"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
                                             <Button Content="Noble note"
                                                     Command="{Binding PrimeNobleNoteCommand}"
                                                     Padding="18,12"
@@ -825,6 +867,52 @@
                                                            FontWeight="SemiBold"
                                                            TextWrapping="Wrap"
                                                            Foreground="#D9C5A5"/>
+                                                <TextBlock Text="{Binding BestArtistSessionSignal}"
+                                                           FontSize="11"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#C6A96D"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="10">
+                                                <TextBlock Text="RECENT SESSIONS"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2.2"
+                                                           Foreground="#C6A96D"/>
+                                                <ItemsControl ItemsSource="{Binding ArtistSessions}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:ArtistSessionItem">
+                                                            <Border CornerRadius="14"
+                                                                    Padding="10"
+                                                                    Margin="0,0,0,8"
+                                                                    Background="#13000000"
+                                                                    BorderBrush="#1F8DB7AD"
+                                                                    BorderThickness="1">
+                                                                <StackPanel Spacing="4">
+                                                                    <TextBlock Text="{Binding Title}"
+                                                                               FontSize="12"
+                                                                               FontWeight="Black"
+                                                                               TextWrapping="Wrap"
+                                                                               Foreground="#F8F0E5"/>
+                                                                    <TextBlock Text="{Binding MissionType}"
+                                                                               FontSize="10"
+                                                                               FontWeight="Black"
+                                                                               Foreground="#C6A96D"/>
+                                                                    <TextBlock Text="{Binding PersonalityTone}"
+                                                                               FontSize="10"
+                                                                               TextWrapping="Wrap"
+                                                                               Foreground="#9DBFB3"/>
+                                                                    <TextBlock Text="{Binding PostStatus}"
+                                                                               FontSize="10"
+                                                                               FontWeight="Black"
+                                                                               Foreground="#D9C5A5"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
                                             </StackPanel>
                                         </Border>
                                         <ItemsControl ItemsSource="{Binding ContentPlanItems}">

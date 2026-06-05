@@ -223,6 +223,25 @@ one song + one sound + one visual + one post
 - Spanish Color Line: one Spanish/Spanglish phrase, natural not forced.
 - Noble Note: emotionally direct, self-respecting, not fake luxury.
 
+## Artist Session Archive
+
+GateKPT saves local artist sessions to `artist-sessions.json`.
+
+Each session should answer:
+
+- what did I make?
+- what mission was it?
+- is it a cover or original seed?
+- what language/color did it use?
+- what tone did it have?
+- where did it live: car, trail, lake, parking lot, room, gym, storm?
+- what pillar did it support: Cover, Process, World, Look, or Build?
+- what preset did it use?
+- what caption, CTA, hashtags, and platform checklist are attached?
+- is it staged, posted, seed-only, or ready?
+
+The archive is not paperwork. It is how the first EP and public artist world find themselves from repeated small clips.
+
 ## EP Seed
 
 Working seed:

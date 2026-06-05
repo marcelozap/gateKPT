@@ -333,7 +333,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _worldMemoryNotes = "";
 
     [ObservableProperty]
-    private string _contentFormat = "Raw to Chrome #001";
+    private string _contentFormat = "After Work Hook #001";
 
     [ObservableProperty]
     private string _contentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
@@ -342,37 +342,55 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentSetting = "orange glow / night road";
 
     [ObservableProperty]
-    private string _contentSong = "cover";
+    private string _contentSong = "hook";
 
     [ObservableProperty]
-    private string _contentHook = "building Florida Night R&B after work";
+    private string _contentHook = "building Florida night pop after work";
 
     [ObservableProperty]
-    private string _contentCaption = "Raw vocal -> Late Night Chrome. Building Florida Night R&B after work.";
+    private string _contentCaption = "Building Florida night pop after work.";
 
     [ObservableProperty]
-    private string _contentVisualDirection = "Face visible, orange glow, black shirt, waveform terrain, quick GateKPT screen cut.";
+    private string _contentVisualDirection = "Face visible, orange glow, black shirt, guitar/voice close, waveform terrain.";
 
     [ObservableProperty]
-    private string _contentNextAction = "Record 3 phone takes, record clean vocal in GateKPT, apply Late Night Chrome, export one vertical clip.";
+    private string _contentNextAction = "Record rough, keep the charm, use light preset, export clip, post/archive.";
 
     [ObservableProperty]
-    private string _contentSeries = "Raw to Chrome";
+    private string _contentSeries = "Florida Night Pop/R&B";
 
     [ObservableProperty]
-    private string _contentPlanStatus = "Start with one cover, one look, one preset, one post.";
+    private string _contentPlanStatus = "Start with one hook, one field sound, one visual, one post.";
 
     [ObservableProperty]
-    private string _contentMission = "Raw to Chrome";
+    private string _contentMission = "After Work Hook";
 
     [ObservableProperty]
     private string _contentTone = "playful, romantic, humble, smart, noble";
 
     [ObservableProperty]
-    private string _contentPreset = "Raw Clean first, Late Night Chrome only if the hook needs shine";
+    private string _contentPreset = "Raw Clean first, polish only if it helps";
 
     [ObservableProperty]
     private string _contentReviewNote = "What felt natural? What got a real response?";
+
+    [ObservableProperty]
+    private string _contentLanguage = "English with Spanish color";
+
+    [ObservableProperty]
+    private string _contentTerrain = "room / car / night road";
+
+    [ObservableProperty]
+    private string _contentPillar = "Process / Original Hook";
+
+    [ObservableProperty]
+    private string _contentHashtags = "#FloridaNightPop #FloridaNightRNB #LateNightFlorida #AfterWorkHook #GateKPT #BedroomPop #IndieRNB";
+
+    [ObservableProperty]
+    private string _contentCta = "Raw or polished?";
+
+    [ObservableProperty]
+    private string _contentPostStatus = "Staged";
 
     [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
@@ -629,6 +647,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("05", "The Build", "XIV/GateKPT as the personal music OS.", "Use lightly, not too nerdy."),
         ];
 
+        ArtistSessions = new ObservableCollection<ArtistSessionItem>(_store.LoadArtistSessions());
+
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
         TimelineMarkers = new ObservableCollection<TimelineMarker>(
@@ -728,6 +748,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ProjectCompletionRecord> CompletionHistory { get; }
 
     public ObservableCollection<WorldMemoryItem> WorldMemories { get; }
+
+    public ObservableCollection<ArtistSessionItem> ArtistSessions { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -1748,13 +1770,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         $"{ContentMission} / {ContentSeries} / {ContentPlatform}";
 
     public string ContentAudiencePromise =>
-        "Florida Night Pop/R&B: dreamy hooks, loose guitar, playful charm, Spanish color, pressure into music.";
+        "Come watch me build Florida night songs from guitar, voice, humor, pressure, Spanish color, and field sounds.";
 
     public string ContentEngineFormula =>
-        "one song / one sound / one visual / one post";
+        "one hook / one field sound / one visual / one post";
 
     public string ContentTonightSequence =>
-        "Choose mission -> capture source -> record voice/guitar -> choose preset -> make clip -> post pack -> archive -> review.";
+        "record rough -> keep the charm -> light preset -> export clip -> post/archive";
 
     public string ContentMissionGuide =>
         ContentMission.ToLowerInvariant() switch
@@ -1770,20 +1792,41 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         };
 
     public string ContentPostPackPreview =>
-        $"Hook: {ContentHook} | Caption: {ContentCaption} | Visual: {ContentVisualDirection} | Preset: {ContentPreset}";
+        $"Hook: {ContentHook} | Caption: {ContentCaption} | CTA: {ContentCta} | Tags: {ContentHashtags} | Preset: {ContentPreset}";
 
     public string ContentArchiveReviewSummary
     {
         get
         {
-            var latestCapture = RecentCaptures.FirstOrDefault()?.Title ?? "No clip archived yet";
-            var latestLyric = LyricIdeas.FirstOrDefault()?.Title ?? "No hook saved yet";
-            return $"Archive: {RecentCaptures.Count} captures / {LyricIdeas.Count} hooks / latest: {latestCapture} / {latestLyric}";
+            var latest = ArtistSessions.FirstOrDefault();
+            if (latest is null)
+            {
+                return $"Archive: {RecentCaptures.Count} captures / {LyricIdeas.Count} hooks / no artist session saved yet.";
+            }
+
+            return $"Archive: {ArtistSessions.Count} sessions / latest: {latest.Title} / {latest.MissionType} / {latest.PostStatus}.";
         }
     }
 
     public string ContentEpPlanSignal =>
         "EP seed: Late Night Florida / 5 songs / Orange County Glow / playful-romantic-smart core.";
+
+    public string ContentPlatformChecklist =>
+        "Snapchat | TikTok | Instagram Reels | YouTube Shorts | Website/archive";
+
+    public string BestArtistSessionSignal
+    {
+        get
+        {
+            var postReady = ArtistSessions.FirstOrDefault(item =>
+                item.PostStatus.Contains("ready", StringComparison.OrdinalIgnoreCase)
+                || item.PostStatus.Contains("posted", StringComparison.OrdinalIgnoreCase));
+            var seed = postReady ?? ArtistSessions.FirstOrDefault();
+            return seed is null
+                ? "No session yet. Save the first After Work Hook."
+                : $"Closest seed: {seed.Title} / {seed.MissionType} / {seed.PersonalityTone}";
+        }
+    }
 
     public string ContentRecordingPlan
     {
@@ -1927,6 +1970,26 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnContentPresetChanged(string value)
     {
         OnPropertyChanged(nameof(ContentPostPackPreview));
+    }
+
+    partial void OnContentLanguageChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentTerrainChanged(string value)
+    {
+        ContentSetting = value;
+        OnPropertyChanged(nameof(ContentPostPackPreview));
+    }
+
+    partial void OnContentPillarChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentHashtagsChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentCtaChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentPostStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentArchiveReviewSummary));
+        OnPropertyChanged(nameof(BestArtistSessionSignal));
     }
 
     partial void OnContentPlatformChanged(string value)
@@ -2470,6 +2533,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = "Record raw vocal, render Late Night Chrome, compare both, export vertical clip.";
         ContentTone = "playful, romantic, humble, smart, noble";
         ContentPreset = "Raw Clean first, Late Night Chrome only if the hook needs shine";
+        ContentLanguage = "English with Spanish color";
+        ContentTerrain = "orange glow / night road";
+        ContentPillar = "Process / Cover";
+        ContentCta = "Raw or polished?";
+        ContentPostStatus = "Staged";
         ContentPlanStatus = "Primed Raw to Chrome: raw vocal first, polished vocal second.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2489,6 +2557,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = ContentTonightSequence;
         ContentTone = "humble, charming, direct, a little funny";
         ContentPreset = "Raw Clean for verse, Late Night Chrome only on chorus";
+        ContentLanguage = "English with optional Spanish color";
+        ContentTerrain = "room light / car light / orange glow";
+        ContentPillar = "Cover / Process";
+        ContentCta = "Should I finish this?";
+        ContentPostStatus = "Staged";
         ContentPlanStatus = "Primed after-work plan: keep it simple and post before perfect.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2508,6 +2581,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = "Record guitar/vocal pass, keep the imperfect charm, use Raw Clean, export vertical.";
         ContentTone = "dreamy, humble, playful, romantic";
         ContentPreset = "Raw Clean";
+        ContentLanguage = "English";
+        ContentTerrain = "room light / night road";
+        ContentPillar = "Cover";
+        ContentCta = "Does this hook work?";
+        ContentPostStatus = "Staged";
         ContentPlanStatus = "Primed raw guitar cover.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2527,6 +2605,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = "Record the silly first idea, save the hook, do not judge it too early.";
         ContentTone = "goofy, youthful, smart, charming";
         ContentPreset = "Raw Clean or Silk Synth if the hook wants to feel synthetic";
+        ContentLanguage = "English";
+        ContentTerrain = "room / car / after-work reset";
+        ContentPillar = "Process / Build";
+        ContentCta = "Too goofy or just right?";
+        ContentPostStatus = "Seed";
         ContentPlanStatus = "Primed goofy hook seed.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2546,7 +2629,62 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = "Write one Spanish phrase, sing it naturally, try Luna Pop, save the line.";
         ContentTone = "smooth, romantic, humble, playful";
         ContentPreset = "Luna Pop";
+        ContentLanguage = "Spanish / Spanglish";
+        ContentTerrain = "orange glow / night road";
+        ContentPillar = "Cover / World";
+        ContentCta = "Does the Spanish line feel natural?";
+        ContentPostStatus = "Seed";
         ContentPlanStatus = "Primed Spanish color line.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeFloridaFieldNote()
+    {
+        ContentMission = "Florida Field Note";
+        ContentSeries = "World Captures";
+        ContentFormat = "Field sound / voice note";
+        ContentPlatform = "Snapchat / Website archive / TikTok texture";
+        ContentSetting = "night road / parking lot / lake / storm";
+        ContentSong = "field sound";
+        ContentHook = "capture the world before it disappears";
+        ContentCaption = "Captured the world before it disappeared. This might become a song.";
+        ContentVisualDirection = "Short field shot, no over-editing, waveform terrain, place first.";
+        ContentNextAction = "Record rain, insects, car ambience, room tone, or a gym recovery voice note. Link it to one hook.";
+        ContentTone = "curious, humble, late-night, cinematic";
+        ContentPreset = "No polish unless it becomes a song intro";
+        ContentLanguage = "Field sound / voice note";
+        ContentTerrain = "night road / parking lot / lake / storm";
+        ContentPillar = "World";
+        ContentCta = "Does this feel like Florida at night?";
+        ContentPostStatus = "Field seed";
+        ContentPlanStatus = "Primed Florida field note.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimePhoneVideoCover()
+    {
+        ContentMission = "Phone Video Cover";
+        ContentSeries = "After Work Covers";
+        ContentFormat = "Phone video + GateKPT audio";
+        ContentPlatform = "TikTok / Reels / YouTube Shorts";
+        ContentSetting = "room light / car light / orange glow";
+        ContentSong = string.IsNullOrWhiteSpace(ContentSong) ? "cover" : ContentSong;
+        ContentHook = "phone video feeling, GateKPT audio";
+        ContentCaption = "Phone video feeling, GateKPT audio. Building Florida Night Pop.";
+        ContentVisualDirection = "Phone camera for feeling, GateKPT audio for quality, lyric caption, visualizer optional.";
+        ContentNextAction = "Record phone video, record clean GateKPT audio, sync, export vertical.";
+        ContentTone = "human, charming, romantic, direct";
+        ContentPreset = "Raw Clean first, Late Night Chrome only if chorus needs shine";
+        ContentLanguage = "English with Spanish color";
+        ContentTerrain = "room / car / night road";
+        ContentPillar = "Cover / Process";
+        ContentCta = "Would this work as a full cover?";
+        ContentPostStatus = "Staged";
+        ContentPlanStatus = "Primed phone video cover.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
     }
@@ -2565,6 +2703,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentNextAction = "Record one honest sentence, add soft guitar or field sound, save as a hook seed.";
         ContentTone = "noble, direct, intelligent, self-respecting";
         ContentPreset = "Raw Clean";
+        ContentLanguage = "English";
+        ContentTerrain = "car light / trail / quiet room";
+        ContentPillar = "World / Build";
+        ContentCta = "Does this feel honest?";
+        ContentPostStatus = "Journal seed";
         ContentPlanStatus = "Primed noble note.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2583,6 +2726,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentPostPackPreview));
         OnPropertyChanged(nameof(ContentArchiveReviewSummary));
         OnPropertyChanged(nameof(ContentEpPlanSignal));
+        OnPropertyChanged(nameof(ContentPlatformChecklist));
+        OnPropertyChanged(nameof(BestArtistSessionSignal));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -2687,10 +2832,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
         }
 
+        var session = CurrentArtistSession(title);
+        ArtistSessions.Insert(0, session);
+        while (ArtistSessions.Count > 24)
+        {
+            ArtistSessions.RemoveAt(ArtistSessions.Count - 1);
+        }
+
         VisualizerLyricSource = title;
         _store.SaveLyricIdeas(LyricIdeas);
         _store.SaveCaptions(Captions);
         _store.SaveCaptures(RecentCaptures);
+        _store.SaveArtistSessions(ArtistSessions);
         UpdateCaptionStatus();
         RefreshProjectModules();
         SaveProjectSnapshot("Content plan saved");
@@ -2698,6 +2851,52 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentReviewNote = $"Review later: {ContentMission} / {ContentPlatform}. Did the charm come through?";
         Status = ContentPlanStatus;
         OnPropertyChanged(nameof(ContentArchiveReviewSummary));
+        OnPropertyChanged(nameof(BestArtistSessionSignal));
+    }
+
+    private ArtistSessionItem CurrentArtistSession(string title)
+    {
+        var now = DateTime.Now;
+        var coverOrOriginal =
+            ContentMission.Contains("cover", StringComparison.OrdinalIgnoreCase)
+            || ContentFormat.Contains("cover", StringComparison.OrdinalIgnoreCase)
+                ? "Cover"
+                : "Original / seed";
+        var lane =
+            ContentPreset.Contains("Chrome", StringComparison.OrdinalIgnoreCase)
+                ? "Glossy Hook"
+                : ContentPreset.Contains("Luna", StringComparison.OrdinalIgnoreCase)
+                    ? "Spanish Smooth"
+                    : ContentMission.Contains("field", StringComparison.OrdinalIgnoreCase)
+                        ? "Field Note"
+                        : ContentMission.Contains("guitar", StringComparison.OrdinalIgnoreCase)
+                            ? "Raw Guitar Pop"
+                            : "Florida Night Pop/R&B";
+
+        return new ArtistSessionItem(
+            Guid.NewGuid().ToString("N"),
+            title,
+            ContentMission,
+            coverOrOriginal,
+            ContentLanguage,
+            ContentHook,
+            lane,
+            ContentTone,
+            ContentTerrain,
+            ContentPillar,
+            ContentPreset,
+            "",
+            ContentMission.Contains("field", StringComparison.OrdinalIgnoreCase) ? ContentSetting : "",
+            "",
+            "",
+            "",
+            ContentCaption,
+            ContentHashtags,
+            ContentPlatformChecklist,
+            ContentPostStatus,
+            $"{ContentPostPackPreview}{Environment.NewLine}{ContentNextAction}{Environment.NewLine}Review: {ContentReviewNote}",
+            now.ToString("yyyy-MM-dd HH:mm:ss"),
+            now.ToString("yyyy-MM-dd HH:mm:ss"));
     }
 
     [RelayCommand]
@@ -2718,6 +2917,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveInstrumentChannels(InstrumentChannels);
         _store.SaveLooperTracks(LooperTracks);
         _store.SaveWorldMemory(WorldMemories);
+        _store.SaveArtistSessions(ArtistSessions);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }
