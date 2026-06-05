@@ -14,19 +14,19 @@ declare global {
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
 
 const productSections: Array<[string, string, LucideIcon, string]> = [
-  ["Record", "Save the idea before it disappears.", Mic, "Start"],
-  ["Shape", "Type what you want: warmer, raw, louder, brighter.", Sparkles, "Change"],
-  ["See", "Turn sound into motion and color.", Waves, "Visual"],
-  ["Organize", "Keep takes and parts easy to find.", Cable, "Keep"],
-  ["Share", "Prepare a demo, clip, or folder.", Archive, "Finish"],
+  ["Covers", "Turn familiar songs into the Late Night Florida world.", Mic, "Voice"],
+  ["Field Notes", "Rain, trails, lakes, cars, rooms, and pressure notes.", Mountain, "Source"],
+  ["Shape", "Use simple commands: warmer, chrome, room, louder.", Sparkles, "Sound"],
+  ["Visuals", "Let sound become terrain, light, and motion.", Waves, "World"],
+  ["Drops", "Prepare clips, demos, archives, and posts.", Archive, "Finish"],
 ];
 
 const cuePath = [
-  ["01", "Drums", "Pulse"],
-  ["02", "Guitar", "Movement"],
-  ["03", "Keys", "Room"],
-  ["04", "Vocal", "Line"],
-  ["05", "Extra", "Hook"],
+  ["01", "Night", "Field sound"],
+  ["02", "Drums", "Pulse"],
+  ["03", "Guitar", "Movement"],
+  ["04", "Vocal", "Chrome"],
+  ["05", "Visual", "Terrain"],
 ];
 
 function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
@@ -327,16 +327,16 @@ export function GatekptLanding() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
               <Mountain className="h-3.5 w-3.5" />
-              Custom music tool
+              Late Night Florida
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
-              Make music feel easier.
+              Songs from the training ground.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              GateKPT is a custom music tool for people who want to create without getting buried in complicated software.
+              Covers, voice notes, field recordings, visuals, and songs built from humid nights, pressure, language, and sound.
             </p>
             <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
-              {["Play", "Record", "Shape"].map((item) => (
+              {["Covers", "Field Notes", "Visuals"].map((item) => (
                 <div key={item} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/60">
                   {item}
                 </div>
@@ -347,7 +347,7 @@ export function GatekptLanding() {
                 Try demo
               </a>
               <a href="#tracks" className="gk-button-secondary">
-                See tracks
+                See the era
               </a>
             </div>
           </motion.div>
@@ -356,12 +356,12 @@ export function GatekptLanding() {
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#92bfb3]">The idea</p>
+                <p className="gk-label text-[#92bfb3]">The world</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                  Make first. Learn as you go.
+                  Central FL at night.
                 </h2>
                 <div className="mt-8 grid gap-3">
-                  {["Press record", "Say the change", "Save the version"].map((item, index) => (
+                  {["Capture the night", "Shape the vocal", "Post the clip"].map((item, index) => (
                     <div key={item} className="flex items-center gap-4 rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4">
                       <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
                       <span className="text-sm font-black">{item}</span>
@@ -378,13 +378,13 @@ export function GatekptLanding() {
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.7fr_1fr] lg:items-stretch">
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
             <div>
-              <p className="gk-label text-[#c6a96d]">Try it</p>
-              <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                Play with sound.
-              </h2>
-              <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-                Press play or use your mic. Nothing saves here. This is just a safe way to feel the idea.
-              </p>
+            <p className="gk-label text-[#c6a96d]">Latest Sound</p>
+            <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
+                Make the night visible.
+            </h2>
+            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
+                Press play or use your mic. Nothing saves here. This is a safe preview of the GateKPT visual world.
+            </p>
             </div>
             <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#92bfb3]/70">
               Recording happens in the GateKPT desktop app.
@@ -398,12 +398,12 @@ export function GatekptLanding() {
       <section id="tracks" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">For making songs</p>
+            <p className="gk-label text-[#c6a96d]">Field Notes</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Build it one part at a time.
+              The song starts with a place.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Start with rhythm, add sound, then vocals. GateKPT keeps the pieces organized.
+              Trail, lake, room, car, storm, gym, parking lot. Every cover or original gets a setting before it gets a post.
             </p>
             <div className="mt-8 rounded-[1.25rem] border border-[#92bfb3]/18 bg-[#92bfb3]/8 p-4">
               <p className="gk-label text-[#92bfb3]">Now</p>
@@ -445,7 +445,7 @@ export function GatekptLanding() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-5">
             <p className="gk-label text-[#92bfb3]">What it helps with</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Make, change, keep going.</h2>
+            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Capture the world. Shape the take. Keep going.</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
             {productSections.map(([title, text, Icon, meta]) => (
@@ -465,15 +465,15 @@ export function GatekptLanding() {
       <section className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.75fr]">
           <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#d08a56]">Simple mission</p>
+            <p className="gk-label text-[#d08a56]">First era</p>
             <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.045em]">
-              Help more people create music without feeling locked out by complicated tools.
+              Late Night Florida is the training ground: covers, field recordings, visual terrain, and songs built under pressure.
             </h2>
           </div>
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
             <p className="gk-label text-[#92bfb3]">XIV family</p>
             <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
-              Green Machine is for trading research. GateKPT is for music sessions. Separate rooms, same XIV system.
+              Green Machine is financial terrain. GateKPT is creative terrain. Same XIV system, different room.
             </p>
             <Route className="mt-8 h-7 w-7 text-[#92bfb3]" />
           </div>
