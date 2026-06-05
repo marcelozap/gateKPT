@@ -1,18 +1,18 @@
-# Late Night Florida Era
+# Night Session Era
 
 GateKPT's first artist era is:
 
 ```text
-Late Night Florida: songs from the training ground.
+Night Session: sound from the places that stay with you.
 ```
 
-This is the private operating direction for Marcelo / Luca / GateKPT. The center is Central Florida at night: humid roads, trails, lakes, storms, after-work voice notes, gym recovery, guitar loops, Spanish/English hooks, and pressure becoming sound.
+This is the private operating direction for Marcelo / Luca / GateKPT. The center is atmosphere: motel neon, humid roads, trails, lakes, storms, after-work voice notes, gym recovery, guitar loops, Spanish/English hooks, and pressure becoming sound.
 
 ## Core Myth
 
 Marcelo is the builder under pressure. Luca is the voice that turns pressure into light. GateKPT is the machine that remembers the transformation.
 
-Orlando and Central FL are not placeholders before Miami. They are the first terrain: training ground, root system, pressure chamber, and source material.
+The first terrain is not a slogan. It is a root system: night roads, room tone, pressure, weather, recovery, and source material.
 
 ## Emotional Promise
 
@@ -79,15 +79,15 @@ The listener should feel like their life still has a movie inside it, even while
 1. Record one night ambience clip.
 2. Record one English or Spanish cover.
 3. Take five visual photos: car, road, trail, room, light.
-4. Write one journal note: `Late Night Florida begins.`
+4. Write one journal note: `The night starts here.`
 5. Add these to the artist site plan.
 6. Use Late Night Chrome on the vocal.
 
 ## Public Caption Seed
 
 ```text
-Late Night Florida begins.
-Songs from the training ground.
+The night starts here.
+A cover, a field note, a visual.
 ```
 
 ## Audience Growth Direction
@@ -104,7 +104,7 @@ The goal is not to post random covers. The goal is to make each cover feel like 
 
 ## Content Pillars
 
-- Covers: familiar songs pulled into the Late Night Florida atmosphere.
+- Covers: familiar songs pulled into the night-session atmosphere.
 - Field notes: rain, insects, trails, lakes, car notes, gym recovery, room tone.
 - Visuals: waveform terrain, moon, roads, amber light, dark green/blue night.
 - Process: GateKPT recording, vocal preset, version, post clip.

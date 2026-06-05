@@ -96,7 +96,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             .ToList();
 
     [ObservableProperty]
-    private string _projectName = "Late Night Florida";
+    private string _projectName = "Night Session";
 
     [ObservableProperty]
     private string _platformProfile = "LinkedIn / 16:9";
@@ -111,7 +111,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _loudnessTarget = "-14 LUFS";
 
     [ObservableProperty]
-    private string _businessMode = "Songs from the Central FL training ground";
+    private string _businessMode = "Covers, field notes, visuals, and pressure takes";
 
     [ObservableProperty]
     private string _outputDirectory = "";
@@ -339,16 +339,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentPlatform = "YouTube Shorts / TikTok";
 
     [ObservableProperty]
-    private string _contentSetting = "Central FL night drive";
+    private string _contentSetting = "motel neon night road";
 
     [ObservableProperty]
     private string _contentSong = "";
 
     [ObservableProperty]
-    private string _contentHook = "Late Night Florida begins.";
+    private string _contentHook = "The night starts here.";
 
     [ObservableProperty]
-    private string _contentCaption = "Late Night Florida begins. Songs from the training ground.";
+    private string _contentCaption = "The night starts here. A cover, a field note, a visual.";
 
     [ObservableProperty]
     private string _contentVisualDirection = "Moon-white vocal, amber road light, dark green terrain lines, slow waveform painting.";
@@ -557,15 +557,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _selectedAudioPreset = AudioPresets[0];
 
         var project = _store.LoadProject();
-        ProjectName = project.ProjectName == "GateKPT clip system" || project.ProjectName == "GateKPT MusicOS"
-            ? "Late Night Florida"
+        ProjectName = project.ProjectName == "GateKPT clip system"
+            || project.ProjectName == "GateKPT MusicOS"
+            || project.ProjectName.Contains("Late Night", StringComparison.OrdinalIgnoreCase)
+            ? "Night Session"
             : project.ProjectName;
         PlatformProfile = project.PlatformProfile;
         SyncOffsetMs = project.SyncOffsetMs;
         FrameRate = project.FrameRate;
         LoudnessTarget = project.LoudnessTarget;
-        BusinessMode = project.BusinessMode == "Build video catalog" || project.BusinessMode == "Creative audio workspace"
-            ? "Songs from the Central FL training ground"
+        BusinessMode = project.BusinessMode == "Build video catalog"
+            || project.BusinessMode == "Creative audio workspace"
+            || project.BusinessMode.Contains("Central", StringComparison.OrdinalIgnoreCase)
+            || project.BusinessMode.Contains("training", StringComparison.OrdinalIgnoreCase)
+            ? "Covers, field notes, visuals, and pressure takes"
             : project.BusinessMode;
         OutputDirectory = project.OutputDirectory;
 
@@ -592,12 +597,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                         "",
                         "",
                         "",
-                        "Orlando",
+                        "Night road",
                         "",
-                        "Late drive",
+                        "Motel neon",
                         "Rain / insects / guitar",
-                        "Turn a real Central FL night into a hook.",
-                        "Late Night Florida begins.")
+                        "Turn a real place into a hook.",
+                        "The night starts here.")
                 ]);
 
         ContentPlanItems =
@@ -1717,7 +1722,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom && !IsContentLabRoom;
 
     public string WorldMemorySignal =>
-        "Central FL nights, trails, lakes, storms, phrases, and loops become the artist archive.";
+        "Night roads, trails, lakes, storms, phrases, and loops become the artist archive.";
 
     public string WorldMemoryPrompt =>
         "Save the place, sound, phrase, cover idea, rhythm, or feeling. GateKPT can turn it into a hook later.";
@@ -2126,12 +2131,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
         WorldMemoryType = "Place / field sound";
-        WorldMemoryPlace = "Orlando / Central FL";
+        WorldMemoryPlace = "Night road / motel neon";
         WorldMemoryPerson = "";
         WorldMemoryRhythm = "";
         WorldMemorySongIdea = "";
         WorldMemoryNotes = "Trail, lake, car, gym, storm, parking lot, or room. What did it sound like?";
-        Status = "Primed Late Night Florida field note.";
+        Status = "Primed field note.";
     }
 
     [RelayCommand]
@@ -2140,7 +2145,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "World Memory") ?? SelectedRoom;
         WorldMemoryType = "Ritual";
         WorldMemoryFood = "";
-        WorldMemoryPlace = "Central FL";
+        WorldMemoryPlace = "Night road";
         WorldMemoryPhrase = "";
         WorldMemorySongIdea = "";
         WorldMemoryNotes = "Food, gym recovery, night drive, shower melody, walk, or after-work reset:";
@@ -2156,7 +2161,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         WorldMemoryLanguage = "";
         WorldMemorySongIdea = "";
         WorldMemoryNotes = "Cover, hook, visual setting, and where this lives: trail, lake, car, room, storm.";
-        Status = "Primed Late Night Florida song seed.";
+        Status = "Primed song seed.";
     }
 
     [RelayCommand]
@@ -2219,18 +2224,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var memory = WorldMemories.FirstOrDefault();
         if (memory is null)
         {
-            ContentPlanStatus = "No World Memory saved yet. Use the default Late Night Florida template.";
+            ContentPlanStatus = "No World Memory saved yet. Use the default night-session template.";
             GenerateContentPlan();
             return;
         }
 
-        ContentSetting = string.IsNullOrWhiteSpace(memory.Place) ? "Central FL night" : memory.Place;
+        ContentSetting = string.IsNullOrWhiteSpace(memory.Place) ? "motel neon night road" : memory.Place;
         ContentSong = memory.SongIdea;
         ContentHook = string.IsNullOrWhiteSpace(memory.Phrase)
-            ? string.IsNullOrWhiteSpace(memory.SongIdea) ? "Late Night Florida begins." : memory.SongIdea
+            ? string.IsNullOrWhiteSpace(memory.SongIdea) ? "The night starts here." : memory.SongIdea
             : memory.Phrase;
         ContentVisualDirection = $"Build around {memory.Summary}. Moon-white vocal, amber/green terrain, slow waveform motion.";
-        ContentCaption = $"{ContentHook} Songs from the training ground.";
+        ContentCaption = $"{ContentHook} A cover, a field note, a visual.";
         ContentNextAction = "Record a short take, apply Late Night Chrome, then make one vertical post clip.";
         ContentPlanStatus = $"Primed from World Memory: {memory.Title}";
         Status = ContentPlanStatus;
@@ -2239,15 +2244,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void GenerateContentPlan()
     {
-        var setting = string.IsNullOrWhiteSpace(ContentSetting) ? "Central FL night" : ContentSetting.Trim();
+        var setting = string.IsNullOrWhiteSpace(ContentSetting) ? "motel neon night road" : ContentSetting.Trim();
         var song = string.IsNullOrWhiteSpace(ContentSong) ? "one cover or hook" : ContentSong.Trim();
         var format = string.IsNullOrWhiteSpace(ContentFormat) ? "Cover clip" : ContentFormat.Trim();
         var platform = string.IsNullOrWhiteSpace(ContentPlatform) ? "short-form video" : ContentPlatform.Trim();
 
         ContentHook = format.Contains("field", StringComparison.OrdinalIgnoreCase)
             ? $"This is what {setting} sounds like."
-            : "Late Night Florida begins.";
-        ContentCaption = $"{ContentHook} {song} from the training ground.";
+            : "The night starts here.";
+        ContentCaption = $"{ContentHook} {song}. A cover, a field note, a visual.";
         ContentVisualDirection = setting.Contains("storm", StringComparison.OrdinalIgnoreCase)
             ? "Dark blue storm light, amber vocal glow, slow rain-like waveform trails."
             : setting.Contains("trail", StringComparison.OrdinalIgnoreCase) || setting.Contains("lake", StringComparison.OrdinalIgnoreCase)
@@ -2269,7 +2274,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         LyricIdeas.Insert(0, new LyricIdeaItem(
             title,
             "Content",
-            "Late Night Florida",
+            "Night Session",
             $"{ContentFormat}, {ContentPlatform}, {ContentSetting}",
             lyricText,
             DateTime.Now.ToString("yyyy-MM-dd")));

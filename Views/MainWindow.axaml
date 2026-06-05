@@ -116,7 +116,7 @@
                     </Border>
                     <StackPanel MinWidth="0">
                         <TextBlock Text="GateKPT" FontSize="16" FontWeight="Black" Foreground="#F8F0E5" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="LATE NIGHT FLORIDA / TRAINING GROUND" FontSize="10" FontWeight="Bold" Foreground="#92BFB3" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="NIGHT SESSION / ARTIST ARCHIVE" FontSize="10" FontWeight="Bold" Foreground="#92BFB3" LetterSpacing="1.8" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -139,7 +139,7 @@
             <Border Classes="card" Padding="20" Background="#C4081722" BorderBrush="#2BE8E1D2">
                 <Grid RowDefinitions="Auto,Auto,*" RowSpacing="14">
                     <StackPanel>
-                        <TextBlock Classes="label" Text="LATE NIGHT FLORIDA"/>
+                        <TextBlock Classes="label" Text="NIGHT SESSION"/>
                         <TextBlock Text="{Binding ActiveRoom}"
                                    Margin="0,10,0,0"
                                    FontSize="30"
@@ -387,7 +387,7 @@
                         <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="21">
                             <StackPanel>
                                 <TextBlock Classes="label" Text="WORLD MEMORY"/>
-                                <TextBlock Text="Save the night."
+                                <TextBlock Text="Save the signal."
                                            Margin="0,10,0,0"
                                            FontSize="44"
                                            FontWeight="Black"
