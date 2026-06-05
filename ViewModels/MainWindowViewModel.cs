@@ -333,6 +333,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _worldMemoryNotes = "";
 
     [ObservableProperty]
+    private string _contentFormat = "Cover clip";
+
+    [ObservableProperty]
+    private string _contentPlatform = "YouTube Shorts / TikTok";
+
+    [ObservableProperty]
+    private string _contentSetting = "Central FL night drive";
+
+    [ObservableProperty]
+    private string _contentSong = "";
+
+    [ObservableProperty]
+    private string _contentHook = "Late Night Florida begins.";
+
+    [ObservableProperty]
+    private string _contentCaption = "Late Night Florida begins. Songs from the training ground.";
+
+    [ObservableProperty]
+    private string _contentVisualDirection = "Moon-white vocal, amber road light, dark green terrain lines, slow waveform painting.";
+
+    [ObservableProperty]
+    private string _contentNextAction = "Record one short take, use Late Night Chrome, then pair it with phone video.";
+
+    [ObservableProperty]
+    private string _contentPlanStatus = "Pick a format and setting, then generate one post.";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -512,6 +539,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("Rig Routing", "Focusrite, RC-505, controller, and live input memory", "05", "#F2EADC"),
             new("Export Memory", "Clips, demos, archives, and drops coming soon", "06", "#9DBFB3"),
             new("World Memory", "Field recordings, places, phrases, and song seeds", "07", "#8DB7AD"),
+            new("Content Lab", "Turn one take into the next audience touch", "08", "#C6A96D"),
         ];
 
         _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
@@ -571,6 +599,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                         "Turn a real Central FL night into a hook.",
                         "Late Night Florida begins.")
                 ]);
+
+        ContentPlanItems =
+        [
+            new("01", "Cover", "Record one English or Spanish cover that fits night-drive pressure.", "Use Late Night Chrome."),
+            new("02", "Field sound", "Capture rain, insects, trail, lake, car, gym, or room tone.", "Save the place before the song."),
+            new("03", "Visual", "Take five photos: car, road, trail, room, light.", "Use the strongest one as the post mood."),
+            new("04", "Caption", "Write one direct line from the feeling.", "No fake hype. One honest sentence."),
+            new("05", "Post", "Export one short clip and log what people respond to.", "Audience growth starts with repeatable proof."),
+        ];
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -1675,13 +1712,20 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public bool IsWorldMemoryRoom => SelectedRoom.Name == "World Memory";
 
-    public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom;
+    public bool IsContentLabRoom => SelectedRoom.Name == "Content Lab";
+
+    public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom && !IsContentLabRoom;
 
     public string WorldMemorySignal =>
         "Central FL nights, trails, lakes, storms, phrases, and loops become the artist archive.";
 
     public string WorldMemoryPrompt =>
         "Save the place, sound, phrase, cover idea, rhythm, or feeling. GateKPT can turn it into a hook later.";
+
+    public ObservableCollection<ContentPlanItem> ContentPlanItems { get; }
+
+    public string ContentPlanSummary =>
+        $"{ContentFormat} / {ContentPlatform} / {ContentSetting}";
 
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
@@ -2166,6 +2210,104 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         WorldMemorySongIdea = "";
         WorldMemoryNotes = "";
         Status = "World Memory fields cleared.";
+    }
+
+    [RelayCommand]
+    private void PrimeContentFromWorldMemory()
+    {
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Content Lab") ?? SelectedRoom;
+        var memory = WorldMemories.FirstOrDefault();
+        if (memory is null)
+        {
+            ContentPlanStatus = "No World Memory saved yet. Use the default Late Night Florida template.";
+            GenerateContentPlan();
+            return;
+        }
+
+        ContentSetting = string.IsNullOrWhiteSpace(memory.Place) ? "Central FL night" : memory.Place;
+        ContentSong = memory.SongIdea;
+        ContentHook = string.IsNullOrWhiteSpace(memory.Phrase)
+            ? string.IsNullOrWhiteSpace(memory.SongIdea) ? "Late Night Florida begins." : memory.SongIdea
+            : memory.Phrase;
+        ContentVisualDirection = $"Build around {memory.Summary}. Moon-white vocal, amber/green terrain, slow waveform motion.";
+        ContentCaption = $"{ContentHook} Songs from the training ground.";
+        ContentNextAction = "Record a short take, apply Late Night Chrome, then make one vertical post clip.";
+        ContentPlanStatus = $"Primed from World Memory: {memory.Title}";
+        Status = ContentPlanStatus;
+    }
+
+    [RelayCommand]
+    private void GenerateContentPlan()
+    {
+        var setting = string.IsNullOrWhiteSpace(ContentSetting) ? "Central FL night" : ContentSetting.Trim();
+        var song = string.IsNullOrWhiteSpace(ContentSong) ? "one cover or hook" : ContentSong.Trim();
+        var format = string.IsNullOrWhiteSpace(ContentFormat) ? "Cover clip" : ContentFormat.Trim();
+        var platform = string.IsNullOrWhiteSpace(ContentPlatform) ? "short-form video" : ContentPlatform.Trim();
+
+        ContentHook = format.Contains("field", StringComparison.OrdinalIgnoreCase)
+            ? $"This is what {setting} sounds like."
+            : "Late Night Florida begins.";
+        ContentCaption = $"{ContentHook} {song} from the training ground.";
+        ContentVisualDirection = setting.Contains("storm", StringComparison.OrdinalIgnoreCase)
+            ? "Dark blue storm light, amber vocal glow, slow rain-like waveform trails."
+            : setting.Contains("trail", StringComparison.OrdinalIgnoreCase) || setting.Contains("lake", StringComparison.OrdinalIgnoreCase)
+                ? "Forest-black base, moon-white contour lines, teal lake/trail signal, warm vocal glow."
+                : "Humid night road, amber parking-lot light, dark green terrain lines, slow waveform painting.";
+        ContentNextAction = $"Make one {platform} post: record {song}, use Late Night Chrome, draft captions, export vertical clip.";
+        ContentPlanStatus = $"Generated {format} plan for {setting}.";
+        Status = ContentPlanStatus;
+    }
+
+    [RelayCommand]
+    private void SaveContentPlan()
+    {
+        var title = string.IsNullOrWhiteSpace(ContentSong)
+            ? $"{ContentFormat} / {ContentSetting}"
+            : ContentSong.Trim();
+        var lyricText = $"{ContentHook}{Environment.NewLine}{ContentCaption}";
+
+        LyricIdeas.Insert(0, new LyricIdeaItem(
+            title,
+            "Content",
+            "Late Night Florida",
+            $"{ContentFormat}, {ContentPlatform}, {ContentSetting}",
+            lyricText,
+            DateTime.Now.ToString("yyyy-MM-dd")));
+        while (LyricIdeas.Count > 50)
+        {
+            LyricIdeas.RemoveAt(LyricIdeas.Count - 1);
+        }
+
+        Captions.Insert(0, new CaptionLine(
+            "00:00.000",
+            "00:03.000",
+            ContentCaption,
+            "Safe draft",
+            $"Visual: {ContentVisualDirection}"));
+        while (Captions.Count > 24)
+        {
+            Captions.RemoveAt(Captions.Count - 1);
+        }
+
+        RecentCaptures.Insert(0, new CaptureItem(
+            $"Content plan / {ContentFormat}",
+            $"{ContentSetting}. {ContentNextAction}",
+            DateTime.Now.ToString("h:mm tt"),
+            "Content Lab"));
+        while (RecentCaptures.Count > 8)
+        {
+            RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
+        }
+
+        VisualizerLyricSource = title;
+        _store.SaveLyricIdeas(LyricIdeas);
+        _store.SaveCaptions(Captions);
+        _store.SaveCaptures(RecentCaptures);
+        UpdateCaptionStatus();
+        RefreshProjectModules();
+        SaveProjectSnapshot("Content plan saved");
+        ContentPlanStatus = $"Saved content plan: {title}";
+        Status = ContentPlanStatus;
     }
 
     [RelayCommand]
@@ -5227,6 +5369,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 public sealed record OsRoom(string Name, string Description, string Number, string Accent);
 
 public sealed record CaptureItem(string Title, string Detail, string Status, string Room);
+
+public sealed record ContentPlanItem(string Number, string Title, string Detail, string Action);
 
 public sealed record WorldMemoryItem(
     string CreatedAt,

@@ -89,3 +89,33 @@ The listener should feel like their life still has a movie inside it, even while
 Late Night Florida begins.
 Songs from the training ground.
 ```
+
+## Audience Growth Direction
+
+Do not monetize first. Grow proof first.
+
+Each post should be simple enough for a stranger to understand without knowing the full world:
+
+```text
+place -> sound -> feeling -> visual
+```
+
+The goal is not to post random covers. The goal is to make each cover feel like it belongs somewhere: trail, lake, room, car, storm, parking lot, gym, or night road.
+
+## Content Pillars
+
+- Covers: familiar songs pulled into the Late Night Florida atmosphere.
+- Field notes: rain, insects, trails, lakes, car notes, gym recovery, room tone.
+- Visuals: waveform terrain, moon, roads, amber light, dark green/blue night.
+- Process: GateKPT recording, vocal preset, version, post clip.
+- Originals: hooks that grow out of covers and field notes.
+
+## Content Lab Rule
+
+One clip should answer one question:
+
+```text
+Where does this feeling live?
+```
+
+If the clip does not have a place, it probably needs a field note, visual note, or one sentence of context before posting.
