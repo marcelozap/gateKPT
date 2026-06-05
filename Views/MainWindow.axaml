@@ -872,6 +872,46 @@
                                                            FontWeight="Black"
                                                            TextWrapping="Wrap"
                                                            Foreground="#C6A96D"/>
+                                                <TextBlock Text="{Binding ArtistWeeklyReviewSignal}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                                <TextBlock Text="{Binding NextArtistMissionSignal}"
+                                                           FontSize="11"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#D9C5A5"/>
+                                                <WrapPanel>
+                                                    <Button Content="Prime next"
+                                                            Command="{Binding PrimeNextArtistMissionCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#C6A96D"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Ready"
+                                                            Command="{Binding MarkLatestArtistSessionReadyCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#8DB7AD"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Posted"
+                                                            Command="{Binding MarkLatestArtistSessionPostedCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#D9F8F0E5"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Save review"
+                                                            Command="{Binding ReviewLatestArtistSessionCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#07110E"
+                                                            Foreground="#E8E1D2"
+                                                            FontWeight="Black"/>
+                                                </WrapPanel>
                                             </StackPanel>
                                         </Border>
                                         <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">

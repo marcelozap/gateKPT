@@ -242,6 +242,21 @@ Each session should answer:
 
 The archive is not paperwork. It is how the first EP and public artist world find themselves from repeated small clips.
 
+## Review Loop
+
+After saving a session, GateKPT should help decide the next move:
+
+- Ready: the clip is good enough to export or post.
+- Posted: the clip went out and should be reviewed later.
+- Review: write whether the charm came through, whether polish helped, and what response it got.
+- Prime next: choose the missing mission type, usually guitar, field note, goofy hook, Spanish color, or Raw to Chrome.
+
+The point is not to make more dashboards. The point is to keep the artist loop alive:
+
+```text
+make -> post/archive -> review -> choose next mission
+```
+
 ## EP Seed
 
 Working seed:

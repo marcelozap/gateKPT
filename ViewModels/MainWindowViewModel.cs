@@ -1828,6 +1828,60 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string ArtistWeeklyReviewSignal
+    {
+        get
+        {
+            var since = DateTime.Now.AddDays(-7);
+            var recent = ArtistSessions
+                .Where(item => DateTime.TryParse(item.CreatedAt, out var created) && created >= since)
+                .ToList();
+            var posted = recent.Count(item => item.PostStatus.Contains("posted", StringComparison.OrdinalIgnoreCase));
+            var hooks = recent.Count(item => item.MissionType.Contains("hook", StringComparison.OrdinalIgnoreCase));
+            var spanish = recent.Count(item => item.Language.Contains("Spanish", StringComparison.OrdinalIgnoreCase));
+            var fields = recent.Count(item => item.MissionType.Contains("field", StringComparison.OrdinalIgnoreCase));
+            return $"7 days: {recent.Count} session(s), {hooks} hook(s), {fields} field note(s), {spanish} Spanish-color seed(s), {posted} posted.";
+        }
+    }
+
+    public string NextArtistMissionSignal
+    {
+        get
+        {
+            if (ArtistSessions.Count == 0)
+            {
+                return "Next: save one After Work Hook. Do not overthink the first seed.";
+            }
+
+            var hasField = ArtistSessions.Any(item => item.MissionType.Contains("field", StringComparison.OrdinalIgnoreCase));
+            var hasGuitar = ArtistSessions.Any(item => item.MissionType.Contains("guitar", StringComparison.OrdinalIgnoreCase));
+            var hasSpanish = ArtistSessions.Any(item => item.MissionType.Contains("Spanish", StringComparison.OrdinalIgnoreCase));
+            var hasGoofy = ArtistSessions.Any(item => item.MissionType.Contains("goofy", StringComparison.OrdinalIgnoreCase));
+
+            if (!hasGuitar)
+            {
+                return "Next: Raw Guitar Cover. Keep the charm and imperfections.";
+            }
+
+            if (!hasField)
+            {
+                return "Next: Florida Field Note. Capture the world before the song.";
+            }
+
+            if (!hasGoofy)
+            {
+                return "Next: Goofy Hook Seed. Let personality show.";
+            }
+
+            if (!hasSpanish)
+            {
+                return "Next: Spanish Color Line. One phrase, natural not forced.";
+            }
+
+            return "Next: Raw to Chrome. Compare raw vs polish and only keep polish if it helps.";
+        }
+    }
+
     public string ContentRecordingPlan
     {
         get
@@ -2852,6 +2906,85 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         Status = ContentPlanStatus;
         OnPropertyChanged(nameof(ContentArchiveReviewSummary));
         OnPropertyChanged(nameof(BestArtistSessionSignal));
+        OnPropertyChanged(nameof(ArtistWeeklyReviewSignal));
+        OnPropertyChanged(nameof(NextArtistMissionSignal));
+    }
+
+    [RelayCommand]
+    private void MarkLatestArtistSessionReady()
+    {
+        UpdateLatestArtistSession("Ready", "Ready enough to export/post. Keep it simple.");
+    }
+
+    [RelayCommand]
+    private void MarkLatestArtistSessionPosted()
+    {
+        UpdateLatestArtistSession("Posted", "Posted. Review comments, replay value, and whether the charm came through.");
+    }
+
+    [RelayCommand]
+    private void ReviewLatestArtistSession()
+    {
+        var note = string.IsNullOrWhiteSpace(ContentReviewNote)
+            ? "Review saved. Did the charm come through?"
+            : ContentReviewNote.Trim();
+        UpdateLatestArtistSession(ContentPostStatus, note);
+    }
+
+    [RelayCommand]
+    private void PrimeNextArtistMission()
+    {
+        var next = NextArtistMissionSignal.ToLowerInvariant();
+        if (next.Contains("guitar"))
+        {
+            PrimeRawGuitarCover();
+        }
+        else if (next.Contains("field"))
+        {
+            PrimeFloridaFieldNote();
+        }
+        else if (next.Contains("goofy"))
+        {
+            PrimeGoofyHookSeed();
+        }
+        else if (next.Contains("spanish"))
+        {
+            PrimeSpanishColorLine();
+        }
+        else if (next.Contains("chrome"))
+        {
+            PrimeRawToChrome();
+        }
+        else
+        {
+            PrimeAfterWorkContent();
+        }
+    }
+
+    private void UpdateLatestArtistSession(string status, string reviewNote)
+    {
+        if (ArtistSessions.Count == 0)
+        {
+            ContentPlanStatus = "No artist session saved yet. Save to GateKPT first.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        var latest = ArtistSessions[0];
+        var updated = latest with
+        {
+            PostStatus = status,
+            Notes = $"{latest.Notes}{Environment.NewLine}Review update: {reviewNote}",
+            UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+        };
+        ArtistSessions[0] = updated;
+        ContentPostStatus = status;
+        ContentReviewNote = reviewNote;
+        _store.SaveArtistSessions(ArtistSessions);
+        SaveProjectSnapshot($"Artist session marked {status}");
+        ContentPlanStatus = $"Updated latest session: {latest.Title} -> {status}";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
     }
 
     private ArtistSessionItem CurrentArtistSession(string title)
