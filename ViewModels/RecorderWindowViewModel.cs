@@ -117,6 +117,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private CaptureLaneItem? _selectedCaptureLane;
 
+    [ObservableProperty]
+    private VocalPresetItem? _selectedVocalPreset;
+
     public ObservableCollection<RecorderVersionFile> Versions { get; } = [];
 
     public ObservableCollection<AudioInputDeviceItem> InputDevices { get; } = [];
@@ -129,6 +132,35 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         new("Drums", "drums", "Groove first", 1),
         new("Guitar / Keys", "guitar-keys", "Harmony or movement", 2),
         new("Vocals", "vocals", "Lead line or hook", 4)
+    ];
+
+    public ObservableCollection<VocalPresetItem> VocalPresets { get; } =
+    [
+        new(
+            "Late Night Chrome",
+            "late-night-chrome",
+            "Tory-center lead: glossy, tuned-feeling, intimate, late-night.",
+            CreateLateNightChromePreset()),
+        new(
+            "Silk Synth",
+            "silk-synth",
+            "Lil Tecca color: smoother hook tone, wider, synth-lead energy.",
+            CreateSilkSynthPreset()),
+        new(
+            "Luna Pop",
+            "luna-pop",
+            "Rauw color: airy Spanish/English pop vocal with rhythmic space.",
+            CreateLunaPopPreset()),
+        new(
+            "Cloud Doubles",
+            "cloud-doubles",
+            "Wide tuned-feeling doubles and adlibs behind the lead.",
+            CreateCloudDoublesPreset()),
+        new(
+            "Raw Clean",
+            "raw-clean",
+            "Clean vocal prep before styling: rumble cut, level, light de-ess feel.",
+            CreateRawCleanPreset())
     ];
 
     public ObservableCollection<LayerSlotItem> LayerSlots { get; } =
@@ -380,7 +412,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : "same shape";
 
     public string CommandHelp =>
-        "Try: make warmer, cyber vocal, audio earlier, audio later, make post clip.";
+        "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -420,6 +452,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
         SelectedCaptureLane = CaptureLanes.FirstOrDefault();
         SelectedLayerSlot = LayerSlots.FirstOrDefault();
+        SelectedVocalPreset = VocalPresets.FirstOrDefault();
         RefreshInputDevices();
         RefreshOutputDevices();
         RefreshVersions();
@@ -1266,6 +1299,35 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void QuickDelete() => StageCommand("delete last");
 
+    [RelayCommand]
+    private void StageLateNightChrome() => StageCommand("late night chrome vocal");
+
+    [RelayCommand]
+    private void StageSilkSynth() => StageCommand("silk synth hook");
+
+    [RelayCommand]
+    private void StageLunaPop() => StageCommand("luna pop vocal");
+
+    [RelayCommand]
+    private void StageCloudDoubles() => StageCommand("cloud doubles");
+
+    [RelayCommand]
+    private void StageRawClean() => StageCommand("raw clean vocal");
+
+    [RelayCommand]
+    private void RenderSelectedVocalPreset()
+    {
+        var preset = SelectedVocalPreset;
+        if (preset is null)
+        {
+            CommandResult = "Pick a vocal preset first.";
+            Status = "No vocal preset selected.";
+            return;
+        }
+
+        CreateSafeEditCopy(preset.AudioPreset);
+    }
+
     private void StageCommand(string command)
     {
         ChatText = command;
@@ -1333,6 +1395,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             CommandResult = CommandHelp;
             Status = "Showing command examples.";
+            IsCommandBusy = false;
+            return;
+        }
+
+        var vocalPreset = FindVocalPreset(command);
+        if (vocalPreset is not null)
+        {
+            SelectedVocalPreset = vocalPreset;
+            CreateSafeEditCopy(vocalPreset.AudioPreset);
             IsCommandBusy = false;
             return;
         }
@@ -1665,6 +1736,130 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         return null;
     }
+
+    private VocalPresetItem? FindVocalPreset(string command)
+    {
+        var text = command.ToLowerInvariant();
+        if (text.Contains("late night")
+            || text.Contains("chrome")
+            || text.Contains("tory")
+            || text.Contains("lanez"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "late-night-chrome");
+        }
+
+        if (text.Contains("silk")
+            || text.Contains("synth")
+            || text.Contains("tecca")
+            || text.Contains("hvn"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "silk-synth");
+        }
+
+        if (text.Contains("luna")
+            || text.Contains("rauw")
+            || text.Contains("reggaeton")
+            || text.Contains("spanish")
+            || text.Contains("spanglish"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "luna-pop");
+        }
+
+        if (text.Contains("double")
+            || text.Contains("adlib")
+            || text.Contains("ad lib")
+            || text.Contains("background")
+            || text.Contains("cloud"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "cloud-doubles");
+        }
+
+        if (text.Contains("raw clean")
+            || text.Contains("clean vocal")
+            || text.Contains("clean lead")
+            || text.Contains("dry vocal"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "raw-clean");
+        }
+
+        return null;
+    }
+
+    private static AudioEditPreset CreateLateNightChromePreset() =>
+        new(
+            "late-night-chrome",
+            "Late Night Chrome: glossy melodic lead, tight level, smooth top, short delay, medium room. Tuning engine slot reserved.",
+            Gain: 1.55,
+            HighPassHz: 95,
+            LowShelfDb: 1.2,
+            HighShelfDb: 3.2,
+            CompressionAmount: 0.58,
+            SaturationAmount: 0.08,
+            EchoMs: 118,
+            EchoMix: 0.11,
+            ReverbMs: 185,
+            ReverbMix: 0.14,
+            TargetLayer: "Vocal");
+
+    private static AudioEditPreset CreateSilkSynthPreset() =>
+        new(
+            "silk-synth",
+            "Silk Synth: stronger hook polish, smooth synthetic edge, wider delay feel, glossy highs. Tuning engine slot reserved.",
+            Gain: 1.48,
+            HighPassHz: 115,
+            LowShelfDb: 0.6,
+            HighShelfDb: 4.5,
+            CompressionAmount: 0.66,
+            SaturationAmount: 0.12,
+            EchoMs: 145,
+            EchoMix: 0.15,
+            ReverbMs: 210,
+            ReverbMix: 0.16,
+            TargetLayer: "Vocal");
+
+    private static AudioEditPreset CreateLunaPopPreset() =>
+        new(
+            "luna-pop",
+            "Luna Pop: airy Spanish/English lead, warm clean presence, rhythmic delay, lighter room.",
+            Gain: 1.38,
+            HighPassHz: 90,
+            LowShelfDb: 1.6,
+            HighShelfDb: 3.8,
+            CompressionAmount: 0.42,
+            SaturationAmount: 0.04,
+            EchoMs: 170,
+            EchoMix: 0.13,
+            ReverbMs: 240,
+            ReverbMix: 0.17,
+            TargetLayer: "Vocal");
+
+    private static AudioEditPreset CreateCloudDoublesPreset() =>
+        new(
+            "cloud-doubles",
+            "Cloud Doubles: softer wide support layer, tucked lead level, bigger reverb, adlib space.",
+            Gain: 1.12,
+            HighPassHz: 140,
+            LowShelfDb: -0.8,
+            HighShelfDb: 2.2,
+            CompressionAmount: 0.48,
+            SaturationAmount: 0.05,
+            EchoMs: 190,
+            EchoMix: 0.18,
+            ReverbMs: 320,
+            ReverbMix: 0.24,
+            TargetLayer: "Vocal");
+
+    private static AudioEditPreset CreateRawCleanPreset() =>
+        new(
+            "raw-clean",
+            "Raw Clean: vocal cleanup, rumble cut, stable level, light top control before heavier styling.",
+            Gain: 1.22,
+            HighPassHz: 105,
+            LowPassHz: 12000,
+            HighShelfDb: 1.2,
+            CompressionAmount: 0.26,
+            SaturationAmount: 0.02,
+            TargetLayer: "Vocal");
 
     private void AddCommandHistory(string command)
     {

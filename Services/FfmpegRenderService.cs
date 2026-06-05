@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -103,19 +104,60 @@ public sealed class FfmpegRenderService
             return "";
         }
 
-        var filters = "";
+        var filters = new List<string>();
         if (audioPreset.HighPassHz > 0)
         {
-            filters += $",highpass=f={audioPreset.HighPassHz}";
+            filters.Add($"highpass=f={audioPreset.HighPassHz}");
+        }
+
+        if (audioPreset.LowPassHz > 0)
+        {
+            filters.Add($"lowpass=f={audioPreset.LowPassHz}");
+        }
+
+        if (Math.Abs(audioPreset.BassDb) > 0.01)
+        {
+            filters.Add($"bass=g={Format(audioPreset.BassDb)}");
+        }
+
+        if (Math.Abs(audioPreset.TrebleDb) > 0.01)
+        {
+            filters.Add($"treble=g={Format(audioPreset.TrebleDb)}");
+        }
+
+        if (audioPreset.CompressorRatio > 0)
+        {
+            var threshold = Format(audioPreset.CompressorThresholdDb);
+            var ratio = Format(audioPreset.CompressorRatio);
+            var makeup = Format(audioPreset.MakeupGainDb);
+            filters.Add($"acompressor=threshold={threshold}dB:ratio={ratio}:attack=8:release=90:makeup={makeup}");
+        }
+
+        if (audioPreset.DelayMs > 0 && audioPreset.DelayDecay > 0)
+        {
+            filters.Add($"aecho=0.82:0.36:{audioPreset.DelayMs}:{Format(audioPreset.DelayDecay)}");
+        }
+
+        if (audioPreset.Chorus)
+        {
+            filters.Add("chorus=0.55:0.9:38|54:0.28|0.22:0.25|0.32:2.0|2.4");
+        }
+
+        if (audioPreset.StereoWidth > 1.01)
+        {
+            filters.Add($"extrastereo=m={Format(audioPreset.StereoWidth)}:c=disabled");
         }
 
         if (audioPreset.TargetLufs != 0)
         {
-            filters += $",loudnorm=I={audioPreset.TargetLufs}:TP=-1.5:LRA=11";
+            filters.Add($"loudnorm=I={audioPreset.TargetLufs}:TP=-1.5:LRA=11");
         }
 
-        return filters;
+        filters.Add("alimiter=limit=0.95");
+        return filters.Count == 0 ? "" : $",{string.Join(",", filters)}";
     }
+
+    private static string Format(double value) => value.ToString("0.###", CultureInfo.InvariantCulture);
 
     private static void WriteManifest(
         string outputPath,

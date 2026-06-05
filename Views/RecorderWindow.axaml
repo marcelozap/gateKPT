@@ -288,6 +288,77 @@
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
                                    Foreground="#E8E1D2"/>
+                        <Border CornerRadius="21"
+                                Padding="13"
+                                BorderBrush="#338DB7AD"
+                                BorderThickness="1"
+                                Background="#1207110E">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13" RowDefinitions="Auto,Auto">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="VOCAL PRESET PACK"
+                                               FontSize="10"
+                                               FontWeight="Black"
+                                               LetterSpacing="2.2"
+                                               Foreground="#C6A96D"/>
+                                    <ComboBox ItemsSource="{Binding VocalPresets}"
+                                              SelectedItem="{Binding SelectedVocalPreset}"
+                                              MinHeight="42"/>
+                                    <TextBlock Text="{Binding SelectedVocalPreset.Description}"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#8DB7AD"/>
+                                </StackPanel>
+                                <Button Grid.Column="1"
+                                        Content="Render vocal"
+                                        Command="{Binding RenderSelectedVocalPresetCommand}"
+                                        Padding="18,11"
+                                        MinWidth="130"
+                                        VerticalAlignment="Center"
+                                        Background="#8DB7AD"
+                                        Foreground="#07110E"/>
+                                <WrapPanel Grid.Row="1"
+                                           Grid.ColumnSpan="2"
+                                           Orientation="Horizontal"
+                                           Margin="0,13,0,0">
+                                    <Button Content="Late Night Chrome"
+                                            Command="{Binding StageLateNightChromeCommand}"
+                                            Padding="13,9"
+                                            MinWidth="132"
+                                            Margin="0,0,8,8"
+                                            Background="#203C36"
+                                            Foreground="#E8E1D2"/>
+                                    <Button Content="Silk Synth"
+                                            Command="{Binding StageSilkSynthCommand}"
+                                            Padding="13,9"
+                                            MinWidth="104"
+                                            Margin="0,0,8,8"
+                                            Background="#203C36"
+                                            Foreground="#E8E1D2"/>
+                                    <Button Content="Luna Pop"
+                                            Command="{Binding StageLunaPopCommand}"
+                                            Padding="13,9"
+                                            MinWidth="96"
+                                            Margin="0,0,8,8"
+                                            Background="#203C36"
+                                            Foreground="#E8E1D2"/>
+                                    <Button Content="Cloud Doubles"
+                                            Command="{Binding StageCloudDoublesCommand}"
+                                            Padding="13,9"
+                                            MinWidth="122"
+                                            Margin="0,0,8,8"
+                                            Background="#203C36"
+                                            Foreground="#E8E1D2"/>
+                                    <Button Content="Raw Clean"
+                                            Command="{Binding StageRawCleanCommand}"
+                                            Padding="13,9"
+                                            MinWidth="96"
+                                            Margin="0,0,8,8"
+                                            Background="#1207110E"
+                                            Foreground="#E8E1D2"/>
+                                </WrapPanel>
+                            </Grid>
+                        </Border>
                         <StackPanel IsVisible="{Binding IsCommandBusy}" Spacing="6">
                             <TextBlock Text="Working..."
                                        FontSize="11"
