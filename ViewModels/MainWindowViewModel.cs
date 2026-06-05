@@ -607,11 +607,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         ContentPlanItems =
         [
-            new("01", "Cover", "Record one English or Spanish cover that fits night-drive pressure.", "Use Late Night Chrome."),
-            new("02", "Field sound", "Capture rain, insects, trail, lake, car, gym, or room tone.", "Save the place before the song."),
-            new("03", "Visual", "Take five photos: car, road, trail, room, light.", "Use the strongest one as the post mood."),
-            new("04", "Caption", "Write one direct line from the feeling.", "No fake hype. One honest sentence."),
-            new("05", "Post", "Export one short clip and log what people respond to.", "Audience growth starts with repeatable proof."),
+            new("01", "Pick the clip", "Cover, drum groove, guitar phrase, vocal hook, dance/visual, or field sound.", "Choose before recording."),
+            new("02", "Record the source", "One short usable take. Drums first, then guitar/keys, then vocal if needed.", "Keep the original safe."),
+            new("03", "Shape the sound", "Warmer, room, loud, chrome vocal, clean, or raw.", "Make one styled version."),
+            new("04", "Make it visible", "Visualizer, caption, cover frame, phone video, or mood shot.", "Sound should have a place."),
+            new("05", "Post by platform", "Snap quick, TikTok replay, Reels polish, YouTube archive/Short.", "Export one clear version."),
         ];
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
@@ -1732,6 +1732,90 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string ContentPlanSummary =>
         $"{ContentFormat} / {ContentPlatform} / {ContentSetting}";
 
+    public string ContentRecordingPlan
+    {
+        get
+        {
+            var format = ContentFormat.ToLowerInvariant();
+            if (format.Contains("drum"))
+            {
+                return "Record: 8-16 sec drum groove. Use it as the hook bed or visualizer pulse.";
+            }
+
+            if (format.Contains("guitar") || format.Contains("keys"))
+            {
+                return "Record: 10-20 sec guitar/keys phrase. Leave space for vocal or caption.";
+            }
+
+            if (format.Contains("vocal") || format.Contains("cover"))
+            {
+                return "Record: chorus or strongest line first. Raw take stays safe, then style the vocal.";
+            }
+
+            if (format.Contains("dance") || format.Contains("visual"))
+            {
+                return "Record: audio bed first, then make the visual/dance clip follow the waveform.";
+            }
+
+            return "Record: one short usable moment, not a full production.";
+        }
+    }
+
+    public string ContentPlatformPlan
+    {
+        get
+        {
+            var platform = ContentPlatform.ToLowerInvariant();
+            if (platform.Contains("snap"))
+            {
+                return "Snapchat: fast, casual, low-pressure. Show the moment, not the explanation.";
+            }
+
+            if (platform.Contains("youtube"))
+            {
+                return platform.Contains("short")
+                    ? "YouTube Shorts: clear hook in first second, clean vocal, simple title."
+                    : "YouTube: longer cover or process video. Save stronger audio and context.";
+            }
+
+            if (platform.Contains("insta") || platform.Contains("reel"))
+            {
+                return "Instagram/Reels: visual first. Strong frame, subtitles, polished clip.";
+            }
+
+            if (platform.Contains("tiktok"))
+            {
+                return "TikTok: one feeling, one hook, one visual idea. Keep it easy to replay.";
+            }
+
+            return "Platform: choose Snapchat, TikTok, Instagram/Reels, or YouTube before recording.";
+        }
+    }
+
+    public string ContentShotPlan
+    {
+        get
+        {
+            var setting = ContentSetting.ToLowerInvariant();
+            if (setting.Contains("motel") || setting.Contains("neon") || setting.Contains("road"))
+            {
+                return "Shot: low light, warm sign glow, face or instrument close, waveform visual after.";
+            }
+
+            if (setting.Contains("trail") || setting.Contains("lake") || setting.Contains("storm"))
+            {
+                return "Shot: field texture first, then instrument/vocal. Let the place be the intro.";
+            }
+
+            if (setting.Contains("room") || setting.Contains("studio"))
+            {
+                return "Shot: clean room frame, visible instrument, one strong light source.";
+            }
+
+            return "Shot: pick one place, one light, one sound. Keep the clip readable.";
+        }
+    }
+
     partial void OnSelectedExportPresetChanged(ExportPreset value)
     {
         PlatformProfile = value.Name;
@@ -1763,6 +1847,24 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     }
 
     partial void OnLayerCountInBeatsChanged(int value) => OnPropertyChanged(nameof(LayerRecordingPlan));
+
+    partial void OnContentFormatChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentRecordingPlan));
+    }
+
+    partial void OnContentPlatformChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentPlatformPlan));
+    }
+
+    partial void OnContentSettingChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentShotPlan));
+    }
 
     partial void OnLastAutosavePathChanged(string value)
     {
@@ -2251,16 +2353,84 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         ContentHook = format.Contains("field", StringComparison.OrdinalIgnoreCase)
             ? $"This is what {setting} sounds like."
-            : "The night starts here.";
-        ContentCaption = $"{ContentHook} {song}. A cover, a field note, a visual.";
+            : format.Contains("drum", StringComparison.OrdinalIgnoreCase)
+                ? "Start with the groove."
+                : format.Contains("dance", StringComparison.OrdinalIgnoreCase) || format.Contains("visual", StringComparison.OrdinalIgnoreCase)
+                    ? "Sound becomes the background."
+                    : "The night starts here.";
+        ContentCaption = PlatformCaption(platform, ContentHook, song);
         ContentVisualDirection = setting.Contains("storm", StringComparison.OrdinalIgnoreCase)
             ? "Dark blue storm light, amber vocal glow, slow rain-like waveform trails."
             : setting.Contains("trail", StringComparison.OrdinalIgnoreCase) || setting.Contains("lake", StringComparison.OrdinalIgnoreCase)
                 ? "Forest-black base, moon-white contour lines, teal lake/trail signal, warm vocal glow."
                 : "Humid night road, amber parking-lot light, dark green terrain lines, slow waveform painting.";
-        ContentNextAction = $"Make one {platform} post: record {song}, use Late Night Chrome, draft captions, export vertical clip.";
+        ContentNextAction = PlatformNextAction(platform, format, song);
         ContentPlanStatus = $"Generated {format} plan for {setting}.";
         Status = ContentPlanStatus;
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentRecordingPlan));
+        OnPropertyChanged(nameof(ContentPlatformPlan));
+        OnPropertyChanged(nameof(ContentShotPlan));
+    }
+
+    private static string PlatformCaption(string platform, string hook, string song)
+    {
+        var lower = platform.ToLowerInvariant();
+        if (lower.Contains("snap"))
+        {
+            return $"{hook} {song}. quick sound test.";
+        }
+
+        if (lower.Contains("tiktok"))
+        {
+            return $"{hook} {song}. if this hits, I’ll build the full version.";
+        }
+
+        if (lower.Contains("insta") || lower.Contains("reel"))
+        {
+            return $"{hook} {song}. recorded, shaped, and saved as a visual.";
+        }
+
+        if (lower.Contains("youtube") && !lower.Contains("short"))
+        {
+            return $"{hook} {song}. Full take/process note for the archive.";
+        }
+
+        return $"{hook} {song}.";
+    }
+
+    private static string PlatformNextAction(string platform, string format, string song)
+    {
+        var lower = platform.ToLowerInvariant();
+        var source = format.Contains("drum", StringComparison.OrdinalIgnoreCase)
+            ? "record drum groove"
+            : format.Contains("guitar", StringComparison.OrdinalIgnoreCase) || format.Contains("keys", StringComparison.OrdinalIgnoreCase)
+                ? "record guitar/keys phrase"
+                : format.Contains("dance", StringComparison.OrdinalIgnoreCase) || format.Contains("visual", StringComparison.OrdinalIgnoreCase)
+                    ? "record audio bed"
+                    : $"record {song}";
+
+        if (lower.Contains("snap"))
+        {
+            return $"{source}, post the raw moment, keep it casual.";
+        }
+
+        if (lower.Contains("tiktok"))
+        {
+            return $"{source}, add visualizer motion, keep the first second obvious.";
+        }
+
+        if (lower.Contains("insta") || lower.Contains("reel"))
+        {
+            return $"{source}, choose strongest frame, add caption/subtitle, export vertical.";
+        }
+
+        if (lower.Contains("youtube") && !lower.Contains("short"))
+        {
+            return $"{source}, save clean audio, pair with phone video, archive a longer version.";
+        }
+
+        return $"{source}, style the take, export one vertical clip.";
     }
 
     [RelayCommand]

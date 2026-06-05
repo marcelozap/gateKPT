@@ -566,13 +566,57 @@
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#203C36"/>
+                                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                            <Border CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="RECORD"
+                                                               FontSize="10"
+                                                               FontWeight="Black"
+                                                               LetterSpacing="1.8"
+                                                               Foreground="#806A3F"/>
+                                                    <TextBlock Text="{Binding ContentRecordingPlan}"
+                                                               FontSize="12"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#203C36"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Grid.Column="1" CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="PLATFORM"
+                                                               FontSize="10"
+                                                               FontWeight="Black"
+                                                               LetterSpacing="1.8"
+                                                               Foreground="#806A3F"/>
+                                                    <TextBlock Text="{Binding ContentPlatformPlan}"
+                                                               FontSize="12"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#203C36"/>
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Grid.Column="2" CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="SHOT"
+                                                               FontSize="10"
+                                                               FontWeight="Black"
+                                                               LetterSpacing="1.8"
+                                                               Foreground="#806A3F"/>
+                                                    <TextBlock Text="{Binding ContentShotPlan}"
+                                                               FontSize="12"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#203C36"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </Grid>
                                         <Grid ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
                                             <TextBox Text="{Binding ContentFormat}"
-                                                     PlaceholderText="Format: cover clip, field note, visual"
+                                                     PlaceholderText="Format: cover, drums, guitar, vocal, visual"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Column="1"
                                                      Text="{Binding ContentPlatform}"
-                                                     PlaceholderText="Platform"
+                                                     PlaceholderText="Platform: Snapchat, TikTok, Reels, YouTube"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Row="1"
                                                      Text="{Binding ContentSetting}"
@@ -637,7 +681,7 @@
 
                                 <Border Grid.Column="1" CornerRadius="28" Padding="21" Background="#A807110E" BorderBrush="#22F8F0E5" BorderThickness="1">
                                     <StackPanel Spacing="13">
-                                        <TextBlock Text="30 DAY RHYTHM"
+                                        <TextBlock Text="CONTENT PATH"
                                                    FontSize="11"
                                                    FontWeight="Black"
                                                    LetterSpacing="2.5"

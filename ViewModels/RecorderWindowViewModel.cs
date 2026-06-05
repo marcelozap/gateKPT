@@ -130,10 +130,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public ObservableCollection<CaptureLaneItem> CaptureLanes { get; } =
     [
-        new("Full Loop", "full-loop", "Whole RC-505 pass", null),
-        new("Drums", "drums", "Groove first", 1),
+        new("Cover Pass", "cover-pass", "One usable section for a post", null),
+        new("Drum Clip", "drums", "Groove first", 1),
         new("Guitar / Keys", "guitar-keys", "Harmony or movement", 2),
-        new("Vocals", "vocals", "Lead line or hook", 4)
+        new("Vocal Hook", "vocals", "Lead line or hook", 4),
+        new("Visual / Dance", "visual-dance", "Audio bed for movement or visualizer", null)
     ];
 
     public ObservableCollection<VocalPresetItem> VocalPresets { get; } =
@@ -251,10 +252,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : $"Input: {SelectedInputDevice.Name}. If the meter moves, record.";
 
     public string SelectedCaptureLaneLabel =>
-        SelectedCaptureLane?.Name ?? "Full Loop";
+        SelectedCaptureLane?.Name ?? "Cover Pass";
 
     public string SelectedCaptureLaneDetail =>
-        SelectedCaptureLane?.Detail ?? "Whole RC-505 pass";
+        SelectedCaptureLane?.Detail ?? "One usable section for a post";
 
     public string LatestTakeTitle =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
