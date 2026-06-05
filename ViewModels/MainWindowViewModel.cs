@@ -363,6 +363,18 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentPlanStatus = "Start with one cover, one look, one preset, one post.";
 
     [ObservableProperty]
+    private string _contentMission = "Raw to Chrome";
+
+    [ObservableProperty]
+    private string _contentTone = "playful, romantic, humble, smart, noble";
+
+    [ObservableProperty]
+    private string _contentPreset = "Raw Clean first, Late Night Chrome only if the hook needs shine";
+
+    [ObservableProperty]
+    private string _contentReviewNote = "What felt natural? What got a real response?";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -1733,16 +1745,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ContentPlanItem> ContentPlanItems { get; }
 
     public string ContentPlanSummary =>
-        $"{ContentSeries} / {ContentFormat} / {ContentPlatform}";
+        $"{ContentMission} / {ContentSeries} / {ContentPlatform}";
 
     public string ContentAudiencePromise =>
-        "Come watch the sound get built: glossy vocals, Spanish/English covers, field sounds, visuals, pressure into music.";
+        "Florida Night Pop/R&B: dreamy hooks, loose guitar, playful charm, Spanish color, pressure into music.";
 
     public string ContentEngineFormula =>
-        "one cover / one look / one field sound / one GateKPT preset / one post";
+        "one song / one sound / one visual / one post";
 
     public string ContentTonightSequence =>
-        "Eat, shower, reset. Pick one cover. Record 3 phone takes. Record clean vocal. Apply Late Night Chrome. Export one clip. Post Snapchat first.";
+        "Choose mission -> capture source -> record voice/guitar -> choose preset -> make clip -> post pack -> archive -> review.";
+
+    public string ContentMissionGuide =>
+        ContentMission.ToLowerInvariant() switch
+        {
+            var mission when mission.Contains("guitar") => "Raw guitar cover: capture the charming imperfect take. Raw Clean first.",
+            var mission when mission.Contains("field") => "Field note: save the place before the song. Use the sound as intro texture.",
+            var mission when mission.Contains("goofy") => "Goofy hook seed: do not over-polish. Keep the face/personality alive.",
+            var mission when mission.Contains("spanish") => "Spanish color line: one phrase, smooth rhythm, Luna Pop if it helps.",
+            var mission when mission.Contains("noble") => "Noble note: emotionally direct, self-respecting, not fake luxury.",
+            var mission when mission.Contains("phone") => "Phone video cover: clean audio in GateKPT, phone video for the feeling.",
+            var mission when mission.Contains("chrome") => "Raw to Chrome: raw first, polished second, compare the feeling.",
+            _ => "After Work Hook: build the hook fast, keep the charm, post before perfect."
+        };
+
+    public string ContentPostPackPreview =>
+        $"Hook: {ContentHook} | Caption: {ContentCaption} | Visual: {ContentVisualDirection} | Preset: {ContentPreset}";
+
+    public string ContentArchiveReviewSummary
+    {
+        get
+        {
+            var latestCapture = RecentCaptures.FirstOrDefault()?.Title ?? "No clip archived yet";
+            var latestLyric = LyricIdeas.FirstOrDefault()?.Title ?? "No hook saved yet";
+            return $"Archive: {RecentCaptures.Count} captures / {LyricIdeas.Count} hooks / latest: {latestCapture} / {latestLyric}";
+        }
+    }
+
+    public string ContentEpPlanSignal =>
+        "EP seed: Late Night Florida / 5 songs / Orange County Glow / playful-romantic-smart core.";
 
     public string ContentRecordingPlan
     {
@@ -1871,6 +1912,23 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentPlanSummary));
     }
 
+    partial void OnContentMissionChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentMissionGuide));
+        OnPropertyChanged(nameof(ContentPostPackPreview));
+    }
+
+    partial void OnContentToneChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPostPackPreview));
+    }
+
+    partial void OnContentPresetChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPostPackPreview));
+    }
+
     partial void OnContentPlatformChanged(string value)
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -1882,6 +1940,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentPlanSummary));
         OnPropertyChanged(nameof(ContentShotPlan));
     }
+
+    partial void OnContentHookChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentCaptionChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
+
+    partial void OnContentVisualDirectionChanged(string value) => OnPropertyChanged(nameof(ContentPostPackPreview));
 
     partial void OnLastAutosavePathChanged(string value)
     {
@@ -2382,17 +2446,19 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 ? "Forest-black base, moon-white contour lines, teal lake/trail signal, warm vocal glow."
                 : "Humid night road, amber parking-lot light, dark green terrain lines, slow waveform painting.";
         ContentNextAction = PlatformNextAction(platform, format, song);
-        ContentPlanStatus = $"Generated {format} plan for {setting}.";
+        ContentPlanStatus = $"Generated {ContentMission} post pack: {format} / {ContentTone}.";
         Status = ContentPlanStatus;
         OnPropertyChanged(nameof(ContentPlanSummary));
         OnPropertyChanged(nameof(ContentRecordingPlan));
         OnPropertyChanged(nameof(ContentPlatformPlan));
         OnPropertyChanged(nameof(ContentShotPlan));
+        OnPropertyChanged(nameof(ContentPostPackPreview));
     }
 
     [RelayCommand]
     private void PrimeRawToChrome()
     {
+        ContentMission = "Raw to Chrome";
         ContentSeries = "Raw to Chrome";
         ContentFormat = "Raw to Chrome #001";
         ContentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
@@ -2402,6 +2468,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentCaption = "Raw vocal -> Late Night Chrome. Building Florida Night R&B after work.";
         ContentVisualDirection = "First 3 sec raw vocal, quick GateKPT screen cut, processed vocal enters, warm orange light.";
         ContentNextAction = "Record raw vocal, render Late Night Chrome, compare both, export vertical clip.";
+        ContentTone = "playful, romantic, humble, smart, noble";
+        ContentPreset = "Raw Clean first, Late Night Chrome only if the hook needs shine";
         ContentPlanStatus = "Primed Raw to Chrome: raw vocal first, polished vocal second.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
@@ -2410,6 +2478,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void PrimeAfterWorkContent()
     {
+        ContentMission = "After Work Hook";
         ContentSeries = "After Work Covers";
         ContentFormat = "Cover clip";
         ContentPlatform = "Snapchat first / TikTok + Reels + YouTube Shorts if usable";
@@ -2418,7 +2487,85 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentCaption = "Recorded this after work. One cover, one take, one sound.";
         ContentVisualDirection = "Face visible, simple frame, black shirt, clean vocal, lyric caption.";
         ContentNextAction = ContentTonightSequence;
+        ContentTone = "humble, charming, direct, a little funny";
+        ContentPreset = "Raw Clean for verse, Late Night Chrome only on chorus";
         ContentPlanStatus = "Primed after-work plan: keep it simple and post before perfect.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeRawGuitarCover()
+    {
+        ContentMission = "Raw Guitar Cover";
+        ContentSeries = "After Work Covers";
+        ContentFormat = "Guitar + vocal cover";
+        ContentPlatform = "TikTok / Reels / YouTube Shorts";
+        ContentSetting = "room light / night road";
+        ContentHook = "one guitar, one voice, one feeling";
+        ContentCaption = "One guitar, one voice, one feeling. Florida Night Pop.";
+        ContentVisualDirection = "Close guitar frame, face visible, warm orange side light, lyric caption.";
+        ContentNextAction = "Record guitar/vocal pass, keep the imperfect charm, use Raw Clean, export vertical.";
+        ContentTone = "dreamy, humble, playful, romantic";
+        ContentPreset = "Raw Clean";
+        ContentPlanStatus = "Primed raw guitar cover.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeGoofyHookSeed()
+    {
+        ContentMission = "Goofy Hook Seed";
+        ContentSeries = "Hook Seeds";
+        ContentFormat = "Goofy hook / melody idea";
+        ContentPlatform = "Snapchat / TikTok";
+        ContentSetting = "room / car / after-work reset";
+        ContentHook = "this hook might be stupid but it works";
+        ContentCaption = "This hook might be stupid but it works. Keeping the charm.";
+        ContentVisualDirection = "Phone-camera energy, visible smile, quick lyric text, no over-polish.";
+        ContentNextAction = "Record the silly first idea, save the hook, do not judge it too early.";
+        ContentTone = "goofy, youthful, smart, charming";
+        ContentPreset = "Raw Clean or Silk Synth if the hook wants to feel synthetic";
+        ContentPlanStatus = "Primed goofy hook seed.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeSpanishColorLine()
+    {
+        ContentMission = "Spanish Color Line";
+        ContentSeries = "Spanish Color";
+        ContentFormat = "Spanish / Spanglish line";
+        ContentPlatform = "Reels / TikTok / YouTube Shorts";
+        ContentSetting = "orange glow / night road";
+        ContentHook = "una linea, un feeling";
+        ContentCaption = "Una linea, un feeling. Spanish color without forcing it.";
+        ContentVisualDirection = "Smooth close vocal, warm light, simple translation caption, teal waveform line.";
+        ContentNextAction = "Write one Spanish phrase, sing it naturally, try Luna Pop, save the line.";
+        ContentTone = "smooth, romantic, humble, playful";
+        ContentPreset = "Luna Pop";
+        ContentPlanStatus = "Primed Spanish color line.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeNobleNote()
+    {
+        ContentMission = "Noble Note";
+        ContentSeries = "Noble Notes";
+        ContentFormat = "spoken/sung note";
+        ContentPlatform = "Snapchat / Instagram Story / TikTok";
+        ContentSetting = "car light / trail / quiet room";
+        ContentHook = "I can build this alone";
+        ContentCaption = "I can build this alone. One song, one sound, one visual, one post.";
+        ContentVisualDirection = "Still frame, low light, clean caption, no fake flex.";
+        ContentNextAction = "Record one honest sentence, add soft guitar or field sound, save as a hook seed.";
+        ContentTone = "noble, direct, intelligent, self-respecting";
+        ContentPreset = "Raw Clean";
+        ContentPlanStatus = "Primed noble note.";
         Status = ContentPlanStatus;
         RefreshContentPlanSignals();
     }
@@ -2432,6 +2579,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentAudiencePromise));
         OnPropertyChanged(nameof(ContentEngineFormula));
         OnPropertyChanged(nameof(ContentTonightSequence));
+        OnPropertyChanged(nameof(ContentMissionGuide));
+        OnPropertyChanged(nameof(ContentPostPackPreview));
+        OnPropertyChanged(nameof(ContentArchiveReviewSummary));
+        OnPropertyChanged(nameof(ContentEpPlanSignal));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -2500,13 +2651,14 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         var title = string.IsNullOrWhiteSpace(ContentSong)
             ? $"{ContentFormat} / {ContentSetting}"
             : ContentSong.Trim();
-        var lyricText = $"{ContentHook}{Environment.NewLine}{ContentCaption}";
+        var lyricText =
+            $"{ContentHook}{Environment.NewLine}{ContentCaption}{Environment.NewLine}{Environment.NewLine}Mission: {ContentMission}{Environment.NewLine}Tone: {ContentTone}{Environment.NewLine}Preset: {ContentPreset}{Environment.NewLine}Next: {ContentNextAction}";
 
         LyricIdeas.Insert(0, new LyricIdeaItem(
             title,
             "Content",
-            "Night Session",
-            $"{ContentFormat}, {ContentPlatform}, {ContentSetting}",
+            ContentMission,
+            $"{ContentFormat}, {ContentPlatform}, {ContentSetting}, {ContentTone}",
             lyricText,
             DateTime.Now.ToString("yyyy-MM-dd")));
         while (LyricIdeas.Count > 50)
@@ -2519,15 +2671,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             "00:03.000",
             ContentCaption,
             "Safe draft",
-            $"Visual: {ContentVisualDirection}"));
+            $"Mission: {ContentMission}. Tone: {ContentTone}. Preset: {ContentPreset}. Visual: {ContentVisualDirection}"));
         while (Captions.Count > 24)
         {
             Captions.RemoveAt(Captions.Count - 1);
         }
 
         RecentCaptures.Insert(0, new CaptureItem(
-            $"Content plan / {ContentFormat}",
-            $"{ContentSetting}. {ContentNextAction}",
+            $"Post pack / {ContentMission}",
+            $"{ContentFormat}. {ContentSetting}. {ContentTone}. {ContentNextAction}",
             DateTime.Now.ToString("h:mm tt"),
             "Content Lab"));
         while (RecentCaptures.Count > 8)
@@ -2543,7 +2695,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshProjectModules();
         SaveProjectSnapshot("Content plan saved");
         ContentPlanStatus = $"Saved content plan: {title}";
+        ContentReviewNote = $"Review later: {ContentMission} / {ContentPlatform}. Did the charm come through?";
         Status = ContentPlanStatus;
+        OnPropertyChanged(nameof(ContentArchiveReviewSummary));
     }
 
     [RelayCommand]

@@ -580,6 +580,34 @@
                                                            Foreground="#35544D"/>
                                             </StackPanel>
                                         </Border>
+                                        <Border CornerRadius="18" Padding="13" Background="#2107110E" BorderBrush="#44C6A96D" BorderThickness="1">
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="MISSION"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="1.8"
+                                                           Foreground="#806A3F"/>
+                                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                                                    <TextBox Text="{Binding ContentMission}"
+                                                             PlaceholderText="Mission"
+                                                             MinHeight="44"/>
+                                                    <TextBox Grid.Column="1"
+                                                             Text="{Binding ContentTone}"
+                                                             PlaceholderText="Tone: playful, romantic, goofy, noble"
+                                                             MinHeight="44"/>
+                                                    <TextBox Grid.Row="1"
+                                                             Grid.ColumnSpan="2"
+                                                             Text="{Binding ContentPreset}"
+                                                             PlaceholderText="Preset direction"
+                                                             MinHeight="44"/>
+                                                </Grid>
+                                                <TextBlock Text="{Binding ContentMissionGuide}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#35544D"/>
+                                            </StackPanel>
+                                        </Border>
                                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                                             <Border CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
                                                 <StackPanel Spacing="6">
@@ -682,6 +710,34 @@
                                                     Background="#203C36"
                                                     Foreground="#E8E1D2"
                                                     FontWeight="Black"/>
+                                            <Button Content="Guitar cover"
+                                                    Command="{Binding PrimeRawGuitarCoverCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#D9F8F0E5"
+                                                    Foreground="#07110E"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Goofy hook"
+                                                    Command="{Binding PrimeGoofyHookSeedCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#203C36"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Spanish line"
+                                                    Command="{Binding PrimeSpanishColorLineCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#8DB7AD"
+                                                    Foreground="#07110E"
+                                                    FontWeight="Black"/>
+                                            <Button Content="Noble note"
+                                                    Command="{Binding PrimeNobleNoteCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#07110E"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
                                             <Button Content="Generate post"
                                                     Command="{Binding GenerateContentPlanCommand}"
                                                     Padding="18,12"
@@ -714,6 +770,20 @@
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#806A3F"/>
+                                        <Border CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="6">
+                                                <TextBlock Text="POST PACK"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="1.8"
+                                                           Foreground="#806A3F"/>
+                                                <TextBlock Text="{Binding ContentPostPackPreview}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#203C36"/>
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </Border>
 
@@ -724,6 +794,39 @@
                                                    FontWeight="Black"
                                                    LetterSpacing="2.5"
                                                    Foreground="#C6A96D"/>
+                                        <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="EP SEED"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2.2"
+                                                           Foreground="#C6A96D"/>
+                                                <TextBlock Text="{Binding ContentEpPlanSignal}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="ARCHIVE REVIEW"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2.2"
+                                                           Foreground="#C6A96D"/>
+                                                <TextBlock Text="{Binding ContentArchiveReviewSummary}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                                <TextBlock Text="{Binding ContentReviewNote}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#D9C5A5"/>
+                                            </StackPanel>
+                                        </Border>
                                         <ItemsControl ItemsSource="{Binding ContentPlanItems}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:ContentPlanItem">

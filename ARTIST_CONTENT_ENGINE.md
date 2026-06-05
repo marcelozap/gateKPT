@@ -2,13 +2,56 @@
 
 ## Core Lane
 
-Florida Night R&B.
+Florida Night Pop/R&B.
+
+Short phrase: Florida Night Pop.
 
 Audience promise:
 
-> Come watch me build the sound: glossy vocals, Spanish/English covers, field sounds, visuals, and pressure turning into music.
+> Come watch me build the sound: dreamy hooks, loose guitar, playful charm, Spanish color, field sounds, visuals, and pressure turning into music.
 
-This is not random covers. Every post should point back to the world: night light, orange glow, pressure, vocals, field texture, and a real artist improving in public.
+This is not random covers. Every post should point back to the world: night light, orange glow, pressure, humor, guitar, vocals, field texture, and a real artist improving in public.
+
+Core world:
+
+```text
+Late Night Florida: songs from the training ground.
+```
+
+Operating promise:
+
+```text
+One song. One sound. One visual. One post.
+```
+
+The loop:
+
+```text
+choose mission -> capture source -> record vocal/guitar -> choose preset -> make clip -> generate post pack -> archive -> review
+```
+
+## Artist Personality
+
+GateKPT should help Marcelo/Luca balance:
+
+- playful
+- romantic
+- humble
+- smart
+- goofy
+- noble
+- late-night
+
+This should not feel like fake luxury or hyper-serious superstar cosplay. It should feel human, stylish, curious, a little funny, emotionally honest, and quietly self-respecting.
+
+## Sound References
+
+- Babydoll: dreamy, sweet, catchy, intimate.
+- Dominic Fike: Florida guitar/pop looseness and casual vocal charm.
+- Malcolm Todd: youthful, goofy indie-pop/R&B personality.
+- Rauw Alejandro: Spanish smoothness and rhythm color.
+- Tory Lanez: glossy vocal polish only when the hook needs shine.
+- Lil Tecca HVN ON EARTH: occasional synth-like hook texture.
 
 ## Audience
 
@@ -69,13 +112,13 @@ face + night light + lyric caption + clean vocal
 
 ## GateKPT Role
 
-GateKPT gives the signature sound.
+GateKPT gives the signature workflow. It should not make everything heavily autotuned or dark.
 
-- Late Night Chrome: main polished lead.
-- Silk Synth: hookier synth-lead parts.
-- Luna Pop: Spanish/Rauw-style smooth vocal.
+- Raw Clean: intimate/humble lead, good for Babydoll/Dominic/Malcolm lane.
+- Late Night Chrome: glossy hook polish when the chorus needs shine.
+- Luna Pop: Spanish smoothness and rhythm.
+- Silk Synth: occasional hook effect.
 - Cloud Doubles: adlibs/background layers.
-- Raw Clean: honest comparison.
 
 Recurring series:
 
@@ -136,6 +179,10 @@ TikTok:
 - After Work Covers
 - Orange County Glow
 - Florida Night R&B
+- Raw Guitar Cover
+- Goofy Hook Seed
+- Spanish Color Line
+- Noble Note
 
 Start with:
 
@@ -162,5 +209,28 @@ Format:
 Content engine:
 
 ```text
-one cover + one look + one field sound + one GateKPT preset + one post
+one song + one sound + one visual + one post
 ```
+
+## Mission Types
+
+- After Work Hook: fast hook after work, keep the charm.
+- Raw Guitar Cover: loose guitar/vocal, Raw Clean first.
+- Florida Field Note: save place sound before the song.
+- Raw to Chrome: raw vocal first, polished hook second.
+- Phone Video Cover: phone video for feeling, GateKPT audio for quality.
+- Goofy Hook Seed: keep the youthful weird idea alive.
+- Spanish Color Line: one Spanish/Spanglish phrase, natural not forced.
+- Noble Note: emotionally direct, self-respecting, not fake luxury.
+
+## EP Seed
+
+Working seed:
+
+```text
+Late Night Florida
+5 songs
+Orange County Glow
+```
+
+The EP should feel like after-work energy becoming catchy songs: guitar, voice, field sounds, humor, romance, Spanish color, and a little chrome when the hook asks for it.
