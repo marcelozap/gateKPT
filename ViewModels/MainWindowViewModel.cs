@@ -333,31 +333,34 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _worldMemoryNotes = "";
 
     [ObservableProperty]
-    private string _contentFormat = "Cover clip";
+    private string _contentFormat = "Raw to Chrome #001";
 
     [ObservableProperty]
-    private string _contentPlatform = "YouTube Shorts / TikTok";
+    private string _contentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
 
     [ObservableProperty]
-    private string _contentSetting = "motel neon night road";
+    private string _contentSetting = "orange glow / night road";
 
     [ObservableProperty]
-    private string _contentSong = "";
+    private string _contentSong = "cover";
 
     [ObservableProperty]
-    private string _contentHook = "The night starts here.";
+    private string _contentHook = "building Florida Night R&B after work";
 
     [ObservableProperty]
-    private string _contentCaption = "The night starts here. A cover, a field note, a visual.";
+    private string _contentCaption = "Raw vocal -> Late Night Chrome. Building Florida Night R&B after work.";
 
     [ObservableProperty]
-    private string _contentVisualDirection = "Moon-white vocal, amber road light, dark green terrain lines, slow waveform painting.";
+    private string _contentVisualDirection = "Face visible, orange glow, black shirt, waveform terrain, quick GateKPT screen cut.";
 
     [ObservableProperty]
-    private string _contentNextAction = "Record one short take, use Late Night Chrome, then pair it with phone video.";
+    private string _contentNextAction = "Record 3 phone takes, record clean vocal in GateKPT, apply Late Night Chrome, export one vertical clip.";
 
     [ObservableProperty]
-    private string _contentPlanStatus = "Pick a format and setting, then generate one post.";
+    private string _contentSeries = "Raw to Chrome";
+
+    [ObservableProperty]
+    private string _contentPlanStatus = "Start with one cover, one look, one preset, one post.";
 
     [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
@@ -607,11 +610,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         ContentPlanItems =
         [
-            new("01", "Pick the clip", "Cover, drum groove, guitar phrase, vocal hook, dance/visual, or field sound.", "Choose before recording."),
-            new("02", "Record the source", "One short usable take. Drums first, then guitar/keys, then vocal if needed.", "Keep the original safe."),
-            new("03", "Shape the sound", "Warmer, room, loud, chrome vocal, clean, or raw.", "Make one styled version."),
-            new("04", "Make it visible", "Visualizer, caption, cover frame, phone video, or mood shot.", "Sound should have a place."),
-            new("05", "Post by platform", "Snap quick, TikTok replay, Reels polish, YouTube archive/Short.", "Export one clear version."),
+            new("01", "The Cover", "20-60 seconds of singing. Main discovery content.", "Strongest line first."),
+            new("02", "The Process", "Warmup, mistakes, GateKPT screen, raw vs preset.", "Let people see it being built."),
+            new("03", "The World", "Night roads, orange glow, trails, rain, car notes, gym recovery.", "Sound needs a place."),
+            new("04", "The Look", "Black/orange/chrome palette, face visible, clean frame.", "No messy background."),
+            new("05", "The Build", "XIV/GateKPT as the personal music OS.", "Use lightly, not too nerdy."),
         ];
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
@@ -1730,7 +1733,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ContentPlanItem> ContentPlanItems { get; }
 
     public string ContentPlanSummary =>
-        $"{ContentFormat} / {ContentPlatform} / {ContentSetting}";
+        $"{ContentSeries} / {ContentFormat} / {ContentPlatform}";
+
+    public string ContentAudiencePromise =>
+        "Come watch the sound get built: glossy vocals, Spanish/English covers, field sounds, visuals, pressure into music.";
+
+    public string ContentEngineFormula =>
+        "one cover / one look / one field sound / one GateKPT preset / one post";
+
+    public string ContentTonightSequence =>
+        "Eat, shower, reset. Pick one cover. Record 3 phone takes. Record clean vocal. Apply Late Night Chrome. Export one clip. Post Snapchat first.";
 
     public string ContentRecordingPlan
     {
@@ -1852,6 +1864,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
         OnPropertyChanged(nameof(ContentRecordingPlan));
+    }
+
+    partial void OnContentSeriesChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
     }
 
     partial void OnContentPlatformChanged(string value)
@@ -2371,6 +2388,50 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentRecordingPlan));
         OnPropertyChanged(nameof(ContentPlatformPlan));
         OnPropertyChanged(nameof(ContentShotPlan));
+    }
+
+    [RelayCommand]
+    private void PrimeRawToChrome()
+    {
+        ContentSeries = "Raw to Chrome";
+        ContentFormat = "Raw to Chrome #001";
+        ContentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
+        ContentSetting = "orange glow / night road";
+        ContentSong = string.IsNullOrWhiteSpace(ContentSong) ? "cover" : ContentSong;
+        ContentHook = "building Florida Night R&B after work";
+        ContentCaption = "Raw vocal -> Late Night Chrome. Building Florida Night R&B after work.";
+        ContentVisualDirection = "First 3 sec raw vocal, quick GateKPT screen cut, processed vocal enters, warm orange light.";
+        ContentNextAction = "Record raw vocal, render Late Night Chrome, compare both, export vertical clip.";
+        ContentPlanStatus = "Primed Raw to Chrome: raw vocal first, polished vocal second.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeAfterWorkContent()
+    {
+        ContentSeries = "After Work Covers";
+        ContentFormat = "Cover clip";
+        ContentPlatform = "Snapchat first / TikTok + Reels + YouTube Shorts if usable";
+        ContentSetting = "room light / car light / orange glow";
+        ContentHook = "recorded this after work";
+        ContentCaption = "Recorded this after work. One cover, one take, one sound.";
+        ContentVisualDirection = "Face visible, simple frame, black shirt, clean vocal, lyric caption.";
+        ContentNextAction = ContentTonightSequence;
+        ContentPlanStatus = "Primed after-work plan: keep it simple and post before perfect.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    private void RefreshContentPlanSignals()
+    {
+        OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(ContentRecordingPlan));
+        OnPropertyChanged(nameof(ContentPlatformPlan));
+        OnPropertyChanged(nameof(ContentShotPlan));
+        OnPropertyChanged(nameof(ContentAudiencePromise));
+        OnPropertyChanged(nameof(ContentEngineFormula));
+        OnPropertyChanged(nameof(ContentTonightSequence));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)

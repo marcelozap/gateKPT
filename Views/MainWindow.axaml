@@ -566,6 +566,20 @@
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#203C36"/>
+                                        <Border CornerRadius="18" Padding="13" Background="#1907110E" BorderBrush="#338DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="6">
+                                                <TextBlock Text="{Binding ContentEngineFormula}"
+                                                           FontSize="13"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#203C36"/>
+                                                <TextBlock Text="{Binding ContentAudiencePromise}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#35544D"/>
+                                            </StackPanel>
+                                        </Border>
                                         <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
                                             <Border CornerRadius="18" Padding="13" Background="#1407110E" BorderBrush="#338DB7AD" BorderThickness="1">
                                                 <StackPanel Spacing="6">
@@ -610,24 +624,29 @@
                                                 </StackPanel>
                                             </Border>
                                         </Grid>
-                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
-                                            <TextBox Text="{Binding ContentFormat}"
-                                                     PlaceholderText="Format: cover, drums, guitar, vocal, visual"
+                                        <Grid ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="10">
+                                            <TextBox Text="{Binding ContentSeries}"
+                                                     PlaceholderText="Series: Raw to Chrome, After Work Covers"
                                                      MinHeight="44"/>
                                             <TextBox Grid.Column="1"
+                                                     Text="{Binding ContentFormat}"
+                                                     PlaceholderText="Format: cover, drums, guitar, vocal, visual"
+                                                     MinHeight="44"/>
+                                            <TextBox Grid.Row="1"
+                                                     Grid.ColumnSpan="2"
                                                      Text="{Binding ContentPlatform}"
                                                      PlaceholderText="Platform: Snapchat, TikTok, Reels, YouTube"
                                                      MinHeight="44"/>
-                                            <TextBox Grid.Row="1"
+                                            <TextBox Grid.Row="2"
                                                      Text="{Binding ContentSetting}"
                                                      PlaceholderText="Setting: trail, lake, car, room, storm"
                                                      MinHeight="44"/>
-                                            <TextBox Grid.Row="1"
+                                            <TextBox Grid.Row="2"
                                                      Grid.Column="1"
                                                      Text="{Binding ContentSong}"
                                                      PlaceholderText="Song / cover / hook"
                                                      MinHeight="44"/>
-                                            <TextBox Grid.Row="2"
+                                            <TextBox Grid.Row="3"
                                                      Grid.ColumnSpan="2"
                                                      Text="{Binding ContentHook}"
                                                      PlaceholderText="Hook line"
@@ -649,6 +668,20 @@
                                                  TextWrapping="Wrap"
                                                  MinHeight="76"/>
                                         <WrapPanel>
+                                            <Button Content="Raw to Chrome"
+                                                    Command="{Binding PrimeRawToChromeCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#8DB7AD"
+                                                    Foreground="#07110E"
+                                                    FontWeight="Black"/>
+                                            <Button Content="After work"
+                                                    Command="{Binding PrimeAfterWorkContentCommand}"
+                                                    Padding="18,12"
+                                                    Margin="0,0,8,8"
+                                                    Background="#203C36"
+                                                    Foreground="#E8E1D2"
+                                                    FontWeight="Black"/>
                                             <Button Content="Generate post"
                                                     Command="{Binding GenerateContentPlanCommand}"
                                                     Padding="18,12"
@@ -660,7 +693,7 @@
                                                     Command="{Binding PrimeContentFromWorldMemoryCommand}"
                                                     Padding="18,12"
                                                     Margin="0,0,8,8"
-                                                    Background="#8DB7AD"
+                                                    Background="#D9F8F0E5"
                                                     Foreground="#07110E"
                                                     FontWeight="Black"/>
                                             <Button Content="Save to GateKPT"
@@ -676,6 +709,11 @@
                                                    FontWeight="Black"
                                                    TextWrapping="Wrap"
                                                    Foreground="#203C36"/>
+                                        <TextBlock Text="{Binding ContentTonightSequence}"
+                                                   FontSize="12"
+                                                   FontWeight="Black"
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#806A3F"/>
                                     </StackPanel>
                                 </Border>
 
