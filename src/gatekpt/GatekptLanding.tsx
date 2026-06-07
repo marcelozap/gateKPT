@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Facebook, Ghost, Linkedin, Mountain, Square, Waves, Youtube } from "lucide-react";
+import { Facebook, Ghost, Instagram, Linkedin, Mountain, Square, Waves, Youtube } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
@@ -26,6 +26,7 @@ const cuePath = [
 
 const socialChannels = [
   { name: "YouTube", href: "https://www.youtube.com/@xivzapa14", Icon: Youtube },
+  { name: "Instagram", Icon: Instagram },
   { name: "LinkedIn", href: "https://www.linkedin.com/in/marcelozap/", Icon: Linkedin },
   { name: "Facebook", href: "https://www.facebook.com/marcelozapa14/", Icon: Facebook },
   { name: "Snapchat", href: "https://www.snapchat.com/add/marcy35", Icon: Ghost },
@@ -549,9 +550,15 @@ export function GatekptLanding() {
             <p className="text-xl font-black tracking-[-0.04em] text-[#e8e1d2]">XIV</p>
             <div className="flex flex-wrap gap-2">
               {socialChannels.map((item) => (
-                <a key={item.name} className="gk-social-icon-link" href={item.href} target="_blank" rel="noreferrer" aria-label={item.name} title={item.name}>
-                  <item.Icon className="h-5 w-5" />
-                </a>
+                item.href ? (
+                  <a key={item.name} className="gk-social-icon-link" href={item.href} target="_blank" rel="noreferrer" aria-label={item.name} title={item.name}>
+                    <item.Icon className="h-5 w-5" />
+                  </a>
+                ) : (
+                  <span key={item.name} className="gk-social-icon-link gk-social-icon-link-muted" aria-label={item.name} title={`${item.name} link coming`}>
+                    <item.Icon className="h-5 w-5" />
+                  </span>
+                )
               ))}
             </div>
           </div>
