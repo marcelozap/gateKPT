@@ -12,6 +12,8 @@
   --gk-gold: #d9b46a;
   --gk-teal: #d08a56;
   --gk-amber: #f08a3c;
+  --gk-signal: #6ee7ff;
+  --gk-signal-soft: rgba(110, 231, 255, 0.16);
 }
 
 html,
@@ -112,6 +114,48 @@ body {
   box-shadow: 0 16px 42px rgba(198, 169, 109, 0.24);
 }
 
+.gk-button-signal,
+.gk-button-signal-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.gk-button-signal {
+  border: 1px solid rgba(110, 231, 255, 0.5);
+  background:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.32), transparent 24%),
+    linear-gradient(135deg, #8df2ff, #6ee7ff 44%, #3fb7ff);
+  color: #04110f;
+  box-shadow: 0 0 0 1px rgba(110, 231, 255, 0.14), 0 18px 52px rgba(110, 231, 255, 0.18);
+}
+
+.gk-button-signal:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px rgba(110, 231, 255, 0.22), 0 22px 70px rgba(110, 231, 255, 0.28);
+}
+
+.gk-button-signal-secondary {
+  border: 1px solid rgba(110, 231, 255, 0.32);
+  background: rgba(110, 231, 255, 0.08);
+  color: rgba(232, 245, 242, 0.9);
+}
+
+.gk-button-signal-secondary:hover {
+  transform: translateY(-2px);
+  border-color: rgba(110, 231, 255, 0.56);
+  background: rgba(110, 231, 255, 0.14);
+  box-shadow: 0 18px 50px rgba(110, 231, 255, 0.1);
+}
+
 .gk-button-secondary {
   border: 1px solid rgba(232, 225, 210, 0.16);
   background: rgba(232, 225, 210, 0.04);
@@ -139,6 +183,13 @@ body {
   padding: 0.45rem 0.75rem;
   color: rgba(232, 225, 210, 0.7);
   backdrop-filter: blur(14px);
+}
+
+.gk-chip-signal {
+  border-color: rgba(110, 231, 255, 0.34);
+  background: rgba(4, 17, 15, 0.76);
+  color: rgba(210, 252, 255, 0.9);
+  box-shadow: 0 0 32px rgba(110, 231, 255, 0.1);
 }
 
 .gk-cue {

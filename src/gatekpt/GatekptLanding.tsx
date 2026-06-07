@@ -28,6 +28,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const demoIntervalRef = useRef<number | null>(null);
   const demoNodesRef = useRef<AudioNode[]>([]);
+  const demoAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastCanvasDrawRef = useRef(0);
   const lastLevelUpdateRef = useRef(0);
   const [status, setStatus] = useState<AudioStatus>("preview");
@@ -48,6 +49,11 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       }
     });
     demoNodesRef.current = [];
+    if (demoAudioRef.current) {
+      demoAudioRef.current.pause();
+      demoAudioRef.current.currentTime = 0;
+      demoAudioRef.current = null;
+    }
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
     void audioContextRef.current?.close();
@@ -110,7 +116,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       const mist = ctx.createRadialGradient(width * 0.62, height * 0.25, 10, width * 0.62, height * 0.25, width * 0.72);
       mist.addColorStop(0, `rgba(232, 225, 210, ${0.09 + pulse * 0.12})`);
-      mist.addColorStop(0.42, `rgba(146, 191, 179, ${0.08 + pulse * 0.12})`);
+      mist.addColorStop(0.42, `rgba(110, 231, 255, ${0.08 + pulse * 0.14})`);
       mist.addColorStop(1, "rgba(7, 16, 13, 0)");
       ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
@@ -138,8 +144,8 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         else ctx.lineTo(x, y);
       }
       ctx.shadowBlur = 18 + pulse * 24;
-      ctx.shadowColor = "#92bfb3";
-      ctx.strokeStyle = "#92bfb3";
+      ctx.shadowColor = "#6ee7ff";
+      ctx.strokeStyle = "#6ee7ff";
       ctx.lineWidth = 2;
       ctx.stroke();
       ctx.shadowBlur = 0;
@@ -198,60 +204,25 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       const analyser = audioContext.createAnalyser();
       analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.82;
+      analyser.smoothingTimeConstant = 0.8;
 
       const master = audioContext.createGain();
-      master.gain.value = 0.055;
+      master.gain.value = 0.9;
+
+      const demoAudio = new Audio("/audio/gatekpt-night-guitar-preview.mp3");
+      demoAudio.loop = true;
+      demoAudio.preload = "auto";
+      demoAudioRef.current = demoAudio;
+
+      const source = audioContext.createMediaElementSource(demoAudio);
+      source.connect(master);
       master.connect(analyser);
       analyser.connect(audioContext.destination);
 
-      const kick = audioContext.createOscillator();
-      const kickGain = audioContext.createGain();
-      kick.type = "sine";
-      kick.frequency.value = 72;
-      kickGain.gain.value = 0.0001;
-      kick.connect(kickGain);
-      kickGain.connect(master);
-
-      const guitar = audioContext.createOscillator();
-      const guitarGain = audioContext.createGain();
-      guitar.type = "triangle";
-      guitar.frequency.value = 196;
-      guitarGain.gain.value = 0.028;
-      guitar.connect(guitarGain);
-      guitarGain.connect(master);
-
-      const air = audioContext.createOscillator();
-      const airGain = audioContext.createGain();
-      air.type = "sine";
-      air.frequency.value = 392;
-      airGain.gain.value = 0.014;
-      air.connect(airGain);
-      airGain.connect(master);
-
-      kick.start();
-      guitar.start();
-      air.start();
-
-      let step = 0;
-      const notes = [196, 220, 247, 294, 247, 220, 196, 165];
-      demoIntervalRef.current = window.setInterval(() => {
-        const now = audioContext.currentTime;
-        const note = notes[step % notes.length];
-        guitar.frequency.setTargetAtTime(note, now, 0.025);
-        air.frequency.setTargetAtTime(note * 2, now, 0.04);
-
-        kickGain.gain.cancelScheduledValues(now);
-        kickGain.gain.setValueAtTime(0.24, now);
-        kickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-        kick.frequency.setValueAtTime(step % 4 === 0 ? 78 : 62, now);
-        kick.frequency.exponentialRampToValueAtTime(42, now + 0.16);
-        step += 1;
-      }, 260);
-
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
-      demoNodesRef.current = [kick, guitar, air];
+      demoNodesRef.current = [source, master];
+      await demoAudio.play();
       setStatus("demo");
     } catch {
       stopAudio();
@@ -272,15 +243,15 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
     <div className="gk-panel relative overflow-hidden rounded-[2rem]">
       <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT sound preview" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="gk-chip">{status === "listening" ? "Live sound" : status === "demo" ? "Demo loop" : "Preview"}</span>
+        <span className="gk-chip gk-chip-signal">{status === "listening" ? "Live sound" : status === "demo" ? "GateKPT guitar" : "Preview"}</span>
         <span className="gk-chip">Signal {level}%</span>
       </div>
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#c6a96d]">Sound preview</p>
+            <p className="gk-label text-[#6ee7ff]">Sound preview</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              Try a mood. Active cue: {activeCue}.
+              Real GateKPT take. Active cue: {activeCue}.
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -290,13 +261,13 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
             </button>
           ) : (
             <div className="flex flex-wrap gap-2">
-              <button type="button" onClick={startDemo} className="gk-button-primary">
+              <button type="button" onClick={startDemo} className="gk-button-signal">
                 <Waves className="h-4 w-4" />
-                Play sample
+                Play guitar
               </button>
-              <button type="button" onClick={startMic} className="gk-button-secondary">
+              <button type="button" onClick={startMic} className="gk-button-signal-secondary">
                 <Mic className="h-4 w-4" />
-                Use mic visualizer
+                Use mic
               </button>
             </div>
           )}
@@ -342,7 +313,7 @@ export function GatekptLanding() {
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
-              <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
+              <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(110,231,255,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
                 <p className="gk-label text-[#d08a56]">The world</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
