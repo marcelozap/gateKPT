@@ -109,6 +109,13 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         const slice = bins.slice(start, Math.max(start + 1, end));
         return slice.reduce((sum, value) => sum + value, 0) / Math.max(1, slice.length) / 255;
       };
+      const focusedBin = (position: number) => {
+        // Guitar lives in a narrow part of the spectrum, so use a log-ish zoom
+        // instead of spreading quiet high-frequency bins across the whole canvas.
+        const zoomed = Math.pow(Math.max(0, Math.min(1, position)), 2.35);
+        const index = Math.floor(zoomed * bins.length * 0.42);
+        return bins[Math.max(0, Math.min(bins.length - 1, index))] / 255;
+      };
 
       const bassRaw = readBand(0, Math.floor(bins.length * 0.08));
       const midRaw = readBand(Math.floor(bins.length * 0.08), Math.floor(bins.length * 0.34));
@@ -125,6 +132,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       signal.high = signal.high * 0.78 + highRaw * 0.22;
       signal.level = signal.level * 0.7 + Math.min(1, waveRms * 3.4 + bassRaw * 0.55 + midRaw * 0.35) * 0.3;
       const pulse = Math.min(1, signal.level);
+      const visualZoom = 1.5 + pulse * 2.8 + signal.mid * 2.2;
       if (nowMs - lastLevelUpdateRef.current > 180) {
         lastLevelUpdateRef.current = nowMs;
         setLevel(Math.round(pulse * 100));
@@ -149,13 +157,15 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         const yBase = height * (0.2 + line * 0.082);
         const bandDrive = line < 3 ? signal.bass : line < 6 ? signal.mid : signal.high;
         ctx.beginPath();
-        for (let index = 0; index < bins.length; index += 1) {
-          const x = (index / (bins.length - 1)) * width;
-          const signal = bins[(index + line * 5) % bins.length] / 255;
+        const samples = 180;
+        for (let index = 0; index < samples; index += 1) {
+          const position = index / (samples - 1);
+          const x = position * width;
+          const signal = focusedBin(Math.min(1, position + line * 0.012));
           const y =
             yBase +
-            Math.sin(index * 0.08 + line * 0.7 + nowMs / (1800 - bandDrive * 620)) * (5 + line * 0.7 + bandDrive * 12) -
-            signal * (7 + pulse * 16 + bandDrive * 28);
+            Math.sin(index * 0.12 + line * 0.7 + nowMs / (1800 - bandDrive * 620)) * (5 + line * 0.7 + bandDrive * 12) -
+            signal * visualZoom * (13 + pulse * 20 + bandDrive * 38);
           if (index === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -167,12 +177,11 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       const barCount = 28;
       const barWidth = width / barCount;
       for (let bar = 0; bar < barCount; bar += 1) {
-        const binIndex = Math.floor((bar / barCount) * bins.length * 0.62);
-        const binValue = bins[binIndex] / 255;
-        const barHeight = Math.max(4, binValue * (height * 0.24) + pulse * 10);
+        const binValue = focusedBin(bar / (barCount - 1));
+        const barHeight = Math.max(5, Math.pow(binValue, 0.72) * (height * 0.34) + pulse * 18);
         const x = bar * barWidth + barWidth * 0.18;
         const y = height - barHeight - 18;
-        ctx.fillStyle = `rgba(110, 231, 255, ${0.08 + binValue * 0.28})`;
+        ctx.fillStyle = `rgba(110, 231, 255, ${0.1 + Math.pow(binValue, 0.7) * 0.42})`;
         ctx.fillRect(x, y, Math.max(2, barWidth * 0.46), barHeight);
       }
 
@@ -183,7 +192,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         const waveform = (waveBins[index] - 128) / 128;
         const y =
           height * 0.55 +
-          waveform * (height * (0.14 + pulse * 0.16)) -
+          waveform * (height * (0.2 + pulse * 0.24)) -
           signal.bass * height * 0.08 +
           Math.sin(index * 0.025 + nowMs / 1400) * (4 + signal.high * 10);
         if (index === 0) ctx.moveTo(x, y);
