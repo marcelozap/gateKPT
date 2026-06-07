@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Facebook, Ghost, Instagram, Linkedin, Square, Waves, Youtube } from "lucide-react";
+import { Facebook, Ghost, Globe2, Instagram, Linkedin, Square, Waves, Youtube } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -26,6 +26,7 @@ const cuePath = [
 ];
 
 const socialChannels = [
+  { name: "Marcelo.dev", href: "https://marcelozapata.dev", Icon: Globe2 },
   { name: "YouTube", href: "https://www.youtube.com/@xivzapa14", Icon: Youtube },
   { name: "Instagram", href: "https://www.instagram.com/marcelozapa14/", Icon: Instagram },
   { name: "LinkedIn", href: "https://www.linkedin.com/in/marcelozap/", Icon: Linkedin },
@@ -466,7 +467,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={startDemo} className="gk-button-signal">
                 <Waves className="h-4 w-4" />
-                Play guitar
+                Listen
               </button>
             </div>
           )}
@@ -494,28 +495,13 @@ export function GatekptLanding() {
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
               What does sound look like?
             </h1>
-            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              Press play. Change the air around the guitar.
-            </p>
-            <div className="mt-6 grid max-w-xl gap-2">
-              {["Hear it", "Change the room", "Watch it answer"].map((item) => (
-                <div key={item} className="rounded-[1.1rem] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-black text-[#e8e1d2]/78">
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#preview" className="gk-button-primary">
-                Try the question
-              </a>
-            </div>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(110,231,255,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#d08a56]">Answer</p>
+                <p className="gk-label text-[#d08a56]">Pick a feeling</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
                   Fire. Storm. Chrome.
                 </h2>
