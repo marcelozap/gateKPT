@@ -21,7 +21,13 @@ public sealed record MusicProjectFile(
     IReadOnlyList<MusicProjectExportTask> ExportTasks,
     string ModifiedAt,
     IReadOnlyList<MusicProjectLooperTrack>? LooperTracks = null,
-    IReadOnlyList<MusicProjectWorldMemory>? WorldMemories = null);
+    IReadOnlyList<MusicProjectWorldMemory>? WorldMemories = null,
+    MusicProjectCreativeLayers? CreativeLayers = null,
+    IReadOnlyList<ArtistSessionItem>? ArtistSessions = null,
+    IReadOnlyList<CoverSignalItem>? CoverSignals = null,
+    IReadOnlyList<SongStudyItem>? SongStudies = null,
+    IReadOnlyList<VideoMomentumItem>? VideoMomentum = null,
+    IReadOnlyList<SoundTasteItem>? SoundTasteMap = null);
 
 public sealed record MusicProjectCapture(string Title, string Detail, string Status, string Room);
 
@@ -37,6 +43,12 @@ public sealed record MusicProjectWorldMemory(
     string Rhythm,
     string SongIdea,
     string Notes);
+
+public sealed record MusicProjectCreativeLayers(
+    string Foreground,
+    string Midground,
+    string Background,
+    string OperatingRule);
 
 public sealed record MusicProjectLyric(string Title, string Stage, string Mood, string Tags, string Text, string CreatedAt);
 

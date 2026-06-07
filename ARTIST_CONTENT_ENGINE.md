@@ -45,6 +45,8 @@ back = remember why
 
 Do not add fake 3D effects. Use layered panels, shadows, terrain/wave lines, spacing, and quieter background surfaces so the brain can breathe.
 
+The unified project file should preserve these layers too. A saved GateKPT project should include the current foreground/midground/background guidance plus artist sessions, cover signals, song studies, video momentum, and sound taste lanes so the OS can learn from history instead of becoming a pretty notepad.
+
 Historical data should steer decisions:
 
 - which sound lanes fit the voice

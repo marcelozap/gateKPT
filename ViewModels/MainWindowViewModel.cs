@@ -7345,7 +7345,17 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             item.Food,
             item.Rhythm,
             item.SongIdea,
-            item.Notes)).ToList());
+            item.Notes)).ToList(),
+        new MusicProjectCreativeLayers(
+            OutputForegroundLayer,
+            OutputMidgroundLayer,
+            OutputBackgroundLayer,
+            "front = make now / middle = choose better / back = remember why"),
+        ArtistSessions.ToList(),
+        CoverSignals.ToList(),
+        SongStudies.ToList(),
+        VideoMomentum.ToList(),
+        SoundTasteMap.ToList());
 
     private void UpdateCaptionStatus()
     {
