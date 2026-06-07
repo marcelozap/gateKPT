@@ -23,6 +23,28 @@ What GateKPT should help Marcelo do:
 - choose the next creative move from historical data
 - export strong clips/songs/videos when they are ready
 
+## Layered OS UX
+
+GateKPT should not feel like every idea is trapped on the same flat plane.
+
+The app should use depth as an organizing system:
+
+- foreground: record, write, choose the next version, make the thing
+- midground: taste checks, memorable filter, cover radar, song study, post pack
+- background: archive, session history, weekly review, long-term learning
+
+This matters because the OS is not only a dashboard. It is a creative room. The user should feel what is urgent, what is supporting the decision, and what is stored as memory.
+
+Design rule:
+
+```text
+front = make now
+middle = choose better
+back = remember why
+```
+
+Do not add fake 3D effects. Use layered panels, shadows, terrain/wave lines, spacing, and quieter background surfaces so the brain can breathe.
+
 Historical data should steer decisions:
 
 - which sound lanes fit the voice
