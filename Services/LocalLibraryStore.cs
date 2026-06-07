@@ -63,6 +63,8 @@ public sealed class LocalLibraryStore
 
     private string SongStudiesPath => Path.Combine(LibraryDirectory, "song-studies.json");
 
+    private string VideoMomentumPath => Path.Combine(LibraryDirectory, "video-momentum.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -283,6 +285,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<SongStudyItem> LoadSongStudies() => LoadList<SongStudyItem>(SongStudiesPath);
 
     public void SaveSongStudies(IEnumerable<SongStudyItem> studies) => SaveList(SongStudiesPath, studies);
+
+    public IReadOnlyList<VideoMomentumItem> LoadVideoMomentum() => LoadList<VideoMomentumItem>(VideoMomentumPath);
+
+    public void SaveVideoMomentum(IEnumerable<VideoMomentumItem> items) => SaveList(VideoMomentumPath, items);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

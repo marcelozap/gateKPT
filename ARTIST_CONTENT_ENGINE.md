@@ -233,6 +233,43 @@ recording -> tonight post -> response -> archive -> bigger song only if it earns
 
 This is where GateKPT can beat a normal DAW for Marcelo's workflow. A DAW records and edits. GateKPT should remember the audience loop and make the next post obvious.
 
+## Momentum And Rotation
+
+When a YouTube/TikTok/Reels/Snap clip does well, GateKPT should not simply say "make more of the same."
+
+The better rule:
+
+```text
+successful post -> same emotional lane -> different format, frame, or energy
+```
+
+Track:
+
+- platform
+- video title
+- views, likes, comments
+- best comment
+- what people responded to
+- follow-up angle
+- next post
+
+Variety guard:
+
+- too many covers in a row -> make a process, field, or original seed clip
+- too many hook seeds in a row -> make a cover test or visual/process clip
+- one successful lane -> follow up fast, but change the opening frame
+- do not let every post become the same sound, same light, same caption, same emotional tempo
+
+Rotation lanes:
+
+1. Cover/performance
+2. Process/raw-to-polish
+3. World/field sound
+4. Original hook seed
+5. Visualizer/reveal
+
+The goal is momentum without repetition.
+
 ## Song Study
 
 GateKPT should start using song data without becoming a copyright mess or a generic analytics dashboard.

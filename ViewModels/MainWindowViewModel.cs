@@ -477,6 +477,36 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _songStudyStatus = "Study seed";
 
     [ObservableProperty]
+    private string _momentumPlatform = "YouTube Shorts";
+
+    [ObservableProperty]
+    private string _momentumVideoTitle = "";
+
+    [ObservableProperty]
+    private int _momentumViews = 500;
+
+    [ObservableProperty]
+    private int _momentumLikes = 0;
+
+    [ObservableProperty]
+    private int _momentumComments = 1;
+
+    [ObservableProperty]
+    private string _momentumBestComment = "";
+
+    [ObservableProperty]
+    private string _momentumAudienceSignal = "People are reacting to the voice/cover.";
+
+    [ObservableProperty]
+    private string _momentumFollowUpAngle = "Post a cleaner version or answer the best comment.";
+
+    [ObservableProperty]
+    private string _momentumNextPost = "Record the same lane again while the audience is warm.";
+
+    [ObservableProperty]
+    private string _momentumStatus = "Signal to review";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -777,6 +807,27 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 ]);
+        VideoMomentum = new ObservableCollection<VideoMomentumItem>(
+            _store.LoadVideoMomentum().Count > 0
+                ? _store.LoadVideoMomentum()
+                :
+                [
+                    new(
+                        Guid.NewGuid().ToString("N"),
+                        "YouTube Shorts",
+                        "First cover signal",
+                        500,
+                        0,
+                        1,
+                        "you sound good on this",
+                        "People are reacting to the voice/cover.",
+                        "Post a cleaner follow-up in the same lane.",
+                        "Record a 20-30 sec follow-up while the audience is warm.",
+                        "Signal to review",
+                        "Replace this seed with the real video stats.",
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ]);
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -883,6 +934,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<CoverSignalItem> CoverSignals { get; }
 
     public ObservableCollection<SongStudyItem> SongStudies { get; }
+
+    public ObservableCollection<VideoMomentumItem> VideoMomentum { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -2122,6 +2175,67 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string MomentumSummary
+    {
+        get
+        {
+            var latest = VideoMomentum.FirstOrDefault();
+            return latest is null
+                ? "Momentum: log one video that is doing well, then choose a follow-up."
+                : $"Momentum: {latest.Platform} / {latest.VideoTitle} / {latest.Views} views / {latest.Comments} comment(s).";
+        }
+    }
+
+    public string VarietyGuardSignal
+    {
+        get
+        {
+            var recent = ArtistSessions.Take(4).Select(item => item.MissionType).ToList();
+            if (recent.Count < 2)
+            {
+                return "Variety guard: build the first few posts, then rotate lanes.";
+            }
+
+            var sameCoverCount = recent.Count(item => item.Contains("cover", StringComparison.OrdinalIgnoreCase));
+            var sameHookCount = recent.Count(item => item.Contains("hook", StringComparison.OrdinalIgnoreCase));
+            if (sameCoverCount >= 3)
+            {
+                return "Variety guard: too many covers in a row. Next should be process, field sound, or original seed.";
+            }
+
+            if (sameHookCount >= 3)
+            {
+                return "Variety guard: too many hook seeds in a row. Next should be a cover test or visual/process clip.";
+            }
+
+            return "Variety guard: healthy rotation. Keep changing mood, format, and visual energy.";
+        }
+    }
+
+    public string NextVariationSignal
+    {
+        get
+        {
+            var latest = ArtistSessions.FirstOrDefault()?.MissionType ?? ContentMission;
+            if (latest.Contains("cover", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Next variation: process clip or original seed. Let people see how the sound is built.";
+            }
+
+            if (latest.Contains("field", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Next variation: guitar/vocal hook from that place sound.";
+            }
+
+            if (latest.Contains("goofy", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Next variation: cleaner romantic take so the page has contrast.";
+            }
+
+            return "Next variation: cover test, process clip, field sound, or visualizer reveal.";
+        }
+    }
+
     private bool HasSessionMatch(params string[] terms) =>
         ArtistSessions.Any(item =>
         {
@@ -3291,6 +3405,124 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshContentPlanSignals();
     }
 
+    [RelayCommand]
+    private void SaveVideoMomentum()
+    {
+        var title = string.IsNullOrWhiteSpace(MomentumVideoTitle) ? "Untitled video signal" : MomentumVideoTitle.Trim();
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var item = new VideoMomentumItem(
+            Guid.NewGuid().ToString("N"),
+            string.IsNullOrWhiteSpace(MomentumPlatform) ? "YouTube Shorts" : MomentumPlatform.Trim(),
+            title,
+            Math.Max(0, MomentumViews),
+            Math.Max(0, MomentumLikes),
+            Math.Max(0, MomentumComments),
+            string.IsNullOrWhiteSpace(MomentumBestComment) ? "No comment saved yet" : MomentumBestComment.Trim(),
+            string.IsNullOrWhiteSpace(MomentumAudienceSignal) ? "Audience signal unknown" : MomentumAudienceSignal.Trim(),
+            string.IsNullOrWhiteSpace(MomentumFollowUpAngle) ? "Post a follow-up in the same lane with one new twist." : MomentumFollowUpAngle.Trim(),
+            string.IsNullOrWhiteSpace(MomentumNextPost) ? "Record a 20-30 sec follow-up while the audience is warm." : MomentumNextPost.Trim(),
+            string.IsNullOrWhiteSpace(MomentumStatus) ? "Signal to review" : MomentumStatus.Trim(),
+            "Use this signal to choose the next post without repeating the same sound too many times.",
+            now,
+            now);
+
+        VideoMomentum.Insert(0, item);
+        while (VideoMomentum.Count > 24)
+        {
+            VideoMomentum.RemoveAt(VideoMomentum.Count - 1);
+        }
+
+        _store.SaveVideoMomentum(VideoMomentum);
+        ContentPlanStatus = $"Saved video momentum: {title}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void GenerateMomentumFollowUp()
+    {
+        var latest = VideoMomentum.FirstOrDefault();
+        if (latest is null)
+        {
+            MomentumVideoTitle = string.IsNullOrWhiteSpace(ContentSong) ? "latest video" : ContentSong;
+            MomentumAudienceSignal = "Log the views/comment first, then generate the follow-up.";
+            MomentumFollowUpAngle = "Post one related clip with a different format.";
+            MomentumNextPost = "Record a 20-30 sec follow-up.";
+        }
+        else
+        {
+            MomentumVideoTitle = latest.VideoTitle;
+            MomentumPlatform = latest.Platform;
+            MomentumAudienceSignal = latest.AudienceSignal;
+            MomentumFollowUpAngle = latest.Comments > 0
+                ? $"Answer the best comment: {latest.BestComment}"
+                : "Same sound lane, different visual angle.";
+            MomentumNextPost = latest.Views >= 500
+                ? "Follow-up today: 20-30 sec cleaner take, different opening frame, same emotional lane."
+                : "Follow-up lightly: one process/story clip, do not force a sequel.";
+        }
+
+        ContentMission = "Momentum Follow-up";
+        ContentSeries = "Audience Response";
+        ContentFormat = "follow-up clip";
+        ContentPlatform = MomentumPlatform;
+        ContentSong = MomentumVideoTitle;
+        ContentHook = MomentumAudienceSignal;
+        ContentCaption = string.IsNullOrWhiteSpace(MomentumBestComment)
+            ? "Trying a follow-up because this lane got a response."
+            : $"Replying to this: {MomentumBestComment}";
+        ContentVisualDirection = "Change the frame so it does not feel like the same post: new angle, new light, or visualizer reveal.";
+        ContentNextAction = MomentumNextPost;
+        ContentTone = "warm, direct, playful, not desperate";
+        ContentPreset = "Raw Clean first; polish only if the hook asks for it";
+        ContentPillar = "Process / Cover / Audience";
+        ContentCta = "Should I do the full version?";
+        ContentPostStatus = "Follow-up staged";
+        GenerateContentSprint();
+        ContentPlanStatus = "Generated momentum follow-up with variety guard.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void RotateContentLane()
+    {
+        var signal = NextVariationSignal.ToLowerInvariant();
+        if (signal.Contains("process"))
+        {
+            PrimeRawToChrome();
+            ContentSprintAngle = "Show the process instead of another straight performance.";
+        }
+        else if (signal.Contains("field"))
+        {
+            PrimeFloridaFieldNote();
+        }
+        else if (signal.Contains("romantic"))
+        {
+            PrimeRawGuitarCover();
+            ContentTone = "romantic, humble, clean, warm";
+        }
+        else if (signal.Contains("visualizer"))
+        {
+            ContentMission = "Visualizer Reveal";
+            ContentSeries = "Visual World";
+            ContentFormat = "audio visualizer reveal";
+            ContentCaption = "Sound became a visual.";
+            ContentVisualDirection = "Start with the raw audio/take, reveal the visualizer painting, then end clean.";
+            ContentNextAction = "Use latest take, generate visual direction, export one short reveal clip.";
+            ContentPillar = "Look / Build / Process";
+            ContentCta = "Should this become the background for the full cover?";
+        }
+        else
+        {
+            PrimeGoofyHookSeed();
+        }
+
+        ContentPlanStatus = $"Rotated content lane. {NextVariationSignal}";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -3317,6 +3549,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentSprintPack));
         OnPropertyChanged(nameof(SongStudySummary));
         OnPropertyChanged(nameof(SongStudyNextMove));
+        OnPropertyChanged(nameof(MomentumSummary));
+        OnPropertyChanged(nameof(VarietyGuardSignal));
+        OnPropertyChanged(nameof(NextVariationSignal));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -3687,6 +3922,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveArtistSessions(ArtistSessions);
         _store.SaveCoverSignals(CoverSignals);
         _store.SaveSongStudies(SongStudies);
+        _store.SaveVideoMomentum(VideoMomentum);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }
