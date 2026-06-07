@@ -11,6 +11,12 @@ declare global {
 }
 
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
+type MoodBed = {
+  nodes: AudioNode[];
+  oscillators: OscillatorNode[];
+  gains: GainNode[];
+  filters: BiquadFilterNode[];
+};
 
 const cuePath = [
   ["01", "Fire crackle", "Warm sparks"],
@@ -36,8 +42,11 @@ function createNoiseSource(audioContext: AudioContext, tone: "white" | "brown" =
   return source;
 }
 
-function buildMoodBed(audioContext: AudioContext, mood: string, destination: AudioNode) {
+function buildMoodBed(audioContext: AudioContext, mood: string, destination: AudioNode): MoodBed {
   const nodes: AudioNode[] = [];
+  const oscillators: OscillatorNode[] = [];
+  const gains: GainNode[] = [];
+  const filters: BiquadFilterNode[] = [];
 
   if (mood === "Fire crackle") {
     const fire = createNoiseSource(audioContext);
@@ -63,6 +72,8 @@ function buildMoodBed(audioContext: AudioContext, mood: string, destination: Aud
     sparkleGain.connect(destination);
     sparkle.start();
     nodes.push(fire, sparkle, filter, gain, sparkleFilter, sparkleGain);
+    gains.push(gain, sparkleGain);
+    filters.push(filter, sparkleFilter);
   } else if (mood === "Storm") {
     const rain = createNoiseSource(audioContext, "brown");
     const rainFilter = audioContext.createBiquadFilter();
@@ -84,21 +95,26 @@ function buildMoodBed(audioContext: AudioContext, mood: string, destination: Aud
     rumbleGain.connect(destination);
     rumble.start();
     nodes.push(rain, rumble, rainFilter, rainGain, rumbleGain);
+    oscillators.push(rumble);
+    gains.push(rainGain, rumbleGain);
+    filters.push(rainFilter);
   } else {
     [392, 587.33, 880].forEach((frequency, index) => {
       const oscillator = audioContext.createOscillator();
       const gain = audioContext.createGain();
       oscillator.type = "sine";
       oscillator.frequency.value = frequency;
-      gain.gain.value = index === 0 ? 0.008 : 0.0045;
+      gain.gain.value = index === 0 ? 0.0045 : 0.0022;
       oscillator.connect(gain);
       gain.connect(destination);
       oscillator.start();
       nodes.push(oscillator, gain);
+      oscillators.push(oscillator);
+      gains.push(gain);
     });
   }
 
-  return nodes;
+  return { nodes, oscillators, gains, filters };
 }
 
 function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
@@ -109,6 +125,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const demoIntervalRef = useRef<number | null>(null);
   const demoNodesRef = useRef<AudioNode[]>([]);
+  const moodBedRef = useRef<MoodBed | null>(null);
   const demoAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastCanvasDrawRef = useRef(0);
   const lastLevelUpdateRef = useRef(0);
@@ -136,6 +153,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       }
     });
     demoNodesRef.current = [];
+    moodBedRef.current = null;
     if (demoAudioRef.current) {
       demoAudioRef.current.pause();
       demoAudioRef.current.currentTime = 0;
@@ -214,14 +232,42 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       );
       const signal = smoothedSignalRef.current;
       const mood = activeCueRef.current;
-      const signalColor = mood === "Fire crackle" ? "#f08a3c" : mood === "Soft chrome" ? "#c9b8ff" : "#6ee7ff";
-      const signalRgb = mood === "Fire crackle" ? "240, 138, 60" : mood === "Soft chrome" ? "201, 184, 255" : "110, 231, 255";
+      const guitarColor = "#6ee7ff";
+      const moodRgb = mood === "Fire crackle" ? "240, 138, 60" : mood === "Soft chrome" ? "201, 184, 255" : "110, 231, 255";
+      const moodColor = mood === "Fire crackle" ? "#f08a3c" : mood === "Soft chrome" ? "#c9b8ff" : "#6ee7ff";
       signal.bass = signal.bass * 0.78 + bassRaw * 0.22;
       signal.mid = signal.mid * 0.78 + midRaw * 0.22;
       signal.high = signal.high * 0.78 + highRaw * 0.22;
       signal.level = signal.level * 0.7 + Math.min(1, waveRms * 3.4 + bassRaw * 0.55 + midRaw * 0.35) * 0.3;
       const pulse = Math.min(1, signal.level);
       const visualZoom = 1.5 + pulse * 2.8 + signal.mid * 2.2;
+      let weighted = 0;
+      let weight = 0;
+      const guitarRange = Math.floor(bins.length * 0.42);
+      for (let index = 2; index < guitarRange; index += 1) {
+        const value = Math.pow(bins[index] / 255, 1.6);
+        weighted += (index / guitarRange) * value;
+        weight += value;
+      }
+      const melodyCenter = weight > 0.001 ? weighted / weight : 0.32;
+      const melodyRatio = 2 ** ((Math.round(melodyCenter * 12) - 5) / 12);
+      const bed = moodBedRef.current;
+      const audioContext = audioContextRef.current;
+      if (bed && audioContext) {
+        const now = audioContext.currentTime;
+        if (mood === "Soft chrome") {
+          [196, 293.66, 440].forEach((base, index) => {
+            bed.oscillators[index]?.frequency.setTargetAtTime(base * melodyRatio, now, 0.18);
+          });
+          bed.gains.forEach((gain, index) => gain.gain.setTargetAtTime(index === 0 ? 0.0036 : 0.0018, now, 0.22));
+        } else if (mood === "Storm") {
+          bed.oscillators[0]?.frequency.setTargetAtTime(32 + melodyCenter * 34, now, 0.28);
+          bed.filters[0]?.frequency.setTargetAtTime(900 + melodyCenter * 950, now, 0.28);
+        } else {
+          bed.filters[0]?.frequency.setTargetAtTime(1400 + melodyCenter * 1800, now, 0.16);
+          bed.filters[1]?.frequency.setTargetAtTime(2800 + melodyCenter * 2200, now, 0.16);
+        }
+      }
       if (nowMs - lastLevelUpdateRef.current > 180) {
         lastLevelUpdateRef.current = nowMs;
         setLevel(Math.round(pulse * 100));
@@ -237,7 +283,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       const mist = ctx.createRadialGradient(width * 0.62, height * 0.25, 10, width * 0.62, height * 0.25, width * 0.72);
       mist.addColorStop(0, `rgba(232, 225, 210, ${0.09 + pulse * 0.12})`);
-      mist.addColorStop(0.42, `rgba(${signalRgb}, ${0.08 + pulse * 0.14})`);
+      mist.addColorStop(0.42, `rgba(${moodRgb}, ${0.08 + pulse * 0.14})`);
       mist.addColorStop(1, "rgba(7, 16, 13, 0)");
       ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
@@ -289,7 +335,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         const barHeight = Math.max(5, Math.pow(binValue, 0.72) * (height * 0.34) + pulse * 18);
         const x = bar * barWidth + barWidth * 0.18;
         const y = height - barHeight - 18;
-        ctx.fillStyle = `rgba(${signalRgb}, ${0.1 + Math.pow(binValue, 0.7) * 0.42})`;
+        ctx.fillStyle = `rgba(${moodRgb}, ${0.1 + Math.pow(binValue, 0.7) * 0.42})`;
         ctx.fillRect(x, y, Math.max(2, barWidth * 0.46), barHeight);
       }
 
@@ -307,17 +353,26 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         else ctx.lineTo(x, y);
       }
       ctx.shadowBlur = 18 + pulse * 24;
-      ctx.shadowColor = signalColor;
-      ctx.strokeStyle = signalColor;
+      ctx.shadowColor = guitarColor;
+      ctx.strokeStyle = guitarColor;
       ctx.lineWidth = 2 + pulse * 2.2;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       ctx.beginPath();
       ctx.arc(width * 0.82, height * 0.26, 18 + signal.bass * 42, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${signalRgb}, ${0.16 + signal.bass * 0.28})`;
+      ctx.strokeStyle = `rgba(${moodRgb}, ${0.16 + signal.bass * 0.28})`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
+
+      ctx.strokeStyle = `rgba(${moodRgb}, ${0.22 + pulse * 0.28})`;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(10, 10, width - 20, height - 20);
+      ctx.strokeStyle = moodColor;
+      ctx.globalAlpha = 0.14 + pulse * 0.18;
+      ctx.lineWidth = 8;
+      ctx.strokeRect(18, 18, width - 36, height - 36);
+      ctx.globalAlpha = 1;
 
       animationRef.current = requestAnimationFrame(render);
     };
@@ -387,11 +442,12 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       source.connect(master);
       master.connect(analyser);
       analyser.connect(audioContext.destination);
-      const moodNodes = buildMoodBed(audioContext, activeCueRef.current, master);
+      const moodBed = buildMoodBed(audioContext, activeCueRef.current, master);
+      moodBedRef.current = moodBed;
 
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
-      demoNodesRef.current = [source, master, ...moodNodes];
+      demoNodesRef.current = [source, master, ...moodBed.nodes];
       await demoAudio.play();
       setStatus("demo");
     } catch {
