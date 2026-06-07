@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GateKPT - Make Sound Visible",
     description:
-      "No account, no upload, no pressure. Make a sound and watch the page move.",
+      "A small sound playground where guitar, mic input, and mood beds turn into color and motion.",
     type: "website",
     url: getSiteUrl(),
   },
