@@ -19,8 +19,11 @@ export const metadata: Metadata = {
     "A small example of guitar, atmosphere, and motion becoming one visual world.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    shortcut: ["/icon.svg"],
+    icon: [
+      { url: "/gatekpt-icon.png", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
     title: "GateKPT - Make Sound Visible",

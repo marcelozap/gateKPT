@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 const links = [
   { href: "/", label: "Home" },
@@ -21,6 +22,7 @@ export function HubNav() {
           aria-label="GateKPT music home"
           className="flex items-center gap-1.5 rounded-md px-1 outline-none focus-visible:ring-2 focus-visible:ring-[#e37b45]/50"
         >
+          <Image src="/gatekpt-icon.png" alt="" width={24} height={24} className="rounded-full" />
           <span className="text-sm font-semibold tracking-tight text-white">GateKPT</span>
           <span className="text-[11px] text-apple-label3">/</span>
           <span className="text-[11px] font-medium text-apple-label2">Music</span>
