@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mountain, Square, Waves } from "lucide-react";
+import { Facebook, Ghost, Linkedin, Mountain, Square, Waves, Youtube } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
@@ -24,16 +24,11 @@ const cuePath = [
   ["03", "Soft chrome", "Glass shimmer"],
 ];
 
-const youtubeShortUrl = "https://www.youtube.com/shorts/t52ycvAOkk4";
-
 const socialChannels = [
-  { name: "YouTube", href: youtubeShortUrl },
-  { name: "TikTok" },
-  { name: "Instagram" },
-  { name: "Snapchat" },
-  { name: "LinkedIn" },
-  { name: "GitHub" },
-  { name: "Website" },
+  { name: "YouTube", href: "https://www.youtube.com/@xivzapa14", Icon: Youtube },
+  { name: "LinkedIn", href: "https://www.linkedin.com/in/marcelozap/", Icon: Linkedin },
+  { name: "Facebook", href: "https://www.facebook.com/marcelozapa14/", Icon: Facebook },
+  { name: "Snapchat", href: "https://www.snapchat.com/add/marcy35", Icon: Ghost },
 ];
 
 function createNoiseSource(audioContext: AudioContext, tone: "white" | "brown" = "white") {
@@ -482,10 +477,11 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 export function GatekptLanding() {
   const [activeCueIndex, setActiveCueIndex] = useState(0);
   const activeCue = cuePath[activeCueIndex]?.[1] || "Drums";
+  const moodClass = activeCueIndex === 0 ? "gk-mood-fire" : activeCueIndex === 1 ? "gk-mood-storm" : "gk-mood-chrome";
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050403] text-[#e8e1d2]">
-      <section className="relative px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <section className={`gk-mood-stage ${moodClass} relative px-4 py-8 sm:px-6 lg:px-8 lg:py-10`}>
         <div className="gk-ambient" />
         <div className="relative mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.62fr_1fr] lg:items-center">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
@@ -545,45 +541,20 @@ export function GatekptLanding() {
             </div>
           </motion.div>
         </div>
-        <div className="relative mx-auto mt-6 max-w-7xl">
+        <div className={`gk-preview-world ${moodClass} relative mx-auto mt-6 max-w-7xl`}>
           <TerrainSignalPreview activeCue={activeCue} />
         </div>
         <div className="relative mx-auto mt-6 max-w-7xl">
-          <div className="gk-panel grid gap-5 rounded-[2rem] p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="gk-label text-[#c6a96d]">Marcelo / music</p>
-              <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#e8e1d2] sm:text-3xl">
-                Follow the sound as it grows.
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-[#e8e1d2]/58">
-                Covers, loops, visuals, code experiments, and the places where the work will land.
-              </p>
-            </div>
+          <div className="gk-panel flex flex-wrap items-center justify-between gap-4 rounded-[2rem] p-4 sm:p-5">
+            <p className="text-xl font-black tracking-[-0.04em] text-[#e8e1d2]">XIV</p>
             <div className="flex flex-wrap gap-2">
               {socialChannels.map((item) => (
-                item.href ? (
-                  <a key={item.name} className="gk-social-pill gk-social-pill-live" href={item.href} target="_blank" rel="noreferrer">
-                    {item.name}
-                  </a>
-                ) : (
-                  <span key={item.name} className="gk-social-pill" title="Link coming soon">
-                    {item.name}
-                  </span>
-                )
+                <a key={item.name} className="gk-social-icon-link" href={item.href} target="_blank" rel="noreferrer" aria-label={item.name} title={item.name}>
+                  <item.Icon className="h-5 w-5" />
+                </a>
               ))}
             </div>
           </div>
-          <a
-            href={youtubeShortUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-4 block rounded-[1.45rem] border border-[#6ee7ff]/20 bg-[#6ee7ff]/[0.055] p-4 transition hover:-translate-y-0.5 hover:border-[#6ee7ff]/45 hover:bg-[#6ee7ff]/[0.09]"
-          >
-            <p className="gk-label text-[#6ee7ff]">Latest clip</p>
-            <p className="mt-2 text-lg font-black tracking-[-0.03em] text-[#e8e1d2]">
-              Watch the first GateKPT sound test on YouTube Shorts.
-            </p>
-          </a>
         </div>
       </section>
     </main>
