@@ -1,6 +1,6 @@
 # GateKPT.ai
 
-Public website for GateKPT: a free, browser-safe music creation playground and the front door for the private GateKPT MusicOS desktop app.
+Public website for GateKPT: a browser-safe music visualizer/playground and an honest doorway into an evolving private MusicOS experiment.
 
 ## Role
 
@@ -8,12 +8,13 @@ This repo is for the public landing page and lightweight demo experience:
 
 - product story
 - free browser visualizer demo
-- videos/media wall
-- offer/pricing
-- early access
-- links to the private desktop MusicOS app
+- videos/media later
+- plain-language project context
+- links to the private desktop MusicOS app when it is ready
 
 GateKPT's public promise is simple: make music technology feel playable, less intimidating, and easier to start.
+
+Do not oversell the private app. The public website should connect first and impress later.
 
 ## Current Direction
 
@@ -21,14 +22,14 @@ The website should open with the landing page first, not a full-screen visualize
 
 - GateKPT is about free creative music technology.
 - The browser demo requires no download, account, or audio upload.
-- The deeper creator cockpit is the local-first C#/.NET MusicOS app.
-- The long-term platform combines song building, audio routing, captions, visual art, and export memory.
+- The deeper C#/.NET MusicOS app is private and still experimental.
+- Current public value is the visualizer, tone, and creative world.
 
 The current product direction is documented in:
 
 `PRODUCT_PLAN.md`
 
-Private creator OS functionality lives in:
+Private creator OS functionality, recording experiments, and workflow development live in:
 
 `C:\Users\Green Machine\Desktop\GateKPT-MusicOS`
 
