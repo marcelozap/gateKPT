@@ -419,9 +419,9 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#6ee7ff]">Sound preview</p>
+            <p className="gk-label text-[#6ee7ff]">Sound</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              Real GateKPT take. Active cue: {activeCue}.
+              {activeCue} behind the guitar.
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -515,13 +515,6 @@ export function GatekptLanding() {
         </div>
         <div className="relative mx-auto mt-6 max-w-7xl">
           <TerrainSignalPreview activeCue={activeCue} />
-          <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#e8e1d2]/50">
-            <span>No account</span>
-            <span>/</span>
-            <span>No upload</span>
-            <span>/</span>
-            <span>Sound stays in browser</span>
-          </div>
         </div>
       </section>
     </main>
