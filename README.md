@@ -1,6 +1,6 @@
 # GateKPT.ai
 
-Public website for GateKPT: a browser-safe music visualizer/playground and an honest doorway into an evolving private MusicOS experiment.
+Public website for GateKPT: a browser-safe music visualizer/playground where visitors can make sound feel visible.
 
 ## Role
 
@@ -10,11 +10,10 @@ This repo is for the public landing page and lightweight demo experience:
 - free browser visualizer demo
 - videos/media later
 - plain-language project context
-- links to the private desktop MusicOS app when it is ready
 
 GateKPT's public promise is simple: make music technology feel playable, less intimidating, and easier to start.
 
-Do not oversell the private app. The public website should connect first and impress later.
+Do not oversell. The public website should connect first: play sound, see color, leave with a small idea.
 
 ## Current Direction
 
@@ -22,7 +21,6 @@ The website should open with the landing page first, not a full-screen visualize
 
 - GateKPT is about free creative music technology.
 - The browser demo requires no download, account, or audio upload.
-- The deeper C#/.NET MusicOS app is private and still experimental.
 - Current public value is the visualizer, tone, and creative world.
 
 The current product direction is documented in:

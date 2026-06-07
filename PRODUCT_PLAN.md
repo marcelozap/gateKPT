@@ -1,10 +1,10 @@
 # GateKPT.ai Product Plan
 
-`gatekpt.ai` is the public home for GateKPT: a lightweight music visualizer/playground and an honest doorway into an evolving private creative tool.
+`gatekpt.ai` is the public home for GateKPT: a lightweight music visualizer/playground where sound becomes color, terrain, and motion.
 
 ## Mission
 
-Help people feel invited into music technology. Start with a simple sound-to-visual experience. Let the deeper MusicOS prove itself privately before the website claims too much.
+Help people feel invited into music technology. Start with a simple sound-to-visual experience that feels fun before it feels technical.
 
 Music tech, DAWs, finance, and many other fields often hide simple ideas behind complicated words. GateKPT should go the other way: simple language, obvious controls, no pressure, and a quick reason to play.
 
@@ -12,11 +12,11 @@ Green Machine is about trading discipline.
 
 GateKPT is about spreading love for music and technology by making the first step feel less intimidating.
 
-It should be both:
+It should be:
 
-- a credible but humble project page for LinkedIn, GitHub, portfolio, and curious visitors
-- free lightweight tools where visitors can try the music-to-visual-art idea
-- plain-language customer-service energy that makes skeptical visitors feel safe
+- a playful page for curious visitors
+- a free lightweight tool where visitors can try the music-to-visual-art idea
+- plain-language energy that makes skeptical visitors feel safe
 
 It should not become:
 
@@ -26,7 +26,7 @@ It should not become:
 - a private project dashboard
 - a Green Machine / trading surface
 - startup jargon that makes the project sound too good to be true
-- a fake finished product while the private app is still being stabilized
+- a page that explains itself more than it lets people play
 
 ## Locked Structure
 
@@ -39,7 +39,7 @@ It should not become:
 2. Project Path
    - Public site: play with sound and visuals.
    - Artist world: show the feeling behind the project.
-   - MusicOS: private in-progress tool, not public promise yet.
+   - Keep deeper tool claims off the public homepage until they are obvious in real use.
 
 3. How It Feels
    - Make sound feel visual.
@@ -94,4 +94,4 @@ Desktop app:
 
 ## One-Line Product Position
 
-GateKPT is a music playground where sound becomes visual, and a private MusicOS experiment is slowly being built behind it.
+GateKPT is a music playground where sound becomes visual.
