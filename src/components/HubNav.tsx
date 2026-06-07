@@ -5,8 +5,7 @@ import Image from "next/image";
 
 const links = [
   { href: "/", label: "Home" },
-  { href: "/#try-visualizer", label: "Play" },
-  { href: "/#why", label: "Why" },
+  { href: "/#preview", label: "Play" },
   { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
 ];
 
