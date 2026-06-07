@@ -579,6 +579,16 @@
                                                            FontWeight="SemiBold"
                                                            TextWrapping="Wrap"
                                                            Foreground="#35544D"/>
+                                                <TextBlock Text="{Binding CreativeDecisionCore}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#806A3F"/>
+                                                <TextBlock Text="{Binding CreativeDecisionNextMove}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#35544D"/>
                                             </StackPanel>
                                         </Border>
                                         <Border CornerRadius="18" Padding="13" Background="#2107110E" BorderBrush="#44C6A96D" BorderThickness="1">
@@ -780,7 +790,7 @@
                                                     Background="#07110E"
                                                     Foreground="#E8E1D2"
                                                     FontWeight="Black"/>
-                                            <Button Content="Generate post"
+                                            <Button Content="Build output"
                                                     Command="{Binding GenerateContentPlanCommand}"
                                                     Padding="18,12"
                                                     Margin="0,0,8,8"
@@ -838,7 +848,7 @@
                                                    Foreground="#C6A96D"/>
                                         <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
                                             <StackPanel Spacing="8">
-                                                <TextBlock Text="TONIGHT POST"
+                                                <TextBlock Text="TONIGHT OUTPUT"
                                                            FontSize="10"
                                                            FontWeight="Black"
                                                            LetterSpacing="2.2"

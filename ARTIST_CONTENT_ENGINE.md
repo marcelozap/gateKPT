@@ -1,4 +1,43 @@
-# GateKPT Artist Content Engine
+# GateKPT Creative Operating Core
+
+## Core OS Principle
+
+GateKPT is not mainly a content machine.
+
+GateKPT is a private creative operating system for making music faster, remembering what worked, and using history to steer better artistic decisions.
+
+Content is an output of the system, not the system itself.
+
+Core promise:
+
+```text
+create fast -> save history -> learn taste -> choose better -> export when ready
+```
+
+What GateKPT should help Marcelo do:
+
+- capture guitar, vocal, loop, field sound, lyric, visual, or phone-video ideas quickly
+- keep versions organized without DAW overwhelm
+- remember what sounded best, what got response, and what felt like him
+- study songs safely by mechanics, theme, energy, and structure
+- choose the next creative move from historical data
+- export strong clips/songs/videos when they are ready
+
+Historical data should steer decisions:
+
+- which sound lanes fit the voice
+- which beats and tempos feel best
+- which lyrical themes resonate
+- which covers deserve testing
+- which posts got response
+- which ideas should stay private archive/practice
+- which ideas are memorable enough to release
+
+Important rule:
+
+```text
+make the work better first; content follows the work
+```
 
 ## Core Lane
 
@@ -453,7 +492,7 @@ The EP should feel like after-work energy becoming catchy songs: guitar, voice, 
 
 ## EP Map Loop
 
-Content Lab should not let saved sessions stay isolated. It should keep showing the first-era map:
+Output Lab should not let saved sessions stay isolated. It should keep showing the first-era map:
 
 1. Orange County Glow: opening scene, orange lights, Track 1 seed.
 2. After Work: tired but still making the hook.

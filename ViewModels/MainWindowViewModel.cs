@@ -360,7 +360,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentSeries = "Florida Night Pop/R&B";
 
     [ObservableProperty]
-    private string _contentPlanStatus = "Start with one hook, one field sound, one visual, one post.";
+    private string _contentPlanStatus = "Start with one idea, one sound, one decision, one output.";
 
     [ObservableProperty]
     private string _contentMission = "After Work Hook";
@@ -393,7 +393,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentPostStatus = "Staged";
 
     [ObservableProperty]
-    private string _contentSprintAngle = "Show the raw take becoming a post.";
+    private string _contentSprintAngle = "Turn the raw take into one useful output.";
 
     [ObservableProperty]
     private string _contentSprintLength = "20-35 sec";
@@ -402,10 +402,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentSprintOpeningFrame = "Face or guitar visible in the first second.";
 
     [ObservableProperty]
-    private string _contentSprintSteps = "Record clean audio -> pick best 30 sec -> add caption -> post/test.";
+    private string _contentSprintSteps = "Record clean audio -> pick best section -> choose lane -> export/archive.";
 
     [ObservableProperty]
-    private string _contentSprintStatus = "Generate one post from the current idea.";
+    private string _contentSprintStatus = "Generate one output from the current idea.";
 
     [ObservableProperty]
     private string _coverSignalSong = "";
@@ -743,7 +743,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             new("Rig Routing", "Focusrite, RC-505, controller, and live input memory", "05", "#F2EADC"),
             new("Export Memory", "Clips, demos, archives, and drops coming soon", "06", "#9DBFB3"),
             new("World Memory", "Field recordings, places, phrases, and song seeds", "07", "#8DB7AD"),
-            new("Content Lab", "Turn one take into the next audience touch", "08", "#C6A96D"),
+            new("Output Lab", "Turn strong work into clips, exports, and release memory", "08", "#C6A96D"),
         ];
 
         _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
@@ -2003,7 +2003,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public bool IsWorldMemoryRoom => SelectedRoom.Name == "World Memory";
 
-    public bool IsContentLabRoom => SelectedRoom.Name == "Content Lab";
+    public bool IsContentLabRoom => SelectedRoom.Name == "Output Lab";
 
     public bool IsEditorRoom => !IsPerformanceRevealRoom && !IsWorldMemoryRoom && !IsContentLabRoom;
 
@@ -2022,10 +2022,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "Come watch me build Florida night songs from guitar, voice, humor, pressure, Spanish color, and field sounds.";
 
     public string ContentEngineFormula =>
-        "one hook / one field sound / one visual / one post";
+        "one idea / one sound / one decision / one export";
 
     public string ContentTonightSequence =>
-        "record rough -> keep the charm -> light preset -> export clip -> post/archive";
+        "capture -> listen -> choose lane -> polish only if useful -> export/archive";
+
+    public string CreativeDecisionCore =>
+        "Core: create fast, save history, learn taste, choose better. Content comes after the work.";
+
+    public string CreativeDecisionNextMove =>
+        $"{SoundTasteNextMove} {VarietyGuardSignal}";
 
     public string ContentMissionGuide =>
         ContentMission.ToLowerInvariant() switch
@@ -2981,7 +2987,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void PrimeContentFromWorldMemory()
     {
-        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Content Lab") ?? SelectedRoom;
+        SelectedRoom = Rooms.FirstOrDefault(room => room.Name == "Output Lab") ?? SelectedRoom;
         var memory = WorldMemories.FirstOrDefault();
         if (memory is null)
         {
@@ -3811,6 +3817,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentAudiencePromise));
         OnPropertyChanged(nameof(ContentEngineFormula));
         OnPropertyChanged(nameof(ContentTonightSequence));
+        OnPropertyChanged(nameof(CreativeDecisionCore));
+        OnPropertyChanged(nameof(CreativeDecisionNextMove));
         OnPropertyChanged(nameof(ContentMissionGuide));
         OnPropertyChanged(nameof(ContentPostPackPreview));
         OnPropertyChanged(nameof(ContentArchiveReviewSummary));
@@ -3933,7 +3941,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             $"Post pack / {ContentMission}",
             $"{ContentFormat}. {ContentSetting}. {ContentTone}. {ContentNextAction}",
             DateTime.Now.ToString("h:mm tt"),
-            "Content Lab"));
+            "Output Lab"));
         while (RecentCaptures.Count > 8)
         {
             RecentCaptures.RemoveAt(RecentCaptures.Count - 1);
