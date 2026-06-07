@@ -24,6 +24,8 @@ const cuePath = [
   ["03", "Soft chrome", "Glass shimmer"],
 ];
 
+const socialChannels = ["YouTube", "TikTok", "Instagram", "Snapchat", "LinkedIn", "GitHub", "Website"];
+
 function createNoiseSource(audioContext: AudioContext, tone: "white" | "brown" = "white") {
   const bufferLength = audioContext.sampleRate * 2;
   const buffer = audioContext.createBuffer(1, bufferLength, audioContext.sampleRate);
@@ -541,15 +543,15 @@ export function GatekptLanding() {
             <div>
               <p className="gk-label text-[#c6a96d]">Marcelo / music</p>
               <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#e8e1d2] sm:text-3xl">
-                Covers, loops, and visual experiments.
+                Follow the sound as it grows.
               </h2>
               <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-[#e8e1d2]/58">
-                This page will point to the clips, songs, and socials as the sound keeps growing.
+                Covers, loops, visuals, code experiments, and the places where the work will land.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {["YouTube", "TikTok", "Instagram", "Snapchat"].map((item) => (
-                <span key={item} className="gk-social-pill">
+              {socialChannels.map((item) => (
+                <span key={item} className="gk-social-pill" title="Link coming soon">
                   {item}
                 </span>
               ))}
