@@ -31,6 +31,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const demoAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastCanvasDrawRef = useRef(0);
   const lastLevelUpdateRef = useRef(0);
+  const smoothedSignalRef = useRef({ bass: 0.18, mid: 0.2, high: 0.16, level: 0.21 });
   const [status, setStatus] = useState<AudioStatus>("preview");
   const [level, setLevel] = useState(21);
 
@@ -88,19 +89,42 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       const analyser = analyserRef.current;
-      const bins = new Uint8Array(analyser?.frequencyBinCount || 128);
+      const bins = new Uint8Array(analyser?.frequencyBinCount || 512);
+      const waveBins = new Uint8Array(analyser?.fftSize || 1024);
 
       if (analyser) {
         analyser.getByteFrequencyData(bins);
+        analyser.getByteTimeDomainData(waveBins);
       } else {
         const now = performance.now() / 1000;
         for (let index = 0; index < bins.length; index += 1) {
           bins[index] = 28 + Math.round(Math.sin(now * 0.8 + index * 0.11) * 18 + Math.sin(now * 0.32 + index * 0.03) * 14);
         }
+        for (let index = 0; index < waveBins.length; index += 1) {
+          waveBins[index] = 128 + Math.round(Math.sin(now * 2.1 + index * 0.08) * 24 + Math.sin(now * 0.6 + index * 0.025) * 18);
+        }
       }
 
-      const average = bins.reduce((sum, value) => sum + value, 0) / bins.length;
-      const pulse = Math.min(1, average / 165);
+      const readBand = (start: number, end: number) => {
+        const slice = bins.slice(start, Math.max(start + 1, end));
+        return slice.reduce((sum, value) => sum + value, 0) / Math.max(1, slice.length) / 255;
+      };
+
+      const bassRaw = readBand(0, Math.floor(bins.length * 0.08));
+      const midRaw = readBand(Math.floor(bins.length * 0.08), Math.floor(bins.length * 0.34));
+      const highRaw = readBand(Math.floor(bins.length * 0.34), Math.floor(bins.length * 0.78));
+      const waveRms = Math.sqrt(
+        waveBins.reduce((sum, value) => {
+          const normalized = (value - 128) / 128;
+          return sum + normalized * normalized;
+        }, 0) / waveBins.length,
+      );
+      const signal = smoothedSignalRef.current;
+      signal.bass = signal.bass * 0.78 + bassRaw * 0.22;
+      signal.mid = signal.mid * 0.78 + midRaw * 0.22;
+      signal.high = signal.high * 0.78 + highRaw * 0.22;
+      signal.level = signal.level * 0.7 + Math.min(1, waveRms * 3.4 + bassRaw * 0.55 + midRaw * 0.35) * 0.3;
+      const pulse = Math.min(1, signal.level);
       if (nowMs - lastLevelUpdateRef.current > 180) {
         lastLevelUpdateRef.current = nowMs;
         setLevel(Math.round(pulse * 100));
@@ -122,12 +146,16 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       ctx.fillRect(0, 0, width, height);
 
       for (let line = 0; line < 8; line += 1) {
-        const yBase = height * (0.24 + line * 0.076);
+        const yBase = height * (0.2 + line * 0.082);
+        const bandDrive = line < 3 ? signal.bass : line < 6 ? signal.mid : signal.high;
         ctx.beginPath();
         for (let index = 0; index < bins.length; index += 1) {
           const x = (index / (bins.length - 1)) * width;
           const signal = bins[(index + line * 5) % bins.length] / 255;
-          const y = yBase + Math.sin(index * 0.08 + line * 0.7 + nowMs / 2400) * (7 + line * 0.8) - signal * (10 + pulse * 22);
+          const y =
+            yBase +
+            Math.sin(index * 0.08 + line * 0.7 + nowMs / (1800 - bandDrive * 620)) * (5 + line * 0.7 + bandDrive * 12) -
+            signal * (7 + pulse * 16 + bandDrive * 28);
           if (index === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
@@ -136,19 +164,43 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         ctx.stroke();
       }
 
+      const barCount = 28;
+      const barWidth = width / barCount;
+      for (let bar = 0; bar < barCount; bar += 1) {
+        const binIndex = Math.floor((bar / barCount) * bins.length * 0.62);
+        const binValue = bins[binIndex] / 255;
+        const barHeight = Math.max(4, binValue * (height * 0.24) + pulse * 10);
+        const x = bar * barWidth + barWidth * 0.18;
+        const y = height - barHeight - 18;
+        ctx.fillStyle = `rgba(110, 231, 255, ${0.08 + binValue * 0.28})`;
+        ctx.fillRect(x, y, Math.max(2, barWidth * 0.46), barHeight);
+      }
+
       ctx.beginPath();
-      for (let index = 0; index < bins.length; index += 1) {
-        const x = (index / (bins.length - 1)) * width;
-        const y = height * 0.63 + Math.sin(index * 0.09 + nowMs / 900) * 16 - (bins[index] / 255) * 78;
+      const waveStep = Math.max(1, Math.floor(waveBins.length / 220));
+      for (let index = 0; index < waveBins.length; index += waveStep) {
+        const x = (index / (waveBins.length - 1)) * width;
+        const waveform = (waveBins[index] - 128) / 128;
+        const y =
+          height * 0.55 +
+          waveform * (height * (0.14 + pulse * 0.16)) -
+          signal.bass * height * 0.08 +
+          Math.sin(index * 0.025 + nowMs / 1400) * (4 + signal.high * 10);
         if (index === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
       ctx.shadowBlur = 18 + pulse * 24;
       ctx.shadowColor = "#6ee7ff";
       ctx.strokeStyle = "#6ee7ff";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2 + pulse * 2.2;
       ctx.stroke();
       ctx.shadowBlur = 0;
+
+      ctx.beginPath();
+      ctx.arc(width * 0.82, height * 0.26, 18 + signal.bass * 42, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(110, 231, 255, ${0.16 + signal.bass * 0.28})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
       animationRef.current = requestAnimationFrame(render);
     };
@@ -172,8 +224,8 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       const audioContext = new AudioContextClass();
       await audioContext.resume();
       const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.86;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.72;
       audioContext.createMediaStreamSource(stream).connect(analyser);
       streamRef.current = stream;
       audioContextRef.current = audioContext;
@@ -203,8 +255,8 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       await audioContext.resume();
 
       const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = 1024;
+      analyser.smoothingTimeConstant = 0.7;
 
       const master = audioContext.createGain();
       master.gain.value = 0.9;
