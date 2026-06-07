@@ -13,12 +13,93 @@ declare global {
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
 
 const cuePath = [
-  ["01", "Night", "Field sound"],
-  ["02", "Drums", "Pulse"],
-  ["03", "Guitar", "Movement"],
-  ["04", "Vocal", "Chrome"],
-  ["05", "Visual", "Terrain"],
+  ["01", "Fire crackle", "Warm sparks"],
+  ["02", "Storm", "Rain pulse"],
+  ["03", "Soft chrome", "Glass shimmer"],
 ];
+
+function createNoiseSource(audioContext: AudioContext, tone: "white" | "brown" = "white") {
+  const bufferLength = audioContext.sampleRate * 2;
+  const buffer = audioContext.createBuffer(1, bufferLength, audioContext.sampleRate);
+  const data = buffer.getChannelData(0);
+  let last = 0;
+
+  for (let index = 0; index < bufferLength; index += 1) {
+    const white = Math.random() * 2 - 1;
+    last = tone === "brown" ? (last + 0.02 * white) / 1.02 : white;
+    data[index] = tone === "brown" ? last * 3.5 : white;
+  }
+
+  const source = audioContext.createBufferSource();
+  source.buffer = buffer;
+  source.loop = true;
+  return source;
+}
+
+function buildMoodBed(audioContext: AudioContext, mood: string, destination: AudioNode) {
+  const nodes: AudioNode[] = [];
+
+  if (mood === "Fire crackle") {
+    const fire = createNoiseSource(audioContext);
+    const filter = audioContext.createBiquadFilter();
+    const gain = audioContext.createGain();
+    filter.type = "bandpass";
+    filter.frequency.value = 1900;
+    filter.Q.value = 2.2;
+    gain.gain.value = 0.012;
+    fire.connect(filter);
+    filter.connect(gain);
+    gain.connect(destination);
+    fire.start();
+
+    const sparkle = createNoiseSource(audioContext);
+    const sparkleFilter = audioContext.createBiquadFilter();
+    const sparkleGain = audioContext.createGain();
+    sparkleFilter.type = "highpass";
+    sparkleFilter.frequency.value = 3200;
+    sparkleGain.gain.value = 0.006;
+    sparkle.connect(sparkleFilter);
+    sparkleFilter.connect(sparkleGain);
+    sparkleGain.connect(destination);
+    sparkle.start();
+    nodes.push(fire, sparkle, filter, gain, sparkleFilter, sparkleGain);
+  } else if (mood === "Storm") {
+    const rain = createNoiseSource(audioContext, "brown");
+    const rainFilter = audioContext.createBiquadFilter();
+    const rainGain = audioContext.createGain();
+    rainFilter.type = "lowpass";
+    rainFilter.frequency.value = 1500;
+    rainGain.gain.value = 0.028;
+    rain.connect(rainFilter);
+    rainFilter.connect(rainGain);
+    rainGain.connect(destination);
+    rain.start();
+
+    const rumble = audioContext.createOscillator();
+    const rumbleGain = audioContext.createGain();
+    rumble.type = "sine";
+    rumble.frequency.value = 38;
+    rumbleGain.gain.value = 0.014;
+    rumble.connect(rumbleGain);
+    rumbleGain.connect(destination);
+    rumble.start();
+    nodes.push(rain, rumble, rainFilter, rainGain, rumbleGain);
+  } else {
+    [392, 587.33, 880].forEach((frequency, index) => {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      gain.gain.value = index === 0 ? 0.008 : 0.0045;
+      oscillator.connect(gain);
+      gain.connect(destination);
+      oscillator.start();
+      nodes.push(oscillator, gain);
+    });
+  }
+
+  return nodes;
+}
 
 function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -31,9 +112,14 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const demoAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastCanvasDrawRef = useRef(0);
   const lastLevelUpdateRef = useRef(0);
+  const activeCueRef = useRef(activeCue);
   const smoothedSignalRef = useRef({ bass: 0.18, mid: 0.2, high: 0.16, level: 0.21 });
   const [status, setStatus] = useState<AudioStatus>("preview");
   const [level, setLevel] = useState(21);
+
+  useEffect(() => {
+    activeCueRef.current = activeCue;
+  }, [activeCue]);
 
   const stopAudio = useCallback(() => {
     if (demoIntervalRef.current) {
@@ -127,6 +213,9 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         }, 0) / waveBins.length,
       );
       const signal = smoothedSignalRef.current;
+      const mood = activeCueRef.current;
+      const signalColor = mood === "Fire crackle" ? "#f08a3c" : mood === "Soft chrome" ? "#c9b8ff" : "#6ee7ff";
+      const signalRgb = mood === "Fire crackle" ? "240, 138, 60" : mood === "Soft chrome" ? "201, 184, 255" : "110, 231, 255";
       signal.bass = signal.bass * 0.78 + bassRaw * 0.22;
       signal.mid = signal.mid * 0.78 + midRaw * 0.22;
       signal.high = signal.high * 0.78 + highRaw * 0.22;
@@ -140,18 +229,37 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       ctx.clearRect(0, 0, width, height);
       const base = ctx.createLinearGradient(0, 0, width, height);
-      base.addColorStop(0, "#102018");
+      base.addColorStop(0, mood === "Fire crackle" ? "#231207" : mood === "Soft chrome" ? "#111225" : "#102018");
       base.addColorStop(0.55, "#07100d");
-      base.addColorStop(1, "#18160f");
+      base.addColorStop(1, mood === "Storm" ? "#0b1722" : "#18160f");
       ctx.fillStyle = base;
       ctx.fillRect(0, 0, width, height);
 
       const mist = ctx.createRadialGradient(width * 0.62, height * 0.25, 10, width * 0.62, height * 0.25, width * 0.72);
       mist.addColorStop(0, `rgba(232, 225, 210, ${0.09 + pulse * 0.12})`);
-      mist.addColorStop(0.42, `rgba(110, 231, 255, ${0.08 + pulse * 0.14})`);
+      mist.addColorStop(0.42, `rgba(${signalRgb}, ${0.08 + pulse * 0.14})`);
       mist.addColorStop(1, "rgba(7, 16, 13, 0)");
       ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
+
+      if (mood === "Fire crackle") {
+        for (let ember = 0; ember < 28; ember += 1) {
+          const drift = (nowMs / (70 + ember * 4) + ember * 41) % height;
+          const x = ((ember * 83 + Math.sin(nowMs / 1200 + ember) * 38) % width + width) % width;
+          const size = 1.4 + Math.sin(nowMs / 300 + ember) * 0.8 + pulse * 2.2;
+          ctx.fillStyle = `rgba(240, 138, 60, ${0.08 + pulse * 0.18})`;
+          ctx.beginPath();
+          ctx.arc(x, height - drift, Math.max(0.8, size), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else if (mood === "Storm") {
+        ctx.fillStyle = `rgba(110, 231, 255, ${0.03 + signal.high * 0.07})`;
+        for (let rain = 0; rain < 34; rain += 1) {
+          const x = (rain * 47 + nowMs / 24) % width;
+          const y = (rain * 71 + nowMs / 8) % height;
+          ctx.fillRect(x, y, 1, 22 + pulse * 30);
+        }
+      }
 
       for (let line = 0; line < 8; line += 1) {
         const yBase = height * (0.2 + line * 0.082);
@@ -181,7 +289,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         const barHeight = Math.max(5, Math.pow(binValue, 0.72) * (height * 0.34) + pulse * 18);
         const x = bar * barWidth + barWidth * 0.18;
         const y = height - barHeight - 18;
-        ctx.fillStyle = `rgba(110, 231, 255, ${0.1 + Math.pow(binValue, 0.7) * 0.42})`;
+        ctx.fillStyle = `rgba(${signalRgb}, ${0.1 + Math.pow(binValue, 0.7) * 0.42})`;
         ctx.fillRect(x, y, Math.max(2, barWidth * 0.46), barHeight);
       }
 
@@ -199,15 +307,15 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
         else ctx.lineTo(x, y);
       }
       ctx.shadowBlur = 18 + pulse * 24;
-      ctx.shadowColor = "#6ee7ff";
-      ctx.strokeStyle = "#6ee7ff";
+      ctx.shadowColor = signalColor;
+      ctx.strokeStyle = signalColor;
       ctx.lineWidth = 2 + pulse * 2.2;
       ctx.stroke();
       ctx.shadowBlur = 0;
 
       ctx.beginPath();
       ctx.arc(width * 0.82, height * 0.26, 18 + signal.bass * 42, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(110, 231, 255, ${0.16 + signal.bass * 0.28})`;
+      ctx.strokeStyle = `rgba(${signalRgb}, ${0.16 + signal.bass * 0.28})`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
@@ -279,10 +387,11 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       source.connect(master);
       master.connect(analyser);
       analyser.connect(audioContext.destination);
+      const moodNodes = buildMoodBed(audioContext, activeCueRef.current, master);
 
       audioContextRef.current = audioContext;
       analyserRef.current = analyser;
-      demoNodesRef.current = [source, master];
+      demoNodesRef.current = [source, master, ...moodNodes];
       await demoAudio.play();
       setStatus("demo");
     } catch {
@@ -381,7 +490,7 @@ export function GatekptLanding() {
                   Pick a feeling.
                 </h2>
                 <div className="mt-8 grid gap-3" id="preview">
-                  {["Warm night", "Storm room", "Soft chrome"].map((item, index) => (
+                  {cuePath.map(([number, item, detail], index) => (
                     <button
                       key={item}
                       type="button"
@@ -390,10 +499,13 @@ export function GatekptLanding() {
                         activeCueIndex === index
                           ? "border-[#d08a56]/50 bg-[#d08a56]/12"
                           : "border-white/10 bg-white/[0.035] hover:border-[#d08a56]/35"
-                      }`}
+                        }`}
                     >
-                      <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
-                      <span className="text-sm font-black">{item}</span>
+                      <span className="font-mono text-xs text-[#c6a96d]">{number}</span>
+                      <span>
+                        <span className="block text-sm font-black">{item}</span>
+                        <span className="mt-1 block text-xs font-bold text-[#e8e1d2]/45">{detail}</span>
+                      </span>
                     </button>
                   ))}
                 </div>
