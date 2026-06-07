@@ -7,6 +7,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/#try-visualizer", label: "Play" },
   { href: "/#why", label: "Why" },
+  { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
 ];
 
 export function HubNav() {
@@ -33,6 +34,8 @@ export function HubNav() {
             <Link
               key={link.href}
               href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
               className="rounded-lg px-3 py-1.5 text-[13px] font-medium text-white/60 outline-none transition hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#e37b45]/40"
             >
               {link.label}
