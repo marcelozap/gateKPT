@@ -65,6 +65,8 @@ public sealed class LocalLibraryStore
 
     private string VideoMomentumPath => Path.Combine(LibraryDirectory, "video-momentum.json");
 
+    private string SoundTastePath => Path.Combine(LibraryDirectory, "sound-taste-map.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -289,6 +291,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<VideoMomentumItem> LoadVideoMomentum() => LoadList<VideoMomentumItem>(VideoMomentumPath);
 
     public void SaveVideoMomentum(IEnumerable<VideoMomentumItem> items) => SaveList(VideoMomentumPath, items);
+
+    public IReadOnlyList<SoundTasteItem> LoadSoundTasteMap() => LoadList<SoundTasteItem>(SoundTastePath);
+
+    public void SaveSoundTasteMap(IEnumerable<SoundTasteItem> items) => SaveList(SoundTastePath, items);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

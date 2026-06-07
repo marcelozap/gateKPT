@@ -270,6 +270,46 @@ Rotation lanes:
 
 The goal is momentum without repetition.
 
+## Sound Taste Map
+
+GateKPT should help Marcelo discover which song types actually sound best on him.
+
+This is not just popularity data. Track taste lanes:
+
+- reference songs/artists
+- beat feel
+- tempo range
+- key/range comfort
+- vocal energy
+- lyric themes
+- visual energy
+- best use
+- what to avoid
+- fit score
+- memorability score
+
+Core rule:
+
+```text
+fit + memorability > volume
+```
+
+The first useful lanes:
+
+1. Dreamy guitar pop: intimate guitar, loose charm, romantic/humble lyric.
+2. Glossy night R&B: polished hook only when the chorus asks for shine.
+3. Spanish smooth color: one natural Spanish/Spanglish phrase, rhythmic and warm.
+4. Goofy indie charm: playful, youthful, smart, not over-serious.
+5. Field-sound world: place sounds and atmosphere that become intros or visuals.
+
+Rotation rule:
+
+```text
+cover -> process -> world -> original seed -> visual reveal
+```
+
+The app should protect the artist from making five clips with the same mood, same light, same caption, same vocal treatment, and same emotional tempo.
+
 ## Song Study
 
 GateKPT should start using song data without becoming a copyright mess or a generic analytics dashboard.

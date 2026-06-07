@@ -507,6 +507,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _momentumStatus = "Signal to review";
 
     [ObservableProperty]
+    private string _tasteLaneName = "Dreamy guitar pop";
+
+    [ObservableProperty]
+    private string _tasteReferenceSongs = "Babydoll / Dominic Fike / Malcolm Todd lane";
+
+    [ObservableProperty]
+    private string _tasteBeatFeel = "loose pocket, light groove, not overproduced";
+
+    [ObservableProperty]
+    private string _tasteTempoRange = "82-108 BPM";
+
+    [ObservableProperty]
+    private string _tasteKeyRange = "comfortable mid voice";
+
+    [ObservableProperty]
+    private string _tasteVocalEnergy = "intimate, charming, imperfect, close";
+
+    [ObservableProperty]
+    private string _tasteLyricThemes = "romance, pressure, humor, night, becoming";
+
+    [ObservableProperty]
+    private string _tasteVisualEnergy = "warm light, guitar close, face visible, not fake luxury";
+
+    [ObservableProperty]
+    private string _tasteBestUse = "cover tests and original hook seeds";
+
+    [ObservableProperty]
+    private string _tasteAvoid = "too much polish, same caption, same emotional tempo";
+
+    [ObservableProperty]
+    private int _tasteFitScore = 8;
+
+    [ObservableProperty]
+    private int _tasteMemorabilityScore = 7;
+
+    [ObservableProperty]
+    private string _tasteStatus = "Active lane";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -828,6 +867,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 ]);
+        SoundTasteMap = new ObservableCollection<SoundTasteItem>(
+            _store.LoadSoundTasteMap().Count > 0
+                ? _store.LoadSoundTasteMap()
+                : DefaultSoundTasteMap());
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -936,6 +979,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<SongStudyItem> SongStudies { get; }
 
     public ObservableCollection<VideoMomentumItem> VideoMomentum { get; }
+
+    public ObservableCollection<SoundTasteItem> SoundTasteMap { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -2236,6 +2281,37 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string SoundTasteSummary
+    {
+        get
+        {
+            var best = SoundTasteMap
+                .OrderByDescending(item => item.FitScore + item.MemorabilityScore)
+                .FirstOrDefault();
+            return best is null
+                ? "Taste Map: no lanes yet. Add one sound lane that feels like you."
+                : $"Taste Map: {SoundTasteMap.Count} lanes / strongest: {best.Name} / fit {best.FitScore}/10 / memory {best.MemorabilityScore}/10.";
+        }
+    }
+
+    public string SoundTasteNextMove
+    {
+        get
+        {
+            var recentNames = ArtistSessions.Take(3)
+                .Select(item => $"{item.MissionType} {item.SoundLane} {item.PersonalityTone}")
+                .ToList();
+            var best = SoundTasteMap
+                .OrderByDescending(item => item.FitScore + item.MemorabilityScore)
+                .FirstOrDefault(item => !recentNames.Any(name => name.Contains(item.Name, StringComparison.OrdinalIgnoreCase)))
+                ?? SoundTasteMap.OrderByDescending(item => item.FitScore + item.MemorabilityScore).FirstOrDefault();
+
+            return best is null
+                ? "Next: define one lane by beat feel, vocal energy, lyric themes, and visual energy."
+                : $"Next taste lane: {best.Name}. Beat: {best.BeatFeel}. Lyrics: {best.LyricThemes}.";
+        }
+    }
+
     private bool HasSessionMatch(params string[] terms) =>
         ArtistSessions.Any(item =>
         {
@@ -3523,6 +3599,118 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshContentPlanSignals();
     }
 
+    [RelayCommand]
+    private void AddSoundTasteLane()
+    {
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var item = new SoundTasteItem(
+            Guid.NewGuid().ToString("N"),
+            string.IsNullOrWhiteSpace(TasteLaneName) ? "Untitled sound lane" : TasteLaneName.Trim(),
+            string.IsNullOrWhiteSpace(TasteReferenceSongs) ? "reference TBD" : TasteReferenceSongs.Trim(),
+            string.IsNullOrWhiteSpace(TasteBeatFeel) ? "beat feel TBD" : TasteBeatFeel.Trim(),
+            string.IsNullOrWhiteSpace(TasteTempoRange) ? "tempo TBD" : TasteTempoRange.Trim(),
+            string.IsNullOrWhiteSpace(TasteKeyRange) ? "key/range TBD" : TasteKeyRange.Trim(),
+            string.IsNullOrWhiteSpace(TasteVocalEnergy) ? "vocal energy TBD" : TasteVocalEnergy.Trim(),
+            string.IsNullOrWhiteSpace(TasteLyricThemes) ? "theme TBD" : TasteLyricThemes.Trim(),
+            string.IsNullOrWhiteSpace(TasteVisualEnergy) ? "visual energy TBD" : TasteVisualEnergy.Trim(),
+            string.IsNullOrWhiteSpace(TasteBestUse) ? "cover test / original seed" : TasteBestUse.Trim(),
+            string.IsNullOrWhiteSpace(TasteAvoid) ? "repetition and over-polish" : TasteAvoid.Trim(),
+            Math.Clamp(TasteFitScore, 1, 10),
+            Math.Clamp(TasteMemorabilityScore, 1, 10),
+            string.IsNullOrWhiteSpace(TasteStatus) ? "Taste seed" : TasteStatus.Trim(),
+            now,
+            now);
+
+        SoundTasteMap.Insert(0, item);
+        while (SoundTasteMap.Count > 24)
+        {
+            SoundTasteMap.RemoveAt(SoundTasteMap.Count - 1);
+        }
+
+        _store.SaveSoundTasteMap(SoundTasteMap);
+        ContentPlanStatus = $"Added taste lane: {item.Name}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeContentFromTasteLane()
+    {
+        var lane = SoundTasteMap
+            .OrderByDescending(item => item.FitScore + item.MemorabilityScore)
+            .FirstOrDefault();
+        if (lane is null)
+        {
+            ContentPlanStatus = "No taste lane yet. Add one lane first.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        ContentMission = lane.BestUse.Contains("cover", StringComparison.OrdinalIgnoreCase)
+            ? "Taste Lane Cover Test"
+            : "Taste Lane Original Seed";
+        ContentSeries = "Sound Taste Map";
+        ContentFormat = lane.BestUse;
+        ContentPlatform = "Snapchat first / TikTok + Reels + YouTube Shorts if usable";
+        ContentSetting = lane.VisualEnergy;
+        ContentSong = lane.Name;
+        ContentHook = $"Beat feel: {lane.BeatFeel}";
+        ContentCaption = $"Testing the {lane.Name} lane.";
+        ContentVisualDirection = lane.VisualEnergy;
+        ContentNextAction = $"Record 20-30 seconds. Use {lane.VocalEnergy}. Avoid: {lane.Avoid}.";
+        ContentTone = lane.VocalEnergy;
+        ContentPreset = lane.Name.Contains("chrome", StringComparison.OrdinalIgnoreCase) || lane.Name.Contains("R&B", StringComparison.OrdinalIgnoreCase)
+            ? "Raw Clean first, Late Night Chrome on hook"
+            : "Raw Clean first";
+        ContentLanguage = lane.Name.Contains("Spanish", StringComparison.OrdinalIgnoreCase)
+            ? "Spanish / Spanglish natural color"
+            : "English with optional Spanish color";
+        ContentTerrain = lane.VisualEnergy;
+        ContentPillar = "Cover / Original Hook / Taste";
+        ContentCta = "Does this sound like me?";
+        ContentPostStatus = "Taste test staged";
+        ContentPlanStatus = $"Primed taste lane: {lane.Name}.";
+        Status = ContentPlanStatus;
+        GenerateContentSprint();
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void RotateTasteLane()
+    {
+        if (SoundTasteMap.Count == 0)
+        {
+            ContentPlanStatus = "No taste lanes yet.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        var current = ContentSong;
+        var lane = SoundTasteMap
+            .Where(item => !current.Contains(item.Name, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(item => item.MemorabilityScore)
+            .ThenByDescending(item => item.FitScore)
+            .FirstOrDefault()
+            ?? SoundTasteMap.First();
+
+        TasteLaneName = lane.Name;
+        TasteReferenceSongs = lane.ReferenceSongs;
+        TasteBeatFeel = lane.BeatFeel;
+        TasteTempoRange = lane.TempoRange;
+        TasteKeyRange = lane.KeyRange;
+        TasteVocalEnergy = lane.VocalEnergy;
+        TasteLyricThemes = lane.LyricThemes;
+        TasteVisualEnergy = lane.VisualEnergy;
+        TasteBestUse = lane.BestUse;
+        TasteAvoid = lane.Avoid;
+        TasteFitScore = lane.FitScore;
+        TasteMemorabilityScore = lane.MemorabilityScore;
+        TasteStatus = lane.Status;
+        ContentPlanStatus = $"Rotated taste lane: {lane.Name}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -3552,6 +3740,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(MomentumSummary));
         OnPropertyChanged(nameof(VarietyGuardSignal));
         OnPropertyChanged(nameof(NextVariationSignal));
+        OnPropertyChanged(nameof(SoundTasteSummary));
+        OnPropertyChanged(nameof(SoundTasteNextMove));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -3923,6 +4113,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveCoverSignals(CoverSignals);
         _store.SaveSongStudies(SongStudies);
         _store.SaveVideoMomentum(VideoMomentum);
+        _store.SaveSoundTasteMap(SoundTasteMap);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }
@@ -6516,6 +6707,95 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         new(3, "Piano", "Focusrite / RC-505 input", "Empty", "", "00:00", 72, false, false, "#6FB6A6"),
         new(4, "Vocal", "Focusrite mic input", "Empty", "", "00:00", 88, false, false, "#F2EADC"),
         new(5, "Harmony", "Focusrite mic input", "Empty", "", "00:00", 65, false, false, "#9DBFB3"),
+    ];
+
+    private static IReadOnlyList<SoundTasteItem> DefaultSoundTasteMap() =>
+    [
+        new(
+            Guid.NewGuid().ToString("N"),
+            "Dreamy guitar pop",
+            "Babydoll / Dominic Fike / Malcolm Todd lane",
+            "loose pocket, light groove, not overproduced",
+            "82-108 BPM",
+            "comfortable mid voice",
+            "intimate, charming, imperfect, close",
+            "romance, humor, becoming, after-work honesty",
+            "warm light, guitar close, face visible",
+            "cover tests and original hook seeds",
+            "too much polish or the same caption every time",
+            8,
+            8,
+            "Active lane",
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+        new(
+            Guid.NewGuid().ToString("N"),
+            "Glossy night R&B",
+            "Tory polish / late hook shine",
+            "slow bounce, compressed pocket, clean drums",
+            "70-96 BPM",
+            "mid-high hook range",
+            "smooth, tuned, emotional, glossy",
+            "desire, late-night confidence, clean heartbreak",
+            "chrome glow, close vocal, darker frame",
+            "chorus polish and raw-to-chrome posts",
+            "using chrome on every take",
+            7,
+            7,
+            "Use sparingly",
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+        new(
+            Guid.NewGuid().ToString("N"),
+            "Spanish smooth color",
+            "Rauw rhythm / natural Spanglish line",
+            "light reggaeton pulse or smooth pop bounce",
+            "88-104 BPM",
+            "easy melodic phrasing",
+            "airy, rhythmic, romantic, relaxed",
+            "movement, longing, warmth, one clean Spanish phrase",
+            "orange light, side profile, translation caption",
+            "Spanish color lines and Luna Pop tests",
+            "forcing Spanish where the phrase does not belong",
+            7,
+            8,
+            "Color lane",
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+        new(
+            Guid.NewGuid().ToString("N"),
+            "Goofy indie charm",
+            "Malcolm Todd playful confidence",
+            "bouncy bass, simple drums, loose swing",
+            "92-118 BPM",
+            "talky melodic mid voice",
+            "playful, human, a little weird, smart",
+            "awkward romance, jokes, confidence, small moments",
+            "phone camera, quick face, not too polished",
+            "personality clips and hook seeds",
+            "making everything serious",
+            8,
+            7,
+            "Rotation lane",
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
+        new(
+            Guid.NewGuid().ToString("N"),
+            "Field-sound world",
+            "Central Florida night / rain / room tone",
+            "ambient bed, slow pulse, natural rhythm",
+            "free / 60-90 BPM feel",
+            "spoken or soft melody",
+            "quiet, grounded, curious, cinematic",
+            "place, memory, pressure, night, training ground",
+            "road, trail, rain, waveform terrain",
+            "intros, visualizers, world posts",
+            "posting ambience without a human hook",
+            6,
+            8,
+            "World lane",
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")),
     ];
 
     private void RefreshProjectMemoryInspector()

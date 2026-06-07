@@ -981,6 +981,91 @@
                                         </Border>
                                         <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
                                             <StackPanel Spacing="8">
+                                                <TextBlock Text="SOUND TASTE MAP"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2.2"
+                                                           Foreground="#C6A96D"/>
+                                                <TextBlock Text="{Binding SoundTasteSummary}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                                <TextBlock Text="{Binding SoundTasteNextMove}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#D9C5A5"/>
+                                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                                    <TextBox Text="{Binding TasteLaneName}"
+                                                             PlaceholderText="Lane name"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Column="1"
+                                                             Text="{Binding TasteReferenceSongs}"
+                                                             PlaceholderText="References"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="1"
+                                                             Text="{Binding TasteBeatFeel}"
+                                                             PlaceholderText="Beat feel"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="1"
+                                                             Grid.Column="1"
+                                                             Text="{Binding TasteTempoRange}"
+                                                             PlaceholderText="Tempo"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="2"
+                                                             Text="{Binding TasteFitScore}"
+                                                             PlaceholderText="Fit 1-10"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="2"
+                                                             Grid.Column="1"
+                                                             Text="{Binding TasteMemorabilityScore}"
+                                                             PlaceholderText="Memory 1-10"
+                                                             MinHeight="40"/>
+                                                </Grid>
+                                                <TextBox Text="{Binding TasteVocalEnergy}"
+                                                         PlaceholderText="Vocal energy"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding TasteLyricThemes}"
+                                                         PlaceholderText="Lyric themes"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding TasteVisualEnergy}"
+                                                         PlaceholderText="Visual energy"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding TasteAvoid}"
+                                                         PlaceholderText="Avoid"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <WrapPanel>
+                                                    <Button Content="Add lane"
+                                                            Command="{Binding AddSoundTasteLaneCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#8DB7AD"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Use lane"
+                                                            Command="{Binding PrimeContentFromTasteLaneCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#C6A96D"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Rotate lane"
+                                                            Command="{Binding RotateTasteLaneCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#07110E"
+                                                            Foreground="#E8E1D2"
+                                                            FontWeight="Black"/>
+                                                </WrapPanel>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="8">
                                                 <TextBlock Text="COVER RADAR"
                                                            FontSize="10"
                                                            FontWeight="Black"
