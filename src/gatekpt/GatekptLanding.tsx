@@ -485,7 +485,7 @@ export function GatekptLanding() {
               Make sound feel visible.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              Press play. Hum a note. Clap once. Watch the page answer with color, terrain, and movement.
+              Press play. Pick a mood. Watch guitar turn into color, atmosphere, and motion.
             </p>
             <div className="mt-6 grid max-w-xl gap-2">
               {["1. Play sample", "2. Pick a mood", "3. Make sound"].map((item) => (
@@ -535,6 +535,26 @@ export function GatekptLanding() {
         </div>
         <div className="relative mx-auto mt-6 max-w-7xl">
           <TerrainSignalPreview activeCue={activeCue} />
+        </div>
+        <div className="relative mx-auto mt-6 max-w-7xl">
+          <div className="gk-panel grid gap-5 rounded-[2rem] p-5 sm:p-6 lg:grid-cols-[1fr_auto] lg:items-center">
+            <div>
+              <p className="gk-label text-[#c6a96d]">Marcelo / music</p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-[#e8e1d2] sm:text-3xl">
+                Covers, loops, and visual experiments.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-[#e8e1d2]/58">
+                This page will point to the clips, songs, and socials as the sound keeps growing.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {["YouTube", "TikTok", "Instagram", "Snapchat"].map((item) => (
+                <span key={item} className="gk-social-pill">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
     </main>
