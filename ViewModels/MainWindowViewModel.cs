@@ -2018,6 +2018,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string ContentPlanSummary =>
         $"{ContentMission} / {ContentSeries} / {ContentPlatform}";
 
+    public string OutputForegroundLayer =>
+        $"Make now: {ContentMission}. {ContentFormat}. {ContentPreset}.";
+
+    public string OutputMidgroundLayer =>
+        $"Choose better: {MemorableDecision}. {SoundTasteNextMove}";
+
+    public string OutputBackgroundLayer =>
+        $"Memory: {ArtistSessions.Count} sessions / {RecentCaptures.Count} captures. {NextArtistMissionSignal}";
+
     public string ContentAudiencePromise =>
         "Come watch me build Florida night songs from guitar, voice, humor, pressure, Spanish color, and field sounds.";
 
@@ -2468,6 +2477,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnContentFormatChanged(string value)
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(OutputForegroundLayer));
         OnPropertyChanged(nameof(ContentRecordingPlan));
     }
 
@@ -2479,6 +2489,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     partial void OnContentMissionChanged(string value)
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(OutputForegroundLayer));
+        OnPropertyChanged(nameof(OutputMidgroundLayer));
         OnPropertyChanged(nameof(ContentMissionGuide));
         OnPropertyChanged(nameof(ContentPostPackPreview));
     }
@@ -2490,6 +2502,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     partial void OnContentPresetChanged(string value)
     {
+        OnPropertyChanged(nameof(OutputForegroundLayer));
         OnPropertyChanged(nameof(ContentPostPackPreview));
     }
 
@@ -3033,6 +3046,9 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentPlanStatus = $"Generated {ContentMission} post pack: {format} / {ContentTone}.";
         Status = ContentPlanStatus;
         OnPropertyChanged(nameof(ContentPlanSummary));
+        OnPropertyChanged(nameof(OutputForegroundLayer));
+        OnPropertyChanged(nameof(OutputMidgroundLayer));
+        OnPropertyChanged(nameof(OutputBackgroundLayer));
         OnPropertyChanged(nameof(ContentRecordingPlan));
         OnPropertyChanged(nameof(ContentPlatformPlan));
         OnPropertyChanged(nameof(ContentShotPlan));
