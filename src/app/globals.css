@@ -6,12 +6,12 @@
   color-scheme: dark;
   --gk-ink: #e8e1d2;
   --gk-muted: rgba(232, 225, 210, 0.62);
-  --gk-bg: #06111c;
-  --gk-panel: rgba(8, 23, 34, 0.78);
+  --gk-bg: #050403;
+  --gk-panel: rgba(12, 8, 5, 0.82);
   --gk-border: rgba(232, 225, 210, 0.11);
-  --gk-gold: #c6a96d;
-  --gk-teal: #92bfb3;
-  --gk-amber: #d08a56;
+  --gk-gold: #d9b46a;
+  --gk-teal: #d08a56;
+  --gk-amber: #f08a3c;
 }
 
 html,
@@ -55,35 +55,35 @@ body {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 12% 8%, rgba(198, 169, 109, 0.18), transparent 28%),
-    radial-gradient(circle at 86% 6%, rgba(146, 191, 179, 0.14), transparent 32%),
-    radial-gradient(circle at 68% 72%, rgba(208, 138, 86, 0.1), transparent 34%),
-    repeating-linear-gradient(160deg, rgba(232, 225, 210, 0.045) 0 1px, transparent 1px 34px),
-    linear-gradient(135deg, #06111c 0%, #0b1b2a 46%, #0d1813 74%, #11100b 100%);
+    radial-gradient(circle at 14% 10%, rgba(240, 138, 60, 0.2), transparent 27%),
+    radial-gradient(circle at 86% 8%, rgba(217, 180, 106, 0.16), transparent 30%),
+    radial-gradient(circle at 70% 76%, rgba(91, 44, 20, 0.22), transparent 36%),
+    repeating-linear-gradient(160deg, rgba(232, 225, 210, 0.035) 0 1px, transparent 1px 34px),
+    linear-gradient(135deg, #050403 0%, #0a0705 48%, #120b06 76%, #050403 100%);
 }
 
 .gk-panel {
   border: 1px solid var(--gk-border);
   background:
     linear-gradient(135deg, rgba(232, 225, 210, 0.055), rgba(232, 225, 210, 0.018)),
-    radial-gradient(circle at 20% 0%, rgba(146, 191, 179, 0.08), transparent 34%),
-    rgba(7, 17, 26, 0.92);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(232, 225, 210, 0.06);
+    radial-gradient(circle at 20% 0%, rgba(240, 138, 60, 0.1), transparent 34%),
+    rgba(7, 5, 3, 0.94);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(232, 225, 210, 0.06);
 }
 
 .gk-card {
   border: 1px solid var(--gk-border);
   border-radius: 1.5rem;
-  background: rgba(8, 23, 34, 0.72);
+  background: rgba(12, 8, 5, 0.74);
   padding: 1.25rem;
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
 .gk-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(146, 191, 179, 0.42);
-  background: rgba(10, 31, 45, 0.86);
-  box-shadow: 0 18px 50px rgba(146, 191, 179, 0.08);
+  border-color: rgba(240, 138, 60, 0.42);
+  background: rgba(18, 10, 6, 0.9);
+  box-shadow: 0 18px 50px rgba(240, 138, 60, 0.1);
 }
 
 .gk-button-primary,
@@ -120,8 +120,8 @@ body {
 
 .gk-button-secondary:hover {
   transform: translateY(-2px);
-  border-color: rgba(146, 191, 179, 0.42);
-  background: rgba(146, 191, 179, 0.08);
+  border-color: rgba(240, 138, 60, 0.38);
+  background: rgba(240, 138, 60, 0.08);
 }
 
 .gk-chip,
@@ -135,7 +135,7 @@ body {
 .gk-chip {
   border: 1px solid rgba(232, 225, 210, 0.14);
   border-radius: 999px;
-  background: rgba(6, 17, 28, 0.68);
+  background: rgba(5, 4, 3, 0.72);
   padding: 0.45rem 0.75rem;
   color: rgba(232, 225, 210, 0.7);
   backdrop-filter: blur(14px);
@@ -161,7 +161,7 @@ body {
 .gk-cue.is-active {
   border-color: rgba(198, 169, 109, 0.58);
   background:
-    linear-gradient(90deg, rgba(198, 169, 109, 0.15), rgba(146, 191, 179, 0.07)),
+    linear-gradient(90deg, rgba(217, 180, 106, 0.18), rgba(240, 138, 60, 0.08)),
     rgba(232, 225, 210, 0.045);
   box-shadow: inset 0 0 0 1px rgba(198, 169, 109, 0.12), 0 18px 42px rgba(0, 0, 0, 0.22);
 }

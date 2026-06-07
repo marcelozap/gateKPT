@@ -320,7 +320,7 @@ export function GatekptLanding() {
   const activeCue = cuePath[activeCueIndex]?.[1] || "Drums";
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#06111c] text-[#e8e1d2]">
+    <main className="min-h-screen overflow-hidden bg-[#050403] text-[#e8e1d2]">
       <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="gk-ambient" />
         <div className="relative mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1fr] lg:items-center">
@@ -356,7 +356,7 @@ export function GatekptLanding() {
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(146,191,179,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#92bfb3]">The world</p>
+                <p className="gk-label text-[#d08a56]">The world</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
                   Pick a feeling.
                 </h2>
@@ -383,11 +383,11 @@ export function GatekptLanding() {
                 Make the night visible.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-                Sound stays in your browser. Use the sample if you do not want microphone access.
+                Sound stays in your browser. Use the sample if you do not want mic access.
             </p>
             </div>
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#92bfb3]/70">
-              Small sounds count. Start there.
+            <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#d08a56]/76">
+              Small sounds count.
             </p>
           </div>
 
@@ -400,17 +400,17 @@ export function GatekptLanding() {
           <div className="gk-panel p-6 sm:p-8">
             <p className="gk-label text-[#c6a96d]">Why</p>
             <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              A softer door into music.
+              Start with one sound.
             </h2>
             <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              You do not need a studio brain to enjoy sound. Pick a cue, make noise, and let the visual give the moment somewhere to go.
+              Pick a cue, make noise, and let the visual give the moment somewhere to go.
             </p>
-            <div className="mt-8 rounded-[1.25rem] border border-[#92bfb3]/18 bg-[#92bfb3]/8 p-4">
-              <p className="gk-label text-[#92bfb3]">Now</p>
+            <div className="mt-8 rounded-[1.25rem] border border-[#d08a56]/18 bg-[#d08a56]/8 p-4">
+              <p className="gk-label text-[#d08a56]">Now</p>
               <p className="mt-2 text-3xl font-black tracking-[-0.05em]">{activeCue}</p>
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e8e1d2]/10">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#c6a96d] via-[#92bfb3] to-[#d08a56] transition-all duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-[#d9b46a] via-[#d08a56] to-[#f08a3c] transition-all duration-300"
                   style={{ width: `${((activeCueIndex + 1) / cuePath.length) * 100}%` }}
                 />
               </div>
@@ -431,7 +431,7 @@ export function GatekptLanding() {
                     <p className="font-black">{name}</p>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">{note}</p>
                   </div>
-                  <span className="ml-auto rounded-full border border-[#92bfb3]/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#92bfb3]/80 transition group-hover:border-[#c6a96d]/50 group-hover:text-[#c6a96d]">
+                  <span className="ml-auto rounded-full border border-[#d08a56]/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#d08a56]/80 transition group-hover:border-[#c6a96d]/50 group-hover:text-[#c6a96d]">
                     {activeCueIndex === index ? "active" : "cue"}
                   </span>
                 </button>
@@ -444,14 +444,14 @@ export function GatekptLanding() {
       <section className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-5">
-            <p className="gk-label text-[#92bfb3]">Tiny tools</p>
+            <p className="gk-label text-[#d08a56]">Tiny tools</p>
             <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Five ways to start without overthinking.</h2>
           </div>
           <div className="grid gap-4 lg:grid-cols-5">
             {productSections.map(([title, text, Icon, meta]) => (
               <div key={title} className="gk-card group">
                 <div className="flex items-center justify-between gap-3">
-                  <Icon className="h-5 w-5 text-[#92bfb3] transition group-hover:text-[#c6a96d]" />
+                  <Icon className="h-5 w-5 text-[#d08a56] transition group-hover:text-[#c6a96d]" />
                   <span className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#e8e1d2]/42">{meta}</span>
                 </div>
                 <h3 className="mt-5 text-lg font-black tracking-[-0.03em]">{title}</h3>
@@ -471,11 +471,11 @@ export function GatekptLanding() {
             </h2>
           </div>
           <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
-            <p className="gk-label text-[#92bfb3]">For artists</p>
+            <p className="gk-label text-[#d08a56]">For artists</p>
             <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
               Use it before the serious software. Let it be the sketch before the take, the color before the song.
             </p>
-            <Waves className="mt-8 h-7 w-7 text-[#92bfb3]" />
+            <Waves className="mt-8 h-7 w-7 text-[#d08a56]" />
           </div>
         </div>
       </section>

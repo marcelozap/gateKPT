@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <radialGradient id="sky" cx="34%" cy="20%" r="82%">
-      <stop offset="0" stop-color="#17314A"/>
-      <stop offset="0.5" stop-color="#071826"/>
-      <stop offset="1" stop-color="#06110E"/>
+      <stop offset="0" stop-color="#261208"/>
+      <stop offset="0.5" stop-color="#0B0704"/>
+      <stop offset="1" stop-color="#050403"/>
     </radialGradient>
     <radialGradient id="moon" cx="42%" cy="36%" r="64%">
       <stop offset="0" stop-color="#FFF6E5"/>
@@ -11,17 +11,17 @@
       <stop offset="1" stop-color="#C6A96D"/>
     </radialGradient>
     <linearGradient id="ridge" x1="86" y1="316" x2="430" y2="414" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#92BFB3"/>
-      <stop offset="0.52" stop-color="#C6A96D"/>
-      <stop offset="1" stop-color="#D08A56"/>
+      <stop stop-color="#D9B46A"/>
+      <stop offset="0.52" stop-color="#D08A56"/>
+      <stop offset="1" stop-color="#F08A3C"/>
     </linearGradient>
   </defs>
 
-  <rect width="512" height="512" rx="116" fill="#06111C"/>
-  <rect x="28" y="28" width="456" height="456" rx="96" fill="url(#sky)" stroke="#233A45" stroke-width="8"/>
+  <rect width="512" height="512" rx="116" fill="#050403"/>
+  <rect x="28" y="28" width="456" height="456" rx="96" fill="url(#sky)" stroke="#3A2415" stroke-width="8"/>
 
   <circle cx="256" cy="210" r="118" fill="url(#moon)"/>
-  <circle cx="304" cy="174" r="110" fill="#071826" opacity="0.42"/>
+  <circle cx="304" cy="174" r="110" fill="#050403" opacity="0.42"/>
 
   <path
     d="M80 342c42-35 81-48 118-39 29 7 48 28 78 30 46 3 77-42 125-30 18 4 33 13 48 26"
@@ -41,7 +41,7 @@
   <path
     d="M140 291c35-16 72-25 112-25 45 0 84 10 120 30"
     fill="none"
-    stroke="#92BFB3"
+    stroke="#D08A56"
     stroke-linecap="round"
     stroke-width="8"
     opacity="0.46"
