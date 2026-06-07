@@ -25,6 +25,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
     private readonly InputMonitorService _monitor = new();
     private readonly RecorderDiagnosticLog _diagnostics;
+    private readonly string _contentPackDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+        "GateKPT Recorder",
+        "content-packs");
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -120,6 +124,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _contentPackResult = "Record or select a take, then generate the pack.";
+
+    [ObservableProperty]
+    private string _lastContentPackPath = "";
 
     [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
@@ -456,6 +463,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 : $"{Path.GetFileName(path)} / {preview.Duration}";
         }
     }
+
+    public string ContentPackSaveLabel =>
+        string.IsNullOrWhiteSpace(LastContentPackPath)
+            ? "No pack saved yet."
+            : $"Saved: {Path.GetFileName(LastContentPackPath)}";
 
     public string CommandHelp =>
         "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
@@ -1398,8 +1410,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             $"Tags: {hashtags}\n" +
             $"Artist note: Raw first. Polish only if it helps. ({takeName})";
 
+        Directory.CreateDirectory(_contentPackDirectory);
+        var fileName = $"{DateTimeOffset.Now:yyyyMMdd-HHmmss}-{clipType.ToLowerInvariant()}-{world.ToLowerInvariant()}-content-pack.txt";
+        LastContentPackPath = Path.Combine(_contentPackDirectory, fileName);
+        File.WriteAllText(LastContentPackPath, ContentPackResult);
+
         CommandResult = $"Content pack ready: {clipType} / {world}.";
-        Status = CommandResult;
+        Status = $"{CommandResult} Saved to content-packs.";
+    }
+
+    [RelayCommand]
+    private void OpenContentPackFolder()
+    {
+        Directory.CreateDirectory(_contentPackDirectory);
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = _contentPackDirectory,
+            UseShellExecute = true
+        });
+        Status = $"Opened {_contentPackDirectory}";
     }
 
     [RelayCommand]
@@ -2536,6 +2565,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(LastVideoOutputLabel));
         OnPropertyChanged(nameof(VideoLayerDetail));
+    }
+
+    partial void OnLastContentPackPathChanged(string value)
+    {
+        OnPropertyChanged(nameof(ContentPackSaveLabel));
     }
 
     partial void OnVideoAudioOffsetMsChanged(int value)
