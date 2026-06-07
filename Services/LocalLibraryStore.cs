@@ -59,6 +59,8 @@ public sealed class LocalLibraryStore
 
     private string ArtistSessionsPath => Path.Combine(LibraryDirectory, "artist-sessions.json");
 
+    private string CoverSignalsPath => Path.Combine(LibraryDirectory, "cover-signals.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -271,6 +273,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<ArtistSessionItem> LoadArtistSessions() => LoadList<ArtistSessionItem>(ArtistSessionsPath);
 
     public void SaveArtistSessions(IEnumerable<ArtistSessionItem> sessions) => SaveList(ArtistSessionsPath, sessions);
+
+    public IReadOnlyList<CoverSignalItem> LoadCoverSignals() => LoadList<CoverSignalItem>(CoverSignalsPath);
+
+    public void SaveCoverSignals(IEnumerable<CoverSignalItem> signals) => SaveList(CoverSignalsPath, signals);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

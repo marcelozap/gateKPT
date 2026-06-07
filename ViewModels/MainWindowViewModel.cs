@@ -393,6 +393,36 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentPostStatus = "Staged";
 
     [ObservableProperty]
+    private string _coverSignalSong = "";
+
+    [ObservableProperty]
+    private string _coverSignalArtist = "";
+
+    [ObservableProperty]
+    private string _coverSignalSuggestedBy = "comment / friend / self";
+
+    [ObservableProperty]
+    private string _coverSignalFitReason = "People said this tone fits my voice.";
+
+    [ObservableProperty]
+    private string _coverSignalTestHook = "Record the strongest 20-30 seconds only.";
+
+    [ObservableProperty]
+    private string _coverSignalVocalLane = "Raw Clean first";
+
+    [ObservableProperty]
+    private string _coverSignalDifficulty = "Medium";
+
+    [ObservableProperty]
+    private int _coverSignalVoiceFitScore = 7;
+
+    [ObservableProperty]
+    private int _coverSignalAudienceScore = 5;
+
+    [ObservableProperty]
+    private string _coverSignalStatus = "Need 30-sec test";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -648,6 +678,27 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ];
 
         ArtistSessions = new ObservableCollection<ArtistSessionItem>(_store.LoadArtistSessions());
+        CoverSignals = new ObservableCollection<CoverSignalItem>(
+            _store.LoadCoverSignals().Count > 0
+                ? _store.LoadCoverSignals()
+                :
+                [
+                    new(
+                        Guid.NewGuid().ToString("N"),
+                        "Untitled cover test",
+                        "artist TBD",
+                        "self",
+                        "Voice fit unknown. Run one short test before a full cover.",
+                        "Strongest 20-30 seconds only.",
+                        "Raw Clean first",
+                        "Medium",
+                        6,
+                        3,
+                        "Need 30-sec test",
+                        "Use this as the first cover radar seed.",
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ]);
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -750,6 +801,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<WorldMemoryItem> WorldMemories { get; }
 
     public ObservableCollection<ArtistSessionItem> ArtistSessions { get; }
+
+    public ObservableCollection<CoverSignalItem> CoverSignals { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -1811,6 +1864,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string ContentEpPlanSignal =>
         "EP seed: Late Night Florida / 5 songs / Orange County Glow / playful-romantic-smart core.";
 
+    public string ContentEpTrackMapSignal
+    {
+        get
+        {
+            var track1 = HasSessionMatch("orange", "opening", "track 1") ? "set" : "missing";
+            var afterWork = HasSessionMatch("after work", "hook") ? "set" : "missing";
+            var playful = HasSessionMatch("goofy", "playful") ? "set" : "missing";
+            var spanish = ArtistSessions.Any(item =>
+                item.Language.Contains("Spanish", StringComparison.OrdinalIgnoreCase)
+                || item.MissionType.Contains("Spanish", StringComparison.OrdinalIgnoreCase)
+                || item.PersonalityTone.Contains("Spanish", StringComparison.OrdinalIgnoreCase))
+                ? "set"
+                : "missing";
+            var titleWorld = HasSessionMatch("field", "late night", "training", "world") ? "set" : "missing";
+            return $"EP map: 1 Orange County Glow {track1} / 2 After Work {afterWork} / 3 Goofy Love {playful} / 4 Spanish Color {spanish} / 5 Late Night Florida {titleWorld}.";
+        }
+    }
+
+    public string ContentWeekendPackSignal
+    {
+        get
+        {
+            var hasSong = ArtistSessions.Any(item =>
+                item.MissionType.Contains("hook", StringComparison.OrdinalIgnoreCase)
+                || item.MissionType.Contains("cover", StringComparison.OrdinalIgnoreCase)
+                || item.MissionType.Contains("guitar", StringComparison.OrdinalIgnoreCase));
+            var hasSound = ArtistSessions.Any(item => item.MissionType.Contains("field", StringComparison.OrdinalIgnoreCase));
+            var hasVisual = ArtistSessions.Any(item =>
+                item.ContentPillar.Contains("Look", StringComparison.OrdinalIgnoreCase)
+                || item.VideoPath.Length > 0
+                || item.MissionType.Contains("phone", StringComparison.OrdinalIgnoreCase));
+            var hasPost = ArtistSessions.Any(item =>
+                item.PostStatus.Contains("posted", StringComparison.OrdinalIgnoreCase)
+                || item.PostStatus.Contains("ready", StringComparison.OrdinalIgnoreCase));
+
+            return $"Weekend pack: song {(hasSong ? "set" : "missing")} / sound {(hasSound ? "set" : "missing")} / visual {(hasVisual ? "set" : "missing")} / post {(hasPost ? "set" : "missing")}.";
+        }
+    }
+
     public string ContentPlatformChecklist =>
         "Snapchat | TikTok | Instagram Reels | YouTube Shorts | Website/archive";
 
@@ -1881,6 +1973,48 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             return "Next: Raw to Chrome. Compare raw vs polish and only keep polish if it helps.";
         }
     }
+
+    public string CoverRadarSummary
+    {
+        get
+        {
+            var best = CoverSignals
+                .OrderByDescending(item => item.VoiceFitScore + item.AudienceSignalScore)
+                .ThenByDescending(item => item.UpdatedAt)
+                .FirstOrDefault();
+            if (best is null)
+            {
+                return "Cover Radar: no song signals yet. Add one song people say fits your voice.";
+            }
+
+            return $"Cover Radar: {CoverSignals.Count} song(s). Top test: {best.SongTitle} by {best.Artist} / voice {best.VoiceFitScore}/10 / audience {best.AudienceSignalScore}/10.";
+        }
+    }
+
+    public string NextCoverTestSignal
+    {
+        get
+        {
+            var best = CoverSignals
+                .Where(item => !item.Status.Contains("skip", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(item => item.VoiceFitScore + item.AudienceSignalScore)
+                .ThenBy(item => item.Difficulty.Contains("easy", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                .FirstOrDefault();
+            return best is null
+                ? "Next cover test: ask for one song suggestion, then record a 30-second hook only."
+                : $"Next cover test: {best.SongTitle}. {best.TestHook} Use {best.VocalLane}.";
+        }
+    }
+
+    public string CoverRadarPlan =>
+        "Plan: collect suggestions -> score voice fit -> record 30 seconds -> post/test -> keep only songs that get real response.";
+
+    private bool HasSessionMatch(params string[] terms) =>
+        ArtistSessions.Any(item =>
+        {
+            var haystack = $"{item.Title} {item.MissionType} {item.Mood} {item.SoundLane} {item.PersonalityTone} {item.TerrainLocation} {item.ContentPillar} {item.Caption} {item.Notes}";
+            return terms.Any(term => haystack.Contains(term, StringComparison.OrdinalIgnoreCase));
+        });
 
     public string ContentRecordingPlan
     {
@@ -2767,6 +2901,56 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshContentPlanSignals();
     }
 
+    [RelayCommand]
+    private void PrimeOrangeCountyGlow()
+    {
+        ContentMission = "Original Hook";
+        ContentSeries = "Late Night Florida EP";
+        ContentFormat = "Track 1 seed";
+        ContentPlatform = "TikTok / Reels / YouTube Shorts / Website archive";
+        ContentSetting = "orange streetlight / car voice note / guitar loop";
+        ContentHook = "Orange County Glow";
+        ContentCaption = "Track 1 seed for Late Night Florida. Orange County after dark.";
+        ContentVisualDirection = "Orange light, black shirt, car or parking lot frame, face visible.";
+        ContentNextAction = "Record one voice note, one guitar/hum melody, and one 20-second phone clip.";
+        ContentTone = "playful, romantic, smart, noble, late-night";
+        ContentPreset = "Raw Clean first; Late Night Chrome only for hook shine";
+        ContentLanguage = "English";
+        ContentTerrain = "car / parking lot / orange streetlight";
+        ContentPillar = "World / Cover / Build";
+        ContentCta = "Would this be a good Track 1?";
+        ContentHashtags = "#LateNightFlorida #FloridaNightPop #OrangeCountyGlow #GateKPT";
+        ContentPostStatus = "EP seed";
+        ContentPlanStatus = "Primed Track 1: Orange County Glow.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeWeekendPack()
+    {
+        ContentMission = "Weekend Pack";
+        ContentSeries = "Late Night Florida Weekend";
+        ContentFormat = "one song + one sound + one visual + one post";
+        ContentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
+        ContentSetting = "room, car, trail, lake, or parking lot";
+        ContentHook = "Late Night Florida Weekend 001";
+        ContentCaption = "One song. One sound. One visual. One post. Building Florida Night Pop.";
+        ContentVisualDirection = "Capture a face clip, a location shot, and one GateKPT/process shot.";
+        ContentNextAction = "Do the packet in order: record hook, capture field sound, take 5 visuals, export/post one clip.";
+        ContentTone = "humble, playful, romantic, focused";
+        ContentPreset = "Raw Clean or Late Night Chrome";
+        ContentLanguage = "English with optional Spanish color";
+        ContentTerrain = "Central FL night / room / car / trail";
+        ContentPillar = "Cover / Process / World / Look";
+        ContentCta = "Which part should become a full song?";
+        ContentHashtags = "#FloridaNightPop #LateNightFlorida #AfterWorkHook #GateKPT";
+        ContentPostStatus = "Weekend plan";
+        ContentPlanStatus = "Primed weekend pack.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -2780,8 +2964,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(ContentPostPackPreview));
         OnPropertyChanged(nameof(ContentArchiveReviewSummary));
         OnPropertyChanged(nameof(ContentEpPlanSignal));
+        OnPropertyChanged(nameof(ContentEpTrackMapSignal));
+        OnPropertyChanged(nameof(ContentWeekendPackSignal));
         OnPropertyChanged(nameof(ContentPlatformChecklist));
         OnPropertyChanged(nameof(BestArtistSessionSignal));
+        OnPropertyChanged(nameof(ArtistWeeklyReviewSignal));
+        OnPropertyChanged(nameof(NextArtistMissionSignal));
+        OnPropertyChanged(nameof(CoverRadarSummary));
+        OnPropertyChanged(nameof(NextCoverTestSignal));
+        OnPropertyChanged(nameof(CoverRadarPlan));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -2794,7 +2985,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         if (lower.Contains("tiktok"))
         {
-            return $"{hook} {song}. if this hits, I’ll build the full version.";
+            return $"{hook} {song}. if this hits, I will build the full version.";
         }
 
         if (lower.Contains("insta") || lower.Contains("reel"))
@@ -2961,6 +3152,105 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void AddCoverSignal()
+    {
+        var title = string.IsNullOrWhiteSpace(CoverSignalSong) ? "Untitled cover test" : CoverSignalSong.Trim();
+        var artist = string.IsNullOrWhiteSpace(CoverSignalArtist) ? "artist TBD" : CoverSignalArtist.Trim();
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var signal = new CoverSignalItem(
+            Guid.NewGuid().ToString("N"),
+            title,
+            artist,
+            string.IsNullOrWhiteSpace(CoverSignalSuggestedBy) ? "self" : CoverSignalSuggestedBy.Trim(),
+            string.IsNullOrWhiteSpace(CoverSignalFitReason) ? "Voice fit needs a short test." : CoverSignalFitReason.Trim(),
+            string.IsNullOrWhiteSpace(CoverSignalTestHook) ? "Record the strongest 20-30 seconds only." : CoverSignalTestHook.Trim(),
+            string.IsNullOrWhiteSpace(CoverSignalVocalLane) ? "Raw Clean first" : CoverSignalVocalLane.Trim(),
+            string.IsNullOrWhiteSpace(CoverSignalDifficulty) ? "Medium" : CoverSignalDifficulty.Trim(),
+            Math.Clamp(CoverSignalVoiceFitScore, 1, 10),
+            Math.Clamp(CoverSignalAudienceScore, 0, 10),
+            string.IsNullOrWhiteSpace(CoverSignalStatus) ? "Need 30-sec test" : CoverSignalStatus.Trim(),
+            $"Fit: {CoverSignalFitReason}. Test: {CoverSignalTestHook}.",
+            now,
+            now);
+
+        CoverSignals.Insert(0, signal);
+        while (CoverSignals.Count > 24)
+        {
+            CoverSignals.RemoveAt(CoverSignals.Count - 1);
+        }
+
+        _store.SaveCoverSignals(CoverSignals);
+        ContentPlanStatus = $"Added cover signal: {title} by {artist}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeTopCoverSignal()
+    {
+        var top = CoverSignals
+            .Where(item => !item.Status.Contains("skip", StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(item => item.VoiceFitScore + item.AudienceSignalScore)
+            .ThenBy(item => item.Difficulty.Contains("easy", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+            .FirstOrDefault();
+        if (top is null)
+        {
+            ContentPlanStatus = "No cover signal yet. Add one song first.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        ContentMission = "Raw Guitar Cover";
+        ContentSeries = "Cover Radar";
+        ContentFormat = "30-sec cover test";
+        ContentPlatform = "Snapchat first / TikTok + Reels + YouTube Shorts if usable";
+        ContentSetting = "room light / night road";
+        ContentSong = $"{top.SongTitle} - {top.Artist}";
+        ContentHook = top.TestHook;
+        ContentCaption = $"Testing {top.SongTitle}. {top.FitReason}";
+        ContentVisualDirection = "Face visible, guitar or mic in frame, simple lyric caption, visualizer only after the take works.";
+        ContentNextAction = $"Record 30 seconds only. Use {top.VocalLane}. If it gets response, make the full cover.";
+        ContentTone = "dreamy, charming, humble, direct";
+        ContentPreset = top.VocalLane;
+        ContentLanguage = "Match the song; add Spanish color only if natural";
+        ContentTerrain = "room light / night road";
+        ContentPillar = "Cover / Process";
+        ContentCta = "Should I finish this one?";
+        ContentPostStatus = "30-sec test";
+        ContentPlanStatus = $"Primed cover test: {top.SongTitle} by {top.Artist}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void MarkTopCoverTested()
+    {
+        if (CoverSignals.Count == 0)
+        {
+            ContentPlanStatus = "No cover signal to mark tested.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        var top = CoverSignals
+            .OrderByDescending(item => item.VoiceFitScore + item.AudienceSignalScore)
+            .First();
+        var updated = top with
+        {
+            Status = "Tested - review response",
+            Notes = $"{top.Notes}{Environment.NewLine}Tested: {DateTime.Now:yyyy-MM-dd HH:mm:ss}. Listen for voice fit and audience response.",
+            UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+        };
+        var index = CoverSignals.IndexOf(top);
+        CoverSignals[index] = updated;
+        _store.SaveCoverSignals(CoverSignals);
+        ContentReviewNote = $"Review cover test: {top.SongTitle}. Did the hook fit your voice? Did people react?";
+        ContentPlanStatus = $"Marked tested: {top.SongTitle}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void UpdateLatestArtistSession(string status, string reviewNote)
     {
         if (ArtistSessions.Count == 0)
@@ -3051,6 +3341,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveLooperTracks(LooperTracks);
         _store.SaveWorldMemory(WorldMemories);
         _store.SaveArtistSessions(ArtistSessions);
+        _store.SaveCoverSignals(CoverSignals);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }

@@ -212,6 +212,35 @@ Content engine:
 one song + one sound + one visual + one post
 ```
 
+## Cover Radar
+
+People telling Marcelo certain songs sound better is useful data, but it should not turn into random requests.
+
+GateKPT should treat each suggestion as a small signal:
+
+- song title
+- artist
+- who suggested it
+- why it might fit the voice
+- strongest 20-30 second hook to test
+- vocal lane: Raw Clean, Late Night Chrome, Luna Pop, Silk Synth, or Cloud Doubles
+- voice fit score
+- audience signal score
+- status: need test, tested, posted, skip
+
+Rule:
+
+```text
+suggestion -> voice-fit score -> 30-second test -> post response -> full cover only if it earns it
+```
+
+This keeps covers useful:
+
+- Covers are the discovery lane.
+- Full covers are not automatic.
+- The first test is short, charming, and low-pressure.
+- If the song fits Marcelo's voice and gets a response, it can become a full cover, Spanish-color version, or original hook seed.
+
 ## Mission Types
 
 - After Work Hook: fast hook after work, keep the charm.
@@ -268,3 +297,24 @@ Orange County Glow
 ```
 
 The EP should feel like after-work energy becoming catchy songs: guitar, voice, field sounds, humor, romance, Spanish color, and a little chrome when the hook asks for it.
+
+## EP Map Loop
+
+Content Lab should not let saved sessions stay isolated. It should keep showing the first-era map:
+
+1. Orange County Glow: opening scene, orange lights, Track 1 seed.
+2. After Work: tired but still making the hook.
+3. Goofy Love: playful, charming, youthful personality.
+4. Spanish Color: one natural Spanish/Spanglish phrase or smooth Rauw color.
+5. Late Night Florida: title/world track built from field sound and training-ground pressure.
+
+The app should show which slots are set or missing based on saved sessions, then let the user prime:
+
+- Track 1: stages `Orange County Glow`.
+- Weekend pack: stages one song, one sound, one visual, one post.
+
+This keeps the weekend focused:
+
+```text
+one song -> one sound -> one visual -> one post -> one EP seed
+```
