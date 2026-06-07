@@ -1,8 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Archive, Mic, Mountain, Sparkles, Square, Waves } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { Mic, Mountain, Square, Waves } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
@@ -12,14 +11,6 @@ declare global {
 }
 
 type AudioStatus = "preview" | "starting" | "listening" | "demo" | "blocked" | "unsupported";
-
-const productSections: Array<[string, string, LucideIcon, string]> = [
-  ["Play", "Press sample, hum, clap, or talk. The page reacts.", Mic, "Start"],
-  ["Choose a place", "Night road, room light, storm air, parking lot, trail.", Mountain, "Mood"],
-  ["Change color", "Try warmer, darker, brighter, softer, stranger.", Sparkles, "Tone"],
-  ["Watch it move", "Sound becomes terrain lines, glow, and motion.", Waves, "Visual"],
-  ["Keep an idea", "Leave with one phrase, one color, or one hook.", Archive, "Memory"],
-];
 
 const cuePath = [
   ["01", "Night", "Field sound"],
@@ -321,9 +312,9 @@ export function GatekptLanding() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050403] text-[#e8e1d2]">
-      <section className="relative px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <section className="relative px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <div className="gk-ambient" />
-        <div className="relative mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.78fr_1fr] lg:items-center">
+        <div className="relative mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.62fr_1fr] lg:items-center">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
               <Mountain className="h-3.5 w-3.5" />
@@ -335,9 +326,9 @@ export function GatekptLanding() {
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
               Press play. Hum a note. Clap once. Watch the page answer with color, terrain, and movement.
             </p>
-            <div className="mt-6 grid max-w-xl grid-cols-3 gap-2">
-              {["No account", "No upload", "Just sound"].map((item) => (
-                <div key={item} className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 text-center text-[10px] font-black uppercase tracking-[0.16em] text-[#e8e1d2]/60">
+            <div className="mt-6 grid max-w-xl gap-2">
+              {["1. Play sample", "2. Pick a mood", "3. Make sound"].map((item) => (
+                <div key={item} className="rounded-[1.1rem] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-black text-[#e8e1d2]/78">
                   {item}
                 </div>
               ))}
@@ -345,9 +336,6 @@ export function GatekptLanding() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#preview" className="gk-button-primary">
                 Play with sound
-              </a>
-              <a href="#tracks" className="gk-button-secondary">
-                What this is
               </a>
             </div>
           </motion.div>
@@ -360,122 +348,35 @@ export function GatekptLanding() {
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
                   Pick a feeling.
                 </h2>
-                <div className="mt-8 grid gap-3">
+                <div className="mt-8 grid gap-3" id="preview">
                   {["Warm night", "Storm room", "Soft chrome"].map((item, index) => (
-                    <div key={item} className="flex items-center gap-4 rounded-[1.2rem] border border-white/10 bg-white/[0.035] p-4">
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setActiveCueIndex(index)}
+                      className={`flex items-center gap-4 rounded-[1.2rem] border p-4 text-left transition ${
+                        activeCueIndex === index
+                          ? "border-[#d08a56]/50 bg-[#d08a56]/12"
+                          : "border-white/10 bg-white/[0.035] hover:border-[#d08a56]/35"
+                      }`}
+                    >
                       <span className="font-mono text-xs text-[#c6a96d]">0{index + 1}</span>
                       <span className="text-sm font-black">{item}</span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
             </div>
           </motion.div>
         </div>
-      </section>
-
-      <section id="preview" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.7fr_1fr] lg:items-stretch">
-          <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
-            <div>
-            <p className="gk-label text-[#c6a96d]">Try it</p>
-            <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                Make the night visible.
-            </h2>
-            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-                Sound stays in your browser. Use the sample if you do not want mic access.
-            </p>
-            </div>
-            <p className="mt-8 text-xs font-bold uppercase tracking-[0.18em] text-[#d08a56]/76">
-              Small sounds count.
-            </p>
-          </div>
-
+        <div className="relative mx-auto mt-6 max-w-7xl">
           <TerrainSignalPreview activeCue={activeCue} />
-        </div>
-      </section>
-
-      <section id="tracks" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.85fr_1fr]">
-          <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#c6a96d]">Why</p>
-            <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-              Start with one sound.
-            </h2>
-            <p className="mt-5 text-sm font-medium leading-7 text-[#e8e1d2]/64">
-              Pick a cue, make noise, and let the visual give the moment somewhere to go.
-            </p>
-            <div className="mt-8 rounded-[1.25rem] border border-[#d08a56]/18 bg-[#d08a56]/8 p-4">
-              <p className="gk-label text-[#d08a56]">Now</p>
-              <p className="mt-2 text-3xl font-black tracking-[-0.05em]">{activeCue}</p>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#e8e1d2]/10">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#d9b46a] via-[#d08a56] to-[#f08a3c] transition-all duration-300"
-                  style={{ width: `${((activeCueIndex + 1) / cuePath.length) * 100}%` }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="gk-panel p-4 sm:p-5">
-            <div className="grid gap-3">
-              {cuePath.map(([number, name, note], index) => (
-                <button
-                  key={number}
-                  type="button"
-                  onClick={() => setActiveCueIndex(index)}
-                  className={`gk-cue group text-left ${activeCueIndex === index ? "is-active" : ""}`}
-                  aria-pressed={activeCueIndex === index}
-                >
-                  <span className="font-mono text-xs text-[#e8e1d2]/42">{number}</span>
-                  <div>
-                    <p className="font-black">{name}</p>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#e8e1d2]/42">{note}</p>
-                  </div>
-                  <span className="ml-auto rounded-full border border-[#d08a56]/20 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-[#d08a56]/80 transition group-hover:border-[#c6a96d]/50 group-hover:text-[#c6a96d]">
-                    {activeCueIndex === index ? "active" : "cue"}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-5">
-            <p className="gk-label text-[#d08a56]">Tiny tools</p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">Five ways to start without overthinking.</h2>
-          </div>
-          <div className="grid gap-4 lg:grid-cols-5">
-            {productSections.map(([title, text, Icon, meta]) => (
-              <div key={title} className="gk-card group">
-                <div className="flex items-center justify-between gap-3">
-                  <Icon className="h-5 w-5 text-[#d08a56] transition group-hover:text-[#c6a96d]" />
-                  <span className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.14em] text-[#e8e1d2]/42">{meta}</span>
-                </div>
-                <h3 className="mt-5 text-lg font-black tracking-[-0.03em]">{title}</h3>
-                <p className="mt-3 text-sm font-medium leading-6 text-[#e8e1d2]/62">{text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-10 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[1fr_0.75fr]">
-          <div className="gk-panel p-6 sm:p-8">
-            <p className="gk-label text-[#d08a56]">Try this</p>
-            <h2 className="mt-4 text-3xl font-black leading-tight tracking-[-0.045em]">
-              Put on headphones. Play the sample. Switch cues. If one color feels like a song, write the first line down.
-            </h2>
-          </div>
-          <div className="gk-panel flex flex-col justify-between p-6 sm:p-8">
-            <p className="gk-label text-[#d08a56]">For artists</p>
-            <p className="mt-10 text-sm font-medium leading-7 text-[#e8e1d2]/62">
-              Use it before the serious software. Let it be the sketch before the take, the color before the song.
-            </p>
-            <Waves className="mt-8 h-7 w-7 text-[#d08a56]" />
+          <div className="mt-4 flex flex-wrap justify-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[#e8e1d2]/50">
+            <span>No account</span>
+            <span>/</span>
+            <span>No upload</span>
+            <span>/</span>
+            <span>Sound stays in browser</span>
           </div>
         </div>
       </section>
