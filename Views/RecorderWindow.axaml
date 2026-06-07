@@ -559,6 +559,63 @@
                         BorderBrush="#338DB7AD"
                         BorderThickness="1"
                         Background="#D907110E">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="CONTENT PACK"
+                                           FontSize="10"
+                                           FontWeight="Black"
+                                           LetterSpacing="2.2"
+                                           Foreground="#C6A96D"/>
+                                <TextBlock Text="One take -> one world -> one post."
+                                           FontSize="20"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#E8E1D2"/>
+                                <TextBlock Text="{Binding ContentPackTakeLabel}"
+                                           FontSize="12"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#8DB7AD"/>
+                            </StackPanel>
+                            <WrapPanel Grid.Column="1"
+                                       Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="520">
+                                <ComboBox ItemsSource="{Binding ContentPackWorlds}"
+                                          SelectedItem="{Binding ContentPackWorld}"
+                                          MinWidth="132"
+                                          Margin="0,0,8,8"/>
+                                <ComboBox ItemsSource="{Binding ContentPackClipTypes}"
+                                          SelectedItem="{Binding ContentPackClipType}"
+                                          MinWidth="132"
+                                          Margin="0,0,8,8"/>
+                                <Button Content="Generate"
+                                        Command="{Binding GenerateContentPackCommand}"
+                                        Padding="16,11"
+                                        MinWidth="118"
+                                        Margin="0,0,0,8"
+                                        Background="#C6A96D"
+                                        Foreground="#07110E"/>
+                            </WrapPanel>
+                        </Grid>
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding ContentPackResult}"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="116"
+                                 Background="#FFF8EBDD"
+                                 Foreground="#04130F"/>
+                    </Grid>
+                </Border>
+
+                <Border CornerRadius="28"
+                        Padding="18"
+                        BorderBrush="#338DB7AD"
+                        BorderThickness="1"
+                        Background="#D907110E">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                         <StackPanel Spacing="8">
                             <TextBlock Text="POST CLIP"

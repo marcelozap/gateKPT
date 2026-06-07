@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -112,6 +113,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _videoExportPreset = "short";
 
     [ObservableProperty]
+    private string _contentPackWorld = "Fire";
+
+    [ObservableProperty]
+    private string _contentPackClipType = "Cover";
+
+    [ObservableProperty]
+    private string _contentPackResult = "Record or select a take, then generate the pack.";
+
+    [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
     [ObservableProperty]
@@ -173,6 +183,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         new(3, "Piano"),
         new(4, "Vocal"),
         new(5, "Extra")
+    ];
+
+    public IReadOnlyList<string> ContentPackWorlds { get; } =
+    [
+        "Fire",
+        "Storm",
+        "Chrome"
+    ];
+
+    public IReadOnlyList<string> ContentPackClipTypes { get; } =
+    [
+        "Cover",
+        "Process",
+        "Visual",
+        "Human",
+        "Build"
     ];
 
     public string PeakLabel => $"{PeakPercent:0}%";
@@ -413,6 +439,23 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         VideoExportPreset.Equals("short", StringComparison.OrdinalIgnoreCase)
             ? "vertical short"
             : "same shape";
+
+    public string ContentPackTakeLabel
+    {
+        get
+        {
+            var path = SelectedVersion?.Path ?? CurrentFilePath;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return "No take selected.";
+            }
+
+            var preview = AudioPreviewService.Inspect(path);
+            return preview == AudioPreview.Empty
+                ? Path.GetFileName(path)
+                : $"{Path.GetFileName(path)} / {preview.Duration}";
+        }
+    }
 
     public string CommandHelp =>
         "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
@@ -1272,6 +1315,91 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : "short";
         VideoWorkflowStatus = $"Video preset: {VideoExportPresetLabel}.";
         Status = VideoWorkflowStatus;
+    }
+
+    private static (string Caption, string MoodTag) BuildWorldLine(string world)
+    {
+        return world.ToLowerInvariant() switch
+        {
+            "storm" => ("Storm around the take.", "#stormsession"),
+            "chrome" => ("Soft chrome around the take.", "#chromesession"),
+            _ => ("Fire around the take.", "#firesession")
+        };
+    }
+
+    private static (string Title, string Caption, string Snap) BuildClipLine(string clipType)
+    {
+        return clipType.ToLowerInvariant() switch
+        {
+            "process" => (
+                "Building the sound after work",
+                "one take, then shape it",
+                "process pass"),
+            "visual" => (
+                "Sound as a night scene",
+                "guitar first, world around it",
+                "visual pass"),
+            "human" => (
+                "Small idea, real mood",
+                "keeping the charm in the take",
+                "quick mood"),
+            "build" => (
+                "Building my own music tool",
+                "custom tools for the way I make music",
+                "music tech pass"),
+            _ => (
+                "Late-night cover pass",
+                "raw take, clean feeling",
+                "cover pass")
+        };
+    }
+
+    private static string BuildHashtags(string world, string clipType)
+    {
+        var worldTag = BuildWorldLine(world).MoodTag;
+        var clipTag = clipType.ToLowerInvariant() switch
+        {
+            "process" => "#process",
+            "visual" => "#visuals",
+            "human" => "#artist",
+            "build" => "#musictech",
+            _ => "#cover"
+        };
+
+        return $"#gatekpt #floridanightpop {clipTag} {worldTag}";
+    }
+
+    [RelayCommand]
+    private void GenerateContentPack()
+    {
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            ContentPackResult = "Record or select one take first.";
+            Status = ContentPackResult;
+            return;
+        }
+
+        var metrics = AudioPreviewService.InspectMetrics(audioPath);
+        var takeName = Path.GetFileNameWithoutExtension(audioPath);
+        var duration = metrics.Success ? metrics.Duration.ToString(@"mm\:ss") : "unknown length";
+        var world = string.IsNullOrWhiteSpace(ContentPackWorld) ? "Fire" : ContentPackWorld;
+        var clipType = string.IsNullOrWhiteSpace(ContentPackClipType) ? "Cover" : ContentPackClipType;
+        var worldLine = BuildWorldLine(world);
+        var clipLine = BuildClipLine(clipType);
+        var hashtags = BuildHashtags(world, clipType);
+
+        ContentPackResult =
+            $"Title: {clipLine.Title}\n" +
+            $"IG/TikTok: {clipLine.Caption} {worldLine.Caption}\n" +
+            $"Snap: {clipLine.Snap}\n" +
+            $"LinkedIn: Built a small GateKPT pass from one take: {clipType.ToLowerInvariant()}, {world.ToLowerInvariant()}, {duration}.\n" +
+            $"Order: YouTube Short -> TikTok -> Reels -> Snapchat story -> archive.\n" +
+            $"Tags: {hashtags}\n" +
+            $"Artist note: Raw first. Polish only if it helps. ({takeName})";
+
+        CommandResult = $"Content pack ready: {clipType} / {world}.";
+        Status = CommandResult;
     }
 
     [RelayCommand]
@@ -2370,6 +2498,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(CurrentFileLabel));
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
+        OnPropertyChanged(nameof(ContentPackTakeLabel));
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
         OnPropertyChanged(nameof(PostReadySignal));
@@ -2380,6 +2509,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnSelectedVersionChanged(RecorderVersionFile? value)
     {
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
+        OnPropertyChanged(nameof(ContentPackTakeLabel));
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
         OnPropertyChanged(nameof(PostReadySignal));
