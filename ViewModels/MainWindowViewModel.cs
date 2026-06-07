@@ -393,6 +393,21 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _contentPostStatus = "Staged";
 
     [ObservableProperty]
+    private string _contentSprintAngle = "Show the raw take becoming a post.";
+
+    [ObservableProperty]
+    private string _contentSprintLength = "20-35 sec";
+
+    [ObservableProperty]
+    private string _contentSprintOpeningFrame = "Face or guitar visible in the first second.";
+
+    [ObservableProperty]
+    private string _contentSprintSteps = "Record clean audio -> pick best 30 sec -> add caption -> post/test.";
+
+    [ObservableProperty]
+    private string _contentSprintStatus = "Generate one post from the current idea.";
+
+    [ObservableProperty]
     private string _coverSignalSong = "";
 
     [ObservableProperty]
@@ -2009,6 +2024,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string CoverRadarPlan =>
         "Plan: collect suggestions -> score voice fit -> record 30 seconds -> post/test -> keep only songs that get real response.";
 
+    public string ContentSprintBrief =>
+        $"Tonight Post: {ContentSprintLength} / {ContentSprintAngle}";
+
+    public string ContentSprintPack =>
+        $"Open: {ContentSprintOpeningFrame} | Caption: {ContentCaption} | Ask: {ContentCta} | Next: {ContentSprintSteps}";
+
     private bool HasSessionMatch(params string[] terms) =>
         ArtistSessions.Any(item =>
         {
@@ -2951,6 +2972,130 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshContentPlanSignals();
     }
 
+    [RelayCommand]
+    private void GenerateContentSprint()
+    {
+        var mission = ContentMission.ToLowerInvariant();
+        var song = string.IsNullOrWhiteSpace(ContentSong) ? "this idea" : ContentSong.Trim();
+
+        if (mission.Contains("guitar") || ContentFormat.Contains("guitar", StringComparison.OrdinalIgnoreCase))
+        {
+            ContentSprintAngle = "Let people hear the guitar idea before it becomes polished.";
+            ContentSprintLength = "20-30 sec";
+            ContentSprintOpeningFrame = "Close guitar or hand movement first, then face if the vocal enters.";
+            ContentCaption = $"Testing {song}. One guitar, one voice, one feeling.";
+            ContentCta = "Should I finish this one?";
+            ContentSprintSteps = "Record 30 sec -> play it back once -> add lyric caption -> post raw first.";
+            ContentVisualDirection = "Warm side light, guitar visible, simple waveform terrain after the take.";
+        }
+        else if (mission.Contains("phone"))
+        {
+            ContentSprintAngle = "Use phone video for feeling and GateKPT audio for quality.";
+            ContentSprintLength = "25-40 sec";
+            ContentSprintOpeningFrame = "Face visible immediately. Keep the camera still enough to sync later.";
+            ContentCaption = $"Phone video feeling, GateKPT audio. {song}.";
+            ContentCta = "Raw phone audio or clean GateKPT audio?";
+            ContentSprintSteps = "Record phone video -> record GateKPT audio -> sync/export -> post best hook.";
+            ContentVisualDirection = "Phone frame first, then a short GateKPT/process cut if it helps.";
+        }
+        else if (mission.Contains("chrome"))
+        {
+            ContentSprintAngle = "Show the before/after: raw vocal into polished hook.";
+            ContentSprintLength = "15-25 sec";
+            ContentSprintOpeningFrame = "Start raw and close. Cut to the polished version fast.";
+            ContentCaption = $"Raw to Chrome test for {song}.";
+            ContentCta = "Raw or polished?";
+            ContentSprintSteps = "Record raw line -> render Chrome -> compare -> post the contrast.";
+            ContentVisualDirection = "Split moment: raw room light, then warmer/chrome visualizer glow.";
+        }
+        else if (mission.Contains("goofy"))
+        {
+            ContentSprintAngle = "Let the funny weird hook stay alive long enough to test.";
+            ContentSprintLength = "10-20 sec";
+            ContentSprintOpeningFrame = "Start with the punchline or melody face. No long setup.";
+            ContentCaption = "This might be stupid but it works.";
+            ContentCta = "Too goofy or keep it?";
+            ContentSprintSteps = "Record one quick hook -> do not over-fix -> post to Snapchat/TikTok.";
+            ContentVisualDirection = "Phone-camera energy, visible expression, simple text, no heavy edit.";
+        }
+        else if (mission.Contains("field"))
+        {
+            ContentSprintAngle = "Turn a place sound into the start of a song.";
+            ContentSprintLength = "10-20 sec";
+            ContentSprintOpeningFrame = "Show the place first: road, rain, room, trail, or light.";
+            ContentCaption = "Captured this before it disappeared. It might become a song.";
+            ContentCta = "Should this become an intro?";
+            ContentSprintSteps = "Capture ambience -> add one guitar/vocal idea -> save as world seed.";
+            ContentVisualDirection = "Field texture first, waveform terrain second, no over-explaining.";
+        }
+        else
+        {
+            ContentSprintAngle = "Show one usable hook from the current idea.";
+            ContentSprintLength = "20-35 sec";
+            ContentSprintOpeningFrame = "Face, instrument, or waveform visible in the first second.";
+            ContentCaption = $"Building {song} after work.";
+            ContentCta = "Should I build this out?";
+            ContentSprintSteps = "Record clean audio -> pick best hook -> add caption -> post/test.";
+            ContentVisualDirection = "Simple frame, warm light, caption readable, visualizer optional.";
+        }
+
+        ContentNextAction = ContentSprintSteps;
+        ContentPlanStatus = $"Generated Tonight Post: {ContentSprintLength} / {song}.";
+        ContentSprintStatus = "Ready: make this one post before expanding the song.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeSprintFromLatestTake()
+    {
+        var latestSession = ArtistSessions.FirstOrDefault();
+        var latestCapture = RecentCaptures.FirstOrDefault();
+        if (latestSession is not null)
+        {
+            ContentSong = latestSession.Title;
+            ContentMission = latestSession.MissionType;
+            ContentTone = latestSession.PersonalityTone;
+            ContentPreset = latestSession.VocalPreset;
+            ContentCaption = latestSession.Caption;
+            ContentPillar = latestSession.ContentPillar;
+        }
+        else if (latestCapture is not null)
+        {
+            ContentSong = latestCapture.Title;
+            ContentHook = latestCapture.Detail;
+            ContentMission = "After Work Hook";
+        }
+
+        GenerateContentSprint();
+    }
+
+    [RelayCommand]
+    private async Task CopyContentSprint()
+    {
+        var text =
+            $"{ContentCaption}{Environment.NewLine}{ContentCta}{Environment.NewLine}{ContentHashtags}{Environment.NewLine}{Environment.NewLine}{ContentSprintPack}";
+        try
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow?.Clipboard is { } clipboard)
+            {
+                await clipboard.SetTextAsync(text);
+                ContentSprintStatus = "Copied caption + post plan.";
+                Status = ContentSprintStatus;
+                return;
+            }
+
+            ContentSprintStatus = "Clipboard unavailable. Caption is visible in Tonight Post.";
+            Status = ContentSprintStatus;
+        }
+        catch (Exception ex)
+        {
+            ContentSprintStatus = $"Could not copy post plan: {ex.Message}";
+            Status = ContentSprintStatus;
+        }
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -2973,6 +3118,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CoverRadarSummary));
         OnPropertyChanged(nameof(NextCoverTestSignal));
         OnPropertyChanged(nameof(CoverRadarPlan));
+        OnPropertyChanged(nameof(ContentSprintBrief));
+        OnPropertyChanged(nameof(ContentSprintPack));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)

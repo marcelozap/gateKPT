@@ -212,6 +212,27 @@ Content engine:
 one song + one sound + one visual + one post
 ```
 
+## Tonight Post
+
+GateKPT should help Marcelo turn a take into content immediately.
+
+The app should answer:
+
+- what is the clip angle?
+- how long should it be?
+- what is the first frame?
+- what is the caption?
+- what is the one question to ask?
+- what exact steps happen next?
+
+Rule:
+
+```text
+recording -> tonight post -> response -> archive -> bigger song only if it earns it
+```
+
+This is where GateKPT can beat a normal DAW for Marcelo's workflow. A DAW records and edits. GateKPT should remember the audience loop and make the next post obvious.
+
 ## Cover Radar
 
 People telling Marcelo certain songs sound better is useful data, but it should not turn into random requests.
