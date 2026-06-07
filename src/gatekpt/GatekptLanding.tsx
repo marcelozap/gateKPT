@@ -26,7 +26,7 @@ const cuePath = [
 
 const socialChannels = [
   { name: "YouTube", href: "https://www.youtube.com/@xivzapa14", Icon: Youtube },
-  { name: "Instagram", Icon: Instagram },
+  { name: "Instagram", href: "https://www.instagram.com/marcelozapa14/", Icon: Instagram },
   { name: "LinkedIn", href: "https://www.linkedin.com/in/marcelozap/", Icon: Linkedin },
   { name: "Facebook", href: "https://www.facebook.com/marcelozapa14/", Icon: Facebook },
   { name: "Snapchat", href: "https://www.snapchat.com/add/marcy35", Icon: Ghost },
