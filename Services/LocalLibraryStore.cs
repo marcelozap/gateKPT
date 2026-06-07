@@ -61,6 +61,8 @@ public sealed class LocalLibraryStore
 
     private string CoverSignalsPath => Path.Combine(LibraryDirectory, "cover-signals.json");
 
+    private string SongStudiesPath => Path.Combine(LibraryDirectory, "song-studies.json");
+
     public IReadOnlyList<CaptureItem> LoadCaptures()
     {
         try
@@ -277,6 +279,10 @@ public sealed class LocalLibraryStore
     public IReadOnlyList<CoverSignalItem> LoadCoverSignals() => LoadList<CoverSignalItem>(CoverSignalsPath);
 
     public void SaveCoverSignals(IEnumerable<CoverSignalItem> signals) => SaveList(CoverSignalsPath, signals);
+
+    public IReadOnlyList<SongStudyItem> LoadSongStudies() => LoadList<SongStudyItem>(SongStudiesPath);
+
+    public void SaveSongStudies(IEnumerable<SongStudyItem> studies) => SaveList(SongStudiesPath, studies);
 
     private static IReadOnlyList<T> LoadList<T>(string path)
     {

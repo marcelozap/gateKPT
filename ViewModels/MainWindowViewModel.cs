@@ -438,6 +438,45 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _coverSignalStatus = "Need 30-sec test";
 
     [ObservableProperty]
+    private string _songStudyTitle = "";
+
+    [ObservableProperty]
+    private string _songStudyArtist = "";
+
+    [ObservableProperty]
+    private string _songStudySource = "Billboard Hot 100 / Spotify / YouTube";
+
+    [ObservableProperty]
+    private int _songStudyRank = 1;
+
+    [ObservableProperty]
+    private string _songStudyGenreLane = "Pop/R&B";
+
+    [ObservableProperty]
+    private string _songStudyThemes = "desire, confidence, longing, motion";
+
+    [ObservableProperty]
+    private string _songStudyHookMechanics = "short title phrase, repeated early, easy vowel shape";
+
+    [ObservableProperty]
+    private string _songStudyRepetition = "hook repeats every section";
+
+    [ObservableProperty]
+    private string _songStudyImagery = "night, car, body, weather, light";
+
+    [ObservableProperty]
+    private string _songStudySpanishOpportunity = "one natural Spanish color line if it fits";
+
+    [ObservableProperty]
+    private string _songStudyCoverFit = "Test 20-30 sec before full cover";
+
+    [ObservableProperty]
+    private string _songStudyContentUse = "cover test / hook writing / caption idea";
+
+    [ObservableProperty]
+    private string _songStudyStatus = "Study seed";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -714,6 +753,30 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                         DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
                 ]);
+        SongStudies = new ObservableCollection<SongStudyItem>(
+            _store.LoadSongStudies().Count > 0
+                ? _store.LoadSongStudies()
+                :
+                [
+                    new(
+                        Guid.NewGuid().ToString("N"),
+                        "Top song study seed",
+                        "artist TBD",
+                        "Billboard Hot 100 / manual study",
+                        1,
+                        "Pop/R&B",
+                        "desire, confidence, longing, motion",
+                        "short title phrase, repeated early, easy vowel shape",
+                        "hook repeats every section",
+                        "night, car, body, weather, light",
+                        "one natural Spanish color line if it fits",
+                        "Test 20-30 sec before full cover",
+                        "cover test / hook writing / caption idea",
+                        "Study seed",
+                        "Do not paste full lyrics. Study mechanics, themes, structure, and what fits your voice.",
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                        DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"))
+                ]);
 
         ExportQueue = new ObservableCollection<ExportQueueItem>(_store.LoadExportQueue());
         ExportHistory = new ObservableCollection<ExportHistoryItem>(_store.LoadExportHistory());
@@ -818,6 +881,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public ObservableCollection<ArtistSessionItem> ArtistSessions { get; }
 
     public ObservableCollection<CoverSignalItem> CoverSignals { get; }
+
+    public ObservableCollection<SongStudyItem> SongStudies { get; }
 
     public ObservableCollection<ExportQueueItem> ExportQueue { get; }
 
@@ -2030,6 +2095,33 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     public string ContentSprintPack =>
         $"Open: {ContentSprintOpeningFrame} | Caption: {ContentCaption} | Ask: {ContentCta} | Next: {ContentSprintSteps}";
 
+    public string SongStudySummary
+    {
+        get
+        {
+            var top = SongStudies
+                .OrderBy(item => item.ChartRank <= 0 ? 999 : item.ChartRank)
+                .ThenByDescending(item => item.UpdatedAt)
+                .FirstOrDefault();
+            return top is null
+                ? "Song Study: no studies yet. Add one top song and summarize what the lyric does."
+                : $"Song Study: {SongStudies.Count} track(s). Current lens: #{top.ChartRank} {top.SongTitle} / {top.GenreLane} / {top.Status}.";
+        }
+    }
+
+    public string SongStudyNextMove
+    {
+        get
+        {
+            var top = SongStudies
+                .OrderBy(item => item.ChartRank <= 0 ? 999 : item.ChartRank)
+                .FirstOrDefault();
+            return top is null
+                ? "Next: study one chorus. Do not paste lyrics. Write the hook device and theme."
+                : $"Next: borrow the mechanic, not the lyric. {top.HookMechanics}. Use: {top.ContentUse}.";
+        }
+    }
+
     private bool HasSessionMatch(params string[] terms) =>
         ArtistSessions.Any(item =>
         {
@@ -3096,6 +3188,109 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private void AddSongStudy()
+    {
+        var title = string.IsNullOrWhiteSpace(SongStudyTitle) ? "Untitled top song" : SongStudyTitle.Trim();
+        var artist = string.IsNullOrWhiteSpace(SongStudyArtist) ? "artist TBD" : SongStudyArtist.Trim();
+        var now = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        var study = new SongStudyItem(
+            Guid.NewGuid().ToString("N"),
+            title,
+            artist,
+            string.IsNullOrWhiteSpace(SongStudySource) ? "manual study" : SongStudySource.Trim(),
+            Math.Clamp(SongStudyRank, 1, 200),
+            string.IsNullOrWhiteSpace(SongStudyGenreLane) ? "Pop/R&B" : SongStudyGenreLane.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyThemes) ? "theme TBD" : SongStudyThemes.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyHookMechanics) ? "hook mechanic TBD" : SongStudyHookMechanics.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyRepetition) ? "repetition pattern TBD" : SongStudyRepetition.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyImagery) ? "imagery TBD" : SongStudyImagery.Trim(),
+            string.IsNullOrWhiteSpace(SongStudySpanishOpportunity) ? "Spanish color optional" : SongStudySpanishOpportunity.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyCoverFit) ? "Test 20-30 sec before full cover" : SongStudyCoverFit.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyContentUse) ? "cover test / hook writing" : SongStudyContentUse.Trim(),
+            string.IsNullOrWhiteSpace(SongStudyStatus) ? "Study seed" : SongStudyStatus.Trim(),
+            "Safe lyric study: mechanics, theme, structure, and content use only. No full lyric storage.",
+            now,
+            now);
+
+        SongStudies.Insert(0, study);
+        while (SongStudies.Count > 40)
+        {
+            SongStudies.RemoveAt(SongStudies.Count - 1);
+        }
+
+        _store.SaveSongStudies(SongStudies);
+        ContentPlanStatus = $"Added song study: {title} by {artist}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
+    [RelayCommand]
+    private void PrimeCoverFromSongStudy()
+    {
+        var study = SongStudies
+            .OrderBy(item => item.ChartRank <= 0 ? 999 : item.ChartRank)
+            .ThenByDescending(item => item.UpdatedAt)
+            .FirstOrDefault();
+        if (study is null)
+        {
+            ContentPlanStatus = "No song study yet. Add one top song first.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        CoverSignalSong = study.SongTitle;
+        CoverSignalArtist = study.Artist;
+        CoverSignalSuggestedBy = $"Song Study #{study.ChartRank}";
+        CoverSignalFitReason = study.CoverFit;
+        CoverSignalTestHook = $"Test the chorus/hook mechanic: {study.HookMechanics}";
+        CoverSignalVocalLane = study.GenreLane.Contains("R&B", StringComparison.OrdinalIgnoreCase)
+            ? "Raw Clean first, Late Night Chrome on hook"
+            : "Raw Clean first";
+        CoverSignalDifficulty = "Medium";
+        CoverSignalVoiceFitScore = 7;
+        CoverSignalAudienceScore = study.ChartRank <= 10 ? 8 : 5;
+        CoverSignalStatus = "Need 30-sec test";
+        AddCoverSignal();
+        PrimeTopCoverSignal();
+    }
+
+    [RelayCommand]
+    private void PrimeOriginalFromSongStudy()
+    {
+        var study = SongStudies
+            .OrderBy(item => item.ChartRank <= 0 ? 999 : item.ChartRank)
+            .ThenByDescending(item => item.UpdatedAt)
+            .FirstOrDefault();
+        if (study is null)
+        {
+            ContentPlanStatus = "No song study yet. Add one top song first.";
+            Status = ContentPlanStatus;
+            return;
+        }
+
+        ContentMission = "Original Hook";
+        ContentSeries = "Song Study Lab";
+        ContentFormat = "original hook from chart mechanic";
+        ContentPlatform = "Snapchat / TikTok / Reels / YouTube Shorts";
+        ContentSetting = "room light / night road";
+        ContentSong = $"original seed from {study.GenreLane}";
+        ContentHook = $"Use mechanic: {study.HookMechanics}";
+        ContentCaption = "Studying why hooks work, then making my own version.";
+        ContentVisualDirection = "Show guitar/voice first, then one GateKPT study card for context.";
+        ContentNextAction = "Write one new title phrase, sing 20 seconds, do not copy the lyric.";
+        ContentTone = "playful, romantic, humble, smart";
+        ContentPreset = "Raw Clean first";
+        ContentLanguage = study.SpanishOpportunity;
+        ContentTerrain = "room light / night road";
+        ContentPillar = "Build / Original Hook / Process";
+        ContentCta = "Does this idea work?";
+        ContentPostStatus = "Study-to-hook seed";
+        ContentPlanStatus = $"Primed original hook from study: {study.SongTitle}.";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -3120,6 +3315,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CoverRadarPlan));
         OnPropertyChanged(nameof(ContentSprintBrief));
         OnPropertyChanged(nameof(ContentSprintPack));
+        OnPropertyChanged(nameof(SongStudySummary));
+        OnPropertyChanged(nameof(SongStudyNextMove));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
@@ -3489,6 +3686,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         _store.SaveWorldMemory(WorldMemories);
         _store.SaveArtistSessions(ArtistSessions);
         _store.SaveCoverSignals(CoverSignals);
+        _store.SaveSongStudies(SongStudies);
         SaveProjectSnapshot("Library saved");
         Status = $"Library saved to {LibraryPath}";
     }

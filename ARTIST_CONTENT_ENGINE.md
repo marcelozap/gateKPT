@@ -233,6 +233,36 @@ recording -> tonight post -> response -> archive -> bigger song only if it earns
 
 This is where GateKPT can beat a normal DAW for Marcelo's workflow. A DAW records and edits. GateKPT should remember the audience loop and make the next post obvious.
 
+## Song Study
+
+GateKPT should start using song data without becoming a copyright mess or a generic analytics dashboard.
+
+Use chart/source data like Billboard, Spotify, YouTube, comments, and personal saves to decide what to study. Do not store full lyrics. Store what the song is doing:
+
+- chart/source and rank
+- genre lane
+- lyric themes
+- hook mechanics
+- repetition pattern
+- imagery/world
+- Spanish/Spanglish opportunity
+- cover fit
+- content use
+
+Study rule:
+
+```text
+top song -> lyric mechanics -> cover fit or original seed -> 30-second test -> audience response
+```
+
+Safe lyric study means:
+
+- summarize themes instead of copying lyrics
+- name the hook device instead of rewriting the hook
+- borrow structure, not words
+- use the study to make a new Marcelo/Luca idea
+- only turn a chart song into a full cover if the 30-second test earns it
+
 ## Cover Radar
 
 People telling Marcelo certain songs sound better is useful data, but it should not turn into random requests.

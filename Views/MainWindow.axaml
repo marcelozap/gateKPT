@@ -1017,6 +1017,123 @@
                                         </Border>
                                         <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
                                             <StackPanel Spacing="8">
+                                                <TextBlock Text="SONG STUDY"
+                                                           FontSize="10"
+                                                           FontWeight="Black"
+                                                           LetterSpacing="2.2"
+                                                           Foreground="#C6A96D"/>
+                                                <TextBlock Text="{Binding SongStudySummary}"
+                                                           FontSize="12"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#9DBFB3"/>
+                                                <TextBlock Text="{Binding SongStudyNextMove}"
+                                                           FontSize="11"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="#D9C5A5"/>
+                                                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                                                    <TextBox Text="{Binding SongStudyTitle}"
+                                                             PlaceholderText="Top song"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Column="1"
+                                                             Text="{Binding SongStudyArtist}"
+                                                             PlaceholderText="Artist"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="1"
+                                                             Text="{Binding SongStudySource}"
+                                                             PlaceholderText="Chart/source"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="1"
+                                                             Grid.Column="1"
+                                                             Text="{Binding SongStudyRank}"
+                                                             PlaceholderText="Rank"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="2"
+                                                             Text="{Binding SongStudyGenreLane}"
+                                                             PlaceholderText="Genre lane"
+                                                             MinHeight="40"/>
+                                                    <TextBox Grid.Row="2"
+                                                             Grid.Column="1"
+                                                             Text="{Binding SongStudyCoverFit}"
+                                                             PlaceholderText="Cover fit"
+                                                             MinHeight="40"/>
+                                                </Grid>
+                                                <TextBox Text="{Binding SongStudyThemes}"
+                                                         PlaceholderText="Themes, not copied lyrics"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding SongStudyHookMechanics}"
+                                                         PlaceholderText="Hook mechanics"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding SongStudyImagery}"
+                                                         PlaceholderText="Imagery / world"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <TextBox Text="{Binding SongStudyContentUse}"
+                                                         PlaceholderText="How this helps content"
+                                                         TextWrapping="Wrap"
+                                                         MinHeight="44"/>
+                                                <WrapPanel>
+                                                    <Button Content="Add study"
+                                                            Command="{Binding AddSongStudyCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#8DB7AD"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Cover test"
+                                                            Command="{Binding PrimeCoverFromSongStudyCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#C6A96D"
+                                                            Foreground="#07110E"
+                                                            FontWeight="Black"/>
+                                                    <Button Content="Original seed"
+                                                            Command="{Binding PrimeOriginalFromSongStudyCommand}"
+                                                            Padding="13,9"
+                                                            Margin="0,0,8,8"
+                                                            Background="#07110E"
+                                                            Foreground="#E8E1D2"
+                                                            FontWeight="Black"/>
+                                                </WrapPanel>
+                                                <ItemsControl ItemsSource="{Binding SongStudies}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="model:SongStudyItem">
+                                                            <Border CornerRadius="14"
+                                                                    Padding="10"
+                                                                    Margin="0,0,0,8"
+                                                                    Background="#13000000"
+                                                                    BorderBrush="#1F8DB7AD"
+                                                                    BorderThickness="1">
+                                                                <StackPanel Spacing="4">
+                                                                    <TextBlock Text="{Binding SongTitle}"
+                                                                               FontSize="12"
+                                                                               FontWeight="Black"
+                                                                               TextWrapping="Wrap"
+                                                                               Foreground="#F8F0E5"/>
+                                                                    <TextBlock Text="{Binding Artist}"
+                                                                               FontSize="10"
+                                                                               FontWeight="Black"
+                                                                               Foreground="#C6A96D"/>
+                                                                    <TextBlock Text="{Binding HookMechanics}"
+                                                                               FontSize="10"
+                                                                               TextWrapping="Wrap"
+                                                                               Foreground="#9DBFB3"/>
+                                                                    <TextBlock Text="{Binding Status}"
+                                                                               FontSize="10"
+                                                                               FontWeight="Black"
+                                                                               Foreground="#D9C5A5"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Border>
+                                        <Border CornerRadius="18" Padding="13" Background="#19000000" BorderBrush="#228DB7AD" BorderThickness="1">
+                                            <StackPanel Spacing="8">
                                                 <TextBlock Text="EP SEED"
                                                            FontSize="10"
                                                            FontWeight="Black"
