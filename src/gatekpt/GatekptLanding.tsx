@@ -491,13 +491,13 @@ export function GatekptLanding() {
               GateKPT
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
-              Guitar. Drone. World.
+              Play the guitar. Change the world.
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              One take, three atmospheres.
+              A small sound experiment from GateKPT.
             </p>
             <div className="mt-6 grid max-w-xl gap-2">
-              {["Play guitar", "Change the drone", "Follow the world"].map((item) => (
+              {["Play guitar", "Choose fire, storm, or chrome", "Watch the scene change"].map((item) => (
                 <div key={item} className="rounded-[1.1rem] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-black text-[#e8e1d2]/78">
                   {item}
                 </div>
@@ -516,7 +516,7 @@ export function GatekptLanding() {
               <div className="relative">
                 <p className="gk-label text-[#d08a56]">World</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                  Choose the air.
+                  Pick the background.
                 </h2>
                 <div className="mt-8 grid gap-3" id="preview">
                   {cuePath.map(([number, item, detail], index) => (
