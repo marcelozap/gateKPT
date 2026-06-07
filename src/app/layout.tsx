@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: "%s - GateKPT",
   },
   description:
-    "Play a sample, use your mic, and watch sound turn into color, terrain, and motion.",
+    "A small example of guitar, atmosphere, and motion becoming one visual world.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GateKPT - Make Sound Visible",
     description:
-      "A small sound playground where guitar, mic input, and mood beds turn into color and motion.",
+      "A small example of guitar, atmosphere, and motion becoming one visual world.",
     type: "website",
     url: getSiteUrl(),
   },

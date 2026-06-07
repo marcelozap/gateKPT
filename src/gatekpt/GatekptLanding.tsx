@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mic, Mountain, Square, Waves } from "lucide-react";
+import { Mountain, Square, Waves } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 declare global {
@@ -120,7 +120,6 @@ function buildMoodBed(audioContext: AudioContext, mood: string, destination: Aud
 function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const demoIntervalRef = useRef<number | null>(null);
@@ -159,8 +158,6 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       demoAudioRef.current.currentTime = 0;
       demoAudioRef.current = null;
     }
-    streamRef.current?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
     void audioContextRef.current?.close();
     audioContextRef.current = null;
     analyserRef.current = null;
@@ -380,36 +377,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
     render();
   }, []);
 
-  const startMic = async () => {
-    try {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setStatus("unsupported");
-        return;
-      }
-
-      setStatus("starting");
-      stopAudio();
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
-      });
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      const audioContext = new AudioContextClass();
-      await audioContext.resume();
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 1024;
-      analyser.smoothingTimeConstant = 0.72;
-      audioContext.createMediaStreamSource(stream).connect(analyser);
-      streamRef.current = stream;
-      audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
-      setStatus("listening");
-    } catch {
-      stopAudio();
-      setStatus("blocked");
-    }
-  };
-
-  const stopMic = () => {
+  const stopPreview = () => {
     stopAudio();
     setStatus("preview");
   };
@@ -481,7 +449,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
-            <button type="button" onClick={stopMic} className="gk-button-secondary">
+            <button type="button" onClick={stopPreview} className="gk-button-secondary">
               <Square className="h-4 w-4" />
               Stop
             </button>
@@ -490,10 +458,6 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
               <button type="button" onClick={startDemo} className="gk-button-signal">
                 <Waves className="h-4 w-4" />
                 Play guitar
-              </button>
-              <button type="button" onClick={startMic} className="gk-button-signal-secondary">
-                <Mic className="h-4 w-4" />
-                Use mic
               </button>
             </div>
           )}
