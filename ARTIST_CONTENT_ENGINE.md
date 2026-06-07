@@ -233,6 +233,31 @@ recording -> tonight post -> response -> archive -> bigger song only if it earns
 
 This is where GateKPT can beat a normal DAW for Marcelo's workflow. A DAW records and edits. GateKPT should remember the audience loop and make the next post obvious.
 
+## Memorable Filter
+
+GateKPT should protect Marcelo from posting too much forgettable material.
+
+Do not post because the tool can generate another clip. Post when the clip has:
+
+- one hook people can repeat
+- one clear feeling
+- one visual frame people remember
+- one difference from the last few posts
+- one question or reason for the audience to respond
+
+Decision levels:
+
+- Post-worthy: tight, memorable, not over-explained.
+- Improve before post: good seed, but sharpen hook, first frame, or caption.
+- Archive/practice: useful for growth, not public yet.
+- Do not post yet: find the feeling first.
+
+Rule:
+
+```text
+memorable > frequent
+```
+
 ## Momentum And Rotation
 
 When a YouTube/TikTok/Reels/Snap clip does well, GateKPT should not simply say "make more of the same."

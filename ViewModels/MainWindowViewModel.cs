@@ -546,6 +546,24 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private string _tasteStatus = "Active lane";
 
     [ObservableProperty]
+    private string _memorableHook = "one phrase people can repeat";
+
+    [ObservableProperty]
+    private string _memorableFeeling = "one clear feeling";
+
+    [ObservableProperty]
+    private string _memorableVisual = "one frame people remember";
+
+    [ObservableProperty]
+    private string _memorableDifference = "why this is not the same as the last post";
+
+    [ObservableProperty]
+    private int _memorableScore = 0;
+
+    [ObservableProperty]
+    private string _memorableDecision = "Run the filter before posting.";
+
+    [ObservableProperty]
     private string _focusriteTestStatus = "Focusrite test not run yet.";
 
     [ObservableProperty]
@@ -2312,6 +2330,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    public string MemorableFilterSummary =>
+        $"Memorable Filter: {MemorableScore}/100 / {MemorableDecision}";
+
+    public string MemorableFilterDetail =>
+        $"Hook: {MemorableHook} | Feeling: {MemorableFeeling} | Visual: {MemorableVisual} | Different: {MemorableDifference}";
+
     private bool HasSessionMatch(params string[] terms) =>
         ArtistSessions.Any(item =>
         {
@@ -3325,6 +3349,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ContentPlanStatus = $"Generated Tonight Post: {ContentSprintLength} / {song}.";
         ContentSprintStatus = "Ready: make this one post before expanding the song.";
         Status = ContentPlanStatus;
+        RunMemorableFilter();
         RefreshContentPlanSignals();
     }
 
@@ -3711,6 +3736,72 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         RefreshContentPlanSignals();
     }
 
+    [RelayCommand]
+    private void RunMemorableFilter()
+    {
+        var score = 0;
+
+        MemorableHook = string.IsNullOrWhiteSpace(ContentHook)
+            ? "missing hook"
+            : ContentHook.Trim();
+        if (MemorableHook.Length >= 8 && !MemorableHook.Equals("hook", StringComparison.OrdinalIgnoreCase))
+        {
+            score += 21;
+        }
+
+        MemorableFeeling = string.IsNullOrWhiteSpace(ContentTone)
+            ? "missing feeling"
+            : ContentTone.Trim();
+        if (MemorableFeeling.Contains("romantic", StringComparison.OrdinalIgnoreCase)
+            || MemorableFeeling.Contains("playful", StringComparison.OrdinalIgnoreCase)
+            || MemorableFeeling.Contains("humble", StringComparison.OrdinalIgnoreCase)
+            || MemorableFeeling.Contains("goofy", StringComparison.OrdinalIgnoreCase)
+            || MemorableFeeling.Contains("noble", StringComparison.OrdinalIgnoreCase))
+        {
+            score += 21;
+        }
+
+        MemorableVisual = string.IsNullOrWhiteSpace(ContentVisualDirection)
+            ? "missing visual"
+            : ContentVisualDirection.Trim();
+        if (MemorableVisual.Contains("face", StringComparison.OrdinalIgnoreCase)
+            || MemorableVisual.Contains("guitar", StringComparison.OrdinalIgnoreCase)
+            || MemorableVisual.Contains("light", StringComparison.OrdinalIgnoreCase)
+            || MemorableVisual.Contains("visualizer", StringComparison.OrdinalIgnoreCase)
+            || MemorableVisual.Contains("waveform", StringComparison.OrdinalIgnoreCase))
+        {
+            score += 21;
+        }
+
+        MemorableDifference = NextVariationSignal;
+        if (!VarietyGuardSignal.Contains("too many", StringComparison.OrdinalIgnoreCase))
+        {
+            score += 21;
+        }
+
+        if (!string.IsNullOrWhiteSpace(ContentCta) && ContentCta.Length >= 6)
+        {
+            score += 16;
+        }
+
+        MemorableScore = Math.Clamp(score, 0, 100);
+        MemorableDecision = MemorableScore switch
+        {
+            >= 84 => "Post-worthy. Keep it tight and do not over-explain.",
+            >= 63 => "Good seed. Improve hook, first frame, or caption before posting.",
+            >= 42 => "Archive/practice. Needs a sharper reason to remember it.",
+            _ => "Do not post yet. Find the feeling first."
+        };
+        ContentPostStatus = MemorableScore >= 84
+            ? "Post-worthy"
+            : MemorableScore >= 63
+                ? "Improve before post"
+                : "Archive/practice";
+        ContentPlanStatus = $"Memorable filter: {MemorableScore}/100. {MemorableDecision}";
+        Status = ContentPlanStatus;
+        RefreshContentPlanSignals();
+    }
+
     private void RefreshContentPlanSignals()
     {
         OnPropertyChanged(nameof(ContentPlanSummary));
@@ -3742,6 +3833,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(NextVariationSignal));
         OnPropertyChanged(nameof(SoundTasteSummary));
         OnPropertyChanged(nameof(SoundTasteNextMove));
+        OnPropertyChanged(nameof(MemorableFilterSummary));
+        OnPropertyChanged(nameof(MemorableFilterDetail));
     }
 
     private static string PlatformCaption(string platform, string hook, string song)
