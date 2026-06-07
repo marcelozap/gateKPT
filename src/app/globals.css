@@ -233,6 +233,23 @@ body {
   text-transform: uppercase;
 }
 
+.gk-social-pill-live {
+  border-color: rgba(110, 231, 255, 0.34);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(110, 231, 255, 0.2), transparent 34%),
+    rgba(110, 231, 255, 0.08);
+  color: rgba(218, 252, 255, 0.94);
+  text-decoration: none;
+  box-shadow: 0 16px 42px rgba(110, 231, 255, 0.08);
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.gk-social-pill-live:hover {
+  transform: translateY(-2px);
+  border-color: rgba(110, 231, 255, 0.62);
+  background: rgba(110, 231, 255, 0.14);
+}
+
 .gk-cue {
   width: 100%;
   display: flex;

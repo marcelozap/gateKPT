@@ -24,7 +24,17 @@ const cuePath = [
   ["03", "Soft chrome", "Glass shimmer"],
 ];
 
-const socialChannels = ["YouTube", "TikTok", "Instagram", "Snapchat", "LinkedIn", "GitHub", "Website"];
+const youtubeShortUrl = "https://www.youtube.com/shorts/t52ycvAOkk4";
+
+const socialChannels = [
+  { name: "YouTube", href: youtubeShortUrl },
+  { name: "TikTok" },
+  { name: "Instagram" },
+  { name: "Snapchat" },
+  { name: "LinkedIn" },
+  { name: "GitHub" },
+  { name: "Website" },
+];
 
 function createNoiseSource(audioContext: AudioContext, tone: "white" | "brown" = "white") {
   const bufferLength = audioContext.sampleRate * 2;
@@ -551,12 +561,29 @@ export function GatekptLanding() {
             </div>
             <div className="flex flex-wrap gap-2">
               {socialChannels.map((item) => (
-                <span key={item} className="gk-social-pill" title="Link coming soon">
-                  {item}
-                </span>
+                item.href ? (
+                  <a key={item.name} className="gk-social-pill gk-social-pill-live" href={item.href} target="_blank" rel="noreferrer">
+                    {item.name}
+                  </a>
+                ) : (
+                  <span key={item.name} className="gk-social-pill" title="Link coming soon">
+                    {item.name}
+                  </span>
+                )
               ))}
             </div>
           </div>
+          <a
+            href={youtubeShortUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 block rounded-[1.45rem] border border-[#6ee7ff]/20 bg-[#6ee7ff]/[0.055] p-4 transition hover:-translate-y-0.5 hover:border-[#6ee7ff]/45 hover:bg-[#6ee7ff]/[0.09]"
+          >
+            <p className="gk-label text-[#6ee7ff]">Latest clip</p>
+            <p className="mt-2 text-lg font-black tracking-[-0.03em] text-[#e8e1d2]">
+              Watch the first GateKPT sound test on YouTube Shorts.
+            </p>
+          </a>
         </div>
       </section>
     </main>
