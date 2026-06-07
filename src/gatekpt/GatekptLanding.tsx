@@ -452,9 +452,9 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#6ee7ff]">Sound</p>
+            <p className="gk-label text-[#6ee7ff]">Question</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              {activeCue} behind the guitar.
+              What if the room answered the guitar?
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -492,13 +492,13 @@ export function GatekptLanding() {
               GateKPT
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
-              Play the guitar. Change the room.
+              What does sound look like?
             </h1>
             <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-[#e8e1d2]/72">
-              One take, three worlds, no setup.
+              Press play. Change the air around the guitar.
             </p>
             <div className="mt-6 grid max-w-xl gap-2">
-              {["Press play", "Switch fire, storm, chrome", "Follow the guitar"].map((item) => (
+              {["Hear it", "Change the room", "Watch it answer"].map((item) => (
                 <div key={item} className="rounded-[1.1rem] border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-black text-[#e8e1d2]/78">
                   {item}
                 </div>
@@ -506,7 +506,7 @@ export function GatekptLanding() {
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#preview" className="gk-button-primary">
-                Play with sound
+                Try the question
               </a>
             </div>
           </motion.div>
@@ -515,7 +515,7 @@ export function GatekptLanding() {
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(110,231,255,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#d08a56]">World</p>
+                <p className="gk-label text-[#d08a56]">Answer</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
                   Fire. Storm. Chrome.
                 </h2>
