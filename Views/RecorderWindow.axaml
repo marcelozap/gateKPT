@@ -330,7 +330,7 @@
                         </Grid>
 
                         <Grid Grid.Row="2"
-                              ColumnDefinitions="Auto,Auto,*,*"
+                              ColumnDefinitions="Auto,Auto,Auto,*,*"
                               ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
@@ -351,18 +351,26 @@
                                     Background="#DDA36B"
                                     Foreground="#120918"/>
                             <Button Grid.Column="1"
+                                    Content="Play"
+                                    Command="{Binding PlaySelectedCommand}"
+                                    Padding="20,11"
+                                    MinWidth="120"
+                                    Margin="0"
+                                    Background="#F2EEE3"
+                                    Foreground="#120918"/>
+                            <Button Grid.Column="2"
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="20,11"
                                     MinWidth="150"
                                     Margin="0"
-                                    Background="#F2EEE3"
-                                    Foreground="#120918"/>
-                            <ComboBox Grid.Column="2"
+                                    Background="#211815"
+                                    Foreground="#E8E1D2"/>
+                            <ComboBox Grid.Column="3"
                                       ItemsSource="{Binding CaptureLanes}"
                                       SelectedItem="{Binding SelectedCaptureLane}"
                                       MinHeight="40"/>
-                            <ComboBox Grid.Column="3"
+                            <ComboBox Grid.Column="4"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
@@ -553,14 +561,14 @@
                                                         Background="#66131A24"
                                                         BorderBrush="#2EDDA36B"
                                                         BorderThickness="1">
-                                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
-                                                        <Path Grid.ColumnSpan="2"
+                                                    <Grid ColumnDefinitions="*" ColumnSpacing="10">
+                                                        <Path
                                                               Data="M -8 29 C 46 12, 92 38, 146 22 S 248 10, 312 31 S 432 43, 540 18"
                                                               Stroke="#267FCAD1"
                                                               StrokeThickness="1.2"
                                                               Stretch="Fill"
                                                               IsHitTestVisible="False"/>
-                                                        <Path Grid.ColumnSpan="2"
+                                                        <Path
                                                               Data="M -10 43 C 62 24, 126 53, 202 35 S 338 19, 452 48"
                                                               Stroke="#24DDA36B"
                                                               StrokeThickness="1"
@@ -576,28 +584,6 @@
                                                                        FontWeight="Black"
                                                                        Foreground="#7FCAD1"/>
                                                         </StackPanel>
-                                                        <StackPanel Grid.Column="1"
-                                                                    Classes="take-actions"
-                                                                    Orientation="Horizontal"
-                                                                    Spacing="7"
-                                                                    VerticalAlignment="Center">
-                                                            <Button Content="Play"
-                                                                    Command="{Binding $parent[Window].DataContext.PlayVersionCommand}"
-                                                                    CommandParameter="{Binding}"
-                                                                    Padding="11,7"
-                                                                    MinWidth="68"
-                                                                    MinHeight="32"
-                                                                    Background="#211815"
-                                                                    Foreground="#E8E1D2"/>
-                                                            <Button Content="Folder"
-                                                                    Command="{Binding $parent[Window].DataContext.OpenVersionFolderCommand}"
-                                                                    CommandParameter="{Binding}"
-                                                                    Padding="11,7"
-                                                                    MinWidth="78"
-                                                                    MinHeight="32"
-                                                                    Background="#F2EEE3"
-                                                                    Foreground="#120918"/>
-                                                        </StackPanel>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
@@ -609,7 +595,8 @@
                     </Grid>
                 </Border>
 
-                <Border CornerRadius="28"
+                <Border IsVisible="False"
+                        CornerRadius="28"
                         Padding="18"
                         BorderBrush="#44DDA36B"
                         BorderThickness="1"
@@ -679,7 +666,8 @@
                     </Grid>
                 </Border>
 
-                <Border CornerRadius="28"
+                <Border IsVisible="False"
+                        CornerRadius="28"
                         Padding="18"
                         BorderBrush="#33DDA36B"
                         BorderThickness="1"
@@ -753,7 +741,8 @@
                     </StackPanel>
                 </Border>
 
-                <Border CornerRadius="28"
+                <Border IsVisible="False"
+                        CornerRadius="28"
                         Padding="18"
                         BorderBrush="#446EE7FF"
                         BorderThickness="1"
@@ -815,7 +804,8 @@
                     </StackPanel>
                 </Border>
 
-                <Border CornerRadius="28"
+                <Border IsVisible="False"
+                        CornerRadius="28"
                         Padding="18"
                         BorderBrush="#44DDA36B"
                         BorderThickness="1"
