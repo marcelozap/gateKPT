@@ -196,29 +196,29 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public ObservableCollection<VocalPresetItem> VocalPresets { get; } =
     [
         new(
-            "Late Night Chrome",
+            "Chrome",
             "late-night-chrome",
-            "Tory-center lead: glossy, tuned-feeling, intimate, late-night.",
+            "Warm amber. Glossy lead. Night hook.",
             CreateLateNightChromePreset()),
         new(
-            "Silk Synth",
+            "Silk",
             "silk-synth",
-            "Lil Tecca color: smoother hook tone, wider, synth-lead energy.",
+            "Soft blue. Smooth hook. Wider shine.",
             CreateSilkSynthPreset()),
         new(
-            "Luna Pop",
+            "Luna",
             "luna-pop",
-            "Rauw color: airy Spanish/English pop vocal with rhythmic space.",
+            "Moon gold. Airy Spanish color.",
             CreateLunaPopPreset()),
         new(
-            "Cloud Doubles",
+            "Cloud",
             "cloud-doubles",
-            "Wide tuned-feeling doubles and adlibs behind the lead.",
+            "Soft violet. Wide doubles behind lead.",
             CreateCloudDoublesPreset()),
         new(
-            "Raw Clean",
+            "Clean",
             "raw-clean",
-            "Clean vocal prep before styling: rumble cut, level, light de-ess feel.",
+            "Bone white. Natural take cleanup.",
             CreateRawCleanPreset())
     ];
 
@@ -352,7 +352,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string LatestTakeTitle =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
             ? "No take saved yet."
-            : Path.GetFileName(CurrentFilePath);
+            : "Take ready.";
 
     public string LatestTakeDetail
     {
@@ -377,25 +377,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var metrics = AudioPreviewService.InspectMetrics(path);
             if (!metrics.Success)
             {
-                return "Post check: record/select a take.";
+                return "Record or choose one take.";
             }
 
             if (metrics.Duration.TotalSeconds < 8)
             {
-                return "Post check: very short take.";
+                return "Short take.";
             }
 
             if (metrics.RmsPercent < 0.20)
             {
-                return "Post check: quiet. Try louder or normalize.";
+                return "Quiet. Try louder.";
             }
 
             if (metrics.PeakPercent > 96)
             {
-                return "Post check: hot. Watch for clipping.";
+                return "Hot. Watch the gain.";
             }
 
-            return $"Post check: ready enough. {metrics.Duration:mm\\:ss}, RMS {metrics.RmsPercent:0.00}%.";
+            return $"Ready enough. {metrics.Duration:mm\\:ss}.";
         }
     }
 
@@ -554,7 +554,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Build one piece, keep the room open, save the moment.";
 
     public string CommandHelp =>
-        "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
+        "Try: chrome, silk, luna, cloud, clean, warmer, room, post.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1681,19 +1681,19 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void QuickDelete() => StageCommand("delete last");
 
     [RelayCommand]
-    private void StageLateNightChrome() => StageCommand("late night chrome vocal");
+    private void StageLateNightChrome() => StageCommand("chrome vocal");
 
     [RelayCommand]
-    private void StageSilkSynth() => StageCommand("silk synth hook");
+    private void StageSilkSynth() => StageCommand("silk hook");
 
     [RelayCommand]
-    private void StageLunaPop() => StageCommand("luna pop vocal");
+    private void StageLunaPop() => StageCommand("luna vocal");
 
     [RelayCommand]
     private void StageCloudDoubles() => StageCommand("cloud doubles");
 
     [RelayCommand]
-    private void StageRawClean() => StageCommand("raw clean vocal");
+    private void StageRawClean() => StageCommand("clean vocal");
 
     [RelayCommand]
     private void RenderSelectedVocalPreset()

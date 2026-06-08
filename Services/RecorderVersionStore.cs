@@ -180,7 +180,39 @@ public sealed class RecorderVersionStore
     }
 }
 
-public sealed record RecorderVersionFile(string Name, string Path, string Size, string Modified);
+public sealed record RecorderVersionFile(string Name, string Path, string Size, string Modified)
+{
+    public string DisplayName
+    {
+        get
+        {
+            var preview = AudioPreviewService.Inspect(Path);
+            var duration = preview == AudioPreview.Empty ? "take" : preview.Duration;
+            var label = Name.Contains("vocal", StringComparison.OrdinalIgnoreCase)
+                ? "Vocal"
+                : Name.Contains("guitar", StringComparison.OrdinalIgnoreCase)
+                    ? "Guitar"
+                    : Name.Contains("drum", StringComparison.OrdinalIgnoreCase)
+                        ? "Drums"
+                        : Name.Contains("chrome", StringComparison.OrdinalIgnoreCase)
+                            ? "Chrome"
+                            : "Take";
+
+            return $"{label} / {duration}";
+        }
+    }
+
+    public string DisplayMeta
+    {
+        get
+        {
+            var preview = AudioPreviewService.Inspect(Path);
+            return preview == AudioPreview.Empty
+                ? $"{Size} / saved {Modified}"
+                : $"{Size} / peak {preview.Peak} / saved {Modified}";
+        }
+    }
+}
 
 public sealed record StoredLayerSlot(
     int Number,

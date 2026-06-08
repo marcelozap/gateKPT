@@ -391,7 +391,7 @@
                                 Background="#99130F16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
                                 <StackPanel Spacing="4">
-                                    <TextBlock Text="VOCAL"
+                                    <TextBlock Text="COLOR"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
@@ -417,40 +417,40 @@
                                            Grid.ColumnSpan="2"
                                            Orientation="Horizontal"
                                            Margin="0,8,0,0">
-                                    <Button Content="Late Night Chrome"
+                                    <Button Content="Chrome"
                                             Command="{Binding StageLateNightChromeCommand}"
                                             Padding="10,7"
-                                            MinWidth="118"
+                                            MinWidth="86"
                                             Margin="0,0,7,7"
-                                            Background="#211815"
+                                            Background="#59311C"
                                             Foreground="#E8E1D2"/>
-                                    <Button Content="Silk Synth"
+                                    <Button Content="Silk"
                                             Command="{Binding StageSilkSynthCommand}"
                                             Padding="10,7"
-                                            MinWidth="92"
+                                            MinWidth="70"
                                             Margin="0,0,7,7"
-                                            Background="#211815"
+                                            Background="#17304A"
                                             Foreground="#E8E1D2"/>
-                                    <Button Content="Luna Pop"
+                                    <Button Content="Luna"
                                             Command="{Binding StageLunaPopCommand}"
                                             Padding="10,7"
-                                            MinWidth="84"
+                                            MinWidth="74"
                                             Margin="0,0,7,7"
-                                            Background="#211815"
+                                            Background="#5C4520"
                                             Foreground="#E8E1D2"/>
-                                    <Button Content="Cloud Doubles"
+                                    <Button Content="Cloud"
                                             Command="{Binding StageCloudDoublesCommand}"
                                             Padding="10,7"
-                                            MinWidth="110"
+                                            MinWidth="78"
                                             Margin="0,0,7,7"
-                                            Background="#211815"
+                                            Background="#332744"
                                             Foreground="#E8E1D2"/>
-                                    <Button Content="Raw Clean"
+                                    <Button Content="Clean"
                                             Command="{Binding StageRawCleanCommand}"
                                             Padding="10,7"
-                                            MinWidth="84"
+                                            MinWidth="76"
                                             Margin="0,0,7,7"
-                                            Background="#99171110"
+                                            Background="#4A453B"
                                             Foreground="#E8E1D2"/>
                                 </WrapPanel>
                             </Grid>
@@ -506,7 +506,7 @@
                             BorderThickness="1"
                             Background="#CC090D13">
                         <StackPanel Spacing="10">
-                            <TextBlock Text="NIGHT TAKES"
+                            <TextBlock Text="TAKES"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
@@ -530,11 +530,11 @@
                                                 BorderBrush="#33DDA36B"
                                                 BorderThickness="1">
                                             <StackPanel>
-                                                <TextBlock Text="{Binding Name}"
+                                                <TextBlock Text="{Binding DisplayName}"
                                                            FontSize="12"
                                                            FontWeight="Black"
                                                            TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Size}"
+                                                <TextBlock Text="{Binding DisplayMeta}"
                                                            Margin="0,4,0,0"
                                                            FontSize="10"
                                                            FontWeight="Black"
