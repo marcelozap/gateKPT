@@ -8,6 +8,12 @@ GateKPT is a private creative operating system for making music faster, remember
 
 Content is an output of the system, not the system itself.
 
+For the livestream, content research, future song-study, and audience-growth layer, use:
+
+```text
+LIVESTREAM_CONTENT_RESEARCH_PLAN.md
+```
+
 Core promise:
 
 ```text
