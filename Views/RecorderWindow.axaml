@@ -124,6 +124,60 @@
               Stretch="Fill"
               IsHitTestVisible="False"/>
 
+        <Grid Height="430"
+              VerticalAlignment="Bottom"
+              Margin="0,0,0,-34"
+              Opacity="0.72"
+              IsHitTestVisible="False">
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#00130F16" Offset="0"/>
+                    <GradientStop Color="#33130F16" Offset="0.34"/>
+                    <GradientStop Color="#551F140D" Offset="0.68"/>
+                    <GradientStop Color="#00130F16" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Path Data="M -60 280 C 160 150, 290 355, 470 230 S 790 120, 1040 300 S 1320 180, 1540 265"
+                  Stroke="#55DDA36B"
+                  StrokeThickness="2.1"
+                  Stretch="Fill"/>
+            <Path Data="M -80 350 C 160 260, 300 420, 530 315 S 870 260, 1130 390 S 1380 310, 1540 360"
+                  Stroke="#437FCAD1"
+                  StrokeThickness="1.5"
+                  Stretch="Fill"/>
+            <Path Data="M -40 175 C 120 105, 250 230, 430 160 S 780 110, 1050 220 S 1320 145, 1540 205"
+                  Stroke="#44F2C56B"
+                  StrokeThickness="1.2"
+                  Stretch="Fill"/>
+            <ItemsControl ItemsSource="{Binding SignalBars}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Bottom"
+                          Margin="0,0,0,34">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="8"
+                                Height="{Binding}"
+                                CornerRadius="999"
+                                Margin="4,0"
+                                VerticalAlignment="Bottom"
+                                Background="#99DDA36B"
+                                BorderBrush="#557FCAD1"
+                                BorderThickness="1"
+                                RenderTransformOrigin="0.5,1">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleY="2.65"/>
+                            </Border.RenderTransform>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
