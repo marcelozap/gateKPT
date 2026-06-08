@@ -40,6 +40,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "live-album");
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
+    private readonly DispatcherTimer _visualTimer = new() { Interval = TimeSpan.FromMilliseconds(140) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
     private int? _activeCaptureLayerNumber;
@@ -82,7 +83,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _status = "Ready.";
 
     [ObservableProperty]
-    private string _commandResult = "No command yet.";
+    private string _commandResult = "";
 
     [ObservableProperty]
     private bool _isCommandBusy = false;
@@ -592,6 +593,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
+        _visualTimer.Tick += (_, _) => PushSignalBar(PeakPercent);
         for (var index = 0; index < 48; index++)
         {
             SignalBars.Add(10 + (index % 6) * 2);
@@ -605,6 +607,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RefreshVersions();
         LoadTasteMemories();
         RestoreLayerDeck();
+        _visualTimer.Start();
     }
 
     [RelayCommand]
@@ -1681,19 +1684,27 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void QuickDelete() => StageCommand("delete last");
 
     [RelayCommand]
-    private void StageLateNightChrome() => StageCommand("chrome vocal");
+    private void StageLateNightChrome() => StageVocalColor("late-night-chrome", "chrome vocal");
 
     [RelayCommand]
-    private void StageSilkSynth() => StageCommand("silk hook");
+    private void StageSilkSynth() => StageVocalColor("silk-synth", "silk hook");
 
     [RelayCommand]
-    private void StageLunaPop() => StageCommand("luna vocal");
+    private void StageLunaPop() => StageVocalColor("luna-pop", "luna vocal");
 
     [RelayCommand]
-    private void StageCloudDoubles() => StageCommand("cloud doubles");
+    private void StageCloudDoubles() => StageVocalColor("cloud-doubles", "cloud doubles");
 
     [RelayCommand]
-    private void StageRawClean() => StageCommand("clean vocal");
+    private void StageRawClean() => StageVocalColor("raw-clean", "clean vocal");
+
+    private void StageVocalColor(string slug, string command)
+    {
+        SelectedVocalPreset = VocalPresets.FirstOrDefault(item => item.Slug == slug) ?? SelectedVocalPreset;
+        ChatText = command;
+        CommandResult = $"{SelectedVocalPreset?.Name ?? "Color"} selected.";
+        Status = "Color selected. Press Do it or make a version.";
+    }
 
     [RelayCommand]
     private void RenderSelectedVocalPreset()
