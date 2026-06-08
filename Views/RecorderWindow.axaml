@@ -149,7 +149,7 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
                       Margin="-20,0,-20,0"
-                      Opacity="0.32"
+                      Opacity="0.46"
                       IsHitTestVisible="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -158,16 +158,16 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Width="10"
+                    <Border Width="11"
                             Height="{Binding}"
                             CornerRadius="999"
                             VerticalAlignment="Center"
                             Margin="3,0"
-                            Background="#7FCAD1"
+                            Background="#DDA36B"
                             BorderBrush="#DDA36B"
                             BorderThickness="1">
                         <Border.RenderTransform>
-                            <ScaleTransform ScaleY="3.8"/>
+                            <ScaleTransform ScaleY="5.4"/>
                         </Border.RenderTransform>
                     </Border>
                 </DataTemplate>
@@ -280,7 +280,7 @@
                                            Foreground="#120918"/>
                                 <TextBlock Text="{Binding CaptureInstruction}"
                                            Margin="0,2,0,0"
-                                           FontSize="11"
+                                           FontSize="10"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
                                            Foreground="#4A351E"/>
@@ -374,7 +374,7 @@
                         </Grid>
 
                         <Grid Grid.Row="2"
-                              ColumnDefinitions="Auto,Auto,Auto,*,*,*"
+                              ColumnDefinitions="Auto,Auto,Auto,*,*"
                               ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
@@ -415,10 +415,6 @@
                                      PlaceholderText="Session 1"
                                      MinHeight="40"/>
                             <ComboBox Grid.Column="4"
-                                      ItemsSource="{Binding CaptureLanes}"
-                                      SelectedItem="{Binding SelectedCaptureLane}"
-                                      MinHeight="40"/>
-                            <ComboBox Grid.Column="5"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
@@ -472,7 +468,7 @@
                                 BorderBrush="#44DDA36B"
                                 BorderThickness="1"
                                 Background="#99130F16">
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                 <WrapPanel Orientation="Horizontal">
                                     <Button Command="{Binding StageRawCleanCommand}" Width="108" Height="34" Padding="0" Margin="0,0,8,0" Background="Transparent" BorderThickness="0">
                                         <Border CornerRadius="12" BorderBrush="#70F2EEE3" BorderThickness="1.1">
@@ -548,14 +544,6 @@
                                     </Button>
                                     <Button Content="X" Command="{Binding QuickDeleteCommand}" Width="42" Height="34" Padding="0" Margin="0,0,8,0" Background="#4A231B" Foreground="#E8E1D2"/>
                                 </WrapPanel>
-                                <Button Grid.Column="1"
-                                        Content=">"
-                                        Command="{Binding RenderSelectedVocalPresetCommand}"
-                                        Padding="15,10"
-                                        MinWidth="60"
-                                        VerticalAlignment="Center"
-                                        Background="#7FCAD1"
-                                        Foreground="#120918"/>
                             </Grid>
                         </Border>
                         <StackPanel IsVisible="{Binding IsCommandBusy}" Spacing="6">

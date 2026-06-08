@@ -332,7 +332,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string RecordingGuardLabel =>
         IsRecording
-            ? $"REC {RecordingElapsedLabel} / {ActiveRecordingName}"
+            ? $"REC {RecordingElapsedLabel}"
             : "Ready";
 
     public string SimpleSignalLabel =>
@@ -378,10 +378,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var preview = AudioPreviewService.Inspect(path);
             if (preview == AudioPreview.Empty)
             {
-                return "Record one take, then shape it.";
+                return ActiveSessionLabel;
             }
 
-            return $"{ActiveSessionLabel} / {preview.Duration}";
+            return preview.Duration;
         }
     }
 
@@ -418,13 +418,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string CaptureInstruction =>
         IsRecording
             ? PeakPercent >= 96
-                ? "Too hot. Lower the input."
+                ? "Too hot."
                 : PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                    ? "No sound yet."
+                    ? "No sound."
                     : PeakPercent < 20
-                        ? "Quiet take."
-                        : "Recording."
-            : $"{ActiveSessionLabel}. Record, play, stop.";
+                        ? "Quiet."
+                        : ""
+            : "";
 
     public string NextActionLabel =>
         IsRecording

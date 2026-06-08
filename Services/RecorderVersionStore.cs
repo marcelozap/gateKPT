@@ -211,7 +211,7 @@ public sealed record RecorderVersionFile(string Name, string Path, string Size, 
         get
         {
             var preview = AudioPreviewService.Inspect(Path);
-            return preview == AudioPreview.Empty ? $"saved {Modified}" : $"peak {preview.Peak}";
+            return preview == AudioPreview.Empty ? Modified : Modified;
         }
     }
 }
