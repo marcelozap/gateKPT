@@ -18,7 +18,7 @@
 
     <Window.Styles>
         <Style Selector="TextBlock">
-            <Setter Property="FontFamily" Value="Inter, Segoe UI, Arial"/>
+            <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Display, Segoe UI, Arial"/>
             <Setter Property="Foreground" Value="#E8E1D2"/>
         </Style>
         <Style Selector="Button">
@@ -27,12 +27,13 @@
             <Setter Property="BorderBrush" Value="#78DDA36B"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="MinHeight" Value="42"/>
-            <Setter Property="FontWeight" Value="Black"/>
+            <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Display, Segoe UI, Arial"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         <Style Selector="Button:pointerover">
-            <Setter Property="RenderTransform" Value="translateY(-1px)"/>
+            <Setter Property="RenderTransform" Value="translateY(-2px)"/>
             <Setter Property="BorderBrush" Value="#DDF2C56B"/>
         </Style>
         <Style Selector="TextBox">
@@ -40,9 +41,9 @@
             <Setter Property="Padding" Value="16,12"/>
             <Setter Property="Background" Value="#FFF2E2C8"/>
             <Setter Property="Foreground" Value="#120918"/>
-            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI, Arial"/>
+            <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="15"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontWeight" Value="Regular"/>
         </Style>
         <Style Selector="ComboBox">
             <Setter Property="CornerRadius" Value="18"/>
@@ -51,9 +52,9 @@
             <Setter Property="Foreground" Value="#FFF2E2C8"/>
             <Setter Property="BorderBrush" Value="#88DDA36B"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI, Arial"/>
+            <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="Black"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
         <Style Selector="ComboBox:pointerover">
             <Setter Property="Background" Value="#211815"/>
@@ -380,7 +381,8 @@
                         BorderBrush="#4FDDA36B"
                         BorderThickness="1"
                         Background="#B8B89B90"
-                        ClipToBounds="True">
+                        ClipToBounds="True"
+                        BoxShadow="0 28 54 0 #99000000">
                     <Grid RowDefinitions="Auto,Auto" RowSpacing="9">
                         <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
@@ -399,13 +401,13 @@
                             <StackPanel IsVisible="{Binding IsRecording}">
                                 <TextBlock Text="{Binding RecordingGuardLabel}"
                                            FontSize="26"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#120918"/>
                                 <TextBlock Text="{Binding CaptureInstruction}"
                                            Margin="0,2,0,0"
                                            FontSize="10"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#4A351E"/>
                             </StackPanel>
@@ -420,7 +422,7 @@
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding PeakDecibelLabel}"
                                                FontSize="20"
-                                               FontWeight="Black"
+                                               FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
                                                Foreground="#F2C56B"/>
                                 </StackPanel>
@@ -462,7 +464,7 @@
                                 <TextBlock Grid.Column="1"
                                            Text="{Binding SimpleSignalLabel}"
                                            FontSize="10"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            LetterSpacing="1.5"
                                            VerticalAlignment="Center"
                                            Foreground="#7FCAD1"/>
@@ -487,7 +489,7 @@
                                                  Foreground="#DDA36B"/>
                                     <TextBlock Text="{Binding BusyLabel}"
                                                FontSize="11"
-                                               FontWeight="Black"
+                                               FontWeight="SemiBold"
                                                Foreground="#E8E1D2"/>
                                 </StackPanel>
                             </Border>
@@ -551,17 +553,17 @@
                         <StackPanel Grid.Row="2" Spacing="5" IsVisible="False">
                             <TextBlock Text="{Binding Status}"
                                        FontSize="13"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#120918"/>
                             <TextBlock Text="{Binding SignalProbeSummary}"
                                        FontSize="11"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#527167"/>
                             <TextBlock Text="{Binding LastRecorderDiagnostic}"
                                        FontSize="11"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#806A3F"/>
                         </StackPanel>
@@ -572,7 +574,8 @@
                         Padding="14"
                         BorderBrush="#55DDA36B"
                         BorderThickness="1"
-                        Background="#D90E1013">
+                        Background="#D90E1013"
+                        BoxShadow="0 24 48 0 #88000000">
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -588,14 +591,15 @@
                         </Grid>
                         <TextBlock Text="{Binding CommandResult}"
                                    FontSize="11"
-                                   FontWeight="Black"
+                                   FontWeight="SemiBold"
                                    TextWrapping="Wrap"
                                    Foreground="#E8E1D2"/>
                         <Border CornerRadius="20"
                                 Padding="12"
                                 BorderBrush="#44DDA36B"
                                 BorderThickness="1"
-                                Background="#99130F16">
+                                Background="#99130F16"
+                                BoxShadow="0 18 36 0 #66000000">
                             <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                 <WrapPanel Orientation="Horizontal">
                                     <Button Command="{Binding StageRawCleanCommand}" Width="108" Height="34" Padding="0" Margin="0,0,8,0" Background="Transparent" BorderThickness="0">
@@ -677,7 +681,7 @@
                         <StackPanel IsVisible="{Binding IsCommandBusy}" Spacing="6">
                             <TextBlock Text="Working..."
                                        FontSize="11"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        LetterSpacing="1.8"
                                        Foreground="#DDA36B"/>
                             <ProgressBar IsIndeterminate="True"
@@ -693,7 +697,8 @@
                         BorderBrush="#33DDA36B"
                         BorderThickness="1"
                         Background="#CC090D13"
-                        ClipToBounds="True">
+                        ClipToBounds="True"
+                        BoxShadow="0 30 60 0 #99000000">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
                         <Border Padding="14"
                                 Background="#B90B1017">
@@ -701,13 +706,13 @@
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
                                     <TextBlock Text="TAKES"
                                                FontSize="10"
-                                               FontWeight="Black"
+                                               FontWeight="SemiBold"
                                                LetterSpacing="2.2"
                                                Foreground="#DDA36B"/>
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding SelectedTakeMixLabel}"
                                                FontSize="12"
-                                               FontWeight="Black"
+                                               FontWeight="SemiBold"
                                                TextWrapping="Wrap"
                                                Foreground="#7FCAD1"/>
                                 </Grid>
@@ -743,12 +748,12 @@
                                                         <Grid ColumnDefinitions="*,Auto">
                                                             <TextBlock Text="{Binding DisplayName}"
                                                                        FontSize="12"
-                                                                       FontWeight="Black"
+                                                                       FontWeight="SemiBold"
                                                                        TextWrapping="Wrap"/>
                                                             <TextBlock Grid.Column="1"
                                                                        Text="{Binding DisplayMeta}"
                                                                        FontSize="10"
-                                                                       FontWeight="Black"
+                                                                       FontWeight="SemiBold"
                                                                        Foreground="#7FCAD1"/>
                                                         </Grid>
                                                     </Grid>
@@ -773,17 +778,17 @@
                             <StackPanel Spacing="6">
                                 <TextBlock Text="CONTENT PACK"
                                            FontSize="10"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            LetterSpacing="2.2"
                                            Foreground="#DDA36B"/>
                                 <TextBlock Text="One take -> one world -> one post."
                                            FontSize="20"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#E8E1D2"/>
                                 <TextBlock Text="{Binding ContentPackTakeLabel}"
                                            FontSize="12"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#7FCAD1"/>
                             </StackPanel>
@@ -819,7 +824,7 @@
                         <StackPanel Grid.Row="1" Spacing="8">
                             <TextBlock Text="{Binding ContentPackSaveLabel}"
                                        FontSize="11"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#7FCAD1"/>
                             <TextBox Text="{Binding ContentPackResult}"
@@ -844,17 +849,17 @@
                             <StackPanel Spacing="6">
                                 <TextBlock Text="TASTE MEMORY"
                                            FontSize="10"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            LetterSpacing="2.2"
                                            Foreground="#DDA36B"/>
                                 <TextBlock Text="{Binding TasteMemorySummary}"
                                            FontSize="18"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#E8E1D2"/>
                                 <TextBlock Text="{Binding TasteNextMove}"
                                            FontSize="12"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#7FCAD1"/>
                             </StackPanel>
@@ -902,7 +907,7 @@
                         </Grid>
                         <TextBlock Text="{Binding TasteMemoryStatus}"
                                    FontSize="11"
-                                   FontWeight="Black"
+                                   FontWeight="SemiBold"
                                    TextWrapping="Wrap"
                                    Foreground="#F2C56B"/>
                     </StackPanel>
@@ -919,17 +924,17 @@
                             <StackPanel Spacing="6">
                                 <TextBlock Text="LIVE ALBUM"
                                            FontSize="10"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            LetterSpacing="2.2"
                                            Foreground="#7FCAD1"/>
                                 <TextBlock Text="{Binding LiveAlbumEra}"
                                            FontSize="18"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#E8E1D2"/>
                                 <TextBlock Text="{Binding LiveAlbumPlan}"
                                            FontSize="12"
-                                           FontWeight="Black"
+                                           FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Foreground="#DDA36B"/>
                             </StackPanel>
@@ -965,7 +970,7 @@
                                  TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding LiveAlbumStatus}"
                                    FontSize="11"
-                                   FontWeight="Black"
+                                   FontWeight="SemiBold"
                                    TextWrapping="Wrap"
                                    Foreground="#F2C56B"/>
                     </StackPanel>
@@ -981,12 +986,12 @@
                         <StackPanel Spacing="8">
                             <TextBlock Text="POST CLIP"
                                        FontSize="10"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        LetterSpacing="2.2"
                                        Foreground="#DDA36B"/>
                             <TextBlock Text="{Binding VideoLayerTitle}"
                                        FontSize="20"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#E8E1D2"/>
                             <TextBlock Text="{Binding VideoLayerDetail}"
@@ -996,7 +1001,7 @@
                                        Foreground="#7FCAD1"/>
                             <TextBlock Text="{Binding VideoWorkflowStatus}"
                                        FontSize="11"
-                                       FontWeight="Black"
+                                       FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        Foreground="#F2C56B"/>
                             <WrapPanel Orientation="Horizontal">
@@ -1015,7 +1020,7 @@
                                         Background="#99130F16">
                                     <TextBlock Text="{Binding VideoSyncLabel}"
                                                FontSize="11"
-                                               FontWeight="Black"
+                                               FontWeight="SemiBold"
                                                Foreground="#7FCAD1"/>
                                 </Border>
                                 <Button Content="Audio later"
