@@ -271,23 +271,19 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "Behind the tool"
     ];
 
-    public string PeakLabel => $"{PeakPercent:0}%";
+    public string PeakLabel => "";
 
     public string PeakDecibelLabel
     {
         get
         {
-            if (PeakPercent >= 96)
+            if (PeakPercent <= 0)
             {
-                return "too hot";
+                return "-inf dB";
             }
 
-            if (PeakPercent >= 8)
-            {
-                return "live";
-            }
-
-            return PeakPercent > 0.5 ? "quiet" : "silent";
+            var decibels = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
+            return $"{decibels:0.0} dB";
         }
     }
 
@@ -335,14 +331,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? $"REC {RecordingElapsedLabel}"
             : "Ready";
 
-    public string SimpleSignalLabel =>
-        PeakPercent >= 96
-            ? "TOO HOT"
-            : PeakPercent >= 8
-                ? "LIVE"
-                : PeakPercent > 0.5
-                    ? "QUIET"
-                    : "SILENT";
+    public string SimpleSignalLabel => "";
 
     public string AudioHealthLabel =>
         SelectedInputDevice is null
@@ -385,6 +374,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
     }
 
+    public string SelectedTakeMixLabel
+    {
+        get
+        {
+            var mixable = Versions.Count(version => IsMixableTake(version.Path));
+            return mixable <= 1
+                ? "One take"
+                : $"{mixable} takes";
+        }
+    }
+
     public string PostReadySignal
     {
         get
@@ -415,16 +415,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
     }
 
-    public string CaptureInstruction =>
-        IsRecording
-            ? PeakPercent >= 96
-                ? "Too hot."
-                : PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                    ? "No sound."
-                    : PeakPercent < 20
-                        ? "Quiet."
-                        : ""
-            : "";
+    public string CaptureInstruction => "";
 
     public string NextActionLabel =>
         IsRecording
@@ -475,8 +466,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             var loaded = LayerSlots.Count(slot => !string.IsNullOrWhiteSpace(slot.Path));
             return loaded == 0
-                ? "Empty lanes."
-                : $"{loaded}/{LayerSlots.Count} loaded.";
+                ? "No tracks loaded."
+                : $"{loaded}/5 tracks";
         }
     }
 
@@ -1163,6 +1154,40 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var included = string.Join(", ", loaded.Select(slot => slot.Name));
         Status = $"{result.Message} Included: {included}.";
         CommandResult = $"Created mix: {Path.GetFileName(result.Path)} | Layers: {included}";
+    }
+
+    [RelayCommand]
+    private void MixSessionTakes()
+    {
+        RefreshVersions();
+        var sourcePaths = Versions
+            .Select(version => version.Path)
+            .Where(IsMixableTake)
+            .ToList();
+
+        if (sourcePaths.Count == 0)
+        {
+            Status = "Record one take first.";
+            CommandResult = "No WAV takes found in this session.";
+            return;
+        }
+
+        _playback.StopAll();
+        var targetPath = _versions.CreateVersionPath("session-mix", ".wav");
+        var result = _mixdown.CreateSmartMixdown(sourcePaths, targetPath);
+        if (!result.Success)
+        {
+            Status = result.Message;
+            CommandResult = "Mix failed.";
+            return;
+        }
+
+        CurrentFilePath = result.Path;
+        LastExportedMixPath = result.Path;
+        RefreshVersions();
+        SelectedVersion = Versions.FirstOrDefault(item => item.Path == result.Path) ?? SelectedVersion;
+        Status = result.Message;
+        CommandResult = $"Mix ready: {Path.GetFileName(result.Path)}";
     }
 
     [RelayCommand]
@@ -1853,9 +1878,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         if (command.Contains("export mix", StringComparison.OrdinalIgnoreCase)
-            || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase))
+            || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase)
+            || command.Equals("mix", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("mix session", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("combine", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("bounce", StringComparison.OrdinalIgnoreCase))
         {
-            ExportLayerMix();
+            MixSessionTakes();
             IsCommandBusy = false;
             return;
         }
@@ -2047,6 +2076,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "No blank takes found."
             : $"Moved {moved} blank/broken take(s) to trash.";
         Status = CommandResult;
+    }
+
+    private static bool IsMixableTake(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            return false;
+        }
+
+        var name = Path.GetFileNameWithoutExtension(path);
+        return !name.Contains("session-mix", StringComparison.OrdinalIgnoreCase)
+            && !name.Contains("layer-mix", StringComparison.OrdinalIgnoreCase)
+            && !name.Contains("mixdown", StringComparison.OrdinalIgnoreCase)
+            && !name.Contains("post-clip", StringComparison.OrdinalIgnoreCase);
     }
 
     private void RenameSelected(string label)
@@ -2596,6 +2639,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VersionListHint));
         OnPropertyChanged(nameof(VisualPaintingSignal));
         OnPropertyChanged(nameof(SessionFolderLabel));
+        OnPropertyChanged(nameof(SelectedTakeMixLabel));
     }
 
     [RelayCommand]

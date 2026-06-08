@@ -96,11 +96,11 @@
 
     <Grid>
         <Grid.Background>
-            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#060A12" Offset="0"/>
-                <GradientStop Color="#151119" Offset="0.36"/>
-                <GradientStop Color="#2A1810" Offset="0.74"/>
-                <GradientStop Color="#06070C" Offset="1"/>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#05070E" Offset="0"/>
+                <GradientStop Color="#0D111A" Offset="0.34"/>
+                <GradientStop Color="#24130F" Offset="0.72"/>
+                <GradientStop Color="#05060A" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -109,21 +109,21 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Top"
                  Margin="0,-240,-180,0"
-                 Fill="#24DDA36B"
+                 Fill="#18B56F4B"
                  IsHitTestVisible="False"/>
         <Ellipse Width="460"
                  Height="460"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Margin="-190,0,0,-170"
-                 Fill="#147FCAD1"
+                 Fill="#1A2D6D79"
                  IsHitTestVisible="False"/>
         <Ellipse Width="380"
                  Height="380"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
                  Margin="0,0,-130,-120"
-                 Fill="#18F2C56B"
+                 Fill="#14C87E46"
                  IsHitTestVisible="False"/>
         <Path Data="M -40 115 C 110 40, 220 155, 370 92 S 620 30, 820 124 S 1120 80, 1460 130"
               Stroke="#46DDA36B"
@@ -149,7 +149,7 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
                       Margin="-20,0,-20,0"
-                      Opacity="0.46"
+                      Opacity="0.58"
                       IsHitTestVisible="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -163,8 +163,8 @@
                             CornerRadius="999"
                             VerticalAlignment="Center"
                             Margin="3,0"
-                            Background="#DDA36B"
-                            BorderBrush="#DDA36B"
+                            Background="#B8C07A4F"
+                            BorderBrush="#72E8E1D2"
                             BorderThickness="1">
                         <Border.RenderTransform>
                             <ScaleTransform ScaleY="5.4"/>
@@ -174,15 +174,15 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <Path Data="M -80 470 C 170 390, 300 540, 520 455 S 860 405, 1120 500 S 1360 440, 1520 490"
-              Stroke="#30E8E1D2"
-              StrokeThickness="1"
+              Stroke="#44E8E1D2"
+              StrokeThickness="1.3"
               Stretch="Fill"
               IsHitTestVisible="False"/>
 
         <Grid Height="450"
               VerticalAlignment="Bottom"
               Margin="0,0,0,-28"
-              Opacity="0.86"
+              Opacity="0.94"
               IsHitTestVisible="False">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
@@ -193,16 +193,16 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Path Data="M -80 310 C 120 150, 300 390, 520 250 S 850 105, 1120 330 S 1370 170, 1560 270"
-                  Stroke="#78DDA36B"
-                  StrokeThickness="3.4"
+                  Stroke="#80A86D48"
+                  StrokeThickness="4.4"
                   Stretch="Fill"/>
             <Path Data="M -70 360 C 140 235, 320 440, 540 325 S 880 215, 1150 390 S 1380 255, 1560 350"
-                  Stroke="#66E8E1D2"
-                  StrokeThickness="2.4"
+                  Stroke="#72D9BFA6"
+                  StrokeThickness="3.1"
                   Stretch="Fill"/>
             <Path Data="M -40 210 C 130 95, 270 265, 470 175 S 800 85, 1080 245 S 1340 130, 1560 205"
-                  Stroke="#55F2C56B"
-                  StrokeThickness="1.8"
+                  Stroke="#66C87E46"
+                  StrokeThickness="2.3"
                   Stretch="Fill"/>
             <Path Data="M 620 85 C 780 5, 1010 18, 1210 122 S 1460 355, 1230 460 S 780 510, 650 365 S 470 160, 620 85"
                   Stroke="#50C9B8FF"
@@ -236,8 +236,8 @@
                                 CornerRadius="999"
                                 Margin="4,0"
                                 VerticalAlignment="Bottom"
-                                Background="#BBDDA36B"
-                                BorderBrush="#66E8E1D2"
+                                Background="#C0C07A4F"
+                                BorderBrush="#8FD9BFA6"
                                 BorderThickness="1"
                                 RenderTransformOrigin="0.5,1">
                             <Border.RenderTransform>
@@ -255,7 +255,7 @@
                         Padding="14"
                         BorderBrush="#72DDA36B"
                         BorderThickness="1"
-                        Background="#F2E8CEC8"
+                        Background="#E5C7AEA8"
                         ClipToBounds="True">
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
                         <Path Grid.RowSpan="3"
@@ -293,15 +293,9 @@
                                     BorderBrush="#70DDA36B"
                                     BorderThickness="1">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding PeakLabel}"
-                                               FontSize="25"
-                                               FontWeight="Black"
-                                               HorizontalAlignment="Center"/>
                                     <TextBlock Text="{Binding PeakDecibelLabel}"
-                                               Margin="0,3,0,0"
-                                               FontSize="10"
+                                               FontSize="20"
                                                FontWeight="Black"
-                                               LetterSpacing="1.5"
                                                HorizontalAlignment="Center"
                                                Foreground="#F2C56B"/>
                                 </StackPanel>
@@ -311,7 +305,7 @@
                         <Border Grid.Row="1"
                                 CornerRadius="21"
                                 Padding="8"
-                                Background="#D90E1013"
+                                Background="#E61B1717"
                                 BorderBrush="#4DDDA36B"
                                 BorderThickness="1"
                                 MinHeight="58"
@@ -374,7 +368,7 @@
                         </Grid>
 
                         <Grid Grid.Row="2"
-                              ColumnDefinitions="Auto,Auto,Auto,*,*"
+                              ColumnDefinitions="Auto,Auto,Auto,Auto,*,*"
                               ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
@@ -403,18 +397,26 @@
                                     Background="#F2EEE3"
                                     Foreground="#120918"/>
                             <Button Grid.Column="2"
+                                    Content="Mix"
+                                    Command="{Binding MixSessionTakesCommand}"
+                                    Padding="20,11"
+                                    MinWidth="128"
+                                    Margin="0"
+                                    Background="#DDA36B"
+                                    Foreground="#120918"/>
+                            <Button Grid.Column="3"
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="20,11"
-                                    MinWidth="150"
+                                    MinWidth="132"
                                     Margin="0"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
-                            <TextBox Grid.Column="3"
+                            <TextBox Grid.Column="4"
                                      Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="Session 1"
                                      MinHeight="40"/>
-                            <ComboBox Grid.Column="4"
+                            <ComboBox Grid.Column="5"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
@@ -577,7 +579,7 @@
                                                LetterSpacing="2.2"
                                                Foreground="#DDA36B"/>
                                     <TextBlock Grid.Column="1"
-                                               Text="{Binding LatestTakeDetail}"
+                                               Text="{Binding SelectedTakeMixLabel}"
                                                FontSize="12"
                                                FontWeight="Black"
                                                TextWrapping="Wrap"
