@@ -626,6 +626,80 @@
 
                 <Border CornerRadius="28"
                         Padding="18"
+                        BorderBrush="#22C6A96D"
+                        BorderThickness="1"
+                        Background="#CC07110E">
+                    <StackPanel Spacing="13">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="TASTE MEMORY"
+                                           FontSize="10"
+                                           FontWeight="Black"
+                                           LetterSpacing="2.2"
+                                           Foreground="#C6A96D"/>
+                                <TextBlock Text="{Binding TasteMemorySummary}"
+                                           FontSize="18"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#E8E1D2"/>
+                                <TextBlock Text="{Binding TasteNextMove}"
+                                           FontSize="12"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#8DB7AD"/>
+                            </StackPanel>
+                            <WrapPanel Grid.Column="1"
+                                       Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="420">
+                                <ComboBox ItemsSource="{Binding TasteRatings}"
+                                          SelectedItem="{Binding TasteRating}"
+                                          MinWidth="82"
+                                          Margin="0,0,8,8"/>
+                                <ComboBox ItemsSource="{Binding ContentPackWorlds}"
+                                          SelectedItem="{Binding TasteMood}"
+                                          MinWidth="124"
+                                          Margin="0,0,8,8"/>
+                                <Button Content="Save taste"
+                                        Command="{Binding SaveTasteMemoryCommand}"
+                                        Padding="16,11"
+                                        MinWidth="122"
+                                        Margin="0,0,8,8"
+                                        Background="#C6A96D"
+                                        Foreground="#07110E"/>
+                                <Button Content="Memory"
+                                        Command="{Binding OpenTasteMemoryFolderCommand}"
+                                        Padding="16,11"
+                                        MinWidth="100"
+                                        Margin="0,0,0,8"
+                                        Background="#203C36"
+                                        Foreground="#E8E1D2"/>
+                            </WrapPanel>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="13">
+                            <TextBox Text="{Binding TasteWorked}"
+                                     PlaceholderText="What worked?"
+                                     MinHeight="82"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"/>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding TasteOff}"
+                                     PlaceholderText="What was off?"
+                                     MinHeight="82"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"/>
+                        </Grid>
+                        <TextBlock Text="{Binding TasteMemoryStatus}"
+                                   FontSize="11"
+                                   FontWeight="Black"
+                                   TextWrapping="Wrap"
+                                   Foreground="#C6A96D"/>
+                    </StackPanel>
+                </Border>
+
+                <Border CornerRadius="28"
+                        Padding="18"
                         BorderBrush="#338DB7AD"
                         BorderThickness="1"
                         Background="#D907110E">

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -29,6 +30,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
         "GateKPT Recorder",
         "content-packs");
+    private readonly string _tasteMemoryDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+        "GateKPT Recorder",
+        "taste-memory");
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
@@ -129,6 +135,21 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _lastContentPackPath = "";
 
     [ObservableProperty]
+    private string _tasteRating = "7";
+
+    [ObservableProperty]
+    private string _tasteMood = "Fire";
+
+    [ObservableProperty]
+    private string _tasteWorked = "";
+
+    [ObservableProperty]
+    private string _tasteOff = "";
+
+    [ObservableProperty]
+    private string _tasteMemoryStatus = "No taste saved yet.";
+
+    [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
     [ObservableProperty]
@@ -144,6 +165,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public ObservableCollection<AudioOutputDeviceItem> OutputDevices { get; } = [];
 
     public ObservableCollection<double> SignalBars { get; } = [];
+
+    public ObservableCollection<TakeTasteMemoryItem> TasteMemories { get; } = [];
 
     public ObservableCollection<CaptureLaneItem> CaptureLanes { get; } =
     [
@@ -206,6 +229,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "Visual",
         "Human",
         "Build"
+    ];
+
+    public IReadOnlyList<string> TasteRatings { get; } =
+    [
+        "10",
+        "9",
+        "8",
+        "7",
+        "6",
+        "5"
     ];
 
     public string PeakLabel => $"{PeakPercent:0}%";
@@ -469,6 +502,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "No pack saved yet."
             : $"Saved: {Path.GetFileName(LastContentPackPath)}";
 
+    public string TasteMemorySummary =>
+        TasteMemories.Count == 0
+            ? "No taste memory yet."
+            : $"{TasteMemories.Count} taste note(s). Last: {TasteMemories.First().Rating}/10 / {TasteMemories.First().Mood}";
+
+    public string TasteNextMove
+    {
+        get
+        {
+            if (TasteMemories.Count == 0)
+            {
+                return "Next move: save one honest note after the take.";
+            }
+
+            var strongest = TasteMemories
+                .OrderByDescending(item => item.NumericRating)
+                .ThenByDescending(item => item.When)
+                .First();
+            return $"Next move: revisit {strongest.Mood.ToLowerInvariant()} / {strongest.ClipType.ToLowerInvariant()} and keep: {strongest.Worked}";
+        }
+    }
+
     public string CommandHelp =>
         "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
 
@@ -519,6 +574,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RefreshInputDevices();
         RefreshOutputDevices();
         RefreshVersions();
+        LoadTasteMemories();
         RestoreLayerDeck();
     }
 
@@ -1381,6 +1437,42 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         return $"#gatekpt #floridanightpop {clipTag} {worldTag}";
     }
 
+    private string TasteMemoryPath => Path.Combine(_tasteMemoryDirectory, "take-taste-memory.json");
+
+    private void LoadTasteMemories()
+    {
+        Directory.CreateDirectory(_tasteMemoryDirectory);
+        if (!File.Exists(TasteMemoryPath))
+        {
+            return;
+        }
+
+        try
+        {
+            var json = File.ReadAllText(TasteMemoryPath);
+            var items = JsonSerializer.Deserialize<List<TakeTasteMemoryItem>>(json, JsonOptions) ?? [];
+            TasteMemories.Clear();
+            foreach (var item in items.OrderByDescending(item => item.When).Take(30))
+            {
+                TasteMemories.Add(item);
+            }
+
+            OnPropertyChanged(nameof(TasteMemorySummary));
+            OnPropertyChanged(nameof(TasteNextMove));
+        }
+        catch
+        {
+            TasteMemoryStatus = "Taste memory file could not be read.";
+        }
+    }
+
+    private void SaveTasteMemories()
+    {
+        Directory.CreateDirectory(_tasteMemoryDirectory);
+        var json = JsonSerializer.Serialize(TasteMemories.ToList(), JsonOptions);
+        File.WriteAllText(TasteMemoryPath, json);
+    }
+
     [RelayCommand]
     private void GenerateContentPack()
     {
@@ -1429,6 +1521,59 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Status = $"Opened {_contentPackDirectory}";
+    }
+
+    [RelayCommand]
+    private void SaveTasteMemory()
+    {
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            TasteMemoryStatus = "Record or select one take first.";
+            Status = TasteMemoryStatus;
+            return;
+        }
+
+        var worked = string.IsNullOrWhiteSpace(TasteWorked)
+            ? "good moment TBD"
+            : TasteWorked.Trim();
+        var off = string.IsNullOrWhiteSpace(TasteOff)
+            ? "needs another listen"
+            : TasteOff.Trim();
+        var item = new TakeTasteMemoryItem(
+            DateTimeOffset.Now,
+            Path.GetFileName(audioPath),
+            audioPath,
+            SelectedCaptureLaneLabel,
+            string.IsNullOrWhiteSpace(ContentPackClipType) ? "Cover" : ContentPackClipType,
+            string.IsNullOrWhiteSpace(TasteMood) ? ContentPackWorld : TasteMood,
+            int.TryParse(TasteRating, out var rating) ? Math.Clamp(rating, 1, 10) : 7,
+            worked,
+            off);
+
+        TasteMemories.Insert(0, item);
+        while (TasteMemories.Count > 30)
+        {
+            TasteMemories.RemoveAt(TasteMemories.Count - 1);
+        }
+
+        SaveTasteMemories();
+        TasteMemoryStatus = $"Saved taste: {item.Rating}/10 / {item.Mood}.";
+        Status = TasteMemoryStatus;
+        OnPropertyChanged(nameof(TasteMemorySummary));
+        OnPropertyChanged(nameof(TasteNextMove));
+    }
+
+    [RelayCommand]
+    private void OpenTasteMemoryFolder()
+    {
+        Directory.CreateDirectory(_tasteMemoryDirectory);
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = _tasteMemoryDirectory,
+            UseShellExecute = true
+        });
+        Status = $"Opened {_tasteMemoryDirectory}";
     }
 
     [RelayCommand]
@@ -2621,4 +2766,18 @@ public sealed record CaptureLaneItem(
     int? LayerNumber)
 {
     public override string ToString() => Name;
+}
+
+public sealed record TakeTasteMemoryItem(
+    DateTimeOffset When,
+    string TakeName,
+    string Path,
+    string Lane,
+    string ClipType,
+    string Mood,
+    int Rating,
+    string Worked,
+    string FeltOff)
+{
+    public int NumericRating => Math.Clamp(Rating, 1, 10);
 }
