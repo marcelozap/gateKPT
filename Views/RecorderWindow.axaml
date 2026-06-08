@@ -126,6 +126,74 @@
                  Margin="0,0,-130,-120"
                  Fill="#107C4A33"
                  IsHitTestVisible="False"/>
+        <Grid Width="1120"
+              Height="560"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Margin="0,70,0,0"
+              Opacity="0.24"
+              IsHitTestVisible="False"
+              RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <SkewTransform AngleX="-18" AngleY="0"/>
+            </Grid.RenderTransform>
+            <UniformGrid Columns="14" Rows="1">
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#2ADDA36B" BorderThickness="1,0,0,0"/>
+            </UniformGrid>
+            <UniformGrid Columns="1" Rows="9">
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#227FCAD1" BorderThickness="0,1,0,0"/>
+            </UniformGrid>
+        </Grid>
+        <Grid Width="128"
+              Height="128"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Top"
+              Margin="0,118,0,0"
+              Opacity="0.58"
+              IsHitTestVisible="False">
+            <Ellipse Fill="#141A1F"
+                     Stroke="#78DDA36B"
+                     StrokeThickness="1.2"/>
+            <UniformGrid Columns="4" Rows="4" Margin="18">
+                <Border Margin="3" CornerRadius="3" Background="#90F2EEE3"/>
+                <Border Margin="3" CornerRadius="3" Background="#55DDA36B"/>
+                <Border Margin="3" CornerRadius="3" Background="#667FCAD1"/>
+                <Border Margin="3" CornerRadius="3" Background="#80F2C56B"/>
+                <Border Margin="3" CornerRadius="3" Background="#667FCAD1"/>
+                <Border Margin="3" CornerRadius="3" Background="#B8F2EEE3"/>
+                <Border Margin="3" CornerRadius="3" Background="#55DDA36B"/>
+                <Border Margin="3" CornerRadius="3" Background="#667FCAD1"/>
+                <Border Margin="3" CornerRadius="3" Background="#55DDA36B"/>
+                <Border Margin="3" CornerRadius="3" Background="#667FCAD1"/>
+                <Border Margin="3" CornerRadius="3" Background="#B8F2EEE3"/>
+                <Border Margin="3" CornerRadius="3" Background="#80DDA36B"/>
+                <Border Margin="3" CornerRadius="3" Background="#80F2C56B"/>
+                <Border Margin="3" CornerRadius="3" Background="#55DDA36B"/>
+                <Border Margin="3" CornerRadius="3" Background="#667FCAD1"/>
+                <Border Margin="3" CornerRadius="3" Background="#90F2EEE3"/>
+            </UniformGrid>
+        </Grid>
         <ItemsControl ItemsSource="{Binding SignalBars}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"
@@ -496,31 +564,67 @@
                         </Grid>
 
                         <Grid Grid.Row="1"
-                              ColumnDefinitions="Auto,Auto,Auto,Auto,*,*"
-                              ColumnSpacing="10">
-                            <Button Content="{Binding RecordingButtonLabel}"
+                              ColumnDefinitions="Auto,Auto,Auto,Auto"
+                              ColumnSpacing="13"
+                              HorizontalAlignment="Center">
+                            <Button
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
-                                    Padding="24,11"
-                                    MinWidth="230"
+                                    Padding="0"
+                                    MinWidth="86"
+                                    Width="86"
+                                    Height="86"
                                     Margin="0"
-                                    FontSize="18"
+                                    FontSize="14"
                                     Background="#06070C"
-                                    Foreground="#E8E1D2"/>
-                            <Button Content="{Binding StopButtonLabel}"
+                                    Foreground="#E8E1D2">
+                                <Grid>
+                                    <Ellipse Fill="#120B0A"
+                                             Stroke="#A8DDA36B"
+                                             StrokeThickness="2"/>
+                                    <Ellipse Width="54"
+                                             Height="54"
+                                             Fill="#241815"
+                                             Stroke="#70E8E1D2"
+                                             StrokeThickness="1.2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                                    <Ellipse Width="18"
+                                             Height="18"
+                                             Fill="#DDA36B"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"/>
+                                </Grid>
+                            </Button>
+                            <Button
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
-                                    Padding="24,11"
-                                    MinWidth="230"
+                                    Padding="0"
+                                    MinWidth="86"
+                                    Width="86"
+                                    Height="86"
                                     Margin="0"
-                                    FontSize="18"
+                                    FontSize="14"
                                     Background="#DDA36B"
-                                    Foreground="#120918"/>
+                                    Foreground="#120918">
+                                <Grid>
+                                    <Ellipse Fill="#DDA36B"
+                                             Stroke="#F2E2C8"
+                                             StrokeThickness="2"/>
+                                    <Rectangle Width="26"
+                                               Height="26"
+                                               RadiusX="4"
+                                               RadiusY="4"
+                                               Fill="#120918"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </Button>
                             <Button Grid.Column="1"
                                     Content="Play"
                                     Command="{Binding PlaySelectedCommand}"
                                     Padding="20,11"
-                                    MinWidth="120"
+                                    MinWidth="140"
                                     Margin="0"
                                     Background="#F2EEE3"
                                     Foreground="#120918"/>
@@ -528,7 +632,7 @@
                                     Content="Mix"
                                     Command="{Binding MixSessionTakesCommand}"
                                     Padding="20,11"
-                                    MinWidth="128"
+                                    MinWidth="140"
                                     Margin="0"
                                     Background="#DDA36B"
                                     Foreground="#120918"/>
@@ -536,15 +640,17 @@
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="20,11"
-                                    MinWidth="132"
+                                    MinWidth="130"
                                     Margin="0"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
                             <TextBox Grid.Column="4"
+                                     IsVisible="False"
                                      Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="Session 1"
                                      MinHeight="40"/>
                             <ComboBox Grid.Column="5"
+                                      IsVisible="False"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
