@@ -902,6 +902,34 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void PlayVersion(RecorderVersionFile? version)
+    {
+        if (version is null)
+        {
+            Status = "No take selected.";
+            return;
+        }
+
+        SelectedVersion = version;
+        CurrentFilePath = version.Path;
+        PlaySelected();
+    }
+
+    [RelayCommand]
+    private void OpenVersionFolder(RecorderVersionFile? version)
+    {
+        if (version is null || string.IsNullOrWhiteSpace(version.Path) || !File.Exists(version.Path))
+        {
+            OpenFolder();
+            return;
+        }
+
+        SelectedVersion = version;
+        SelectFileInExplorer(version.Path);
+        Status = $"Opened take: {Path.GetFileName(version.Path)}";
+    }
+
+    [RelayCommand]
     private void StopPlayback()
     {
         _playback.StopAll();
