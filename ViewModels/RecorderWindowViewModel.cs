@@ -1702,7 +1702,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         SelectedVocalPreset = VocalPresets.FirstOrDefault(item => item.Slug == slug) ?? SelectedVocalPreset;
         ChatText = command;
-        CommandResult = $"{SelectedVocalPreset?.Name ?? "Color"} selected.";
+        CommandResult = "";
         Status = "Color selected. Press Do it or make a version.";
     }
 

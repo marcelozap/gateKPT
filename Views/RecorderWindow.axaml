@@ -149,6 +149,49 @@
                   Stroke="#55F2C56B"
                   StrokeThickness="1.8"
                   Stretch="Fill"/>
+            <Path Data="M 620 85 C 780 5, 1010 18, 1210 122 S 1460 355, 1230 460 S 780 510, 650 365 S 470 160, 620 85"
+                  Stroke="#50C9B8FF"
+                  StrokeThickness="2.8"
+                  Stretch="Fill"/>
+            <Path Data="M 690 135 C 830 68, 1030 78, 1175 170 S 1320 335, 1140 415 S 805 430, 710 330 S 565 202, 690 135"
+                  Stroke="#7A7FCAD1"
+                  StrokeThickness="2"
+                  Stretch="Fill"/>
+            <Path Data="M 760 190 C 875 132, 1040 145, 1135 220 S 1210 326, 1075 368 S 855 360, 790 292 S 650 240, 760 190"
+                  Stroke="#8BF2EEE3"
+                  StrokeThickness="1.45"
+                  Stretch="Fill"/>
+            <Path Data="M 805 225 C 900 180, 1022 190, 1088 245 S 1130 315, 1038 338 S 875 328, 835 287 S 725 263, 805 225"
+                  Stroke="#65F08A3C"
+                  StrokeThickness="1.2"
+                  Stretch="Fill"/>
+            <ItemsControl ItemsSource="{Binding SignalBars}"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Center"
+                          Margin="0,0,120,24"
+                          Opacity="0.5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="3"
+                                Height="{Binding}"
+                                CornerRadius="999"
+                                Margin="3,0"
+                                VerticalAlignment="Bottom"
+                                Background="#88C9B8FF"
+                                BorderBrush="#447FCAD1"
+                                BorderThickness="1">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleY="4.2"/>
+                            </Border.RenderTransform>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             <ItemsControl ItemsSource="{Binding SignalBars}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Bottom"
@@ -369,13 +412,13 @@
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Command: chrome, warmer, room, delete..."
+                                     PlaceholderText="Command..."
                                      MinHeight="42"/>
                             <Button Grid.Column="1"
-                                     Content="Do it"
+                                     Content=">"
                                      Command="{Binding RunChatCommandCommand}"
                                      Padding="16,10"
-                                     MinWidth="76"
+                                     MinWidth="58"
                                      Background="#DDA36B"
                                      Foreground="#120918"/>
                         </Grid>
@@ -391,47 +434,89 @@
                                 Background="#99130F16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                 <WrapPanel Orientation="Horizontal">
-                                    <Button Content="Chrome"
-                                            Command="{Binding StageLateNightChromeCommand}"
-                                            Padding="10,7"
-                                            MinWidth="86"
-                                            Margin="0,0,7,0"
-                                            Background="#59311C"
-                                            Foreground="#E8E1D2"/>
-                                    <Button Content="Silk"
-                                            Command="{Binding StageSilkSynthCommand}"
-                                            Padding="10,7"
-                                            MinWidth="70"
-                                            Margin="0,0,7,0"
-                                            Background="#17304A"
-                                            Foreground="#E8E1D2"/>
-                                    <Button Content="Luna"
-                                            Command="{Binding StageLunaPopCommand}"
-                                            Padding="10,7"
-                                            MinWidth="74"
-                                            Margin="0,0,7,0"
-                                            Background="#5C4520"
-                                            Foreground="#E8E1D2"/>
-                                    <Button Content="Cloud"
-                                            Command="{Binding StageCloudDoublesCommand}"
-                                            Padding="10,7"
-                                            MinWidth="78"
-                                            Margin="0,0,7,0"
-                                            Background="#332744"
-                                            Foreground="#E8E1D2"/>
-                                    <Button Content="Clean"
-                                            Command="{Binding StageRawCleanCommand}"
-                                            Padding="10,7"
-                                            MinWidth="76"
-                                            Margin="0,0,7,0"
-                                            Background="#4A453B"
-                                            Foreground="#E8E1D2"/>
+                                    <Button Command="{Binding StageLateNightChromeCommand}"
+                                            Width="68"
+                                            Height="38"
+                                            Padding="0"
+                                            Margin="0,0,8,0"
+                                            BorderBrush="#BEE8E1D2"
+                                            BorderThickness="1.4">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#F7F3EA" Offset="0"/>
+                                                <GradientStop Color="#7C8493" Offset="0.22"/>
+                                                <GradientStop Color="#FFFFFF" Offset="0.42"/>
+                                                <GradientStop Color="#C9B8FF" Offset="0.58"/>
+                                                <GradientStop Color="#1A2130" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button Command="{Binding StageSilkSynthCommand}"
+                                            Width="68"
+                                            Height="38"
+                                            Padding="0"
+                                            Margin="0,0,8,0"
+                                            BorderBrush="#786EE7FF"
+                                            BorderThickness="1.4">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#6EE7FF" Offset="0"/>
+                                                <GradientStop Color="#17304A" Offset="0.45"/>
+                                                <GradientStop Color="#09121F" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button Command="{Binding StageLunaPopCommand}"
+                                            Width="68"
+                                            Height="38"
+                                            Padding="0"
+                                            Margin="0,0,8,0"
+                                            BorderBrush="#88F2C56B"
+                                            BorderThickness="1.4">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#F2C56B" Offset="0"/>
+                                                <GradientStop Color="#6A461B" Offset="0.55"/>
+                                                <GradientStop Color="#18110B" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button Command="{Binding StageCloudDoublesCommand}"
+                                            Width="68"
+                                            Height="38"
+                                            Padding="0"
+                                            Margin="0,0,8,0"
+                                            BorderBrush="#88C9B8FF"
+                                            BorderThickness="1.4">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#C9B8FF" Offset="0"/>
+                                                <GradientStop Color="#4A3359" Offset="0.5"/>
+                                                <GradientStop Color="#111225" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
+                                    <Button Command="{Binding StageRawCleanCommand}"
+                                            Width="68"
+                                            Height="38"
+                                            Padding="0"
+                                            Margin="0,0,8,0"
+                                            BorderBrush="#A8F2EEE3"
+                                            BorderThickness="1.4">
+                                        <Button.Background>
+                                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                <GradientStop Color="#F2EEE3" Offset="0"/>
+                                                <GradientStop Color="#6D6659" Offset="0.48"/>
+                                                <GradientStop Color="#171511" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Button.Background>
+                                    </Button>
                                 </WrapPanel>
                                 <Button Grid.Column="1"
-                                        Content="Make"
+                                        Content=">"
                                         Command="{Binding RenderSelectedVocalPresetCommand}"
                                         Padding="15,10"
-                                        MinWidth="88"
+                                        MinWidth="60"
                                         VerticalAlignment="Center"
                                         Background="#7FCAD1"
                                         Foreground="#120918"/>
@@ -449,27 +534,52 @@
                                          Foreground="#F2C56B"/>
                         </StackPanel>
                         <WrapPanel Orientation="Horizontal">
-                            <Button Content="+ Warm"
-                                    Command="{Binding QuickWarmerCommand}"
-                                    Padding="11,7"
-                                    MinWidth="74"
+                            <Button Command="{Binding QuickWarmerCommand}"
+                                    Width="58"
+                                    Height="36"
+                                    Padding="0"
                                     Margin="0,0,7,7"
-                                    Background="#211815"
-                                    Foreground="#E8E1D2"/>
-                            <Button Content="+ Loud"
-                                    Command="{Binding QuickLouderCommand}"
-                                    Padding="11,7"
-                                    MinWidth="74"
+                                    BorderBrush="#AAF08A3C"
+                                    BorderThickness="1.4">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
+                                        <GradientStop Color="#3A1309" Offset="0"/>
+                                        <GradientStop Color="#F08A3C" Offset="0.42"/>
+                                        <GradientStop Color="#F2C56B" Offset="0.58"/>
+                                        <GradientStop Color="#7A2010" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Command="{Binding QuickLouderCommand}"
+                                    Width="58"
+                                    Height="36"
+                                    Padding="0"
                                     Margin="0,0,7,7"
-                                    Background="#211815"
-                                    Foreground="#E8E1D2"/>
-                            <Button Content="+ Room"
-                                    Command="{Binding QuickReverbCommand}"
-                                    Padding="11,7"
-                                    MinWidth="74"
+                                    BorderBrush="#AA6EE7FF"
+                                    BorderThickness="1.4">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                        <GradientStop Color="#6EE7FF" Offset="0"/>
+                                        <GradientStop Color="#0B3E4D" Offset="0.54"/>
+                                        <GradientStop Color="#061318" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Command="{Binding QuickReverbCommand}"
+                                    Width="58"
+                                    Height="36"
+                                    Padding="0"
                                     Margin="0,0,7,7"
-                                    Background="#211815"
-                                    Foreground="#E8E1D2"/>
+                                    BorderBrush="#AAC9B8FF"
+                                    BorderThickness="1.4">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                        <GradientStop Color="#C9B8FF" Offset="0"/>
+                                        <GradientStop Color="#26304F" Offset="0.42"/>
+                                        <GradientStop Color="#080A18" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
                             <Button Content="X"
                                     Command="{Binding QuickDeleteCommand}"
                                     Padding="11,7"
