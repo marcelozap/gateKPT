@@ -125,40 +125,14 @@
               IsHitTestVisible="False"/>
 
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="21" Spacing="16" MaxWidth="980" HorizontalAlignment="Center">
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
-                    <StackPanel>
-                        <TextBlock Text="GateKPT"
-                                   FontSize="25"
-                                   FontWeight="Black"/>
-                        <TextBlock Text="warm motel signal"
-                                   Margin="0,4,0,0"
-                                   FontSize="12"
-                                   FontWeight="Black"
-                                   LetterSpacing="1.4"
-                                   Foreground="#DDA36B"/>
-                    </StackPanel>
-                    <Border Grid.Column="1"
-                            CornerRadius="999"
-                            Padding="16,9"
-                            BorderBrush="#70DDA36B"
-                            BorderThickness="1"
-                            Background="#BB1A120B">
-                        <TextBlock Text="{Binding MeterStateLabel}"
-                                   FontSize="11"
-                                   FontWeight="Black"
-                                   LetterSpacing="1.5"
-                                   Foreground="#F2C56B"/>
-                    </Border>
-                </Grid>
-
+            <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
-                        Padding="16"
+                        Padding="14"
                         BorderBrush="#72DDA36B"
                         BorderThickness="1"
                         Background="#F2E8CEC8"
                         ClipToBounds="True">
-                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
                         <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
                               Stroke="#2FDDA36B"
@@ -172,16 +146,16 @@
                               Stretch="Fill"
                               IsHitTestVisible="False"/>
 
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
                             <StackPanel>
                                 <TextBlock Text="{Binding RecordingGuardLabel}"
-                                           FontSize="30"
+                                           FontSize="26"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
                                            Foreground="#120918"/>
                                 <TextBlock Text="{Binding CaptureInstruction}"
                                            Margin="0,2,0,0"
-                                           FontSize="13"
+                                           FontSize="11"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
                                            Foreground="#4A351E"/>
@@ -195,7 +169,7 @@
                                     BorderThickness="1">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding PeakLabel}"
-                                               FontSize="28"
+                                               FontSize="25"
                                                FontWeight="Black"
                                                HorizontalAlignment="Center"/>
                                     <TextBlock Text="{Binding PeakDecibelLabel}"
@@ -211,12 +185,12 @@
 
                         <Border Grid.Row="1"
                                 CornerRadius="21"
-                                Padding="10"
+                                Padding="8"
                                 Background="#D90E1013"
                                 BorderBrush="#4DDDA36B"
                                 BorderThickness="1"
-                                MinHeight="72"
-                                MaxHeight="86">
+                                MinHeight="58"
+                                MaxHeight="66">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                                 <ItemsControl
                                               ItemsSource="{Binding SignalBars}"
@@ -280,25 +254,25 @@
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
-                                    Padding="26,13"
+                                    Padding="24,11"
                                     MinWidth="230"
                                     Margin="0"
-                                    FontSize="19"
+                                    FontSize="18"
                                     Background="#06070C"
                                     Foreground="#E8E1D2"/>
                             <Button Content="{Binding StopButtonLabel}"
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
-                                    Padding="26,13"
+                                    Padding="24,11"
                                     MinWidth="230"
                                     Margin="0"
-                                    FontSize="19"
+                                    FontSize="18"
                                     Background="#DDA36B"
                                     Foreground="#120918"/>
                             <Button Grid.Column="1"
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
-                                    Padding="22,13"
+                                    Padding="20,11"
                                     MinWidth="150"
                                     Margin="0"
                                     Background="#F2EEE3"
@@ -306,11 +280,11 @@
                             <ComboBox Grid.Column="2"
                                       ItemsSource="{Binding CaptureLanes}"
                                       SelectedItem="{Binding SelectedCaptureLane}"
-                                      MinHeight="44"/>
+                                      MinHeight="40"/>
                             <ComboBox Grid.Column="3"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
-                                      MinHeight="44"/>
+                                      MinHeight="40"/>
                         </Grid>
 
                         <StackPanel Grid.Row="2" Spacing="5" IsVisible="False">
@@ -333,95 +307,95 @@
                     </Grid>
                 </Border>
 
-                <Border CornerRadius="28"
-                        Padding="18"
+                <Border CornerRadius="24"
+                        Padding="14"
                         BorderBrush="#55DDA36B"
                         BorderThickness="1"
                         Background="#D90E1013">
-                    <StackPanel Spacing="13">
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                    <StackPanel Spacing="9">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Tell GateKPT: late night chrome, warmer, room, delete last..."
-                                     MinHeight="48"/>
+                                     PlaceholderText="Command: chrome, warmer, room, delete..."
+                                     MinHeight="42"/>
                             <Button Grid.Column="1"
-                                    Content="Do it"
-                                    Command="{Binding RunChatCommandCommand}"
-                                    Padding="21,12"
-                                    MinWidth="89"
-                                    Background="#DDA36B"
-                                    Foreground="#120918"/>
+                                     Content="Do it"
+                                     Command="{Binding RunChatCommandCommand}"
+                                     Padding="16,10"
+                                     MinWidth="76"
+                                     Background="#DDA36B"
+                                     Foreground="#120918"/>
                         </Grid>
                         <TextBlock Text="{Binding CommandResult}"
-                                   FontSize="12"
+                                   FontSize="11"
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
                                    Foreground="#E8E1D2"/>
-                        <Border CornerRadius="21"
-                                Padding="13"
+                        <Border CornerRadius="18"
+                                Padding="10"
                                 BorderBrush="#44DDA36B"
                                 BorderThickness="1"
                                 Background="#99130F16">
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13" RowDefinitions="Auto,Auto">
-                                <StackPanel Spacing="5">
-                                    <TextBlock Text="NEON VOCAL PRESETS"
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="VOCAL"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
                                                Foreground="#DDA36B"/>
                                     <ComboBox ItemsSource="{Binding VocalPresets}"
                                               SelectedItem="{Binding SelectedVocalPreset}"
-                                              MinHeight="42"/>
+                                              MinHeight="38"/>
                                     <TextBlock Text="{Binding SelectedVocalPreset.Description}"
-                                               FontSize="11"
+                                               FontSize="10"
                                                FontWeight="SemiBold"
                                                TextWrapping="Wrap"
                                                Foreground="#7FCAD1"/>
                                 </StackPanel>
                                 <Button Grid.Column="1"
-                                        Content="Render vocal"
+                                        Content="Render"
                                         Command="{Binding RenderSelectedVocalPresetCommand}"
-                                        Padding="18,11"
-                                        MinWidth="130"
+                                        Padding="15,10"
+                                        MinWidth="104"
                                         VerticalAlignment="Center"
                                         Background="#7FCAD1"
                                         Foreground="#120918"/>
                                 <WrapPanel Grid.Row="1"
                                            Grid.ColumnSpan="2"
                                            Orientation="Horizontal"
-                                           Margin="0,13,0,0">
+                                           Margin="0,8,0,0">
                                     <Button Content="Late Night Chrome"
                                             Command="{Binding StageLateNightChromeCommand}"
-                                            Padding="13,9"
-                                            MinWidth="132"
-                                            Margin="0,0,8,8"
+                                            Padding="10,7"
+                                            MinWidth="118"
+                                            Margin="0,0,7,7"
                                             Background="#211815"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Silk Synth"
                                             Command="{Binding StageSilkSynthCommand}"
-                                            Padding="13,9"
-                                            MinWidth="104"
-                                            Margin="0,0,8,8"
+                                            Padding="10,7"
+                                            MinWidth="92"
+                                            Margin="0,0,7,7"
                                             Background="#211815"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Luna Pop"
                                             Command="{Binding StageLunaPopCommand}"
-                                            Padding="13,9"
-                                            MinWidth="96"
-                                            Margin="0,0,8,8"
+                                            Padding="10,7"
+                                            MinWidth="84"
+                                            Margin="0,0,7,7"
                                             Background="#211815"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Cloud Doubles"
                                             Command="{Binding StageCloudDoublesCommand}"
-                                            Padding="13,9"
-                                            MinWidth="122"
-                                            Margin="0,0,8,8"
+                                            Padding="10,7"
+                                            MinWidth="110"
+                                            Margin="0,0,7,7"
                                             Background="#211815"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Raw Clean"
                                             Command="{Binding StageRawCleanCommand}"
-                                            Padding="13,9"
-                                            MinWidth="96"
-                                            Margin="0,0,8,8"
+                                            Padding="10,7"
+                                            MinWidth="84"
+                                            Margin="0,0,7,7"
                                             Background="#99171110"
                                             Foreground="#E8E1D2"/>
                                 </WrapPanel>
@@ -441,30 +415,30 @@
                         <WrapPanel Orientation="Horizontal">
                             <Button Content="+ Warm"
                                     Command="{Binding QuickWarmerCommand}"
-                                    Padding="14,9"
-                                    MinWidth="82"
-                                    Margin="0,0,8,8"
+                                    Padding="11,7"
+                                    MinWidth="74"
+                                    Margin="0,0,7,7"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
                             <Button Content="+ Loud"
                                     Command="{Binding QuickLouderCommand}"
-                                    Padding="14,9"
-                                    MinWidth="82"
-                                    Margin="0,0,8,8"
+                                    Padding="11,7"
+                                    MinWidth="74"
+                                    Margin="0,0,7,7"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
                             <Button Content="+ Room"
                                     Command="{Binding QuickReverbCommand}"
-                                    Padding="14,9"
-                                    MinWidth="82"
-                                    Margin="0,0,8,8"
+                                    Padding="11,7"
+                                    MinWidth="74"
+                                    Margin="0,0,7,7"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
                             <Button Content="Delete"
                                     Command="{Binding QuickDeleteCommand}"
-                                    Padding="14,9"
-                                    MinWidth="82"
-                                    Margin="0,0,8,8"
+                                    Padding="11,7"
+                                    MinWidth="74"
+                                    Margin="0,0,7,7"
                                     Background="#4A231B"
                                     Foreground="#E8E1D2"/>
                         </WrapPanel>
