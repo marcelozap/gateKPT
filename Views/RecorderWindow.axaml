@@ -685,7 +685,7 @@
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                     PlaceholderText="Command..."
+                                     PlaceholderText="Ask GateKPT..."
                                      MinHeight="42"/>
                             <Button Grid.Column="1"
                                      Content=">"

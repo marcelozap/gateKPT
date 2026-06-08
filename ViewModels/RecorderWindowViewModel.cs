@@ -25,6 +25,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
     private readonly InputMonitorService _monitor = new();
+    private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
     private readonly string _contentPackDirectory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
@@ -1802,8 +1803,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(command))
         {
-            CommandResult = "Tell me what you want changed. Example: make warmer, louder, add reverb, delete last.";
-            Status = "Waiting for a command.";
+            CommandResult = "Ask me what now, status, mix, content plan, or P/L.";
+            Status = "";
             return;
         }
 
@@ -1970,9 +1971,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
-        CommandResult = $"I saved that as a note for this session. If you want me to change audio, say something like: {CommandHelp}";
-        Status = "Saved as a note. No audio was changed.";
+        CommandResult = _brain.Answer(BuildBrainContext(), command);
+        Status = "GateKPT answered.";
         IsCommandBusy = false;
+    }
+
+    private GateKptBrainContext BuildBrainContext()
+    {
+        var selected = SelectedVersion?.DisplayName ?? CurrentFileLabel;
+        var hasMix = !string.IsNullOrWhiteSpace(LastExportedMixPath) && File.Exists(LastExportedMixPath);
+        return new GateKptBrainContext(
+            ActiveSessionLabel,
+            Versions.Count,
+            Versions.Count > 0 || !string.IsNullOrWhiteSpace(CurrentFilePath),
+            hasMix,
+            selected,
+            hasMix ? Path.GetFileName(LastExportedMixPath) : "");
     }
 
     [RelayCommand]
