@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GateKPT.MusicOS.ViewModels"
         xmlns:svc="using:GateKPT.MusicOS.Services"
@@ -24,7 +24,7 @@
         <Style Selector="Button">
             <Setter Property="CornerRadius" Value="999"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#55FF5CB8"/>
+            <Setter Property="BorderBrush" Value="#66E8A15F"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="MinHeight" Value="42"/>
             <Setter Property="FontWeight" Value="Black"/>
@@ -33,12 +33,12 @@
         </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="RenderTransform" Value="translateY(-1px)"/>
-            <Setter Property="BorderBrush" Value="#CC6EE7FF"/>
+            <Setter Property="BorderBrush" Value="#CCF2C56B"/>
         </Style>
         <Style Selector="TextBox">
             <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="16,12"/>
-            <Setter Property="Background" Value="#FFF8EBDD"/>
+            <Setter Property="Background" Value="#FFF2E2C8"/>
             <Setter Property="Foreground" Value="#120918"/>
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="15"/>
@@ -48,8 +48,8 @@
             <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="Background" Value="#0A101B"/>
-            <Setter Property="Foreground" Value="#FFF8EBDD"/>
-            <Setter Property="BorderBrush" Value="#88FF5CB8"/>
+            <Setter Property="Foreground" Value="#FFF2E2C8"/>
+            <Setter Property="BorderBrush" Value="#88E8A15F"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="13"/>
@@ -57,13 +57,13 @@
         </Style>
         <Style Selector="ComboBox:pointerover">
             <Setter Property="Background" Value="#1B1425"/>
-            <Setter Property="BorderBrush" Value="#CCFF5CB8"/>
+            <Setter Property="BorderBrush" Value="#CCF2C56B"/>
         </Style>
         <Style Selector="ProgressBar">
             <Setter Property="Height" Value="13"/>
             <Setter Property="CornerRadius" Value="999"/>
-            <Setter Property="Background" Value="#241A2B"/>
-            <Setter Property="Foreground" Value="#FF5CB8"/>
+            <Setter Property="Background" Value="#231C1D"/>
+            <Setter Property="Foreground" Value="#E97F77"/>
         </Style>
     </Window.Styles>
 
@@ -71,8 +71,8 @@
         <Grid.Background>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#07111F" Offset="0"/>
-                <GradientStop Color="#17102D" Offset="0.42"/>
-                <GradientStop Color="#351323" Offset="0.72"/>
+                <GradientStop Color="#171427" Offset="0.42"/>
+                <GradientStop Color="#2D1B18" Offset="0.72"/>
                 <GradientStop Color="#06070C" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
@@ -82,27 +82,27 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Top"
                  Margin="0,-240,-180,0"
-                 Fill="#22FF5CB8"
+                 Fill="#22E8A15F"
                  IsHitTestVisible="False"/>
         <Ellipse Width="460"
                  Height="460"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Margin="-190,0,0,-170"
-                 Fill="#1F6EE7FF"
+                 Fill="#1B7FCAD1"
                  IsHitTestVisible="False"/>
         <Path Data="M -40 115 C 110 40, 220 155, 370 92 S 620 30, 820 124 S 1120 80, 1460 130"
-              Stroke="#44FF5CB8"
+              Stroke="#3FE8A15F"
               StrokeThickness="2.6"
               Stretch="Fill"
               IsHitTestVisible="False"/>
         <Path Data="M -70 165 C 130 98, 270 208, 430 142 S 710 90, 940 180 S 1210 125, 1500 175"
-              Stroke="#38F2A6D8"
+              Stroke="#35DDA36B"
               StrokeThickness="1.8"
               Stretch="Fill"
               IsHitTestVisible="False"/>
         <Path Data="M -40 220 C 120 110, 250 290, 420 170 S 720 80, 1040 210 S 1320 120, 1480 190"
-              Stroke="#446EE7FF"
+              Stroke="#3A7FCAD1"
               StrokeThickness="2.2"
               Stretch="Fill"
               IsHitTestVisible="False"/>
@@ -129,38 +129,38 @@
                                    FontSize="12"
                                    FontWeight="Black"
                                    LetterSpacing="1.4"
-                                   Foreground="#FF9AD5"/>
+                                   Foreground="#E8A15F"/>
                     </StackPanel>
                     <Border Grid.Column="1"
                             CornerRadius="999"
                             Padding="16,9"
-                            BorderBrush="#66FF5CB8"
+                            BorderBrush="#66E8A15F"
                             BorderThickness="1"
-                            Background="#BB130A1D">
+                            Background="#BB1A120B">
                         <TextBlock Text="{Binding MeterStateLabel}"
                                    FontSize="11"
                                    FontWeight="Black"
                                    LetterSpacing="1.5"
-                                   Foreground="#FFCB7A"/>
+                                   Foreground="#F2C56B"/>
                     </Border>
                 </Grid>
 
                 <Border CornerRadius="34"
                         Padding="18"
-                        BorderBrush="#66FFB7DD"
+                        BorderBrush="#66E8A15F"
                         BorderThickness="1"
-                        Background="#F1F2DCC4"
+                        Background="#F1F0DDC6"
                         ClipToBounds="True">
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
                         <Path Grid.RowSpan="4"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
-                              Stroke="#30FF5CB8"
+                              Stroke="#30E8A15F"
                               StrokeThickness="1.2"
                               Stretch="Fill"
                               IsHitTestVisible="False"/>
                         <Path Grid.RowSpan="4"
                               Data="M 0 112 C 110 85, 190 150, 310 102 S 510 95, 690 132 S 850 105, 980 126"
-                              Stroke="#286EE7FF"
+                              Stroke="#287FCAD1"
                               StrokeThickness="1"
                               Stretch="Fill"
                               IsHitTestVisible="False"/>
@@ -171,7 +171,7 @@
                                            FontSize="11"
                                            FontWeight="Black"
                                            LetterSpacing="2.4"
-                                           Foreground="#9C4A71"/>
+                                           Foreground="#9C5B3A"/>
                                 <TextBlock Text="{Binding RecordingGuardLabel}"
                                            Margin="0,6,0,0"
                                            FontSize="36"
@@ -183,14 +183,14 @@
                                            FontSize="15"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
-                                           Foreground="#402E4C"/>
+                                           Foreground="#453627"/>
                             </StackPanel>
                             <Border Grid.Column="1"
                                     CornerRadius="24"
                                     MinWidth="122"
                                     Padding="16,12"
                                     Background="#06070C"
-                                    BorderBrush="#66FF5CB8"
+                                    BorderBrush="#66E8A15F"
                                     BorderThickness="1">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding PeakLabel}"
@@ -203,7 +203,7 @@
                                                FontWeight="Black"
                                                LetterSpacing="1.5"
                                                HorizontalAlignment="Center"
-                                               Foreground="#C6A96D"/>
+                                               Foreground="#D8B35F"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -211,8 +211,8 @@
                         <Border Grid.Row="1"
                                 CornerRadius="24"
                                 Padding="13"
-                                Background="#D90A101B"
-                                BorderBrush="#44FF5CB8"
+                                Background="#D90B1116"
+                                BorderBrush="#44E8A15F"
                                 BorderThickness="1"
                                 MinHeight="128">
                             <Grid RowDefinitions="Auto,*" RowSpacing="10">
@@ -221,13 +221,13 @@
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
-                                               Foreground="#C6A96D"/>
+                                               Foreground="#D8B35F"/>
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding SimpleSignalLabel}"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="1.5"
-                                               Foreground="#6EE7FF"/>
+                                               Foreground="#7FCAD1"/>
                                 </Grid>
                                 <ItemsControl Grid.Row="1"
                                               ItemsSource="{Binding SignalBars}"
@@ -245,8 +245,8 @@
                                                     CornerRadius="999"
                                                     VerticalAlignment="Center"
                                                     Margin="2,0"
-                                                    Background="#FF5CB8"
-                                                    BorderBrush="#556EE7FF"
+                                                    Background="#E97F77"
+                                                    BorderBrush="#557FCAD1"
                                                     BorderThickness="1"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -261,15 +261,15 @@
                                     VerticalAlignment="Center"
                                     CornerRadius="999"
                                     Padding="13,8"
-                                    Background="#E6100918"
-                                    BorderBrush="#66FF5CB8"
+                                    Background="#E618120A"
+                                    BorderBrush="#66E8A15F"
                                     BorderThickness="1">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <ProgressBar IsIndeterminate="True"
                                                  Width="42"
                                                  Height="6"
-                                                 Background="#241A2B"
-                                                 Foreground="#FF5CB8"/>
+                                                 Background="#231C1D"
+                                                 Foreground="#E97F77"/>
                                     <TextBlock Text="{Binding BusyLabel}"
                                                FontSize="11"
                                                FontWeight="Black"
@@ -295,7 +295,7 @@
                                     MinWidth="230"
                                     Margin="0,0,8,8"
                                     FontSize="19"
-                                    Background="#C6A96D"
+                                    Background="#D8B35F"
                                     Foreground="#120918"/>
                             <Button Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
@@ -338,9 +338,9 @@
 
                 <Border CornerRadius="28"
                         Padding="18"
-                        BorderBrush="#55FF5CB8"
+                        BorderBrush="#55E8A15F"
                         BorderThickness="1"
-                        Background="#D90A101B">
+                        Background="#D90B1116">
                     <StackPanel Spacing="13">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -351,7 +351,7 @@
                                     Command="{Binding RunChatCommandCommand}"
                                     Padding="21,12"
                                     MinWidth="89"
-                                    Background="#C6A96D"
+                                    Background="#D8B35F"
                                     Foreground="#120918"/>
                         </Grid>
                         <TextBlock Text="{Binding CommandResult}"
@@ -361,16 +361,16 @@
                                    Foreground="#E8E1D2"/>
                         <Border CornerRadius="21"
                                 Padding="13"
-                                BorderBrush="#44FF5CB8"
+                                BorderBrush="#44E8A15F"
                                 BorderThickness="1"
-                                Background="#99100918">
+                                Background="#99130F16">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13" RowDefinitions="Auto,Auto">
                                 <StackPanel Spacing="5">
                                     <TextBlock Text="NEON VOCAL PRESETS"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
-                                               Foreground="#FF9AD5"/>
+                                               Foreground="#E8A15F"/>
                                     <ComboBox ItemsSource="{Binding VocalPresets}"
                                               SelectedItem="{Binding SelectedVocalPreset}"
                                               MinHeight="42"/>
@@ -378,7 +378,7 @@
                                                FontSize="11"
                                                FontWeight="SemiBold"
                                                TextWrapping="Wrap"
-                                               Foreground="#6EE7FF"/>
+                                               Foreground="#7FCAD1"/>
                                 </StackPanel>
                                 <Button Grid.Column="1"
                                         Content="Render vocal"
@@ -386,7 +386,7 @@
                                         Padding="18,11"
                                         MinWidth="130"
                                         VerticalAlignment="Center"
-                                        Background="#6EE7FF"
+                                        Background="#7FCAD1"
                                         Foreground="#120918"/>
                                 <WrapPanel Grid.Row="1"
                                            Grid.ColumnSpan="2"
@@ -397,35 +397,35 @@
                                             Padding="13,9"
                                             MinWidth="132"
                                             Margin="0,0,8,8"
-                                            Background="#25142A"
+                                            Background="#211821"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Silk Synth"
                                             Command="{Binding StageSilkSynthCommand}"
                                             Padding="13,9"
                                             MinWidth="104"
                                             Margin="0,0,8,8"
-                                            Background="#25142A"
+                                            Background="#211821"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Luna Pop"
                                             Command="{Binding StageLunaPopCommand}"
                                             Padding="13,9"
                                             MinWidth="96"
                                             Margin="0,0,8,8"
-                                            Background="#25142A"
+                                            Background="#211821"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Cloud Doubles"
                                             Command="{Binding StageCloudDoublesCommand}"
                                             Padding="13,9"
                                             MinWidth="122"
                                             Margin="0,0,8,8"
-                                            Background="#25142A"
+                                            Background="#211821"
                                             Foreground="#E8E1D2"/>
                                     <Button Content="Raw Clean"
                                             Command="{Binding StageRawCleanCommand}"
                                             Padding="13,9"
                                             MinWidth="96"
                                             Margin="0,0,8,8"
-                                            Background="#99100918"
+                                            Background="#99130F16"
                                             Foreground="#E8E1D2"/>
                                 </WrapPanel>
                             </Grid>
@@ -435,11 +435,11 @@
                                        FontSize="11"
                                        FontWeight="Black"
                                        LetterSpacing="1.8"
-                                       Foreground="#FF9AD5"/>
+                                       Foreground="#E8A15F"/>
                             <ProgressBar IsIndeterminate="True"
                                          Height="6"
-                                         Background="#241A2B"
-                                         Foreground="#FFCB7A"/>
+                                         Background="#231C1D"
+                                         Foreground="#F2C56B"/>
                         </StackPanel>
                         <WrapPanel Orientation="Horizontal">
                             <Button Content="+ Warm"
@@ -447,28 +447,28 @@
                                     Padding="14,9"
                                     MinWidth="82"
                                     Margin="0,0,8,8"
-                                    Background="#25142A"
+                                    Background="#211821"
                                     Foreground="#E8E1D2"/>
                             <Button Content="+ Loud"
                                     Command="{Binding QuickLouderCommand}"
                                     Padding="14,9"
                                     MinWidth="82"
                                     Margin="0,0,8,8"
-                                    Background="#25142A"
+                                    Background="#211821"
                                     Foreground="#E8E1D2"/>
                             <Button Content="+ Room"
                                     Command="{Binding QuickReverbCommand}"
                                     Padding="14,9"
                                     MinWidth="82"
                                     Margin="0,0,8,8"
-                                    Background="#25142A"
+                                    Background="#211821"
                                     Foreground="#E8E1D2"/>
                             <Button Content="Delete"
                                     Command="{Binding QuickDeleteCommand}"
                                     Padding="14,9"
                                     MinWidth="82"
                                     Margin="0,0,8,8"
-                                    Background="#431B27"
+                                    Background="#4A231B"
                                     Foreground="#E8E1D2"/>
                         </WrapPanel>
                     </StackPanel>
@@ -477,20 +477,20 @@
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="21">
                     <Border CornerRadius="28"
                             Padding="18"
-                            BorderBrush="#33FFB7DD"
+                            BorderBrush="#33E8A15F"
                             BorderThickness="1"
-                            Background="#CC080B16">
+                            Background="#CC090D13">
                         <StackPanel Spacing="10">
                             <TextBlock Text="NIGHT TAKES"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
-                                       Foreground="#FF9AD5"/>
+                                       Foreground="#E8A15F"/>
                             <TextBlock Text="{Binding CurrentFilePreviewLabel}"
                                        FontSize="12"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#6EE7FF"/>
+                                       Foreground="#7FCAD1"/>
                             <ListBox ItemsSource="{Binding Versions}"
                                      SelectedItem="{Binding SelectedVersion}"
                                      Background="Transparent"
@@ -502,7 +502,7 @@
                                                 Padding="13"
                                                 Margin="0,0,0,8"
                                                 Background="#15140922"
-                                                BorderBrush="#33FF5CB8"
+                                                BorderBrush="#33E8A15F"
                                                 BorderThickness="1">
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Name}"
@@ -513,7 +513,7 @@
                                                            Margin="0,4,0,0"
                                                            FontSize="10"
                                                            FontWeight="Black"
-                                                           Foreground="#6EE7FF"/>
+                                                           Foreground="#7FCAD1"/>
                                             </StackPanel>
                                         </Border>
                                     </DataTemplate>
@@ -527,13 +527,13 @@
                             Padding="18"
                             BorderBrush="#33F08A3C"
                             BorderThickness="1"
-                            Background="#CC0A101B">
+                            Background="#CC0B1018">
                         <StackPanel Spacing="13">
                             <TextBlock Text="LATEST TAKE"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
-                                       Foreground="#C6A96D"/>
+                                       Foreground="#D8B35F"/>
                             <TextBlock Text="{Binding LatestTakeTitle}"
                                        FontSize="18"
                                        FontWeight="Black"
@@ -543,12 +543,12 @@
                                        FontSize="13"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#6EE7FF"/>
+                                       Foreground="#7FCAD1"/>
                             <TextBlock Text="{Binding PostReadySignal}"
                                        FontSize="12"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#C6A96D"/>
+                                       Foreground="#D8B35F"/>
                             <TextBlock Text="Use the command box to make a new version. Original stays safe."
                                        FontSize="12"
                                        FontWeight="SemiBold"
@@ -560,7 +560,7 @@
                                         Padding="16,11"
                                         MinWidth="132"
                                         Margin="0,0,8,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                                 <Button Content="Open folder"
                                         Command="{Binding OpenFolderCommand}"
@@ -574,16 +574,16 @@
                                        FontSize="11"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#6EE7FF"/>
+                                       Foreground="#7FCAD1"/>
                         </StackPanel>
                     </Border>
                 </Grid>
 
                 <Border CornerRadius="28"
                         Padding="18"
-                        BorderBrush="#44FF5CB8"
+                        BorderBrush="#44E8A15F"
                         BorderThickness="1"
-                        Background="#D90A101B">
+                        Background="#D90B1116">
                     <Grid RowDefinitions="Auto,Auto" RowSpacing="13">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                             <StackPanel Spacing="6">
@@ -591,7 +591,7 @@
                                            FontSize="10"
                                            FontWeight="Black"
                                            LetterSpacing="2.2"
-                                           Foreground="#FF9AD5"/>
+                                           Foreground="#E8A15F"/>
                                 <TextBlock Text="One take -> one world -> one post."
                                            FontSize="20"
                                            FontWeight="Black"
@@ -601,7 +601,7 @@
                                            FontSize="12"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
-                                           Foreground="#6EE7FF"/>
+                                           Foreground="#7FCAD1"/>
                             </StackPanel>
                             <WrapPanel Grid.Column="1"
                                        Orientation="Horizontal"
@@ -621,14 +621,14 @@
                                         Padding="16,11"
                                         MinWidth="118"
                                         Margin="0,0,8,8"
-                                        Background="#C6A96D"
+                                        Background="#D8B35F"
                                         Foreground="#120918"/>
                                 <Button Content="Packs"
                                         Command="{Binding OpenContentPackFolderCommand}"
                                         Padding="16,11"
                                         MinWidth="92"
                                         Margin="0,0,0,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                             </WrapPanel>
                         </Grid>
@@ -637,13 +637,13 @@
                                        FontSize="11"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#6EE7FF"/>
+                                       Foreground="#7FCAD1"/>
                             <TextBox Text="{Binding ContentPackResult}"
                                      IsReadOnly="True"
                                      AcceptsReturn="True"
                                      TextWrapping="Wrap"
                                      MinHeight="116"
-                                     Background="#FFF2DCC4"
+                                     Background="#FFF2E2C8"
                                      Foreground="#120918"/>
                         </StackPanel>
                     </Grid>
@@ -651,9 +651,9 @@
 
                 <Border CornerRadius="28"
                         Padding="18"
-                        BorderBrush="#33FFB7DD"
+                        BorderBrush="#33E8A15F"
                         BorderThickness="1"
-                        Background="#CC080B16">
+                        Background="#CC090D13">
                     <StackPanel Spacing="13">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                             <StackPanel Spacing="6">
@@ -661,7 +661,7 @@
                                            FontSize="10"
                                            FontWeight="Black"
                                            LetterSpacing="2.2"
-                                           Foreground="#FF9AD5"/>
+                                           Foreground="#E8A15F"/>
                                 <TextBlock Text="{Binding TasteMemorySummary}"
                                            FontSize="18"
                                            FontWeight="Black"
@@ -671,7 +671,7 @@
                                            FontSize="12"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
-                                           Foreground="#6EE7FF"/>
+                                           Foreground="#7FCAD1"/>
                             </StackPanel>
                             <WrapPanel Grid.Column="1"
                                        Orientation="Horizontal"
@@ -691,14 +691,14 @@
                                         Padding="16,11"
                                         MinWidth="122"
                                         Margin="0,0,8,8"
-                                        Background="#C6A96D"
+                                        Background="#D8B35F"
                                         Foreground="#120918"/>
                                 <Button Content="Memory"
                                         Command="{Binding OpenTasteMemoryFolderCommand}"
                                         Padding="16,11"
                                         MinWidth="100"
                                         Margin="0,0,0,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                             </WrapPanel>
                         </Grid>
@@ -719,7 +719,7 @@
                                    FontSize="11"
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
-                                   Foreground="#C6A96D"/>
+                                   Foreground="#D8B35F"/>
                     </StackPanel>
                 </Border>
 
@@ -735,7 +735,7 @@
                                            FontSize="10"
                                            FontWeight="Black"
                                            LetterSpacing="2.2"
-                                           Foreground="#6EE7FF"/>
+                                           Foreground="#7FCAD1"/>
                                 <TextBlock Text="{Binding LiveAlbumEra}"
                                            FontSize="18"
                                            FontWeight="Black"
@@ -745,7 +745,7 @@
                                            FontSize="12"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
-                                           Foreground="#FF9AD5"/>
+                                           Foreground="#E8A15F"/>
                             </StackPanel>
                             <WrapPanel Grid.Column="1"
                                        Orientation="Horizontal"
@@ -761,14 +761,14 @@
                                         Padding="16,11"
                                         MinWidth="118"
                                         Margin="0,0,8,8"
-                                        Background="#6EE7FF"
+                                        Background="#7FCAD1"
                                         Foreground="#120918"/>
                                 <Button Content="Folder"
                                         Command="{Binding OpenLiveAlbumFolderCommand}"
                                         Padding="16,11"
                                         MinWidth="92"
                                         Margin="0,0,0,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                             </WrapPanel>
                         </Grid>
@@ -781,22 +781,22 @@
                                    FontSize="11"
                                    FontWeight="Black"
                                    TextWrapping="Wrap"
-                                   Foreground="#C6A96D"/>
+                                   Foreground="#D8B35F"/>
                     </StackPanel>
                 </Border>
 
                 <Border CornerRadius="28"
                         Padding="18"
-                        BorderBrush="#44FF5CB8"
+                        BorderBrush="#44E8A15F"
                         BorderThickness="1"
-                        Background="#D90A101B">
+                        Background="#D90B1116">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                         <StackPanel Spacing="8">
                             <TextBlock Text="POST CLIP"
                                        FontSize="10"
                                        FontWeight="Black"
                                        LetterSpacing="2.2"
-                                       Foreground="#FF9AD5"/>
+                                       Foreground="#E8A15F"/>
                             <TextBlock Text="{Binding VideoLayerTitle}"
                                        FontSize="20"
                                        FontWeight="Black"
@@ -806,58 +806,58 @@
                                        FontSize="13"
                                        FontWeight="SemiBold"
                                        TextWrapping="Wrap"
-                                       Foreground="#6EE7FF"/>
+                                       Foreground="#7FCAD1"/>
                             <TextBlock Text="{Binding VideoWorkflowStatus}"
                                        FontSize="11"
                                        FontWeight="Black"
                                        TextWrapping="Wrap"
-                                       Foreground="#C6A96D"/>
+                                       Foreground="#D8B35F"/>
                             <WrapPanel Orientation="Horizontal">
                                 <Button Content="Audio earlier"
                                         Command="{Binding AudioEarlierCommand}"
                                         Padding="13,9"
                                         MinWidth="118"
                                         Margin="0,0,8,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                                 <Border CornerRadius="999"
                                         Padding="13,9"
                                         Margin="0,0,8,8"
-                                        BorderBrush="#44FF5CB8"
+                                        BorderBrush="#44E8A15F"
                                         BorderThickness="1"
-                                        Background="#99100918">
+                                        Background="#99130F16">
                                     <TextBlock Text="{Binding VideoSyncLabel}"
                                                FontSize="11"
                                                FontWeight="Black"
-                                               Foreground="#6EE7FF"/>
+                                               Foreground="#7FCAD1"/>
                                 </Border>
                                 <Button Content="Audio later"
                                         Command="{Binding AudioLaterCommand}"
                                         Padding="13,9"
                                         MinWidth="108"
                                         Margin="0,0,8,8"
-                                        Background="#25142A"
+                                        Background="#211821"
                                         Foreground="#E8E1D2"/>
                                 <Button Content="Reset"
                                         Command="{Binding ResetVideoSyncCommand}"
                                         Padding="13,9"
                                         MinWidth="76"
                                         Margin="0,0,8,8"
-                                        Background="#99100918"
+                                        Background="#99130F16"
                                         Foreground="#E8E1D2"/>
                                 <Button Content="Auto sync"
                                         Command="{Binding AutoSyncPostClipCommand}"
                                         Padding="13,9"
                                         MinWidth="100"
                                         Margin="0,0,8,8"
-                                        Background="#6EE7FF"
+                                        Background="#7FCAD1"
                                         Foreground="#120918"/>
                                 <Button Content="{Binding VideoExportPresetLabel}"
                                         Command="{Binding ToggleVideoPresetCommand}"
                                         Padding="13,9"
                                         MinWidth="112"
                                         Margin="0,0,8,8"
-                                        Background="#C6A96D"
+                                        Background="#D8B35F"
                                         Foreground="#120918"/>
                             </WrapPanel>
                         </StackPanel>
@@ -871,28 +871,28 @@
                                     Padding="16,11"
                                     MinWidth="118"
                                     Margin="0,0,8,8"
-                                    Background="#25142A"
+                                    Background="#211821"
                                     Foreground="#E8E1D2"/>
                             <Button Content="Use take audio"
                                     Command="{Binding RenderPhoneVideoWithTakeCommand}"
                                     Padding="16,11"
                                     MinWidth="142"
                                     Margin="0,0,8,8"
-                                    Background="#C6A96D"
+                                    Background="#D8B35F"
                                     Foreground="#120918"/>
                             <Button Content="Make post clip"
                                     Command="{Binding MakePostClipCommand}"
                                     Padding="16,11"
                                     MinWidth="150"
                                     Margin="0,0,8,8"
-                                    Background="#6EE7FF"
+                                    Background="#7FCAD1"
                                     Foreground="#120918"/>
                             <Button Content="Open clip"
                                     Command="{Binding OpenLatestPostClipCommand}"
                                     Padding="16,11"
                                     MinWidth="110"
                                     Margin="0,0,8,8"
-                                    Background="#25142A"
+                                    Background="#211821"
                                     Foreground="#E8E1D2"/>
                             <Button Content="Exports"
                                     Command="{Binding OpenVideoOutputFolderCommand}"
