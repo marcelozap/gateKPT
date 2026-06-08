@@ -80,7 +80,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _chatText = "";
 
     [ObservableProperty]
-    private string _status = "Ready.";
+    private string _status = "";
 
     [ObservableProperty]
     private string _commandResult = "";
@@ -279,7 +279,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             if (PeakPercent <= 0)
             {
-                return "-inf dB";
+                return "";
             }
 
             var decibels = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
@@ -329,16 +329,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RecordingGuardLabel =>
         IsRecording
             ? $"REC {RecordingElapsedLabel}"
-            : "Ready";
+            : "";
 
     public string SimpleSignalLabel => "";
 
+    public bool HasVisibleSignal => IsRecording || PeakPercent > 0.5;
+
     public string AudioHealthLabel =>
         SelectedInputDevice is null
-            ? "Input not selected."
+            ? ""
             : SignalReady
-                ? $"Ready: {SelectedInputDevice.Name}"
-                : $"Input: {SelectedInputDevice.Name}. If the meter moves, record.";
+                ? SelectedInputDevice.Name
+                : SelectedInputDevice.Name;
 
     public string SessionFolderLabel =>
         $"Session: {ActiveSessionLabel}";
@@ -357,7 +359,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string LatestTakeTitle =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
             ? "No take saved yet."
-            : "Take ready.";
+            : "Take";
 
     public string LatestTakeDetail
     {
@@ -411,7 +413,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return "Hot. Watch the gain.";
             }
 
-            return $"Ready enough. {metrics.Duration:mm\\:ss}.";
+            return $"{metrics.Duration:mm\\:ss}";
         }
     }
 
@@ -428,15 +430,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsRecording
             ? "Recording."
             : SignalReady
-                ? "Signal ready."
-                : "Ready to capture.";
+                ? "Signal."
+                : "";
 
     public string PrimaryDetail =>
         IsRecording
             ? "Play the pass."
             : SignalReady
-                ? "Capture when ready."
-                : "Record, then GateKPT verifies.";
+                ? "Capture."
+                : "";
 
     public string CurrentFileLabel =>
         string.IsNullOrWhiteSpace(CurrentFilePath)
@@ -2771,6 +2773,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PeakLabel));
         OnPropertyChanged(nameof(PeakDecibelLabel));
         OnPropertyChanged(nameof(SimpleSignalLabel));
+        OnPropertyChanged(nameof(HasVisibleSignal));
         OnPropertyChanged(nameof(AudioHealthLabel));
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
@@ -2786,15 +2789,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
-        var wave = Math.Sin((DateTimeOffset.Now.ToUnixTimeMilliseconds() / 120.0) + SignalBars.Count) * 0.22;
-        var height = 8 + (normalized * 74) + Math.Abs(wave * 24);
+        var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        var wave = Math.Sin((now / 95.0) + SignalBars.Count) * 0.34;
+        var drift = Math.Cos((now / 310.0) + SignalBars.Count * 0.41) * 0.22;
+        var height = 10 + (normalized * 78) + Math.Abs(wave * 30) + Math.Abs(drift * 18);
         if (peak < 0.5)
         {
-            height = 8 + Math.Abs(wave * 9);
+            height = 10 + Math.Abs(wave * 24) + Math.Abs(drift * 16);
         }
 
         SignalBars.RemoveAt(0);
-        SignalBars.Add(Math.Clamp(height, 6, 92));
+        SignalBars.Add(Math.Clamp(height, 8, 96));
     }
 
     partial void OnSignalReadyChanged(bool value)
