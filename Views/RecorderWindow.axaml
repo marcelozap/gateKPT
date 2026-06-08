@@ -96,7 +96,7 @@
 
     <Grid>
         <Grid.Background>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#04070C" Offset="0"/>
                 <GradientStop Color="#0B1018" Offset="0.34"/>
                 <GradientStop Color="#1C100E" Offset="0.72"/>
@@ -129,7 +129,7 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"
                       Margin="-80,78,-80,0"
-                      Opacity="0.18"
+                      Opacity="0.24"
                       IsHitTestVisible="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -148,6 +148,74 @@
                             BorderThickness="1">
                         <Border.RenderTransform>
                             <ScaleTransform ScaleY="1.7"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SignalBars}"
+                      Width="1450"
+                      Height="120"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,-80,0,0"
+                      Opacity="0.26"
+                      IsHitTestVisible="False"
+                      RenderTransformOrigin="0.5,0.5">
+            <ItemsControl.RenderTransform>
+                <RotateTransform Angle="-12"/>
+            </ItemsControl.RenderTransform>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="15"
+                            Height="{Binding}"
+                            CornerRadius="999"
+                            VerticalAlignment="Center"
+                            Margin="5,0"
+                            Background="#8E7FCAD1"
+                            BorderBrush="#48E8E1D2"
+                            BorderThickness="1">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleY="2.8"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SignalBars}"
+                      Width="1500"
+                      Height="150"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,180,0,0"
+                      Opacity="0.22"
+                      IsHitTestVisible="False"
+                      RenderTransformOrigin="0.5,0.5">
+            <ItemsControl.RenderTransform>
+                <RotateTransform Angle="16"/>
+            </ItemsControl.RenderTransform>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="19"
+                            Height="{Binding}"
+                            CornerRadius="999"
+                            VerticalAlignment="Center"
+                            Margin="6,0"
+                            Background="#7EDDA36B"
+                            BorderBrush="#55CDB49A"
+                            BorderThickness="1">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleY="4.4"/>
                         </Border.RenderTransform>
                     </Border>
                 </DataTemplate>
@@ -177,7 +245,7 @@
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
                       Margin="-20,0,-20,0"
-                      Opacity="0.68"
+                      Opacity="0.56"
                       IsHitTestVisible="False">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -308,12 +376,12 @@
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
-                        Padding="14"
-                        BorderBrush="#72DDA36B"
+                        Padding="12"
+                        BorderBrush="#4FDDA36B"
                         BorderThickness="1"
-                        Background="#D4B99DA1"
+                        Background="#B8B89B90"
                         ClipToBounds="True">
-                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                    <Grid RowDefinitions="Auto,Auto" RowSpacing="9">
                         <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
                               Stroke="#2FDDA36B"
@@ -360,6 +428,7 @@
                         </Grid>
 
                         <Border Grid.Row="1"
+                                IsVisible="False"
                                 CornerRadius="21"
                                 Padding="8"
                                 Background="#E61B1717"
@@ -424,7 +493,7 @@
                             </Border>
                         </Grid>
 
-                        <Grid Grid.Row="2"
+                        <Grid Grid.Row="1"
                               ColumnDefinitions="Auto,Auto,Auto,Auto,*,*"
                               ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
