@@ -124,10 +124,10 @@
               Stretch="Fill"
               IsHitTestVisible="False"/>
 
-        <Grid Height="430"
+        <Grid Height="450"
               VerticalAlignment="Bottom"
-              Margin="0,0,0,-34"
-              Opacity="0.72"
+              Margin="0,0,0,-28"
+              Opacity="0.86"
               IsHitTestVisible="False">
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
@@ -137,17 +137,17 @@
                     <GradientStop Color="#00130F16" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <Path Data="M -60 280 C 160 150, 290 355, 470 230 S 790 120, 1040 300 S 1320 180, 1540 265"
-                  Stroke="#55DDA36B"
-                  StrokeThickness="2.1"
+            <Path Data="M -80 310 C 120 150, 300 390, 520 250 S 850 105, 1120 330 S 1370 170, 1560 270"
+                  Stroke="#78DDA36B"
+                  StrokeThickness="3.4"
                   Stretch="Fill"/>
-            <Path Data="M -80 350 C 160 260, 300 420, 530 315 S 870 260, 1130 390 S 1380 310, 1540 360"
-                  Stroke="#437FCAD1"
-                  StrokeThickness="1.5"
+            <Path Data="M -70 360 C 140 235, 320 440, 540 325 S 880 215, 1150 390 S 1380 255, 1560 350"
+                  Stroke="#66E8E1D2"
+                  StrokeThickness="2.4"
                   Stretch="Fill"/>
-            <Path Data="M -40 175 C 120 105, 250 230, 430 160 S 780 110, 1050 220 S 1320 145, 1540 205"
-                  Stroke="#44F2C56B"
-                  StrokeThickness="1.2"
+            <Path Data="M -40 210 C 130 95, 270 265, 470 175 S 800 85, 1080 245 S 1340 130, 1560 205"
+                  Stroke="#55F2C56B"
+                  StrokeThickness="1.8"
                   Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
                           HorizontalAlignment="Center"
@@ -165,8 +165,8 @@
                                 CornerRadius="999"
                                 Margin="4,0"
                                 VerticalAlignment="Bottom"
-                                Background="#99DDA36B"
-                                BorderBrush="#557FCAD1"
+                                Background="#BBDDA36B"
+                                BorderBrush="#66E8E1D2"
                                 BorderThickness="1"
                                 RenderTransformOrigin="0.5,1">
                             <Border.RenderTransform>
@@ -481,110 +481,75 @@
                     </StackPanel>
                 </Border>
 
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="21">
-                    <Border CornerRadius="28"
-                            Padding="18"
-                            BorderBrush="#33DDA36B"
-                            BorderThickness="1"
-                            Background="#CC090D13">
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="TAKES"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2.2"
-                                       Foreground="#DDA36B"/>
-                            <TextBlock Text="{Binding CurrentFilePreviewLabel}"
-                                       FontSize="12"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#7FCAD1"/>
+                <Border CornerRadius="28"
+                        Padding="14"
+                        BorderBrush="#33DDA36B"
+                        BorderThickness="1"
+                        Background="#CC090D13">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
+                                <TextBlock Text="TAKE"
+                                           FontSize="10"
+                                           FontWeight="Black"
+                                           LetterSpacing="2.2"
+                                           Foreground="#DDA36B"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding LatestTakeDetail}"
+                                           FontSize="12"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#7FCAD1"/>
+                            </Grid>
                             <ListBox ItemsSource="{Binding Versions}"
                                      SelectedItem="{Binding SelectedVersion}"
                                      Background="Transparent"
                                      BorderThickness="0"
-                                     MaxHeight="170">
+                                     MaxHeight="118">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate x:DataType="svc:RecorderVersionFile">
-                                        <Border CornerRadius="18"
-                                                Padding="13"
-                                                Margin="0,0,0,8"
+                                        <Border CornerRadius="16"
+                                                Padding="11"
+                                                Margin="0,0,0,7"
                                                 Background="#15140922"
                                                 BorderBrush="#33DDA36B"
                                                 BorderThickness="1">
-                                            <StackPanel>
+                                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                                 <TextBlock Text="{Binding DisplayName}"
                                                            FontSize="12"
                                                            FontWeight="Black"
                                                            TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding DisplayMeta}"
-                                                           Margin="0,4,0,0"
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding DisplayMeta}"
                                                            FontSize="10"
                                                            FontWeight="Black"
                                                            Foreground="#7FCAD1"/>
-                                            </StackPanel>
+                                            </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </StackPanel>
-                    </Border>
-
-                    <Border Grid.Column="1"
-                            CornerRadius="28"
-                            Padding="18"
-                            BorderBrush="#33F08A3C"
-                            BorderThickness="1"
-                            Background="#CC0B1018">
-                        <StackPanel Spacing="13">
-                            <TextBlock Text="LATEST TAKE"
-                                       FontSize="10"
-                                       FontWeight="Black"
-                                       LetterSpacing="2.2"
-                                       Foreground="#F2C56B"/>
-                            <TextBlock Text="{Binding LatestTakeTitle}"
-                                       FontSize="18"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#E8E1D2"/>
-                            <TextBlock Text="{Binding LatestTakeDetail}"
-                                       FontSize="13"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#7FCAD1"/>
-                            <TextBlock Text="{Binding PostReadySignal}"
-                                       FontSize="12"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#F2C56B"/>
-                            <TextBlock Text="Use the command box to make a new version. Original stays safe."
-                                       FontSize="12"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       Foreground="#E8E1D2"/>
-                            <WrapPanel Orientation="Horizontal">
-                                <Button Content="Play latest"
-                                        Command="{Binding PlaySelectedCommand}"
-                                        Padding="16,11"
-                                        MinWidth="132"
-                                        Margin="0,0,8,8"
-                                        Background="#211815"
-                                        Foreground="#E8E1D2"/>
-                                <Button Content="Open folder"
-                                        Command="{Binding OpenFolderCommand}"
-                                        Padding="16,11"
-                                        MinWidth="132"
-                                        Margin="0,0,8,8"
-                                        Background="#F2EEE3"
-                                        Foreground="#120918"/>
-                            </WrapPanel>
-                            <TextBlock Text="{Binding CommandHelp}"
-                                       FontSize="11"
-                                       FontWeight="Black"
-                                       TextWrapping="Wrap"
-                                       Foreground="#7FCAD1"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
+                        <WrapPanel Grid.Column="1"
+                                   Orientation="Horizontal"
+                                   VerticalAlignment="Center">
+                            <Button Content="Play"
+                                    Command="{Binding PlaySelectedCommand}"
+                                    Padding="15,10"
+                                    MinWidth="96"
+                                    Margin="0,0,8,0"
+                                    Background="#211815"
+                                    Foreground="#E8E1D2"/>
+                            <Button Content="Folder"
+                                    Command="{Binding OpenFolderCommand}"
+                                    Padding="15,10"
+                                    MinWidth="104"
+                                    Margin="0"
+                                    Background="#F2EEE3"
+                                    Foreground="#120918"/>
+                        </WrapPanel>
+                    </Grid>
+                </Border>
 
                 <Border CornerRadius="28"
                         Padding="18"
