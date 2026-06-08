@@ -125,13 +125,13 @@
               IsHitTestVisible="False"/>
 
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <StackPanel Margin="21" Spacing="21" MaxWidth="980" HorizontalAlignment="Center">
+            <StackPanel Margin="21" Spacing="16" MaxWidth="980" HorizontalAlignment="Center">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
                     <StackPanel>
                         <TextBlock Text="GateKPT"
                                    FontSize="25"
                                    FontWeight="Black"/>
-                        <TextBlock Text="night road capture / warm motel signal"
+                        <TextBlock Text="warm motel signal"
                                    Margin="0,4,0,0"
                                    FontSize="12"
                                    FontWeight="Black"
@@ -153,19 +153,19 @@
                 </Grid>
 
                 <Border CornerRadius="34"
-                        Padding="18"
+                        Padding="16"
                         BorderBrush="#72DDA36B"
                         BorderThickness="1"
                         Background="#F2E8CEC8"
                         ClipToBounds="True">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="16">
-                        <Path Grid.RowSpan="4"
+                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                        <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
                               Stroke="#2FDDA36B"
                               StrokeThickness="1.2"
                               Stretch="Fill"
                               IsHitTestVisible="False"/>
-                        <Path Grid.RowSpan="4"
+                        <Path Grid.RowSpan="3"
                               Data="M 0 112 C 110 85, 190 150, 310 102 S 510 95, 690 132 S 850 105, 980 126"
                               Stroke="#227FCAD1"
                               StrokeThickness="1"
@@ -174,20 +174,14 @@
 
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="21">
                             <StackPanel>
-                                <TextBlock Text="CAPTURE"
-                                           FontSize="11"
-                                           FontWeight="Black"
-                                           LetterSpacing="2.4"
-                                           Foreground="#9A5D2D"/>
                                 <TextBlock Text="{Binding RecordingGuardLabel}"
-                                           Margin="0,6,0,0"
-                                           FontSize="36"
+                                           FontSize="30"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
                                            Foreground="#120918"/>
                                 <TextBlock Text="{Binding CaptureInstruction}"
-                                           Margin="0,5,0,0"
-                                           FontSize="15"
+                                           Margin="0,2,0,0"
+                                           FontSize="13"
                                            FontWeight="Black"
                                            TextWrapping="Wrap"
                                            Foreground="#4A351E"/>
@@ -216,27 +210,15 @@
                         </Grid>
 
                         <Border Grid.Row="1"
-                                CornerRadius="24"
-                                Padding="13"
+                                CornerRadius="21"
+                                Padding="10"
                                 Background="#D90E1013"
                                 BorderBrush="#4DDDA36B"
                                 BorderThickness="1"
-                                MinHeight="128">
-                            <Grid RowDefinitions="Auto,*" RowSpacing="10">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <TextBlock Text="LIVE AUDIO"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="2.2"
-                                               Foreground="#F2C56B"/>
-                                    <TextBlock Grid.Column="1"
-                                               Text="{Binding SimpleSignalLabel}"
-                                               FontSize="10"
-                                               FontWeight="Black"
-                                               LetterSpacing="1.5"
-                                               Foreground="#7FCAD1"/>
-                                </Grid>
-                                <ItemsControl Grid.Row="1"
+                                MinHeight="72"
+                                MaxHeight="86">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                                <ItemsControl
                                               ItemsSource="{Binding SignalBars}"
                                               VerticalAlignment="Stretch"
                                               HorizontalAlignment="Stretch">
@@ -258,6 +240,13 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding SimpleSignalLabel}"
+                                           FontSize="10"
+                                           FontWeight="Black"
+                                           LetterSpacing="1.5"
+                                           VerticalAlignment="Center"
+                                           Foreground="#7FCAD1"/>
                             </Grid>
                         </Border>
 
@@ -285,45 +274,46 @@
                             </Border>
                         </Grid>
 
-                        <WrapPanel Grid.Row="2" Orientation="Horizontal">
+                        <Grid Grid.Row="2"
+                              ColumnDefinitions="Auto,Auto,*,*"
+                              ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
-                                    Padding="34,16"
+                                    Padding="26,13"
                                     MinWidth="230"
-                                    Margin="0,0,8,8"
+                                    Margin="0"
                                     FontSize="19"
                                     Background="#06070C"
                                     Foreground="#E8E1D2"/>
                             <Button Content="{Binding StopButtonLabel}"
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
-                                    Padding="34,16"
+                                    Padding="26,13"
                                     MinWidth="230"
-                                    Margin="0,0,8,8"
+                                    Margin="0"
                                     FontSize="19"
                                     Background="#DDA36B"
                                     Foreground="#120918"/>
-                            <Button Content="Folder"
+                            <Button Grid.Column="1"
+                                    Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
-                                    Padding="34,16"
-                                    MinWidth="180"
-                                    Margin="0,0,8,8"
+                                    Padding="22,13"
+                                    MinWidth="150"
+                                    Margin="0"
                                     Background="#F2EEE3"
                                     Foreground="#120918"/>
-                        </WrapPanel>
-
-                        <Grid Grid.Row="3" ColumnDefinitions="*,*" ColumnSpacing="13" RowDefinitions="Auto">
-                            <ComboBox ItemsSource="{Binding CaptureLanes}"
+                            <ComboBox Grid.Column="2"
+                                      ItemsSource="{Binding CaptureLanes}"
                                       SelectedItem="{Binding SelectedCaptureLane}"
                                       MinHeight="44"/>
-                            <ComboBox ItemsSource="{Binding InputDevices}"
+                            <ComboBox Grid.Column="3"
+                                      ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
-                                      Grid.Column="1"
                                       MinHeight="44"/>
                         </Grid>
 
-                        <StackPanel Grid.Row="4" Spacing="5" IsVisible="False">
+                        <StackPanel Grid.Row="2" Spacing="5" IsVisible="False">
                             <TextBlock Text="{Binding Status}"
                                        FontSize="13"
                                        FontWeight="Black"
