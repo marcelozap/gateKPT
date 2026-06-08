@@ -700,6 +700,68 @@
 
                 <Border CornerRadius="28"
                         Padding="18"
+                        BorderBrush="#226EE7FF"
+                        BorderThickness="1"
+                        Background="#CC06111C">
+                    <StackPanel Spacing="13">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="13">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="LIVE ALBUM"
+                                           FontSize="10"
+                                           FontWeight="Black"
+                                           LetterSpacing="2.2"
+                                           Foreground="#6EE7FF"/>
+                                <TextBlock Text="{Binding LiveAlbumEra}"
+                                           FontSize="18"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#E8E1D2"/>
+                                <TextBlock Text="{Binding LiveAlbumPlan}"
+                                           FontSize="12"
+                                           FontWeight="Black"
+                                           TextWrapping="Wrap"
+                                           Foreground="#8DB7AD"/>
+                            </StackPanel>
+                            <WrapPanel Grid.Column="1"
+                                       Orientation="Horizontal"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       MaxWidth="420">
+                                <ComboBox ItemsSource="{Binding LiveAlbumScenes}"
+                                          SelectedItem="{Binding LiveAlbumScene}"
+                                          MinWidth="164"
+                                          Margin="0,0,8,8"/>
+                                <Button Content="Save note"
+                                        Command="{Binding SaveLiveAlbumNoteCommand}"
+                                        Padding="16,11"
+                                        MinWidth="118"
+                                        Margin="0,0,8,8"
+                                        Background="#6EE7FF"
+                                        Foreground="#07110E"/>
+                                <Button Content="Folder"
+                                        Command="{Binding OpenLiveAlbumFolderCommand}"
+                                        Padding="16,11"
+                                        MinWidth="92"
+                                        Margin="0,0,0,8"
+                                        Background="#203C36"
+                                        Foreground="#E8E1D2"/>
+                            </WrapPanel>
+                        </Grid>
+                        <TextBox Text="{Binding LiveAlbumNote}"
+                                 PlaceholderText="What is this session becoming?"
+                                 MinHeight="82"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding LiveAlbumStatus}"
+                                   FontSize="11"
+                                   FontWeight="Black"
+                                   TextWrapping="Wrap"
+                                   Foreground="#C6A96D"/>
+                    </StackPanel>
+                </Border>
+
+                <Border CornerRadius="28"
+                        Padding="18"
                         BorderBrush="#338DB7AD"
                         BorderThickness="1"
                         Background="#D907110E">

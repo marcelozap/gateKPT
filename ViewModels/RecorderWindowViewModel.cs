@@ -34,6 +34,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
         "GateKPT Recorder",
         "taste-memory");
+    private readonly string _liveAlbumDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+        "GateKPT Recorder",
+        "live-album");
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
@@ -150,6 +154,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _tasteMemoryStatus = "No taste saved yet.";
 
     [ObservableProperty]
+    private string _liveAlbumEra = "Album built in public";
+
+    [ObservableProperty]
+    private string _liveAlbumScene = "Night room";
+
+    [ObservableProperty]
+    private string _liveAlbumNote = "";
+
+    [ObservableProperty]
+    private string _liveAlbumStatus = "No live album note saved yet.";
+
+    [ObservableProperty]
     private LayerSlotItem? _selectedLayerSlot;
 
     [ObservableProperty]
@@ -239,6 +255,16 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "7",
         "6",
         "5"
+    ];
+
+    public IReadOnlyList<string> LiveAlbumScenes { get; } =
+    [
+        "Night room",
+        "Projector session",
+        "Guitar cover",
+        "Vocal pass",
+        "Loop build",
+        "Behind the tool"
     ];
 
     public string PeakLabel => $"{PeakPercent:0}%";
@@ -523,6 +549,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return $"Next move: revisit {strongest.Mood.ToLowerInvariant()} / {strongest.ClipType.ToLowerInvariant()} and keep: {strongest.Worked}";
         }
     }
+
+    public string LiveAlbumPlan =>
+        $"Scene: {LiveAlbumScene}. Build one piece, keep the room open, save the moment.";
 
     public string CommandHelp =>
         "Try: late night chrome, silk synth, luna pop, cloud doubles, raw clean, make warmer, make post clip.";
@@ -1439,6 +1468,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     private string TasteMemoryPath => Path.Combine(_tasteMemoryDirectory, "take-taste-memory.json");
 
+    private string LiveAlbumJournalPath => Path.Combine(_liveAlbumDirectory, "live-album-journal.txt");
+
     private void LoadTasteMemories()
     {
         Directory.CreateDirectory(_tasteMemoryDirectory);
@@ -1471,6 +1502,24 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Directory.CreateDirectory(_tasteMemoryDirectory);
         var json = JsonSerializer.Serialize(TasteMemories.ToList(), JsonOptions);
         File.WriteAllText(TasteMemoryPath, json);
+    }
+
+    private string BuildLiveAlbumEntry()
+    {
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        var take = string.IsNullOrWhiteSpace(audioPath) ? "no take selected" : Path.GetFileName(audioPath);
+        var note = string.IsNullOrWhiteSpace(LiveAlbumNote)
+            ? "one honest session note TBD"
+            : LiveAlbumNote.Trim();
+
+        return string.Join(
+            Environment.NewLine,
+            $"[{DateTimeOffset.Now:yyyy-MM-dd HH:mm}] {LiveAlbumEra}",
+            $"Scene: {LiveAlbumScene}",
+            $"Take: {take}",
+            $"Note: {note}",
+            $"Public idea: build the album slowly, let people see the room, keep the tools open.",
+            "");
     }
 
     [RelayCommand]
@@ -1574,6 +1623,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             UseShellExecute = true
         });
         Status = $"Opened {_tasteMemoryDirectory}";
+    }
+
+    [RelayCommand]
+    private void SaveLiveAlbumNote()
+    {
+        Directory.CreateDirectory(_liveAlbumDirectory);
+        var entry = BuildLiveAlbumEntry();
+        File.AppendAllText(LiveAlbumJournalPath, entry + Environment.NewLine);
+        LiveAlbumStatus = $"Saved live album note: {LiveAlbumScene}.";
+        Status = LiveAlbumStatus;
+    }
+
+    [RelayCommand]
+    private void OpenLiveAlbumFolder()
+    {
+        Directory.CreateDirectory(_liveAlbumDirectory);
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = _liveAlbumDirectory,
+            UseShellExecute = true
+        });
+        Status = $"Opened {_liveAlbumDirectory}";
     }
 
     [RelayCommand]
@@ -2715,6 +2786,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     partial void OnLastContentPackPathChanged(string value)
     {
         OnPropertyChanged(nameof(ContentPackSaveLabel));
+    }
+
+    partial void OnLiveAlbumSceneChanged(string value)
+    {
+        OnPropertyChanged(nameof(LiveAlbumPlan));
     }
 
     partial void OnVideoAudioOffsetMsChanged(int value)
