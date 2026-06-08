@@ -21,6 +21,10 @@ public sealed class RecorderVersionStore
 
     public string TakesDirectory => Path.Combine(RootDirectory, "takes");
 
+    public string ActiveSessionName { get; set; } = "Session 1";
+
+    public string ActiveTakesDirectory => Path.Combine(TakesDirectory, AutoSaveFileNamer.Sanitize(ActiveSessionName));
+
     public string StemsDirectory => Path.Combine(RootDirectory, "stems");
 
     public string TrashDirectory => Path.Combine(RootDirectory, "trash");
@@ -28,8 +32,8 @@ public sealed class RecorderVersionStore
     public string LayerDeckPath => Path.Combine(RootDirectory, "layer-deck.json");
 
     public IReadOnlyList<RecorderVersionFile> ListVersions() =>
-        Directory.Exists(TakesDirectory)
-            ? Directory.GetFiles(TakesDirectory, "*.wav")
+        Directory.Exists(ActiveTakesDirectory)
+            ? Directory.GetFiles(ActiveTakesDirectory, "*.wav")
                 .Select(path => new FileInfo(path))
                 .OrderByDescending(info => info.LastWriteTime)
                 .Select(info => new RecorderVersionFile(
@@ -42,13 +46,13 @@ public sealed class RecorderVersionStore
 
     public int MoveNonAudioArtifactsToTrash()
     {
-        if (!Directory.Exists(TakesDirectory))
+        if (!Directory.Exists(ActiveTakesDirectory))
         {
             return 0;
         }
 
         var moved = 0;
-        foreach (var path in Directory.GetFiles(TakesDirectory).Where(path => !path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)))
+        foreach (var path in Directory.GetFiles(ActiveTakesDirectory).Where(path => !path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase)))
         {
             if (!string.IsNullOrWhiteSpace(MoveToTrash(path)))
             {
@@ -61,8 +65,8 @@ public sealed class RecorderVersionStore
 
     public string CreateRecordingPath(string label)
     {
-        Directory.CreateDirectory(TakesDirectory);
-        return AutoSaveFileNamer.CreatePath(TakesDirectory, label, ".wav");
+        Directory.CreateDirectory(ActiveTakesDirectory);
+        return AutoSaveFileNamer.CreatePath(ActiveTakesDirectory, label, ".wav");
     }
 
     public string MoveToTrash(string path)
@@ -101,21 +105,21 @@ public sealed class RecorderVersionStore
 
     public string CopyVersion(string sourcePath, string label)
     {
-        Directory.CreateDirectory(TakesDirectory);
+        Directory.CreateDirectory(ActiveTakesDirectory);
         if (!File.Exists(sourcePath))
         {
             return "";
         }
 
-        var target = AutoSaveFileNamer.CreatePath(TakesDirectory, label, Path.GetExtension(sourcePath));
+        var target = AutoSaveFileNamer.CreatePath(ActiveTakesDirectory, label, Path.GetExtension(sourcePath));
         File.Copy(sourcePath, target, false);
         return target;
     }
 
     public string CreateVersionPath(string label, string extension)
     {
-        Directory.CreateDirectory(TakesDirectory);
-        return AutoSaveFileNamer.CreatePath(TakesDirectory, label, extension);
+        Directory.CreateDirectory(ActiveTakesDirectory);
+        return AutoSaveFileNamer.CreatePath(ActiveTakesDirectory, label, extension);
     }
 
     public string CreateStemExportDirectory()

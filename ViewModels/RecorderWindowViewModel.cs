@@ -104,6 +104,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _lastRecorderDiagnostic = "No recorder diagnostic yet.";
 
     [ObservableProperty]
+    private string _sessionName = "Session 1";
+
+    [ObservableProperty]
     private RecorderVersionFile? _selectedVersion;
 
     [ObservableProperty]
@@ -274,13 +277,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         get
         {
-            if (PeakPercent <= 0.01)
+            if (PeakPercent >= 96)
             {
-                return "-inf dB";
+                return "too hot";
             }
 
-            var db = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
-            return $"{db:0.0} dB";
+            if (PeakPercent >= 8)
+            {
+                return "live";
+            }
+
+            return PeakPercent > 0.5 ? "quiet" : "silent";
         }
     }
 
@@ -330,12 +337,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string SimpleSignalLabel =>
         PeakPercent >= 96
-            ? "CLIPPING"
+            ? "TOO HOT"
             : PeakPercent >= 8
-                ? "SOUND DETECTED"
+                ? "LIVE"
                 : PeakPercent > 0.5
-                    ? "LOW SIGNAL"
-                    : "NO SOUND YET";
+                    ? "QUIET"
+                    : "SILENT";
 
     public string AudioHealthLabel =>
         SelectedInputDevice is null
@@ -343,6 +350,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : SignalReady
                 ? $"Ready: {SelectedInputDevice.Name}"
                 : $"Input: {SelectedInputDevice.Name}. If the meter moves, record.";
+
+    public string SessionFolderLabel =>
+        $"Session: {ActiveSessionLabel}";
+
+    public string ActiveSessionLabel =>
+        string.IsNullOrWhiteSpace(SessionName)
+            ? "Session 1"
+            : SessionName.Trim();
 
     public string SelectedCaptureLaneLabel =>
         SelectedCaptureLane?.Name ?? "Cover Pass";
@@ -366,7 +381,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return "Record one take, then shape it.";
             }
 
-            return $"{SelectedCaptureLaneLabel} / {preview.Duration} / peak {preview.Peak}";
+            return $"{ActiveSessionLabel} / {preview.Duration}";
         }
     }
 
@@ -403,13 +418,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string CaptureInstruction =>
         IsRecording
             ? PeakPercent >= 96
-                ? "Too hot. Lower Scarlett gain if the ring is red."
+                ? "Too hot. Lower the input."
                 : PeakPercent < 1 && RecordingElapsedLabel != "00:00"
-                    ? "No usable signal yet. Play now or stop this take."
+                    ? "No sound yet."
                     : PeakPercent < 20
-                        ? "Quiet signal is recording. Raise input gain only if Scarlett is not red."
-                        : "GateKPT is recording now."
-            : $"Ready: {SelectedCaptureLaneLabel}. Record, play, stop.";
+                        ? "Quiet take."
+                        : "Recording."
+            : $"{ActiveSessionLabel}. Record, play, stop.";
 
     public string NextActionLabel =>
         IsRecording
@@ -697,6 +712,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     private void StartRecordingForLayer(string label, int? layerNumber)
     {
+        ApplySessionToStore();
         if (IsRecording)
         {
             Status = "Already recording.";
@@ -724,7 +740,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "Full loop"
             : $"{LayerSlots.First(slot => slot.Number == layerNumber).Name} lane";
         IsRecorderBusy = true;
-        var result = _recorder.Start(InputName, _versions.TakesDirectory, label, peak =>
+        var result = _recorder.Start(InputName, _versions.ActiveTakesDirectory, label, peak =>
         {
             Dispatcher.UIThread.Post(() =>
             {
@@ -1931,13 +1947,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void OpenFolder()
     {
-        Directory.CreateDirectory(_versions.TakesDirectory);
+        ApplySessionToStore();
+        Directory.CreateDirectory(_versions.ActiveTakesDirectory);
         Process.Start(new ProcessStartInfo
         {
-            FileName = _versions.TakesDirectory,
+            FileName = _versions.ActiveTakesDirectory,
             UseShellExecute = true
         });
-        Status = $"Opened {_versions.TakesDirectory}";
+        Status = $"Opened {ActiveSessionLabel}";
     }
 
     private static void SelectFileInExplorer(string path)
@@ -2565,6 +2582,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     private void RefreshVersions()
     {
+        ApplySessionToStore();
         _versions.MoveNonAudioArtifactsToTrash();
         Versions.Clear();
         foreach (var version in _versions.ListVersions())
@@ -2577,6 +2595,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(CurrentFilePreviewLabel));
         OnPropertyChanged(nameof(VersionListHint));
         OnPropertyChanged(nameof(VisualPaintingSignal));
+        OnPropertyChanged(nameof(SessionFolderLabel));
+    }
+
+    [RelayCommand]
+    private void SelectVersion(RecorderVersionFile? version)
+    {
+        if (version is null)
+        {
+            return;
+        }
+
+        SelectedVersion = version;
+        CurrentFilePath = version.Path;
+        Status = $"Selected: {version.DisplayName}";
+    }
+
+    private void ApplySessionToStore()
+    {
+        _versions.ActiveSessionName = ActiveSessionLabel;
     }
 
     private void ReplaceLayerSlot(int number, LayerSlotItem updated)
@@ -2788,6 +2825,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PostReadySignal));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
+    }
+
+    partial void OnSessionNameChanged(string value)
+    {
+        ApplySessionToStore();
+        RefreshVersions();
+        OnPropertyChanged(nameof(ActiveSessionLabel));
+        OnPropertyChanged(nameof(SessionFolderLabel));
+        OnPropertyChanged(nameof(LatestTakeDetail));
     }
 
     partial void OnSelectedVersionChanged(RecorderVersionFile? value)

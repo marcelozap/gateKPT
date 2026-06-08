@@ -65,16 +65,32 @@
             <Setter Property="Background" Value="#2A211A"/>
             <Setter Property="Foreground" Value="#DDA36B"/>
         </Style>
-        <Style Selector="StackPanel.take-actions">
-            <Setter Property="Opacity" Value="0.38"/>
-        </Style>
         <Style Selector="Border.take-row:pointerover">
-            <Setter Property="Background" Value="#77311C18"/>
-            <Setter Property="BorderBrush" Value="#88DDA36B"/>
+            <Setter Property="Background" Value="#57351F17"/>
+            <Setter Property="BorderBrush" Value="#BBDDA36B"/>
             <Setter Property="RenderTransform" Value="translateY(-1px)"/>
         </Style>
-        <Style Selector="Border.take-row:pointerover StackPanel.take-actions">
-            <Setter Property="Opacity" Value="1"/>
+        <Style Selector="Button.take-select">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBox.take-list">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="ListBox.take-list ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.take-list ListBoxItem:selected Border.take-row">
+            <Setter Property="Background" Value="#883E2117"/>
+            <Setter Property="BorderBrush" Value="#EEDDA36B"/>
         </Style>
     </Window.Styles>
 
@@ -129,6 +145,34 @@
               StrokeThickness="1.4"
               Stretch="Fill"
               IsHitTestVisible="False"/>
+        <ItemsControl ItemsSource="{Binding SignalBars}"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Center"
+                      Margin="-20,0,-20,0"
+                      Opacity="0.32"
+                      IsHitTestVisible="False">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="10"
+                            Height="{Binding}"
+                            CornerRadius="999"
+                            VerticalAlignment="Center"
+                            Margin="3,0"
+                            Background="#7FCAD1"
+                            BorderBrush="#DDA36B"
+                            BorderThickness="1">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleY="3.8"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
         <Path Data="M -80 470 C 170 390, 300 540, 520 455 S 860 405, 1120 500 S 1360 440, 1520 490"
               Stroke="#30E8E1D2"
               StrokeThickness="1"
@@ -330,7 +374,7 @@
                         </Grid>
 
                         <Grid Grid.Row="2"
-                              ColumnDefinitions="Auto,Auto,Auto,*,*"
+                              ColumnDefinitions="Auto,Auto,Auto,*,*,*"
                               ColumnSpacing="10">
                             <Button Content="{Binding RecordingButtonLabel}"
                                     Command="{Binding StartRecordingCommand}"
@@ -366,11 +410,15 @@
                                     Margin="0"
                                     Background="#211815"
                                     Foreground="#E8E1D2"/>
-                            <ComboBox Grid.Column="3"
+                            <TextBox Grid.Column="3"
+                                     Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     PlaceholderText="Session 1"
+                                     MinHeight="40"/>
+                            <ComboBox Grid.Column="4"
                                       ItemsSource="{Binding CaptureLanes}"
                                       SelectedItem="{Binding SelectedCaptureLane}"
                                       MinHeight="40"/>
-                            <ComboBox Grid.Column="4"
+                            <ComboBox Grid.Column="5"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
@@ -535,7 +583,7 @@
                                 Background="#B90B1017">
                             <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
-                                    <TextBlock Text="TAKE"
+                                    <TextBlock Text="TAKES"
                                                FontSize="10"
                                                FontWeight="Black"
                                                LetterSpacing="2.2"
@@ -551,8 +599,10 @@
                                               HorizontalScrollBarVisibility="Disabled"
                                               VerticalScrollBarVisibility="Auto"
                                               MaxHeight="108">
-                                    <ItemsControl ItemsSource="{Binding Versions}">
-                                        <ItemsControl.ItemTemplate>
+                                    <ListBox Classes="take-list"
+                                             ItemsSource="{Binding Versions}"
+                                             SelectedItem="{Binding SelectedVersion}">
+                                        <ListBox.ItemTemplate>
                                             <DataTemplate x:DataType="svc:RecorderVersionFile">
                                                 <Border Classes="take-row"
                                                         CornerRadius="18"
@@ -574,21 +624,22 @@
                                                               StrokeThickness="1"
                                                               Stretch="Fill"
                                                               IsHitTestVisible="False"/>
-                                                        <StackPanel>
+                                                        <Grid ColumnDefinitions="*,Auto">
                                                             <TextBlock Text="{Binding DisplayName}"
                                                                        FontSize="12"
                                                                        FontWeight="Black"
                                                                        TextWrapping="Wrap"/>
-                                                            <TextBlock Text="{Binding DisplayMeta}"
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding DisplayMeta}"
                                                                        FontSize="10"
                                                                        FontWeight="Black"
                                                                        Foreground="#7FCAD1"/>
-                                                        </StackPanel>
+                                                        </Grid>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                 </ScrollViewer>
                             </Grid>
                         </Border>
