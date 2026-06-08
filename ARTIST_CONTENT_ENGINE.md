@@ -14,6 +14,12 @@ For the livestream, content research, future song-study, and audience-growth lay
 LIVESTREAM_CONTENT_RESEARCH_PLAN.md
 ```
 
+For public messaging, platform roles, captions, livestream titles, and launch rhythm, use:
+
+```text
+GATEKPT_MARKETING_PLAYBOOK.md
+```
+
 Core promise:
 
 ```text
