@@ -445,12 +445,18 @@
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
-                        Padding="12"
-                        BorderBrush="#4FDDA36B"
+                        Padding="16"
+                        BorderBrush="#66E7B06D"
                         BorderThickness="1"
-                        Background="#B8B89B90"
                         ClipToBounds="True"
-                        BoxShadow="0 28 54 0 #99000000">
+                        BoxShadow="0 30 70 0 #AA000000">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#D8151014" Offset="0"/>
+                            <GradientStop Color="#C32D1A19" Offset="0.48"/>
+                            <GradientStop Color="#B8573328" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="9">
                         <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
@@ -563,56 +569,78 @@
                             </Border>
                         </Grid>
 
-                        <Grid Grid.Row="1"
-                              ColumnDefinitions="Auto,Auto,Auto,Auto"
-                              ColumnSpacing="13"
-                              HorizontalAlignment="Center">
+                        <Border Grid.Row="1"
+                                CornerRadius="999"
+                                Padding="10"
+                                HorizontalAlignment="Center"
+                                Background="#B507080C"
+                                BorderBrush="#38E7B06D"
+                                BorderThickness="1"
+                                BoxShadow="0 16 32 0 #66000000">
+                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto"
+                                  ColumnSpacing="10"
+                                  HorizontalAlignment="Center">
                             <Button
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
                                     Content="{Binding RecordingButtonLabel}"
-                                    Padding="30,13"
-                                    MinWidth="180"
-                                    MinHeight="48"
+                                    Padding="34,13"
+                                    MinWidth="190"
+                                    MinHeight="50"
                                     Margin="0"
                                     FontSize="15"
-                                    Background="#06070C"
-                                    Foreground="#E8E1D2"/>
+                                    LetterSpacing="0.6"
+                                    BorderThickness="1"
+                                    BorderBrush="#60F2E2C8"
+                                    Background="#05070B"
+                                    Foreground="#F7EBD7"/>
                             <Button
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
                                     Content="{Binding StopButtonLabel}"
-                                    Padding="30,13"
-                                    MinWidth="180"
-                                    MinHeight="48"
+                                    Padding="34,13"
+                                    MinWidth="190"
+                                    MinHeight="50"
                                     Margin="0"
                                     FontSize="15"
-                                    Background="#DDA36B"
-                                    Foreground="#120918"/>
+                                    LetterSpacing="0.6"
+                                    BorderThickness="1"
+                                    BorderBrush="#80F2E2C8"
+                                    Background="#E8B166"
+                                    Foreground="#10080A"/>
                             <Button Grid.Column="1"
                                     Content="Play"
                                     Command="{Binding PlaySelectedCommand}"
-                                    Padding="20,11"
-                                    MinWidth="140"
+                                    Padding="24,12"
+                                    MinWidth="138"
+                                    MinHeight="50"
                                     Margin="0"
-                                    Background="#F2EEE3"
+                                    BorderBrush="#55F2E2C8"
+                                    BorderThickness="1"
+                                    Background="#F4E9D5"
                                     Foreground="#120918"/>
                             <Button Grid.Column="2"
                                     Content="Mix"
                                     Command="{Binding MixSessionTakesCommand}"
-                                    Padding="20,11"
-                                    MinWidth="140"
+                                    Padding="24,12"
+                                    MinWidth="138"
+                                    MinHeight="50"
                                     Margin="0"
-                                    Background="#DDA36B"
+                                    BorderBrush="#80F2C56B"
+                                    BorderThickness="1"
+                                    Background="#E7A45E"
                                     Foreground="#120918"/>
                             <Button Grid.Column="3"
                                     Content="Folder"
                                     Command="{Binding OpenFolderCommand}"
-                                    Padding="20,11"
-                                    MinWidth="130"
+                                    Padding="24,12"
+                                    MinWidth="138"
+                                    MinHeight="50"
                                     Margin="0"
-                                    Background="#211815"
-                                    Foreground="#E8E1D2"/>
+                                    BorderBrush="#55DDA36B"
+                                    BorderThickness="1"
+                                    Background="#21120D"
+                                    Foreground="#F7EBD7"/>
                             <TextBox Grid.Column="4"
                                      IsVisible="False"
                                      Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -623,28 +651,36 @@
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
                                       MinHeight="40"/>
-                        </Grid>
+                            </Grid>
+                        </Border>
 
-                        <StackPanel Grid.Row="2" Spacing="5">
+                        <Border Grid.Row="2"
+                                CornerRadius="18"
+                                Padding="12,9"
+                                Background="#6606070C"
+                                BorderBrush="#24E7B06D"
+                                BorderThickness="1">
+                        <StackPanel Spacing="4">
                             <TextBlock Text="{Binding Status}"
                                        FontSize="12"
                                        FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        MaxLines="2"
-                                       Foreground="#120918"/>
+                                       Foreground="#E8E1D2"/>
                             <TextBlock Text="{Binding SignalProbeSummary}"
                                        FontSize="11"
                                        FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        MaxLines="1"
-                                       Foreground="#527167"/>
+                                       Foreground="#8CD6D8"/>
                             <TextBlock Text="{Binding LastRecorderDiagnostic}"
                                        FontSize="11"
                                        FontWeight="SemiBold"
                                        TextWrapping="Wrap"
                                        MaxLines="1"
-                                       Foreground="#806A3F"/>
+                                       Foreground="#A88B62"/>
                         </StackPanel>
+                        </Border>
                     </Grid>
                 </Border>
 
