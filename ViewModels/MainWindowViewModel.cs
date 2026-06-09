@@ -735,15 +735,15 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         Rooms =
         [
-            new("Performance / Reveal", "Turn the take into night terrain", "00", "#E8E1D2"),
-            new("Song Builder", "Drums -> guitar -> vocal, one layer at a time", "01", "#D08A56"),
-            new("Lyric Vault", "Hooks, Spanglish lines, and pressure notes", "02", "#EABF7A"),
-            new("Caption Engine", "Short captions for covers and field clips", "03", "#6FB6A6"),
-            new("Visual Room", "Moon, roads, lakes, storms, and waveform terrain", "04", "#D9C5A5"),
-            new("Rig Routing", "Focusrite, RC-505, controller, and live input memory", "05", "#F2EADC"),
-            new("Export Memory", "Clips, demos, archives, and drops coming soon", "06", "#9DBFB3"),
-            new("World Memory", "Field recordings, places, phrases, and song seeds", "07", "#8DB7AD"),
-            new("Output Lab", "Turn strong work into clips, exports, and release memory", "08", "#C6A96D"),
+            new("Performance / Reveal", "Live room", "00", "#E8E1D2"),
+            new("Song Builder", "Layer the take", "01", "#D08A56"),
+            new("Lyric Vault", "Hooks and lines", "02", "#EABF7A"),
+            new("Caption Engine", "Short copy", "03", "#6FB6A6"),
+            new("Visual Room", "Scene and motion", "04", "#D9C5A5"),
+            new("Rig Routing", "Inputs and cables", "05", "#F2EADC"),
+            new("Export Memory", "Saved work", "06", "#9DBFB3"),
+            new("World Memory", "Places and seeds", "07", "#8DB7AD"),
+            new("Output Lab", "Clip and release", "08", "#C6A96D"),
         ];
 
         _selectedRoom = Rooms.First(room => room.Name == "Song Builder");
@@ -1606,8 +1606,8 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string BuiltInLooperSignal =>
         SelectedLooperTrack is null
-            ? "No looper track selected."
-            : $"Track {SelectedLooperTrack.Number}: {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / {SelectedLooperTrack.Mode} / take {SelectedLooperTrack.TakeCount} / volume {SelectedLooperTrack.Volume:0}%";
+            ? "Pick a lane."
+            : $"T{SelectedLooperTrack.Number} {SelectedLooperTrack.Instrument} / {SelectedLooperTrack.Status} / {SelectedLooperTrack.TakeCount} takes / {SelectedLooperTrack.Volume:0}%";
 
     public string SelectedLooperRoutingSignal
     {
@@ -1615,7 +1615,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         {
             if (SelectedLooperTrack is null)
             {
-                return "Select a looper lane to see routing.";
+                return "Select lane.";
             }
 
             var channel = InstrumentChannels.FirstOrDefault(item => item.Name == SelectedLooperTrack.Instrument);
@@ -1624,7 +1624,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
                 return $"{SelectedLooperTrack.Instrument}: {SelectedLooperTrack.InputNote}";
             }
 
-            return $"{SelectedLooperTrack.Instrument} route: {channel.InputNote} / {channel.EffectIntent} / {channel.VisualPalette} + {channel.VisualMotion}";
+            return $"{SelectedLooperTrack.Instrument}: {channel.InputNote} / {channel.EffectIntent}";
         }
     }
 
@@ -1635,10 +1635,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             var mode = NormalizeLooperMode(SelectedLooperMode);
             return mode switch
             {
-                "Record" => "Record protects finished loops. Use it for an empty lane.",
-                "Overdub" => "Overdub captures another pass/take over the current loop for comping later.",
-                "Replace" => "Replace intentionally overwrites this lane with a fresh performance.",
-                _ => "Choose how this lane should capture the next pass.",
+                "Record" => "Empty lane.",
+                "Overdub" => "Add pass.",
+                "Replace" => "Fresh take.",
+                _ => "Choose capture mode.",
             };
         }
     }
@@ -1716,10 +1716,10 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SignalCheckHeadline =>
         FocusritePeakPercent <= 0
-            ? "First job: prove sound is entering the Scarlett."
+            ? "No input yet."
             : FocusriteReadyForRecording
-                ? $"Signal works: {FocusritePeakPercent:0.0}% peak."
-                : $"Signal detected: {FocusritePeakPercent:0.0}% peak needs adjustment.";
+                ? $"Signal {FocusritePeakPercent:0.0}%."
+                : $"Signal {FocusritePeakPercent:0.0}%. Adjust.";
 
     public string SignalCheckDetail
     {
@@ -1728,16 +1728,16 @@ public sealed partial class MainWindowViewModel : ViewModelBase
             if (!PreferredAudioInput.Contains("Scarlett", StringComparison.OrdinalIgnoreCase)
                 && !PreferredAudioInput.Contains("Focusrite", StringComparison.OrdinalIgnoreCase))
             {
-                return "Click Find Scarlett. Nothing else matters until the input is selected.";
+                return "Find Scarlett.";
             }
 
             if (FocusritePeakPercent <= 0)
             {
-                return "Click Record 3 sec test, then play the RC-505. If peak stays 0%, check cables/gain/input mode.";
+                return "Run 3s test. Check cable/gain if 0%.";
             }
 
             return FocusriteReadyForRecording
-                ? "Good. You can record a drum lane now."
+                ? "Ready."
                 : FocusriteCalibrationSignal;
         }
     }
@@ -1756,17 +1756,17 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
     public string SimpleRecorderHeadline =>
         SimpleRecordingActive
-            ? "Recording now. Play the RC-505."
+            ? "Recording."
             : FocusriteReadyForRecording
-                ? "Ready to record one clean test."
-                : "Not ready: prove signal first.";
+                ? "Ready."
+                : "Signal first.";
 
     public string SimpleRecorderDetail =>
         SimpleRecordingActive
-            ? "When you are done, press Stop & save. The WAV will autosave with XIV + timestamp."
+            ? "Stop saves WAV."
             : FocusriteReadyForRecording
-                ? "Press Start recording. Do not worry about looper lanes yet."
-                : "Use Find Scarlett and Record 3 sec test. Target: 35-75% peak.";
+                ? "Press record."
+                : "Target 35-75% peak.";
 
     public string SimpleRecorderFileLabel =>
         string.IsNullOrWhiteSpace(ActiveStemPath)

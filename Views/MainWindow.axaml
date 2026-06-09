@@ -437,7 +437,7 @@
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Spacing="18">
                     <Border Classes="roomDeck">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="14">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
                                 <StackPanel Spacing="5">
                                     <TextBlock Text="3D MUSIC ROOM"
@@ -451,12 +451,26 @@
                                                TextWrapping="Wrap"
                                                Foreground="#D9C5A5"/>
                                 </StackPanel>
-                                <TextBlock Grid.Column="1"
-                                           Text="READY"
-                                           FontSize="20"
-                                           FontWeight="Black"
-                                           Foreground="#F8F0E5"
-                                           VerticalAlignment="Center"/>
+                                <Border Grid.Column="1"
+                                        Width="96"
+                                        Height="74"
+                                        CornerRadius="24"
+                                        Background="#EAF8F0E5"
+                                        BoxShadow="0 18 55 0 #52000000">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SignalCheckPeakLabel}"
+                                                   FontSize="26"
+                                                   FontWeight="Black"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="#06111C"/>
+                                        <TextBlock Text="PEAK"
+                                                   FontSize="9"
+                                                   FontWeight="Black"
+                                                   LetterSpacing="2"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="#8D5631"/>
+                                    </StackPanel>
+                                </Border>
                             </Grid>
 
                             <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="9">
@@ -503,6 +517,36 @@
                                        FontWeight="Bold"
                                        TextWrapping="Wrap"
                                        Foreground="#C8A96B"/>
+                            <WrapPanel Grid.Row="3">
+                                <Button Content="Record"
+                                        Command="{Binding StartSimpleRecordingCommand}"
+                                        Padding="18,11"
+                                        Margin="0,0,8,8"
+                                        Background="#E37B45"
+                                        Foreground="#15120D"
+                                        FontWeight="Black"/>
+                                <Button Content="Stop"
+                                        Command="{Binding StopSimpleRecordingCommand}"
+                                        Padding="18,11"
+                                        Margin="0,0,8,8"
+                                        Background="#F2EADC"
+                                        Foreground="#15120D"
+                                        FontWeight="Black"/>
+                                <Button Content="Play test"
+                                        Command="{Binding PlayFocusriteTestCommand}"
+                                        Padding="18,11"
+                                        Margin="0,0,8,8"
+                                        Background="#6FB6A6"
+                                        Foreground="#15120D"
+                                        FontWeight="Black"/>
+                                <Button Content="Folder"
+                                        Command="{Binding OpenProjectFolderCommand}"
+                                        Padding="18,11"
+                                        Margin="0,0,8,8"
+                                        Background="#2415120D"
+                                        Foreground="#F8F0E5"
+                                        FontWeight="Black"/>
+                            </WrapPanel>
                         </Grid>
                     </Border>
                 <Border IsVisible="{Binding IsPerformanceRevealRoom}"
