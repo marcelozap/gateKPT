@@ -881,6 +881,148 @@
                     </Grid>
                 </Border>
 
+                <Border CornerRadius="28"
+                        Padding="16"
+                        BorderBrush="#44E7B06D"
+                        BorderThickness="1"
+                        Background="#C90A0D13"
+                        ClipToBounds="True"
+                        BoxShadow="0 28 62 0 #88000000">
+                    <Grid ColumnDefinitions="*,270" ColumnSpacing="14">
+                        <Border CornerRadius="22"
+                                Padding="14"
+                                Background="#B706070C"
+                                BorderBrush="#2F7FCAD1"
+                                BorderThickness="1"
+                                MinHeight="150">
+                            <Grid>
+                                <Path Data="M -20 84 C 72 22, 142 130, 245 70 S 438 20, 620 98 S 782 50, 940 84"
+                                      Stroke="#66DDA36B"
+                                      StrokeThickness="2.1"
+                                      Stretch="Fill"
+                                      IsHitTestVisible="False"/>
+                                <Path Data="M -20 112 C 90 42, 190 150, 312 96 S 528 74, 724 128 S 838 88, 960 122"
+                                      Stroke="#5F7FCAD1"
+                                      StrokeThickness="1.8"
+                                      Stretch="Fill"
+                                      IsHitTestVisible="False"/>
+                                <Path Data="M 20 28 C 130 84, 232 10, 358 50 S 560 106, 760 36"
+                                      Stroke="#55F2E2C8"
+                                      StrokeThickness="1.2"
+                                      Stretch="Fill"
+                                      IsHitTestVisible="False"/>
+                                <ItemsControl ItemsSource="{Binding SignalBars}"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center"
+                                              Margin="-12,0,-12,0"
+                                              Opacity="0.52"
+                                              IsHitTestVisible="False">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Rows="1"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="9"
+                                                    Height="{Binding}"
+                                                    CornerRadius="999"
+                                                    Margin="3,0"
+                                                    VerticalAlignment="Center"
+                                                    Background="#A5E7B06D"
+                                                    BorderBrush="#507FCAD1"
+                                                    BorderThickness="1">
+                                                <Border.RenderTransform>
+                                                    <ScaleTransform ScaleY="4.2"/>
+                                                </Border.RenderTransform>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <Grid VerticalAlignment="Bottom"
+                                      ColumnDefinitions="*,Auto"
+                                      ColumnSpacing="12">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Text="BROADCAST"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold"
+                                                   LetterSpacing="2.4"
+                                                   Foreground="#E7B06D"/>
+                                        <TextBlock Text="screen + face + sound"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#F7EBD7"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding VideoSyncLabel}"
+                                               VerticalAlignment="Bottom"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="#7FCAD1"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                CornerRadius="22"
+                                Padding="12"
+                                Background="#D810080A"
+                                BorderBrush="#4CE7B06D"
+                                BorderThickness="1">
+                            <Grid RowDefinitions="*,Auto" RowSpacing="10">
+                                <Border CornerRadius="18"
+                                        Background="#181C2430"
+                                        BorderBrush="#407FCAD1"
+                                        BorderThickness="1">
+                                    <Grid>
+                                        <Ellipse Width="120"
+                                                 Height="120"
+                                                 Fill="#241D2938"
+                                                 HorizontalAlignment="Right"
+                                                 VerticalAlignment="Top"
+                                                 Margin="0,-45,-28,0"/>
+                                        <Path Data="M 10 86 C 45 30, 90 122, 132 70 S 218 36, 252 92"
+                                              Stroke="#70E7B06D"
+                                              StrokeThickness="2"
+                                              Stretch="Fill"/>
+                                        <TextBlock Text="CAM"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="24"
+                                                   FontWeight="SemiBold"
+                                                   LetterSpacing="2"
+                                                   Foreground="#F7EBD7"/>
+                                    </Grid>
+                                </Border>
+                                <WrapPanel Grid.Row="1"
+                                           Orientation="Horizontal"
+                                           HorizontalAlignment="Right">
+                                    <Button Content="Camera"
+                                            Command="{Binding OpenCameraCommand}"
+                                            Padding="14,9"
+                                            MinWidth="88"
+                                            Margin="0,0,8,0"
+                                            Background="#21120D"
+                                            Foreground="#F7EBD7"/>
+                                    <Button Content="Sync"
+                                            Command="{Binding AutoSyncPostClipCommand}"
+                                            Padding="14,9"
+                                            MinWidth="72"
+                                            Margin="0,0,8,0"
+                                            Background="#7FCAD1"
+                                            Foreground="#10080A"/>
+                                    <Button Content="Post"
+                                            Command="{Binding MakePostClipCommand}"
+                                            Padding="14,9"
+                                            MinWidth="72"
+                                            Background="#E7A45E"
+                                            Foreground="#10080A"/>
+                                </WrapPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
                 <Border IsVisible="False"
                         CornerRadius="28"
                         Padding="18"

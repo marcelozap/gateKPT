@@ -1264,6 +1264,27 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void OpenCamera()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "microsoft.windows.camera:",
+                UseShellExecute = true
+            });
+
+            VideoWorkflowStatus = "Camera opened. Put your face in the corner, screen-record GateKPT, then use Make post clip when ready.";
+            Status = VideoWorkflowStatus;
+        }
+        catch (Exception ex)
+        {
+            VideoWorkflowStatus = $"Could not open camera: {ex.Message}";
+            Status = VideoWorkflowStatus;
+        }
+    }
+
+    [RelayCommand]
     private void OptimizePhoneVideo()
     {
         if (string.IsNullOrWhiteSpace(PhoneVideoPath))
