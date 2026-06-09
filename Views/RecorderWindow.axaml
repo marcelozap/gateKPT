@@ -126,6 +126,85 @@
                  Margin="0,0,-130,-120"
                  Fill="#107C4A33"
                  IsHitTestVisible="False"/>
+        <Grid Width="1320"
+              Height="780"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Margin="0,28,0,0"
+              Opacity="0.18"
+              IsHitTestVisible="False"
+              RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <SkewTransform AngleX="-28" AngleY="0"/>
+            </Grid.RenderTransform>
+            <UniformGrid Columns="18" Rows="1">
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#22F2EEE3" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#18E7B06D" BorderThickness="1,0,0,0"/>
+                <Border BorderBrush="#147FCAD1" BorderThickness="1,0,0,0"/>
+            </UniformGrid>
+            <UniformGrid Columns="1" Rows="12">
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#167FCAD1" BorderThickness="0,1,0,0"/>
+                <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
+            </UniformGrid>
+        </Grid>
+        <Path Data="M 20 675 C 210 448, 430 808, 705 548 S 1118 392, 1510 708"
+              Stroke="#327FCAD1"
+              StrokeThickness="7"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+        <Path Data="M -40 720 C 180 472, 450 850, 710 610 S 1125 460, 1540 760"
+              Stroke="#24F2EEE3"
+              StrokeThickness="3"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+        <Path Data="M -120 520 C 128 350, 372 620, 590 430 S 910 330, 1220 520 S 1470 410, 1680 490"
+              Stroke="#2DE7B06D"
+              StrokeThickness="5"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+        <Ellipse Width="220"
+                 Height="220"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"
+                 Margin="-90,-80,0,0"
+                 Fill="#0D7FCAD1"
+                 Stroke="#227FCAD1"
+                 StrokeThickness="1"
+                 IsHitTestVisible="False"/>
+        <Ellipse Width="180"
+                 Height="180"
+                 HorizontalAlignment="Right"
+                 VerticalAlignment="Center"
+                 Margin="0,160,-45,0"
+                 Fill="#14E7B06D"
+                 Stroke="#2DE7B06D"
+                 StrokeThickness="1"
+                 IsHitTestVisible="False"/>
         <Grid Width="1120"
               Height="560"
               HorizontalAlignment="Center"
@@ -285,6 +364,74 @@
                             BorderThickness="1">
                         <Border.RenderTransform>
                             <ScaleTransform ScaleY="4.4"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SignalBars}"
+                      Width="1780"
+                      Height="190"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Margin="0,330,0,0"
+                      Opacity="0.18"
+                      IsHitTestVisible="False"
+                      RenderTransformOrigin="0.5,0.5">
+            <ItemsControl.RenderTransform>
+                <RotateTransform Angle="-29"/>
+            </ItemsControl.RenderTransform>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="22"
+                            Height="{Binding}"
+                            CornerRadius="999"
+                            VerticalAlignment="Center"
+                            Margin="8,0"
+                            Background="#80F2EEE3"
+                            BorderBrush="#42E7B06D"
+                            BorderThickness="1">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleY="7.2"/>
+                        </Border.RenderTransform>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SignalBars}"
+                      Width="1260"
+                      Height="110"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Top"
+                      Margin="0,222,0,0"
+                      Opacity="0.34"
+                      IsHitTestVisible="False"
+                      RenderTransformOrigin="0.5,0.5">
+            <ItemsControl.RenderTransform>
+                <SkewTransform AngleX="22" AngleY="0"/>
+            </ItemsControl.RenderTransform>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="10"
+                            Height="{Binding}"
+                            CornerRadius="999"
+                            VerticalAlignment="Center"
+                            Margin="4,0"
+                            Background="#9AE7B06D"
+                            BorderBrush="#457FCAD1"
+                            BorderThickness="1">
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleY="3.4"/>
                         </Border.RenderTransform>
                     </Border>
                 </DataTemplate>
