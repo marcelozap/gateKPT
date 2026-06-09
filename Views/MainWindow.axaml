@@ -67,6 +67,33 @@
             <Setter Property="BoxShadow" Value="0 30 90 0 #78000000"/>
         </Style>
 
+        <Style Selector="Border.mixDeck">
+            <Setter Property="CornerRadius" Value="22"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#38C6A96D"/>
+            <Setter Property="Background" Value="#7A0B1522"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="BoxShadow" Value="0 22 70 0 #66000000"/>
+        </Style>
+
+        <Style Selector="Border.mixLane">
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#28F8F0E5"/>
+            <Setter Property="Background" Value="#3615120D"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+
+        <Style Selector="Path.spatialLine">
+            <Setter Property="Stroke" Value="#168DB7AD"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+        </Style>
+
+        <Style Selector="Path.spatialGlow">
+            <Setter Property="Stroke" Value="#28C6A96D"/>
+            <Setter Property="StrokeThickness" Value="1.5"/>
+        </Style>
+
         <Style Selector="Button">
             <Setter Property="CornerRadius" Value="999"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -122,6 +149,66 @@
                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-280,-320,0,0"/>
         <Ellipse Grid.RowSpan="2" Width="720" Height="720" Fill="#12C6A96D"
                  HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-320,-340"/>
+
+        <Canvas Grid.RowSpan="2"
+                IsHitTestVisible="False"
+                ClipToBounds="True"
+                Opacity="0.9">
+            <Path Fill="#220F0C08"
+                  Stroke="#223B5A4B"
+                  StrokeThickness="1"
+                  Data="M 76,696 L 650,438 L 1288,700 L 1138,862 L 228,862 Z"/>
+            <Path Fill="#10101B24"
+                  Stroke="#1F8DB7AD"
+                  StrokeThickness="1"
+                  Data="M 650,438 L 1288,700 L 1328,152 L 772,236 Z"/>
+            <Path Fill="#0D07110E"
+                  Stroke="#1A92BFB3"
+                  StrokeThickness="1"
+                  Data="M 76,696 L 650,438 L 516,188 L -24,288 Z"/>
+            <Path Classes="spatialGlow"
+                  Data="M 158,724 L 650,506 L 1192,728"/>
+            <Path Classes="spatialLine"
+                  Data="M 274,862 L 650,438 M 438,862 L 650,438 M 602,862 L 650,438 M 766,862 L 650,438 M 930,862 L 650,438"/>
+            <Path Classes="spatialLine"
+                  Data="M 184,770 L 1118,774 M 266,724 L 1034,734 M 350,682 L 952,696 M 432,640 L 870,660 M 514,600 L 790,624"/>
+            <Path Classes="spatialLine"
+                  Data="M 118,528 C 292,456 438,422 650,438 C 860,454 1032,506 1238,616"/>
+            <Path Stroke="#20E37B45"
+                  StrokeThickness="2"
+                  Fill="Transparent"
+                  Data="M 388,688 C 472,612 526,622 578,560 C 644,482 746,520 812,458 C 892,384 986,446 1058,386"/>
+            <Path Stroke="#26F8F0E5"
+                  StrokeThickness="1"
+                  Fill="Transparent"
+                  Data="M 244,360 C 382,304 480,326 594,282 C 750,220 898,260 1076,206"/>
+            <Ellipse Width="10" Height="10" Fill="#92BFB3" Canvas.Left="646" Canvas.Top="434"/>
+            <Ellipse Width="7" Height="7" Fill="#C6A96D" Canvas.Left="808" Canvas.Top="454"/>
+            <Ellipse Width="7" Height="7" Fill="#E37B45" Canvas.Left="1054" Canvas.Top="382"/>
+            <Border Canvas.Left="894"
+                    Canvas.Top="236"
+                    Width="202"
+                    Height="72"
+                    CornerRadius="22"
+                    Background="#73101B24"
+                    BorderBrush="#288DB7AD"
+                    BorderThickness="1"
+                    BoxShadow="0 16 48 0 #52000000">
+                <Grid RowDefinitions="Auto,Auto" Margin="16,13">
+                    <TextBlock Text="3D ROOM"
+                               FontSize="10"
+                               FontWeight="Black"
+                               LetterSpacing="2.4"
+                               Foreground="#C6A96D"/>
+                    <TextBlock Grid.Row="1"
+                               Text="sound / scene / archive"
+                               Margin="0,6,0,0"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Foreground="#8DB7AD"/>
+                </Grid>
+            </Border>
+        </Canvas>
         <Ellipse Grid.RowSpan="2" Width="980" Height="240"
                  Stroke="#108DB7AD"
                  StrokeThickness="1"
@@ -2578,12 +2665,12 @@
                                              BorderBrush="#22F8F0E5"/>
                                     <Grid Grid.Row="6" RowDefinitions="Auto,Auto" RowSpacing="8">
                                         <TextBox Text="{Binding MixPrompt}"
-                                                 PlaceholderText="Type mix intent: warmer drums, less harsh guitar, more intimate vocal..."
+                                                 PlaceholderText="Mix intent..."
                                                  Background="#A80F0C08"
                                                  Foreground="#F8F0E5"
                                                  BorderBrush="#22F8F0E5"/>
                                         <WrapPanel Grid.Row="1">
-                                            <Button Content="Apply words"
+                                            <Button Content="Apply mix"
                                                     Command="{Binding ApplyMixIntentCommand}"
                                                     Padding="14,9"
                                                     Margin="0,0,8,8"
@@ -2593,7 +2680,7 @@
                                         </WrapPanel>
                                     </Grid>
                                     <Border Grid.Row="7" CornerRadius="18" Background="#2615120D" Padding="12">
-                                        <Grid RowDefinitions="Auto,Auto" RowSpacing="5">
+                                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
                                             <TextBlock Text="{Binding MixRecommendation}"
                                                        FontSize="11"
                                                        TextWrapping="Wrap"
@@ -2604,6 +2691,75 @@
                                                        FontWeight="Black"
                                                        TextWrapping="Wrap"
                                                        Foreground="#C8A96B"/>
+                                            <Border Grid.Row="2" Classes="mixDeck">
+                                                <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="10">
+                                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                                        <StackPanel Spacing="4">
+                                                            <TextBlock Text="3D MIX DECK"
+                                                                       FontSize="10"
+                                                                       FontWeight="Black"
+                                                                       Foreground="#C8A96B"
+                                                                       LetterSpacing="2.4"/>
+                                                            <TextBlock Text="{Binding SelectedLooperRoutingSignal}"
+                                                                       FontSize="11"
+                                                                       FontWeight="Bold"
+                                                                       TextWrapping="Wrap"
+                                                                       Foreground="#D9C5A5"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="MIX"
+                                                                   FontSize="20"
+                                                                   FontWeight="Black"
+                                                                   Foreground="#F8F0E5"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Grid>
+
+                                                    <Grid Grid.Row="1" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="7">
+                                                        <Border Classes="mixLane" Margin="34,0,0,0">
+                                                            <Grid ColumnDefinitions="76,*,Auto" ColumnSpacing="10">
+                                                                <TextBlock Text="DRUMS" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                                <Border Grid.Column="1" Height="6" CornerRadius="999" Background="#E37B45" VerticalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="LOW" FontSize="10" FontWeight="Black" Foreground="#C8A96B"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <Border Grid.Row="1" Classes="mixLane" Margin="24,0,14,0">
+                                                            <Grid ColumnDefinitions="76,*,Auto" ColumnSpacing="10">
+                                                                <TextBlock Text="GUITAR" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                                <Border Grid.Column="1" Height="6" CornerRadius="999" Background="#C8A96B" VerticalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="MID" FontSize="10" FontWeight="Black" Foreground="#9DBFB3"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <Border Grid.Row="2" Classes="mixLane" Margin="12,0,28,0">
+                                                            <Grid ColumnDefinitions="76,*,Auto" ColumnSpacing="10">
+                                                                <TextBlock Text="VOICE" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                                <Border Grid.Column="1" Height="6" CornerRadius="999" Background="#F2EADC" VerticalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="FRONT" FontSize="10" FontWeight="Black" Foreground="#F2EADC"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <Border Grid.Row="3" Classes="mixLane" Margin="0,0,42,0">
+                                                            <Grid ColumnDefinitions="76,*,Auto" ColumnSpacing="10">
+                                                                <TextBlock Text="ROOM" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                                <Border Grid.Column="1" Height="6" CornerRadius="999" Background="#8DB7AD" VerticalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="SPACE" FontSize="10" FontWeight="Black" Foreground="#8DB7AD"/>
+                                                            </Grid>
+                                                        </Border>
+                                                        <Border Grid.Row="4" Classes="mixLane" Margin="46,0,6,0">
+                                                            <Grid ColumnDefinitions="76,*,Auto" ColumnSpacing="10">
+                                                                <TextBlock Text="MASTER" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                                                <Border Grid.Column="1" Height="6" CornerRadius="999" Background="#A266FF" VerticalAlignment="Center"/>
+                                                                <TextBlock Grid.Column="2" Text="PRINT" FontSize="10" FontWeight="Black" Foreground="#D9C5A5"/>
+                                                            </Grid>
+                                                        </Border>
+                                                    </Grid>
+
+                                                    <TextBlock Grid.Row="2"
+                                                               Text="{Binding LooperArrangementSignal}"
+                                                               FontSize="11"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap"
+                                                               Foreground="#D9C5A5"/>
+                                                </Grid>
+                                            </Border>
                                         </Grid>
                                     </Border>
                                 </Grid>
@@ -2704,11 +2860,11 @@
                                     </Border>
                                 </Grid>
                             </Border>
-                            <Border CornerRadius="20" Background="#660F0C08" BorderBrush="#22E37B45" BorderThickness="1" Padding="16" Margin="0,14,0,0" IsVisible="False">
+                            <Border CornerRadius="20" Background="#660F0C08" BorderBrush="#22E37B45" BorderThickness="1" Padding="16" Margin="0,14,0,0" IsVisible="True">
                                 <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="12">
                                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
                                         <StackPanel Spacing="5">
-                                            <TextBlock Text="BUILT-IN LOOPER ALPHA" FontSize="11" FontWeight="Black" Foreground="#E37B45" LetterSpacing="2.8"/>
+                                            <TextBlock Text="BUILT-IN LOOPER" FontSize="11" FontWeight="Black" Foreground="#E37B45" LetterSpacing="2.8"/>
                                             <TextBlock Text="{Binding BuiltInLooperSignal}"
                                                        FontSize="12"
                                                        FontWeight="Bold"
