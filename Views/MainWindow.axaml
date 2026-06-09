@@ -84,6 +84,24 @@
             <Setter Property="Padding" Value="10,8"/>
         </Style>
 
+        <Style Selector="Border.roomDeck">
+            <Setter Property="CornerRadius" Value="30"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#35F2EADC"/>
+            <Setter Property="Background" Value="#8A06111C"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="BoxShadow" Value="0 26 90 0 #70000000"/>
+        </Style>
+
+        <Style Selector="Border.roomPillar">
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#2CF8F0E5"/>
+            <Setter Property="Background" Value="#4215120D"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="BoxShadow" Value="0 16 38 0 #42000000"/>
+        </Style>
+
         <Style Selector="Path.spatialLine">
             <Setter Property="Stroke" Value="#168DB7AD"/>
             <Setter Property="StrokeThickness" Value="1"/>
@@ -172,6 +190,94 @@
                   Data="M 274,862 L 650,438 M 438,862 L 650,438 M 602,862 L 650,438 M 766,862 L 650,438 M 930,862 L 650,438"/>
             <Path Classes="spatialLine"
                   Data="M 184,770 L 1118,774 M 266,724 L 1034,734 M 350,682 L 952,696 M 432,640 L 870,660 M 514,600 L 790,624"/>
+            <Path Fill="#1806111C"
+                  Stroke="#2CF2EADC"
+                  StrokeThickness="1"
+                  Data="M 312,764 L 650,548 L 984,764 L 884,838 L 420,838 Z"/>
+            <Path Stroke="#24E37B45"
+                  StrokeThickness="2"
+                  Fill="Transparent"
+                  Data="M 388,790 L 650,620 L 912,790"/>
+            <Path Stroke="#18F8F0E5"
+                  StrokeThickness="1"
+                  Fill="Transparent"
+                  Data="M 474,740 L 826,740 M 532,702 L 768,702 M 586,666 L 714,666"/>
+            <Path Stroke="#18C6A96D"
+                  StrokeThickness="1"
+                  Fill="Transparent"
+                  Data="M 170,640 C 360,552 534,528 650,548 C 790,572 954,628 1146,638"/>
+            <Path Stroke="#14F2EADC"
+                  StrokeThickness="1"
+                  Fill="Transparent"
+                  Data="M 228,250 C 416,170 592,196 748,154 C 904,112 1044,146 1196,92"/>
+            <Border Canvas.Left="282"
+                    Canvas.Top="552"
+                    Width="74"
+                    Height="112"
+                    CornerRadius="18"
+                    Background="#70101B24"
+                    BorderBrush="#2CF2EADC"
+                    BorderThickness="1"
+                    BoxShadow="0 18 42 0 #52000000">
+                <TextBlock Text="VOICE"
+                           FontSize="10"
+                           FontWeight="Black"
+                           LetterSpacing="1.8"
+                           Foreground="#F2EADC"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <Border Canvas.Left="472"
+                    Canvas.Top="502"
+                    Width="74"
+                    Height="136"
+                    CornerRadius="18"
+                    Background="#6415120D"
+                    BorderBrush="#35C6A96D"
+                    BorderThickness="1"
+                    BoxShadow="0 20 48 0 #56000000">
+                <TextBlock Text="DRUMS"
+                           FontSize="10"
+                           FontWeight="Black"
+                           LetterSpacing="1.8"
+                           Foreground="#C6A96D"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <Border Canvas.Left="666"
+                    Canvas.Top="508"
+                    Width="74"
+                    Height="132"
+                    CornerRadius="18"
+                    Background="#6415120D"
+                    BorderBrush="#35E37B45"
+                    BorderThickness="1"
+                    BoxShadow="0 20 48 0 #56000000">
+                <TextBlock Text="GUITAR"
+                           FontSize="10"
+                           FontWeight="Black"
+                           LetterSpacing="1.8"
+                           Foreground="#E37B45"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <Border Canvas.Left="856"
+                    Canvas.Top="554"
+                    Width="74"
+                    Height="108"
+                    CornerRadius="18"
+                    Background="#70101B24"
+                    BorderBrush="#2C92BFB3"
+                    BorderThickness="1"
+                    BoxShadow="0 18 42 0 #52000000">
+                <TextBlock Text="ROOM"
+                           FontSize="10"
+                           FontWeight="Black"
+                           LetterSpacing="1.8"
+                           Foreground="#92BFB3"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
             <Path Classes="spatialLine"
                   Data="M 118,528 C 292,456 438,422 650,438 C 860,454 1032,506 1238,616"/>
             <Path Stroke="#20E37B45"
@@ -330,6 +436,75 @@
 
             <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Spacing="18">
+                    <Border Classes="roomDeck">
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="14">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="3D MUSIC ROOM"
+                                               FontSize="11"
+                                               FontWeight="Black"
+                                               Foreground="#C8A96B"
+                                               LetterSpacing="2.8"/>
+                                    <TextBlock Text="{Binding BuiltInLooperSignal}"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               TextWrapping="Wrap"
+                                               Foreground="#D9C5A5"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1"
+                                           Text="READY"
+                                           FontSize="20"
+                                           FontWeight="Black"
+                                           Foreground="#F8F0E5"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*,*" ColumnSpacing="9">
+                                <Border Classes="roomPillar" Margin="22,20,0,0">
+                                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="9">
+                                        <TextBlock Text="VOICE" FontSize="11" FontWeight="Black" Foreground="#F2EADC"/>
+                                        <Border Grid.Row="1" Height="46" CornerRadius="999" Background="#24F2EADC" BorderBrush="#38F2EADC" BorderThickness="1"/>
+                                        <TextBlock Grid.Row="2" Text="front" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                    </Grid>
+                                </Border>
+                                <Border Grid.Column="1" Classes="roomPillar" Margin="10,4,10,16">
+                                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="9">
+                                        <TextBlock Text="DRUMS" FontSize="11" FontWeight="Black" Foreground="#C8A96B"/>
+                                        <Border Grid.Row="1" Height="62" CornerRadius="999" Background="#26C8A96B" BorderBrush="#46C8A96B" BorderThickness="1"/>
+                                        <TextBlock Grid.Row="2" Text="pulse" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                    </Grid>
+                                </Border>
+                                <Border Grid.Column="2" Classes="roomPillar" Margin="0,0,0,24">
+                                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="9">
+                                        <TextBlock Text="GUITAR" FontSize="11" FontWeight="Black" Foreground="#E37B45"/>
+                                        <Border Grid.Row="1" Height="70" CornerRadius="999" Background="#28E37B45" BorderBrush="#4CE37B45" BorderThickness="1"/>
+                                        <TextBlock Grid.Row="2" Text="line" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                    </Grid>
+                                </Border>
+                                <Border Grid.Column="3" Classes="roomPillar" Margin="10,12,10,8">
+                                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="9">
+                                        <TextBlock Text="ROOM" FontSize="11" FontWeight="Black" Foreground="#92BFB3"/>
+                                        <Border Grid.Row="1" Height="54" CornerRadius="999" Background="#2692BFB3" BorderBrush="#4092BFB3" BorderThickness="1"/>
+                                        <TextBlock Grid.Row="2" Text="space" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                    </Grid>
+                                </Border>
+                                <Border Grid.Column="4" Classes="roomPillar" Margin="0,28,22,0">
+                                    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="9">
+                                        <TextBlock Text="PRINT" FontSize="11" FontWeight="Black" Foreground="#F8F0E5"/>
+                                        <Border Grid.Row="1" Height="38" CornerRadius="999" Background="#2AF8F0E5" BorderBrush="#44F8F0E5" BorderThickness="1"/>
+                                        <TextBlock Grid.Row="2" Text="take" FontSize="10" FontWeight="Bold" Foreground="#D9C5A5"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <TextBlock Grid.Row="2"
+                                       Text="{Binding SelectedLooperRoutingSignal}"
+                                       FontSize="11"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Foreground="#C8A96B"/>
+                        </Grid>
+                    </Border>
                 <Border IsVisible="{Binding IsPerformanceRevealRoom}"
                         CornerRadius="34"
                         BorderBrush="#36F2EADC"
