@@ -41,7 +41,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         "live-album");
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
-    private readonly DispatcherTimer _visualTimer = new() { Interval = TimeSpan.FromMilliseconds(140) };
+    private readonly DispatcherTimer _visualTimer = new() { Interval = TimeSpan.FromMilliseconds(80) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
     private bool _recordingSignalSeen;
     private int? _activeCaptureLayerNumber;
@@ -2858,27 +2858,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
         var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        var wave = Math.Sin((now / 95.0) + SignalBars.Count) * 0.34;
-        var drift = Math.Cos((now / 310.0) + SignalBars.Count * 0.41) * 0.22;
-        var height = 10 + (normalized * 78) + Math.Abs(wave * 30) + Math.Abs(drift * 18);
+        var slowBreath = Math.Sin(now / 1180.0) * 0.5 + 0.5;
+        var wave = Math.Sin((now / 140.0) + SignalBars.Count * 0.52) * 0.30;
+        var drift = Math.Cos((now / 620.0) + SignalBars.Count * 0.31) * 0.18;
+        var height = 12 + (normalized * 92) + Math.Abs(wave * 24) + Math.Abs(drift * 16);
         if (peak < 0.5)
         {
-            height = 10 + Math.Abs(wave * 24) + Math.Abs(drift * 16);
+            height = 10 + slowBreath * 16 + Math.Abs(wave * 14) + Math.Abs(drift * 10);
         }
 
-        var idlePulse = Math.Abs(Math.Sin(now / 720.0));
-        var visualEnergy = Math.Clamp(normalized + idlePulse * 0.05, 0, 1);
+        var idlePulse = Math.Abs(Math.Sin(now / 1500.0));
+        var visualEnergy = Math.Clamp(normalized * 1.15 + idlePulse * 0.10, 0, 1);
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 92 + visualEnergy * 190 + Math.Abs(wave) * 24;
-        VisualBloomSize = 260 + visualEnergy * 480 + Math.Abs(drift) * 80;
-        VisualBloomOpacity = 0.16 + visualEnergy * 0.42;
-        VisualRoomScale = 1 + visualEnergy * 0.10;
-        VisualBackScale = 1 + visualEnergy * 0.18;
-        VisualMidScale = 1 + visualEnergy * 0.38;
-        VisualFrontScale = 1 + visualEnergy * 0.72;
-        VisualRoomTilt = -8 + wave * 12 + visualEnergy * 5;
-        VisualDriftX = drift * 56;
-        VisualLiftY = -visualEnergy * 74 + wave * 18;
+        VisualCoreSize = 80 + visualEnergy * 230 + Math.Abs(wave) * 18;
+        VisualBloomSize = 240 + visualEnergy * 620 + Math.Abs(drift) * 70;
+        VisualBloomOpacity = 0.12 + visualEnergy * 0.58;
+        VisualRoomScale = 1 + visualEnergy * 0.16;
+        VisualBackScale = 1 + visualEnergy * 0.24;
+        VisualMidScale = 1 + visualEnergy * 0.48;
+        VisualFrontScale = 1 + visualEnergy * 0.86;
+        VisualRoomTilt = -5 + wave * 7 + visualEnergy * 3;
+        VisualDriftX = drift * 42;
+        VisualLiftY = -visualEnergy * 66 + wave * 12;
 
         SignalBars.RemoveAt(0);
         SignalBars.Add(Math.Clamp(height, 8, 96));
