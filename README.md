@@ -1,16 +1,16 @@
-# GateKPT MusicOS
+# GateKPT Music OS
 
-> **Primary active GateKPT app.** This is the C#/.NET Avalonia desktop MusicOS. Use this repo for real product functionality: looper, Focusrite/RC-505 capture, take review, captions, visual painting, autosaves, and project memory.
+> **Primary active GateKPT app.** This is the C#/.NET Avalonia desktop Music OS. Use this repo for real product functionality: looper, Focusrite/RC-505 capture, take review, captions, visual painting, autosaves, and project memory.
 
 Public website work belongs in `C:\Users\Green Machine\Desktop\no-going-back` until `gatekpt.ai` is moved to a cleaner dedicated web repo.
 
-GateKPT MusicOS is a C#/.NET creative operating system for live-loop artists, combining RC-505 performance planning, local project memory, lyric/caption workflows, stem capture, and audio-reactive visual artwork.
+GateKPT Music OS is a C#/.NET creative operating system for live-loop artists, combining RC-505 performance planning, local project memory, lyric/caption workflows, stem capture, and audio-reactive visual artwork.
 
 It is not a toy DAW clone, generic music app, or replacement for musicianship and hardware. It sits above the creative rig as the memory, structure, visual, and production layer for artists who build songs through live performance.
 
 ## Product Direction
 
-GateKPT MusicOS helps live creators move from improvisation to finished media. It connects the structure of a song, the behavior of a live-looping rig, the memory of a project, and the visual identity of a performance into one focused artist cockpit.
+GateKPT Music OS helps live creators move from improvisation to finished media. It connects the structure of a song, the behavior of a live-looping rig, the memory of a project, and the visual identity of a performance into one focused artist cockpit.
 
 Built in C#/.NET with Avalonia, it supports RC-505 cue planning, section-based song workflows, lyric and caption memory, stem capture, hardware routing notes, and audio-reactive visual painting driven by live input.
 
@@ -64,7 +64,7 @@ See [LIVE_PERFORMANCE_ARCHITECTURE.md](LIVE_PERFORMANCE_ARCHITECTURE.md).
 
 ## Section-Based Song Workflow
 
-MusicOS is shaped around the normal build order:
+GateKPT Music OS is shaped around the normal build order:
 
 - Drums first: tempo, groove, loop length, kick/snare feel.
 - Guitar / piano second: harmony, rhythm pocket, arrangement.
@@ -94,7 +94,7 @@ The current alpha records WAV stems from the selected Windows input through NAud
 
 ## Resume Bullet
 
-Built GateKPT MusicOS, a C#/.NET Avalonia desktop creative OS for live-loop music production, combining RC-505 workflow planning, local project memory, lyric/caption management, stem capture, hardware routing, and audio-reactive visual performance tooling.
+Built GateKPT Music OS, a C#/.NET Avalonia desktop creative OS for live-loop music production, combining RC-505 workflow planning, local project memory, lyric/caption management, stem capture, hardware routing, and audio-reactive visual performance tooling.
 
 ## Run
 
@@ -124,4 +124,4 @@ winget install Gyan.FFmpeg
 
 ## Public / Private Boundary
 
-`gatekpt.ai` stays the public landing page for music, videos, pricing, and booking. GateKPT MusicOS is the private workspace for section planning, media sync, vocal processing, timeline markers, export queues, production briefs, and performance memory.
+`gatekpt.ai` stays the public landing page for music, videos, pricing, and booking. GateKPT Music OS is the private workspace for section planning, media sync, vocal processing, timeline markers, export queues, production briefs, and performance memory.

@@ -5,7 +5,7 @@
         x:Class="GateKPT.MusicOS.Views.RecorderWindow"
         x:DataType="vm:RecorderWindowViewModel"
         Icon="/Assets/gatekpt.ico"
-        Title="GateKPT MusicOS"
+        Title="GateKPT Music OS"
         Width="1020"
         Height="760"
         MinWidth="520"

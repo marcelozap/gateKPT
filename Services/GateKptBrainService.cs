@@ -16,7 +16,7 @@ public sealed class GateKptBrainService
 
         if (ContainsAny(lower, "p/l", "pl ", "profit", "loss", "trading", "budget", "schwab", "spy"))
         {
-            return "Green Machine owns trading P/L. GateKPT MusicOS does not read broker or budget data here. Creative status: "
+            return "Green Machine owns trading P/L. GateKPT Music OS does not read broker or budget data here. Creative status: "
                    + BuildSessionStatus(context);
         }
 

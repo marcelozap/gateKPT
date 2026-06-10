@@ -14,9 +14,9 @@ GateKPT should use two visualizer tiers.
 
 This tier should stay simple and fast.
 
-## Private MusicOS Tier
+## Private GateKPT Music OS Tier
 
-GateKPT MusicOS can evolve into a serious 2D/3D performance renderer.
+GateKPT Music OS can evolve into a serious 2D/3D performance renderer.
 
 The private app owns:
 
@@ -35,7 +35,7 @@ The app now tracks a renderer path inside visualizer settings:
 - `2D Avalonia preview`: safe in-app planning and screenshots
 - `2D Skia performance`: next richer 2D path for particles, trails, and exportable paintings
 - `3D standalone engine`: future GPU-backed renderer in a separate process
-- `Hybrid projector pipeline`: MusicOS controls scenes while a dedicated renderer owns projector/OBS output
+- `Hybrid projector pipeline`: GateKPT Music OS controls scenes while a dedicated renderer owns projector/OBS output
 
 ## Recommended Build Order
 
@@ -67,11 +67,11 @@ The packet is intentionally lightweight:
 - energy, transient strength, and intensity
 - lyric source, visual signature, and notes
 
-This is the first bridge between the MusicOS cockpit and a future renderer process. A 3D engine should consume this kind of packet rather than reading private app state directly.
+This is the first bridge between the GateKPT Music OS cockpit and a future renderer process. A 3D engine should consume this kind of packet rather than reading private app state directly.
 
 ## 3D Safety Rules
 
-- Audio and recording stay in the DAW or MusicOS capture layer.
+- Audio and recording stay in the DAW or GateKPT Music OS capture layer.
 - 3D renderer is restartable.
 - Blackout must be instant.
 - Quality mode must be switchable during rehearsal.

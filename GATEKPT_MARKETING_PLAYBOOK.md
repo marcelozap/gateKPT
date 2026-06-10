@@ -492,7 +492,7 @@ Do not add:
 - private OS screenshots unless they are beautiful and minimal
 - fake pricing before the workflow is reliable
 
-## MusicOS Marketing Job
+## GateKPT Music OS Marketing Job
 
 The private OS should help Marcelo:
 

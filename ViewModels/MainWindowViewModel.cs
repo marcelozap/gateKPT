@@ -762,7 +762,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         var project = _store.LoadProject();
         ProjectName = project.ProjectName == "GateKPT clip system"
-            || project.ProjectName == "GateKPT MusicOS"
+            || project.ProjectName == "GateKPT Music OS"
             || project.ProjectName.Contains("Late Night", StringComparison.OrdinalIgnoreCase)
             ? "Night Session"
             : project.ProjectName;
@@ -1493,7 +1493,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         "2D Avalonia preview" => "Safe in-app preview. Good for planning and screenshots; not the final projector engine.",
         "2D Skia performance" => "Next upgrade path for richer 2D particles, trails, and exported visual paintings.",
         "3D standalone engine" => "Future show renderer. Separate process, GPU-backed, restartable, and never in the audio path.",
-        "Hybrid projector pipeline" => "Long-term live setup: MusicOS controls scenes while a dedicated renderer owns projector/OBS output.",
+        "Hybrid projector pipeline" => "Long-term live setup: GateKPT Music OS controls scenes while a dedicated renderer owns projector/OBS output.",
         _ => "Choose a renderer path before rehearsal so visual load and output expectations are clear.",
     };
 

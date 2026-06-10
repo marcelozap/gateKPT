@@ -84,13 +84,13 @@ The high-end version should feel like a real performance instrument:
 
 The public `gatekpt.ai` demo should stay lightweight 2D canvas so visitors can try it instantly from LinkedIn, GitHub, or a phone.
 
-The private MusicOS can own the heavier visual path:
+The private GateKPT Music OS can own the heavier visual path:
 
 - current: Avalonia 2D visual painting preview
 - next: high-performance 2D renderer for richer particles/trails/export
 - future: separate 3D renderer process for projector and OBS output
 
-MusicOS should store the selected renderer path with each visual preset so the artist knows whether the current visual is safe preview, performance 2D, future 3D, or hybrid projector pipeline.
+GateKPT Music OS should store the selected renderer path with each visual preset so the artist knows whether the current visual is safe preview, performance 2D, future 3D, or hybrid projector pipeline.
 
 ## Next Engineering Steps
 
