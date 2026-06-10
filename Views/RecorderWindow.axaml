@@ -131,7 +131,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Margin="0,28,0,0"
-              Opacity="0.18"
+              Opacity="0.08"
               IsHitTestVisible="False"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
@@ -172,6 +172,50 @@
                 <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
             </UniformGrid>
         </Grid>
+
+        <Canvas IsHitTestVisible="False"
+                ClipToBounds="False">
+            <Path Data="M 1040 -20 L 1450 88 L 1370 378 L 980 238 Z"
+                  Fill="#1DFFD2B8"
+                  Stroke="#44FFD2B8"
+                  StrokeThickness="1.4"/>
+            <Path Data="M 900 30 L 1132 116 L 1110 282 L 848 220 Z"
+                  Fill="#1264C7B6"
+                  Stroke="#3C64C7B6"
+                  StrokeThickness="1.2"/>
+            <Path Data="M -80 520 L 240 438 L 328 722 L 0 832 Z"
+                  Fill="#17153245"
+                  Stroke="#355C8EB8"
+                  StrokeThickness="1.1"/>
+            <Path Data="M 1180 520 L 1540 440 L 1660 780 L 1260 850 Z"
+                  Fill="#16E1786E"
+                  Stroke="#38E1786E"
+                  StrokeThickness="1.1"/>
+            <Path Data="M 360 690 C 520 572, 706 770, 898 640 S 1240 548, 1460 700"
+                  Stroke="#7AFFD2B8"
+                  StrokeThickness="2.6"/>
+            <Path Data="M 120 110 C 260 26, 430 176, 592 82 S 844 8, 1080 126"
+                  Stroke="#4864C7B6"
+                  StrokeThickness="2"/>
+            <Path Data="M 160 590 C 344 446, 478 684, 678 528 S 980 394, 1214 586"
+                  Stroke="#50E1786E"
+                  StrokeThickness="1.8"/>
+            <Ellipse Width="300"
+                     Height="300"
+                     Canvas.Left="1020"
+                     Canvas.Top="520"
+                     Fill="#0E64C7B6"
+                     Stroke="#2464C7B6"
+                     StrokeThickness="1"/>
+            <Ellipse Width="210"
+                     Height="210"
+                     Canvas.Left="108"
+                     Canvas.Top="302"
+                     Fill="#0FE1786E"
+                     Stroke="#2BE1786E"
+                     StrokeThickness="1"/>
+        </Canvas>
+
         <Path Data="M 20 675 C 210 448, 430 808, 705 548 S 1118 392, 1510 708"
               Stroke="#3A64C7B6"
               StrokeThickness="7"
@@ -210,7 +254,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Margin="0,70,0,0"
-              Opacity="0.24"
+              Opacity="0.10"
               IsHitTestVisible="False"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
