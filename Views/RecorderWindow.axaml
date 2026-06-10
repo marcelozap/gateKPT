@@ -1523,8 +1523,8 @@
                                       StrokeThickness="0.9"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
-                                <WrapPanel Orientation="Horizontal">
-                                    <Button Command="{Binding StageRawCleanCommand}" Width="126" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Clean/raw take">
+                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Command="{Binding StageRawCleanCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Clean/raw take">
                                         <Border CornerRadius="16" BorderBrush="#88F2EEE3" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 18 0 #30F8EFE0">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -1535,13 +1535,13 @@
                                                 </LinearGradientBrush>
                                             </Border.Background>
                                             <Grid>
-                                                <Ellipse Width="28" Height="28" HorizontalAlignment="Left" Margin="13,0,0,0" Fill="#B0F8EFE0"/>
-                                                <Path Data="M 48 25 L 112 25" Stroke="#B0080A12" StrokeThickness="2.2"/>
-                                                <Path Data="M 50 18 L 78 18 M 82 32 L 110 32" Stroke="#75F8EFE0" StrokeThickness="1.1"/>
+                                                <Ellipse Width="28" Height="28" HorizontalAlignment="Left" Margin="14,0,0,0" Fill="#B0F8EFE0"/>
+                                                <Path Data="M 50 25 L 114 25" Stroke="#B0080A12" StrokeThickness="2.2"/>
+                                                <Path Data="M 52 18 L 80 18 M 84 32 L 112 32" Stroke="#75F8EFE0" StrokeThickness="1.1"/>
                                             </Grid>
                                         </Border>
                                     </Button>
-                                    <Button Command="{Binding StageLateNightChromeCommand}" Width="126" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Chrome/gloss">
+                                    <Button Command="{Binding StageLateNightChromeCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Chrome/gloss">
                                         <Border CornerRadius="16" BorderBrush="#B8D6FFFF" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #5028A7FF">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -1553,13 +1553,13 @@
                                                 </LinearGradientBrush>
                                             </Border.Background>
                                             <Grid>
-                                                <Path Data="M 10 32 C 34 8, 72 42, 116 12" Stroke="#CC080A12" StrokeThickness="1.6"/>
-                                                <Path Data="M 12 16 L 50 16 M 70 35 L 114 35" Stroke="#B8D6FFFF" StrokeThickness="1.2"/>
+                                                <Path Data="M 12 32 C 36 8, 74 42, 118 12" Stroke="#CC080A12" StrokeThickness="1.6"/>
+                                                <Path Data="M 14 16 L 52 16 M 72 35 L 116 35" Stroke="#B8D6FFFF" StrokeThickness="1.2"/>
                                                 <Ellipse Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#78D6FFFF"/>
                                             </Grid>
                                         </Border>
                                     </Button>
-                                    <Button Command="{Binding QuickWarmerCommand}" Width="126" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Warm/fire">
+                                    <Button Command="{Binding QuickWarmerCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Warm/fire">
                                         <Border CornerRadius="16" BorderBrush="#CCFFBFA9" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 24 0 #55FF6C3E">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
@@ -1571,13 +1571,13 @@
                                                 </LinearGradientBrush>
                                             </Border.Background>
                                             <Grid>
-                                                <Path Data="M 20 38 C 28 18, 38 28, 44 12 C 54 32, 68 20, 74 36 C 84 12, 100 24, 108 36"
+                                                <Path Data="M 20 38 C 28 18, 38 28, 44 12 C 54 32, 68 20, 74 36 C 84 12, 102 24, 110 36"
                                                       Stroke="#F8EFE0" StrokeThickness="1.5"/>
-                                                <Path Data="M 15 38 C 34 28, 56 44, 77 31 S 104 26, 118 34" Stroke="#80FFD17A" StrokeThickness="1"/>
+                                                <Path Data="M 15 38 C 34 28, 56 44, 77 31 S 104 26, 120 34" Stroke="#80FFD17A" StrokeThickness="1"/>
                                             </Grid>
                                         </Border>
                                     </Button>
-                                    <Button Command="{Binding QuickReverbCommand}" Width="126" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Room/space">
+                                    <Button Command="{Binding QuickReverbCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Room/space">
                                         <Border CornerRadius="16" BorderBrush="#A8D6FFFF" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #334CFF9D">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
@@ -1588,13 +1588,13 @@
                                                 </LinearGradientBrush>
                                             </Border.Background>
                                             <Grid>
-                                                <Path Data="M 12 30 C 30 8, 94 8, 114 30" Stroke="#D6FFFF" StrokeThickness="1.35"/>
-                                                <Path Data="M 28 36 C 44 22, 78 22, 96 36" Stroke="#A8F8EFE0" StrokeThickness="1.05"/>
-                                                <Path Data="M 10 16 C 38 28, 82 2, 116 18" Stroke="#7064C7B6" StrokeThickness="1"/>
+                                                <Path Data="M 14 30 C 32 8, 96 8, 116 30" Stroke="#D6FFFF" StrokeThickness="1.35"/>
+                                                <Path Data="M 30 36 C 46 22, 80 22, 98 36" Stroke="#A8F8EFE0" StrokeThickness="1.05"/>
+                                                <Path Data="M 12 16 C 40 28, 84 2, 118 18" Stroke="#7064C7B6" StrokeThickness="1"/>
                                             </Grid>
                                         </Border>
                                     </Button>
-                                    <Button Command="{Binding QuickLouderCommand}" Width="126" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Lift/loud">
+                                    <Button Command="{Binding QuickLouderCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Lift/loud">
                                         <Border CornerRadius="16" BorderBrush="#A8FFD17A" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #40FFD17A">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
@@ -1611,11 +1611,12 @@
                                             </Grid>
                                         </Border>
                                     </Button>
-                                    <Button Command="{Binding QuickDeleteCommand}" Width="50" Height="48" Padding="0" Margin="0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Delete last">
-                                        <Border CornerRadius="18" Background="#46140912" BorderBrush="#C8FF6C3E" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000">
+                                    <Button Command="{Binding QuickDeleteCommand}" Width="128" Height="48" Padding="0" Margin="0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Delete last">
+                                        <Border CornerRadius="16" Background="#46140912" BorderBrush="#C8FF6C3E" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 20 0 #40FF6C3E">
                                             <Grid>
-                                                <Ellipse Width="24" Height="24" Fill="#40FF6C3E" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <Path Data="M 18 16 L 32 32 M 32 16 L 18 32" Stroke="#F8EFE0" StrokeThickness="2"/>
+                                                <Ellipse Width="28" Height="28" Fill="#40FF6C3E" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <Path Data="M 55 17 L 73 35 M 73 17 L 55 35" Stroke="#F8EFE0" StrokeThickness="2.2"/>
+                                                <Path Data="M 22 24 L 44 24 M 84 24 L 106 24" Stroke="#60FFBFA9" StrokeThickness="1.2"/>
                                             </Grid>
                                         </Border>
                                     </Button>
