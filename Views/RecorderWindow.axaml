@@ -131,7 +131,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Margin="0,28,0,0"
-              Opacity="0.08"
+              Opacity="0.035"
               IsHitTestVisible="False"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
@@ -172,6 +172,43 @@
                 <Border BorderBrush="#22E7B06D" BorderThickness="0,1,0,0"/>
             </UniformGrid>
         </Grid>
+
+        <Canvas IsHitTestVisible="False"
+                ClipToBounds="False"
+                Opacity="0.74">
+            <Path Data="M 642 -120 L 810 -120 L 1026 760 L 410 760 Z"
+                  Fill="#11FFF4E6CF"/>
+            <Path Data="M 862 -80 L 1012 -54 L 1172 760 L 760 760 Z"
+                  Fill="#0DE1786E"/>
+            <Path Data="M 432 -70 L 598 -96 L 712 760 L 246 760 Z"
+                  Fill="#0B64C7B6"/>
+            <Ellipse Width="760"
+                     Height="118"
+                     Canvas.Left="398"
+                     Canvas.Top="656"
+                     Fill="#18FFF4E6CF"/>
+            <Ellipse Width="520"
+                     Height="62"
+                     Canvas.Left="515"
+                     Canvas.Top="676"
+                     Fill="#22FFD2B8"/>
+            <Border Width="620"
+                    Height="2"
+                    Canvas.Left="470"
+                    Canvas.Top="706"
+                    Background="#50FFF4E6CF"
+                    CornerRadius="999"/>
+            <Border Width="210"
+                    Height="1"
+                    Canvas.Left="650"
+                    Canvas.Top="318"
+                    Background="#70FFD2B8"
+                    CornerRadius="999">
+                <Border.RenderTransform>
+                    <RotateTransform Angle="-7"/>
+                </Border.RenderTransform>
+            </Border>
+        </Canvas>
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False">
@@ -286,7 +323,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
               Margin="0,70,0,0"
-              Opacity="0.10"
+              Opacity="0.045"
               IsHitTestVisible="False"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
@@ -325,7 +362,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Top"
               Margin="0,118,0,0"
-              Opacity="0.58"
+              Opacity="0.22"
               IsHitTestVisible="False">
             <Ellipse Fill="#141A1F"
                      Stroke="#78DDA36B"
