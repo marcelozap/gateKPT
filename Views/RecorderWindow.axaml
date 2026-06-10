@@ -1484,10 +1484,10 @@
 
                 <Border CornerRadius="24"
                         Padding="14"
-                        BorderBrush="#8064C7B6"
+                        BorderBrush="#A8D6FFFF"
                         BorderThickness="1"
-                        Background="#B9080A10"
-                        BoxShadow="0 24 48 0 #88000000, inset 0 0 45 0 #1510EFFF">
+                        Background="#A006080E"
+                        BoxShadow="0 24 48 0 #88000000, inset 0 0 34 0 #1228A7FF">
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1508,19 +1508,19 @@
                                    Foreground="#E8E1D2"/>
                         <Border CornerRadius="20"
                                 Padding="12"
-                                BorderBrush="#7864C7B6"
+                                BorderBrush="#80D6FFFF"
                                 BorderThickness="1"
-                                Background="#42110D18"
-                                BoxShadow="0 18 36 0 #66000000, inset 0 0 28 0 #1410EFFF">
+                                Background="#30080A10"
+                                BoxShadow="0 18 36 0 #66000000, inset 0 0 24 0 #1010EFFF">
                             <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                 <Path Data="M 18 21 C 112 -12, 188 54, 286 18 S 470 8, 620 38 S 780 8, 936 34"
-                                      Stroke="#2464C7B6"
-                                      StrokeThickness="1.1"
+                                      Stroke="#2CD6FFFF"
+                                      StrokeThickness="1"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M 0 46 C 120 24, 220 76, 366 42 S 610 28, 840 70"
-                                      Stroke="#20FF6C3E"
-                                      StrokeThickness="1"
+                                      Stroke="#28FFBFA9"
+                                      StrokeThickness="0.9"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <WrapPanel Orientation="Horizontal">
@@ -1596,7 +1596,7 @@
                                             <Path Data="M 10 25 L 18 12 L 27 24 L 37 8 L 47 26 L 58 14 L 70 23 L 83 10 L 99 24" Stroke="#DDF2EEE3" StrokeThickness="1.25"/>
                                         </Border>
                                     </Button>
-                                    <Button Content="X" Command="{Binding QuickDeleteCommand}" Width="42" Height="34" Padding="0" Margin="0,0,8,0" Background="#4A231B" Foreground="#E8E1D2"/>
+                                    <Button Content="X" Command="{Binding QuickDeleteCommand}" Width="42" Height="34" Padding="0" Margin="0,0,8,0" Background="#66140912" BorderBrush="#B8FF6C3E" Foreground="#F8EFE0"/>
                                 </WrapPanel>
                             </Grid>
                         </Border>
@@ -1616,25 +1616,25 @@
 
                 <Border CornerRadius="28"
                         Padding="0"
-                        BorderBrush="#7864C7B6"
+                        BorderBrush="#80D6FFFF"
                         BorderThickness="1"
-                        Background="#78080A10"
+                        Background="#6A06080E"
                         ClipToBounds="True"
-                        BoxShadow="0 30 60 0 #99000000, inset 0 0 44 0 #1810EFFF">
+                        BoxShadow="0 30 60 0 #99000000, inset 0 0 34 0 #1010EFFF">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
                         <Border Padding="14"
-                                Background="#660B1017">
+                                Background="#4C0B1017">
                             <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
                                 <Path Grid.RowSpan="2"
                                       Data="M 40 52 C 144 20, 234 84, 368 48 S 592 30, 830 66"
-                                      Stroke="#2455E6FF"
-                                      StrokeThickness="1.15"
+                                      Stroke="#2CD6FFFF"
+                                      StrokeThickness="1"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Grid.RowSpan="2"
                                       Data="M 0 88 C 126 50, 246 120, 410 74 S 646 54, 904 110"
-                                      Stroke="#2052FF9A"
-                                      StrokeThickness="1"
+                                      Stroke="#22FFBFA9"
+                                      StrokeThickness="0.9"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
@@ -1642,13 +1642,13 @@
                                                FontSize="10"
                                                FontWeight="SemiBold"
                                                LetterSpacing="2.2"
-                                               Foreground="#FFBFA9"/>
+                                               Foreground="#F8EFE0"/>
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding SelectedTakeMixLabel}"
                                                FontSize="12"
                                                FontWeight="SemiBold"
                                                TextWrapping="Wrap"
-                                               Foreground="#D6FFFF"/>
+                                               Foreground="#80F7FF"/>
                                 </Grid>
                                 <ScrollViewer Grid.Row="1"
                                               HorizontalScrollBarVisibility="Disabled"
@@ -1663,25 +1663,25 @@
                                                         CornerRadius="18"
                                                         Padding="12,10"
                                                         Margin="0,0,0,7"
-                                                        Background="#3A123047"
-                                                        BorderBrush="#7464C7B6"
+                                                        Background="#38102432"
+                                                        BorderBrush="#78D6FFFF"
                                                         BorderThickness="1">
                                                     <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                                         <Border CornerRadius="16"
-                                                                Background="#1810EFFF"
-                                                                BorderBrush="#40D6FFFF"
+                                                                Background="#100C5C80"
+                                                                BorderBrush="#38D6FFFF"
                                                                 BorderThickness="1"
                                                                 IsHitTestVisible="False"/>
                                                         <Path
                                                               Data="M -8 29 C 46 12, 92 38, 146 22 S 248 10, 312 31 S 432 43, 540 18"
-                                                              Stroke="#4064C7B6"
-                                                              StrokeThickness="1.25"
+                                                              Stroke="#36D6FFFF"
+                                                              StrokeThickness="1.15"
                                                               Stretch="Fill"
                                                               IsHitTestVisible="False"/>
                                                         <Path
                                                               Data="M -10 43 C 62 24, 126 53, 202 35 S 338 19, 452 48"
-                                                              Stroke="#34FF6C3E"
-                                                              StrokeThickness="1.05"
+                                                              Stroke="#32FFBFA9"
+                                                              StrokeThickness="0.95"
                                                               Stretch="Fill"
                                                               IsHitTestVisible="False"/>
                                                         <Grid ColumnDefinitions="*,Auto">
@@ -1708,44 +1708,44 @@
 
                 <Border CornerRadius="28"
                         Padding="16"
-                        BorderBrush="#7864C7B6"
+                        BorderBrush="#80D6FFFF"
                         BorderThickness="1"
-                        Background="#78080A10"
+                        Background="#6606080E"
                         ClipToBounds="True"
-                        BoxShadow="0 28 62 0 #88000000, inset 0 0 42 0 #1410EFFF">
+                        BoxShadow="0 28 62 0 #88000000, inset 0 0 34 0 #1010EFFF">
                     <Grid ColumnDefinitions="*,270" ColumnSpacing="14">
                         <Border CornerRadius="22"
                                 Padding="14"
-                                Background="#6606070C"
-                                BorderBrush="#7064C7B6"
+                                Background="#4406070C"
+                                BorderBrush="#70D6FFFF"
                                 BorderThickness="1"
                                 MinHeight="150">
                             <Grid>
                                 <Path Data="M 36 26 L 106 10 L 176 42 L 202 104 L 154 142 L 82 126 L 24 72 Z"
-                                      Fill="#0710EFFF"
-                                      Stroke="#607FCAD1"
+                                      Fill="#0610EFFF"
+                                      Stroke="#4CD6FFFF"
                                       StrokeThickness="1.1"
                                       Stretch="None"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M 520 14 C 600 -20, 734 14, 786 84 C 700 94, 622 132, 542 190 C 548 120, 542 64, 520 14 Z"
-                                      Fill="#1052FF9A"
-                                      Stroke="#6085FFCA"
+                                      Fill="#0A52FF9A"
+                                      Stroke="#48A8FFDC"
                                       StrokeThickness="1"
                                       Stretch="None"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M -20 84 C 72 22, 142 130, 245 70 S 438 20, 620 98 S 782 50, 940 84"
-                                      Stroke="#A0FF6C3E"
-                                      StrokeThickness="2.2"
+                                      Stroke="#88FF6C3E"
+                                      StrokeThickness="2"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M -20 112 C 90 42, 190 150, 312 96 S 528 74, 724 128 S 838 88, 960 122"
-                                      Stroke="#9064C7B6"
-                                      StrokeThickness="1.9"
+                                      Stroke="#68D6FFFF"
+                                      StrokeThickness="1.5"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M 20 28 C 130 84, 232 10, 358 50 S 560 106, 760 36"
-                                      Stroke="#68D6FFFF"
-                                      StrokeThickness="1.35"
+                                      Stroke="#40F8EFE0"
+                                      StrokeThickness="1.05"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <ItemsControl ItemsSource="{Binding SignalBars}"
@@ -1766,8 +1766,8 @@
                                                     CornerRadius="999"
                                                     Margin="3,0"
                                                     VerticalAlignment="Center"
-                                                    Background="#70FF6C3E"
-                                                    BorderBrush="#7664C7B6"
+                                                    Background="#5CFF6C3E"
+                                                    BorderBrush="#60D6FFFF"
                                                     BorderThickness="1">
                                                 <Border.RenderTransform>
                                                     <ScaleTransform ScaleY="4.2"/>
@@ -1784,7 +1784,7 @@
                                                    FontSize="10"
                                                    FontWeight="SemiBold"
                                                    LetterSpacing="2.4"
-                                                   Foreground="#FFBFA9"/>
+                                                   Foreground="#F8EFE0"/>
                                         <TextBlock Text="screen / face / sound"
                                                    FontSize="18"
                                                    FontWeight="SemiBold"
@@ -1795,7 +1795,7 @@
                                                VerticalAlignment="Bottom"
                                                FontSize="11"
                                                FontWeight="SemiBold"
-                                               Foreground="#D6FFFF"/>
+                                               Foreground="#80F7FF"/>
                                 </Grid>
                             </Grid>
                         </Border>
@@ -1803,34 +1803,34 @@
                         <Border Grid.Column="1"
                                 CornerRadius="22"
                                 Padding="13"
-                                Background="#7A10080A"
-                                BorderBrush="#9464C7B6"
+                                Background="#5A10080A"
+                                BorderBrush="#80D6FFFF"
                                 BorderThickness="1"
-                                BoxShadow="0 14 0 0 #2410EFFF, 0 28 52 0 #88000000, inset 0 0 34 0 #1410EFFF"
+                                BoxShadow="0 14 0 0 #1810EFFF, 0 28 52 0 #88000000, inset 0 0 28 0 #1010EFFF"
                                 RenderTransformOrigin="0.5,0.5">
                             <Border.RenderTransform>
                                 <SkewTransform AngleX="4" AngleY="0"/>
                             </Border.RenderTransform>
                             <Grid RowDefinitions="*,Auto" RowSpacing="10">
                                 <Border CornerRadius="18"
-                                        Background="#50111C24"
-                                        BorderBrush="#7464C7B6"
+                                        Background="#3E111C24"
+                                        BorderBrush="#70D6FFFF"
                                         BorderThickness="1"
                                         BoxShadow="inset 0 0 30 0 #44000000, 0 10 24 0 #66000000">
                                     <Grid>
                                         <Ellipse Width="120"
                                                  Height="120"
-                                                 Fill="#1828A7FF"
+                                                 Fill="#1228A7FF"
                                                  HorizontalAlignment="Right"
                                                  VerticalAlignment="Top"
                                                  Margin="0,-45,-28,0"/>
                                         <Path Data="M 10 86 C 45 30, 90 122, 132 70 S 218 36, 252 92"
-                                              Stroke="#A0FF6C3E"
-                                              StrokeThickness="2.2"
+                                              Stroke="#8CFF6C3E"
+                                              StrokeThickness="2"
                                               Stretch="Fill"/>
                                         <Path Data="M 20 42 C 70 8, 126 88, 184 38 S 224 20, 250 58"
-                                              Stroke="#78D6FFFF"
-                                              StrokeThickness="1.3"
+                                              Stroke="#60D6FFFF"
+                                              StrokeThickness="1.1"
                                               Stretch="Fill"/>
                                         <TextBlock Text="◉"
                                                    HorizontalAlignment="Center"
@@ -1838,7 +1838,7 @@
                                                    FontSize="34"
                                                    FontWeight="SemiBold"
                                                    LetterSpacing="2"
-                                                   Foreground="#D6FFFF"/>
+                                                   Foreground="#80F7FF"/>
                                     </Grid>
                                 </Border>
                                 <WrapPanel Grid.Row="1"
@@ -1860,7 +1860,7 @@
                                             MinWidth="58"
                                             Margin="0,0,8,0"
                                             FontSize="17"
-                                            Background="#D6FFFF"
+                                            Background="#80F7FF"
                                             Foreground="#10080A"/>
                                     <Button Content="↑"
                                             ToolTip.Tip="Make post clip"
