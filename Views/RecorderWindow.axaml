@@ -111,26 +111,26 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Top"
                  Margin="0,-240,-180,0"
-                 Fill="#28E1786E"
+                 Fill="#16FF7A4F"
                  IsHitTestVisible="False"/>
         <Ellipse Width="460"
                  Height="460"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Margin="-190,0,0,-170"
-                 Fill="#20246166"
+                 Fill="#16276CFF"
                  IsHitTestVisible="False"/>
         <Ellipse Width="380"
                  Height="380"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
                  Margin="0,0,-130,-120"
-                 Fill="#2064C7B6"
+                 Fill="#183DFFD2"
                  IsHitTestVisible="False"/>
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.92">
+                Opacity="0.58">
             <!-- A soft studio shell gives the visualizer a physical room instead of a flat wallpaper. -->
             <Path Data="M 280 84 L 1260 84 L 1114 548 L 424 548 Z"
                   Fill="#33110D12"
@@ -178,7 +178,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.98"
+                Opacity="0.88"
                 RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <TransformGroup>
@@ -191,73 +191,73 @@
 
             <!-- Inner-vision forms inspired by the user's references: blue aura, red cell-map, green field. -->
             <Path Data="M 654 126 L 742 76 L 842 106 L 910 196 L 878 310 L 770 374 L 650 334 L 586 220 Z"
-                  Fill="#10122D5D"
-                  Stroke="#2840B8D6"
-                  StrokeThickness="1.2"/>
+                  Fill="#07122D5D"
+                  Stroke="#5040B8D6"
+                  StrokeThickness="1.4"/>
             <Path Data="M 676 156 L 746 112 L 830 138 L 878 208 L 850 292 L 770 338 L 680 306 L 632 226 Z"
-                  Fill="#1D1A5BE8"
-                  Stroke="#4F64C7B6"
-                  StrokeThickness="1.1"/>
+                  Fill="#101A5BE8"
+                  Stroke="#7864C7B6"
+                  StrokeThickness="1.25"/>
             <Path Data="M 704 186 L 758 152 L 818 174 L 850 224 L 826 278 L 770 310 L 710 286 L 678 232 Z"
-                  Fill="#3559E6FF"
-                  Stroke="#76F4E6CF"
-                  StrokeThickness="1"/>
+                  Fill="#2259E6FF"
+                  Stroke="#A8F4E6CF"
+                  StrokeThickness="1.2"/>
             <Path Data="M 730 212 L 764 188 L 804 204 L 824 238 L 804 272 L 766 292 L 730 272 L 708 236 Z"
-                  Fill="#78BDFBFF"
-                  Stroke="#A6F4E6CF"
-                  StrokeThickness="1"/>
+                  Fill="#4ABDFBFF"
+                  Stroke="#D8F4E6CF"
+                  StrokeThickness="1.4"/>
             <Ellipse Width="104"
                      Height="104"
                      Canvas.Left="708"
                      Canvas.Top="178"
-                     Fill="#4AD6FFFF"/>
+                     Fill="#24D6FFFF"/>
             <Ellipse Width="52"
                      Height="52"
                      Canvas.Left="734"
                      Canvas.Top="204"
-                     Fill="#72F4E6CF"/>
+                     Fill="#44F4E6CF"/>
 
             <Path Data="M 250 420 C 210 368, 244 310, 312 292 C 392 270, 492 304, 526 370 C 558 432, 500 502, 410 510 C 330 518, 278 474, 250 420 Z"
-                  Fill="#5CE85F44"
-                  Stroke="#88FFD2B8"
-                  StrokeThickness="1.4"/>
+                  Fill="#28FF4D36"
+                  Stroke="#BEFFBFA9"
+                  StrokeThickness="1.6"/>
             <Path Data="M 282 414 C 250 376, 284 340, 342 328 C 400 316, 462 338, 486 384 C 506 424, 462 472, 398 478 C 338 484, 306 448, 282 414 Z"
-                  Fill="#70FF8A5E"
-                  Stroke="#50F4E6CF"
-                  StrokeThickness="1"/>
-            <Rectangle Width="34" Height="24" Canvas.Left="306" Canvas.Top="334" Fill="#58FFB07C" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="42" Height="30" Canvas.Left="350" Canvas.Top="326" Fill="#64E85F44" RadiusX="6" RadiusY="6"/>
-            <Rectangle Width="38" Height="28" Canvas.Left="400" Canvas.Top="338" Fill="#70FF6A48" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="48" Height="34" Canvas.Left="438" Canvas.Top="370" Fill="#66F5483E" RadiusX="6" RadiusY="6"/>
-            <Rectangle Width="36" Height="42" Canvas.Left="330" Canvas.Top="382" Fill="#74FF7D4E" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="44" Height="38" Canvas.Left="378" Canvas.Top="390" Fill="#5CE85F44" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="54" Height="34" Canvas.Left="420" Canvas.Top="426" Fill="#62FF9D6E" RadiusX="7" RadiusY="7"/>
-            <Rectangle Width="40" Height="36" Canvas.Left="318" Canvas.Top="438" Fill="#58F5483E" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="42" Height="32" Canvas.Left="366" Canvas.Top="452" Fill="#66FFB07C" RadiusX="5" RadiusY="5"/>
+                  Fill="#2FFF8A5E"
+                  Stroke="#7CF4E6CF"
+                  StrokeThickness="1.15"/>
+            <Rectangle Width="34" Height="24" Canvas.Left="306" Canvas.Top="334" Fill="#35FFD17A" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="42" Height="30" Canvas.Left="350" Canvas.Top="326" Fill="#44FF3F32" RadiusX="6" RadiusY="6"/>
+            <Rectangle Width="38" Height="28" Canvas.Left="400" Canvas.Top="338" Fill="#48FF784F" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="48" Height="34" Canvas.Left="438" Canvas.Top="370" Fill="#42F21738" RadiusX="6" RadiusY="6"/>
+            <Rectangle Width="36" Height="42" Canvas.Left="330" Canvas.Top="382" Fill="#4CFF9F42" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="44" Height="38" Canvas.Left="378" Canvas.Top="390" Fill="#3CFF4D36" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="54" Height="34" Canvas.Left="420" Canvas.Top="426" Fill="#38FFC47A" RadiusX="7" RadiusY="7"/>
+            <Rectangle Width="40" Height="36" Canvas.Left="318" Canvas.Top="438" Fill="#42F21738" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="42" Height="32" Canvas.Left="366" Canvas.Top="452" Fill="#3AFFD17A" RadiusX="5" RadiusY="5"/>
             <Path Data="M 330 308 C 326 352, 342 430, 308 500 M 378 300 C 366 356, 386 438, 358 512 M 426 306 C 408 360, 430 432, 412 500 M 470 336 C 440 380, 456 430, 440 470"
-                  Stroke="#6290151C"
+                  Stroke="#A2141018"
                   StrokeThickness="2"
                   Stretch="None"/>
             <Path Data="M 298 300 C 276 356, 300 430, 276 492 M 514 340 C 488 386, 522 446, 492 492"
-                  Stroke="#56F4E6CF"
-                  StrokeThickness="1.1"
+                  Stroke="#82F4E6CF"
+                  StrokeThickness="1.25"
                   Stretch="None"/>
 
             <Path Data="M 960 376 C 1072 274, 1264 280, 1398 386 C 1276 396, 1148 456, 978 596 C 990 512, 980 438, 960 376 Z"
-                  Fill="#444DBB70"
-                  Stroke="#7E64C7B6"
-                  StrokeThickness="1.4"/>
+                  Fill="#204DBB70"
+                  Stroke="#A064C7B6"
+                  StrokeThickness="1.55"/>
             <Path Data="M 986 382 C 1106 318, 1220 316, 1364 390 M 1004 416 C 1122 364, 1224 364, 1340 426 M 1024 452 C 1138 414, 1220 420, 1312 466 M 1046 492 C 1154 466, 1216 478, 1282 512 M 1078 532 C 1162 522, 1212 532, 1250 552"
-                  Stroke="#846EE7B8"
-                  StrokeThickness="1.7"
+                  Stroke="#A86EE7B8"
+                  StrokeThickness="1.9"
                   Stretch="None"/>
             <Path Data="M 962 376 C 1056 370, 1228 438, 1400 386"
-                  Stroke="#76F4E6CF"
-                  StrokeThickness="1.3"
+                  Stroke="#98F4E6CF"
+                  StrokeThickness="1.45"
                   Stretch="None"/>
             <Path Data="M 988 396 C 1068 398, 1192 480, 1348 420"
-                  Stroke="#4464C7B6"
-                  StrokeThickness="1"
+                  Stroke="#7064C7B6"
+                  StrokeThickness="1.15"
                   Stretch="None"/>
 
             <Path Data="M 150 188 C 270 88, 386 264, 510 172 S 742 66, 928 186 S 1210 104, 1390 176"
