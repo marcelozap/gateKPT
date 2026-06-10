@@ -69,6 +69,39 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private bool _isMonitoring = false;
 
     [ObservableProperty]
+    private double _visualEnergy = 0;
+
+    [ObservableProperty]
+    private double _visualCoreSize = 96;
+
+    [ObservableProperty]
+    private double _visualBloomSize = 260;
+
+    [ObservableProperty]
+    private double _visualBloomOpacity = 0.24;
+
+    [ObservableProperty]
+    private double _visualRoomScale = 1;
+
+    [ObservableProperty]
+    private double _visualBackScale = 1;
+
+    [ObservableProperty]
+    private double _visualMidScale = 1;
+
+    [ObservableProperty]
+    private double _visualFrontScale = 1;
+
+    [ObservableProperty]
+    private double _visualRoomTilt = -8;
+
+    [ObservableProperty]
+    private double _visualDriftX = 0;
+
+    [ObservableProperty]
+    private double _visualLiftY = 0;
+
+    [ObservableProperty]
     private string _activeRecordingName = "Not recording";
 
     [ObservableProperty]
@@ -2832,6 +2865,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             height = 10 + Math.Abs(wave * 24) + Math.Abs(drift * 16);
         }
+
+        var idlePulse = Math.Abs(Math.Sin(now / 720.0));
+        var visualEnergy = Math.Clamp(normalized + idlePulse * 0.05, 0, 1);
+        VisualEnergy = visualEnergy;
+        VisualCoreSize = 92 + visualEnergy * 190 + Math.Abs(wave) * 24;
+        VisualBloomSize = 260 + visualEnergy * 480 + Math.Abs(drift) * 80;
+        VisualBloomOpacity = 0.16 + visualEnergy * 0.42;
+        VisualRoomScale = 1 + visualEnergy * 0.10;
+        VisualBackScale = 1 + visualEnergy * 0.18;
+        VisualMidScale = 1 + visualEnergy * 0.38;
+        VisualFrontScale = 1 + visualEnergy * 0.72;
+        VisualRoomTilt = -8 + wave * 12 + visualEnergy * 5;
+        VisualDriftX = drift * 56;
+        VisualLiftY = -visualEnergy * 74 + wave * 18;
 
         SignalBars.RemoveAt(0);
         SignalBars.Add(Math.Clamp(height, 8, 96));

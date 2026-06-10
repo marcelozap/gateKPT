@@ -589,6 +589,163 @@
             </ItemsControl>
         </Grid>
 
+        <Grid Width="860"
+              Height="520"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Margin="0,-36,0,0"
+              IsHitTestVisible="False"
+              RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <RotateTransform Angle="{Binding VisualRoomTilt}"/>
+                    <ScaleTransform ScaleX="{Binding VisualRoomScale}"
+                                    ScaleY="{Binding VisualRoomScale}"/>
+                    <TranslateTransform X="{Binding VisualDriftX}"
+                                        Y="{Binding VisualLiftY}"/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+
+            <Ellipse Width="{Binding VisualBloomSize}"
+                     Height="{Binding VisualBloomSize}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Fill="#20E7B06D"
+                     Stroke="#24F2EEE3"
+                     StrokeThickness="1"
+                     Opacity="{Binding VisualBloomOpacity}"/>
+            <Ellipse Width="{Binding VisualCoreSize}"
+                     Height="{Binding VisualCoreSize}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Fill="#207FCAD1"
+                     Stroke="#7DF2C56B"
+                     StrokeThickness="2"
+                     Opacity="0.72"/>
+            <Ellipse Width="430"
+                     Height="136"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Stroke="#44DDA36B"
+                     StrokeThickness="2"
+                     Fill="Transparent"
+                     RenderTransformOrigin="0.5,0.5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="-18"/>
+                        <ScaleTransform ScaleX="{Binding VisualBackScale}"
+                                        ScaleY="{Binding VisualBackScale}"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse Width="560"
+                     Height="168"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Stroke="#4481D7DA"
+                     StrokeThickness="2"
+                     Fill="Transparent"
+                     RenderTransformOrigin="0.5,0.5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="14"/>
+                        <ScaleTransform ScaleX="{Binding VisualMidScale}"
+                                        ScaleY="{Binding VisualMidScale}"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Ellipse Width="720"
+                     Height="210"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Stroke="#38F2EEE3"
+                     StrokeThickness="1.4"
+                     Fill="Transparent"
+                     RenderTransformOrigin="0.5,0.5">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="-4"/>
+                        <ScaleTransform ScaleX="{Binding VisualFrontScale}"
+                                        ScaleY="{Binding VisualFrontScale}"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+            </Ellipse>
+
+            <ItemsControl ItemsSource="{Binding SignalBars}"
+                          Width="780"
+                          Height="220"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Opacity="0.62"
+                          RenderTransformOrigin="0.5,0.5">
+                <ItemsControl.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="-8"/>
+                        <ScaleTransform ScaleX="{Binding VisualMidScale}"
+                                        ScaleY="{Binding VisualMidScale}"/>
+                    </TransformGroup>
+                </ItemsControl.RenderTransform>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="9"
+                                Height="{Binding}"
+                                CornerRadius="999"
+                                VerticalAlignment="Center"
+                                Margin="3,0"
+                                Background="#B2F2C56B"
+                                BorderBrush="#667FCAD1"
+                                BorderThickness="1">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleY="3.6"/>
+                            </Border.RenderTransform>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding SignalBars}"
+                          Width="900"
+                          Height="260"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Opacity="0.36"
+                          RenderTransformOrigin="0.5,0.5">
+                <ItemsControl.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="24"/>
+                        <ScaleTransform ScaleX="{Binding VisualFrontScale}"
+                                        ScaleY="{Binding VisualFrontScale}"/>
+                    </TransformGroup>
+                </ItemsControl.RenderTransform>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="14"
+                                Height="{Binding}"
+                                CornerRadius="999"
+                                VerticalAlignment="Center"
+                                Margin="5,0"
+                                Background="#8AE7B06D"
+                                BorderBrush="#55F2EEE3"
+                                BorderThickness="1">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleY="5.8"/>
+                            </Border.RenderTransform>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
