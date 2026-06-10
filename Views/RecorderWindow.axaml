@@ -24,7 +24,7 @@
         <Style Selector="Button">
             <Setter Property="CornerRadius" Value="999"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#78DDA36B"/>
+            <Setter Property="BorderBrush" Value="#887FCAD1"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="MinHeight" Value="42"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Display, Segoe UI, Arial"/>
@@ -34,13 +34,13 @@
         </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="RenderTransform" Value="translateY(-2px)"/>
-            <Setter Property="BorderBrush" Value="#DDF2C56B"/>
+            <Setter Property="BorderBrush" Value="#D8D6FFFF"/>
         </Style>
         <Style Selector="TextBox">
             <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="16,12"/>
-            <Setter Property="Background" Value="#FFF4E6CF"/>
-            <Setter Property="Foreground" Value="#120918"/>
+            <Setter Property="Background" Value="#EAF4E6CF"/>
+            <Setter Property="Foreground" Value="#080A12"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="Regular"/>
@@ -50,25 +50,25 @@
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="Background" Value="#04100F"/>
             <Setter Property="Foreground" Value="#FFF4E6CF"/>
-            <Setter Property="BorderBrush" Value="#88DDA36B"/>
+            <Setter Property="BorderBrush" Value="#A864C7B6"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>
         <Style Selector="ComboBox:pointerover">
-            <Setter Property="Background" Value="#211815"/>
-            <Setter Property="BorderBrush" Value="#DDF2C56B"/>
+            <Setter Property="Background" Value="#101C24"/>
+            <Setter Property="BorderBrush" Value="#D8D6FFFF"/>
         </Style>
         <Style Selector="ProgressBar">
             <Setter Property="Height" Value="13"/>
             <Setter Property="CornerRadius" Value="999"/>
             <Setter Property="Background" Value="#2A211A"/>
-            <Setter Property="Foreground" Value="#DDA36B"/>
+            <Setter Property="Foreground" Value="#D6FFFF"/>
         </Style>
         <Style Selector="Border.take-row:pointerover">
-            <Setter Property="Background" Value="#57351F17"/>
-            <Setter Property="BorderBrush" Value="#BBDDA36B"/>
+            <Setter Property="Background" Value="#7A10283A"/>
+            <Setter Property="BorderBrush" Value="#C864C7B6"/>
             <Setter Property="RenderTransform" Value="translateY(-1px)"/>
         </Style>
         <Style Selector="Button.take-select">
@@ -90,8 +90,8 @@
             <Setter Property="Background" Value="Transparent"/>
         </Style>
         <Style Selector="ListBox.take-list ListBoxItem:selected Border.take-row">
-            <Setter Property="Background" Value="#883E2117"/>
-            <Setter Property="BorderBrush" Value="#EEDDA36B"/>
+            <Setter Property="Background" Value="#96204A66"/>
+            <Setter Property="BorderBrush" Value="#EED6FFFF"/>
         </Style>
     </Window.Styles>
 
@@ -1209,30 +1209,44 @@
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
-                        Padding="16"
-                        BorderBrush="#78E1786E"
+                        Padding="14"
+                        BorderBrush="#A064C7B6"
                         BorderThickness="1"
                         ClipToBounds="True"
-                        BoxShadow="0 30 70 0 #AA000000">
+                        BoxShadow="0 30 70 0 #AA000000, inset 0 0 50 0 #2310EFFF">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                            <GradientStop Color="#E8061110" Offset="0"/>
-                            <GradientStop Color="#D20A2022" Offset="0.48"/>
-                            <GradientStop Color="#C02B121A" Offset="1"/>
+                            <GradientStop Color="#C6060A12" Offset="0"/>
+                            <GradientStop Color="#A9082230" Offset="0.44"/>
+                            <GradientStop Color="#96320F0B" Offset="1"/>
                         </LinearGradientBrush>
                     </Border.Background>
                     <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="9">
                         <Path Grid.RowSpan="3"
                               Data="M 0 50 C 90 20, 160 78, 250 45 S 420 24, 560 64 S 780 35, 960 58"
-                              Stroke="#46E1786E"
-                              StrokeThickness="1.2"
+                              Stroke="#8064C7B6"
+                              StrokeThickness="1.6"
                               Stretch="Fill"
                               IsHitTestVisible="False"/>
                         <Path Grid.RowSpan="3"
                               Data="M 0 112 C 110 85, 190 150, 310 102 S 510 95, 690 132 S 850 105, 980 126"
-                              Stroke="#3064C7B6"
-                              StrokeThickness="1"
+                              Stroke="#6CFF7A4F"
+                              StrokeThickness="1.2"
                               Stretch="Fill"
+                              IsHitTestVisible="False"/>
+                        <Path Grid.RowSpan="3"
+                              Data="M 70 18 L 140 4 L 210 34 L 238 96 L 194 142 L 118 132 L 58 76 Z"
+                              Fill="#1010EFFF"
+                              Stroke="#7080F7FF"
+                              StrokeThickness="1.1"
+                              Stretch="None"
+                              IsHitTestVisible="False"/>
+                        <Path Grid.RowSpan="3"
+                              Data="M 735 22 C 812 -10, 930 18, 982 78 C 916 90, 842 124, 770 174 C 774 116, 762 66, 735 22 Z"
+                              Fill="#1552FF9A"
+                              Stroke="#7A85FFCA"
+                              StrokeThickness="1.1"
+                              Stretch="None"
                               IsHitTestVisible="False"/>
 
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
@@ -1242,20 +1256,20 @@
                                            FontSize="22"
                                            FontWeight="SemiBold"
                                            LetterSpacing="0.4"
-                                           Foreground="#FFF4E6CF"/>
+                                           Foreground="#F8EFE0"/>
                                 <TextBlock Text="{Binding RecordingGuardLabel}"
                                            IsVisible="{Binding IsRecording}"
                                            FontSize="26"
                                            FontWeight="SemiBold"
                                            TextWrapping="Wrap"
-                                           Foreground="#120918"/>
+                                           Foreground="#F8EFE0"/>
                                 <TextBlock Text="{Binding CaptureInstruction}"
                                            IsVisible="{Binding IsRecording}"
                                            Margin="0,2,0,0"
                                            FontSize="10"
                                            FontWeight="SemiBold"
                                            TextWrapping="Wrap"
-                                           Foreground="#4A351E"/>
+                                           Foreground="#8CD6D8"/>
                             </StackPanel>
                             <Border Grid.Column="1"
                                     IsVisible="{Binding HasVisibleSignal}"
@@ -1263,14 +1277,14 @@
                                     MinWidth="122"
                                     Padding="16,12"
                                     Background="#06070C"
-                                    BorderBrush="#8064C7B6"
+                                    BorderBrush="#B064C7B6"
                                     BorderThickness="1">
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <TextBlock Text="{Binding PeakDecibelLabel}"
                                                FontSize="20"
                                                FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
-                                               Foreground="#FFD2B8"/>
+                                               Foreground="#D6FFFF"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
@@ -1343,12 +1357,12 @@
 
                         <Border Grid.Row="1"
                                 CornerRadius="999"
-                                Padding="12"
+                                Padding="10"
                                 HorizontalAlignment="Center"
-                                Background="#CC07070C"
-                                BorderBrush="#88E1786E"
+                                Background="#B4080A10"
+                                BorderBrush="#A064C7B6"
                                 BorderThickness="1"
-                                BoxShadow="0 22 0 0 #4D0B1715, 0 34 70 0 #AA000000"
+                                BoxShadow="0 22 0 0 #3410EFFF, 0 34 70 0 #AA000000, inset 0 0 34 0 #1829D8FF"
                                 RenderTransformOrigin="0.5,0.5">
                             <Border.RenderTransform>
                                 <SkewTransform AngleX="-5" AngleY="0"/>
@@ -1368,8 +1382,8 @@
                                     FontSize="20"
                                     LetterSpacing="0.6"
                                     BorderThickness="1"
-                                    BorderBrush="#60F2E2C8"
-                                    Background="#05070B"
+                                    BorderBrush="#A0D6FFFF"
+                                    Background="#080A12"
                                     Foreground="#F7EBD7"/>
                             <Button
                                     Command="{Binding StopRecordingCommand}"
@@ -1383,9 +1397,9 @@
                                     FontSize="19"
                                     LetterSpacing="0.6"
                                     BorderThickness="1"
-                                    BorderBrush="#80F2E2C8"
-                                    Background="#E1786E"
-                                    Foreground="#10080A"/>
+                                    BorderBrush="#D8FFD0A8"
+                                    Background="#FF6C3E"
+                                    Foreground="#080A12"/>
                             <Button Grid.Column="1"
                                     Content="▶"
                                     ToolTip.Tip="Play latest"
@@ -1395,7 +1409,7 @@
                                     MinHeight="50"
                                     Margin="0"
                                     FontSize="18"
-                                    BorderBrush="#55F2E2C8"
+                                    BorderBrush="#A0F4E6CF"
                                     BorderThickness="1"
                                     Background="#FFF4E6CF"
                                     Foreground="#120918"/>
@@ -1408,7 +1422,7 @@
                                     MinHeight="50"
                                     Margin="0"
                                     FontSize="22"
-                                    BorderBrush="#9AFFD2B8"
+                                    BorderBrush="#C8D6FFFF"
                                     BorderThickness="1"
                                     Background="#64C7B6"
                                     Foreground="#120918"/>
@@ -1421,9 +1435,9 @@
                                     MinHeight="50"
                                     Margin="0"
                                     FontSize="19"
-                                    BorderBrush="#6064C7B6"
+                                    BorderBrush="#9864C7B6"
                                     BorderThickness="1"
-                                    Background="#04100F"
+                                    Background="#2B120D"
                                     Foreground="#F7EBD7"/>
                             <TextBox Grid.Column="4"
                                      IsVisible="False"
@@ -1441,8 +1455,8 @@
                         <Border Grid.Row="2"
                                 CornerRadius="18"
                                 Padding="12,9"
-                                Background="#6606070C"
-                                BorderBrush="#24E7B06D"
+                                Background="#4406070C"
+                                BorderBrush="#4064C7B6"
                                 BorderThickness="1">
                         <StackPanel Spacing="4">
                             <TextBlock Text="{Binding Status}"
@@ -1470,10 +1484,10 @@
 
                 <Border CornerRadius="24"
                         Padding="14"
-                        BorderBrush="#55DDA36B"
+                        BorderBrush="#8064C7B6"
                         BorderThickness="1"
-                        Background="#D90E1013"
-                        BoxShadow="0 24 48 0 #88000000">
+                        Background="#B9080A10"
+                        BoxShadow="0 24 48 0 #88000000, inset 0 0 45 0 #1510EFFF">
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1484,7 +1498,7 @@
                                      Command="{Binding RunChatCommandCommand}"
                                      Padding="16,10"
                                      MinWidth="58"
-                                     Background="#DDA36B"
+                                     Background="#D6FFFF"
                                      Foreground="#120918"/>
                         </Grid>
                         <TextBlock Text="{Binding CommandResult}"
@@ -1494,9 +1508,9 @@
                                    Foreground="#E8E1D2"/>
                         <Border CornerRadius="20"
                                 Padding="12"
-                                BorderBrush="#44DDA36B"
+                                BorderBrush="#5C64C7B6"
                                 BorderThickness="1"
-                                Background="#99130F16"
+                                Background="#66110D18"
                                 BoxShadow="0 18 36 0 #66000000">
                             <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                 <WrapPanel Orientation="Horizontal">
@@ -1592,14 +1606,14 @@
 
                 <Border CornerRadius="28"
                         Padding="0"
-                        BorderBrush="#33DDA36B"
+                        BorderBrush="#5564C7B6"
                         BorderThickness="1"
-                        Background="#CC090D13"
+                        Background="#99080A10"
                         ClipToBounds="True"
-                        BoxShadow="0 30 60 0 #99000000">
+                        BoxShadow="0 30 60 0 #99000000, inset 0 0 36 0 #1410EFFF">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
                         <Border Padding="14"
-                                Background="#B90B1017">
+                                Background="#8C0B1017">
                             <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
                                     <TextBlock Text="TAKES"
@@ -1627,8 +1641,8 @@
                                                         CornerRadius="18"
                                                         Padding="12,10"
                                                         Margin="0,0,0,7"
-                                                        Background="#66131A24"
-                                                        BorderBrush="#2EDDA36B"
+                                                        Background="#5520445C"
+                                                        BorderBrush="#5064C7B6"
                                                         BorderThickness="1">
                                                     <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                                         <Path
