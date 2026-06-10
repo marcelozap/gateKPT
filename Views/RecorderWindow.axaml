@@ -39,8 +39,9 @@
         <Style Selector="TextBox">
             <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="16,12"/>
-            <Setter Property="Background" Value="#EAF4E6CF"/>
-            <Setter Property="Foreground" Value="#080A12"/>
+            <Setter Property="Background" Value="#F3D9B6"/>
+            <Setter Property="Foreground" Value="#140A08"/>
+            <Setter Property="BorderBrush" Value="#80F8EFE0"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="Regular"/>
@@ -88,6 +89,7 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
         <Style Selector="ListBox.take-list ListBoxItem:selected Border.take-row">
             <Setter Property="Background" Value="#96204A66"/>
@@ -1513,15 +1515,37 @@
                                 Background="#30080A10"
                                 BoxShadow="0 18 36 0 #66000000, inset 0 0 24 0 #1010EFFF">
                             <Grid ColumnDefinitions="*" ColumnSpacing="10">
-                                <Path Data="M 18 21 C 112 -12, 188 54, 286 18 S 470 8, 620 38 S 780 8, 936 34"
-                                      Stroke="#2CD6FFFF"
+                                <Ellipse Width="260"
+                                         Height="86"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Margin="16,0,0,0"
+                                         Fill="#1628A7FF"
+                                         IsHitTestVisible="False"/>
+                                <Ellipse Width="220"
+                                         Height="82"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Fill="#14FF6C3E"
+                                         IsHitTestVisible="False"/>
+                                <Ellipse Width="200"
+                                         Height="94"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,34,0"
+                                         Fill="#1852FF9A"
+                                         IsHitTestVisible="False"/>
+                                <Path Data="M 318 9 C 382 -8, 472 9, 534 42 C 484 70, 386 70, 306 50 C 292 32, 294 18, 318 9 Z"
+                                      Fill="#22F8EFE0"
+                                      Stroke="#32D6FFFF"
                                       StrokeThickness="1"
-                                      Stretch="Fill"
+                                      Stretch="None"
                                       IsHitTestVisible="False"/>
-                                <Path Data="M 0 46 C 120 24, 220 76, 366 42 S 610 28, 840 70"
-                                      Stroke="#28FFBFA9"
-                                      StrokeThickness="0.9"
-                                      Stretch="Fill"
+                                <Path Data="M 690 56 C 746 20, 828 24, 890 62 C 814 88, 748 86, 690 56 Z"
+                                      Fill="#20FF6C3E"
+                                      Stroke="#36FFBFA9"
+                                      StrokeThickness="1"
+                                      Stretch="None"
                                       IsHitTestVisible="False"/>
                                 <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Command="{Binding StageRawCleanCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Clean/raw take">
@@ -1595,28 +1619,30 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding QuickLouderCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Lift/loud">
-                                        <Border CornerRadius="16" BorderBrush="#A8FFD17A" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #40FFD17A">
+                                        <Border CornerRadius="16" BorderBrush="#B6F6D28A" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 26 0 #42F6D28A">
                                             <Border.Background>
-                                                <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
-                                                    <GradientStop Color="#05070B" Offset="0"/>
-                                                    <GradientStop Color="#0B3E4D" Offset="0.45"/>
-                                                    <GradientStop Color="#FFD17A" Offset="0.74"/>
-                                                    <GradientStop Color="#F8EFE0" Offset="1"/>
+                                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                    <GradientStop Color="#061016" Offset="0"/>
+                                                    <GradientStop Color="#07343B" Offset="0.36"/>
+                                                    <GradientStop Color="#B68C4A" Offset="0.7"/>
+                                                    <GradientStop Color="#F6D28A" Offset="1"/>
                                                 </LinearGradientBrush>
                                             </Border.Background>
                                             <Grid>
-                                                <Path Data="M 12 34 L 24 22 L 35 30 L 48 12 L 62 35 L 76 20 L 90 28 L 106 10 L 118 31"
-                                                      Stroke="#F8EFE0" StrokeThickness="1.35"/>
-                                                <Path Data="M 12 38 L 118 38" Stroke="#664CFF9D" StrokeThickness="1"/>
+                                                <Ellipse Width="92" Height="34" HorizontalAlignment="Right" Margin="0,0,8,0" Fill="#2AF8EFE0"/>
+                                                <Ellipse Width="46" Height="46" HorizontalAlignment="Left" Margin="10,0,0,0" Fill="#304CFF9D"/>
+                                                <Border Width="12" Height="18" CornerRadius="999" HorizontalAlignment="Center" Margin="-28,0,0,0" Background="#D8F8EFE0"/>
+                                                <Border Width="12" Height="28" CornerRadius="999" HorizontalAlignment="Center" Background="#C8F6D28A"/>
+                                                <Border Width="12" Height="36" CornerRadius="999" HorizontalAlignment="Center" Margin="28,0,0,0" Background="#B8D6FFFF"/>
                                             </Grid>
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding QuickDeleteCommand}" Width="128" Height="48" Padding="0" Margin="0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Delete last">
-                                        <Border CornerRadius="16" Background="#46140912" BorderBrush="#C8FF6C3E" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 20 0 #40FF6C3E">
+                                        <Border CornerRadius="16" Background="#30120A08" BorderBrush="#A8FF8F5A" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #36FF6C3E">
                                             <Grid>
-                                                <Ellipse Width="28" Height="28" Fill="#40FF6C3E" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                <Path Data="M 55 17 L 73 35 M 73 17 L 55 35" Stroke="#F8EFE0" StrokeThickness="2.2"/>
-                                                <Path Data="M 22 24 L 44 24 M 84 24 L 106 24" Stroke="#60FFBFA9" StrokeThickness="1.2"/>
+                                                <Ellipse Width="74" Height="34" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#34FF6C3E"/>
+                                                <Ellipse Width="42" Height="42" HorizontalAlignment="Right" Margin="0,0,14,0" Fill="#22D6FFFF"/>
+                                                <Path Data="M 57 18 L 71 32 M 71 18 L 57 32" Stroke="#F8EFE0" StrokeThickness="2.2"/>
                                             </Grid>
                                         </Border>
                                     </Button>
@@ -1648,18 +1674,22 @@
                         <Border Padding="14"
                                 Background="#4C0B1017">
                             <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
-                                <Path Grid.RowSpan="2"
-                                      Data="M 40 52 C 144 20, 234 84, 368 48 S 592 30, 830 66"
-                                      Stroke="#2CD6FFFF"
-                                      StrokeThickness="1"
-                                      Stretch="Fill"
-                                      IsHitTestVisible="False"/>
-                                <Path Grid.RowSpan="2"
-                                      Data="M 0 88 C 126 50, 246 120, 410 74 S 646 54, 904 110"
-                                      Stroke="#22FFBFA9"
-                                      StrokeThickness="0.9"
-                                      Stretch="Fill"
-                                      IsHitTestVisible="False"/>
+                                <Ellipse Grid.RowSpan="2"
+                                         Width="320"
+                                         Height="120"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Margin="-90,0,0,0"
+                                         Fill="#1228A7FF"
+                                         IsHitTestVisible="False"/>
+                                <Ellipse Grid.RowSpan="2"
+                                         Width="360"
+                                         Height="130"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,-110,0"
+                                         Fill="#14FF6C3E"
+                                         IsHitTestVisible="False"/>
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="13">
                                     <TextBlock Text="TAKES"
                                                FontSize="10"
@@ -1691,22 +1721,28 @@
                                                         BorderThickness="1">
                                                     <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                                         <Border CornerRadius="16"
-                                                                Background="#100C5C80"
-                                                                BorderBrush="#38D6FFFF"
+                                                                Background="#300C3E62"
+                                                                BorderBrush="#55D6FFFF"
                                                                 BorderThickness="1"
                                                                 IsHitTestVisible="False"/>
-                                                        <Path
-                                                              Data="M -8 29 C 46 12, 92 38, 146 22 S 248 10, 312 31 S 432 43, 540 18"
-                                                              Stroke="#36D6FFFF"
-                                                              StrokeThickness="1.15"
-                                                              Stretch="Fill"
-                                                              IsHitTestVisible="False"/>
-                                                        <Path
-                                                              Data="M -10 43 C 62 24, 126 53, 202 35 S 338 19, 452 48"
-                                                              Stroke="#32FFBFA9"
-                                                              StrokeThickness="0.95"
-                                                              Stretch="Fill"
-                                                              IsHitTestVisible="False"/>
+                                                        <Ellipse Width="190"
+                                                                 Height="48"
+                                                                 HorizontalAlignment="Left"
+                                                                 Margin="-40,0,0,0"
+                                                                 Fill="#2432A8FF"
+                                                                 IsHitTestVisible="False"/>
+                                                        <Ellipse Width="240"
+                                                                 Height="52"
+                                                                 HorizontalAlignment="Right"
+                                                                 Margin="0,0,-70,0"
+                                                                 Fill="#1AFF6C3E"
+                                                                 IsHitTestVisible="False"/>
+                                                        <Border Width="110"
+                                                                Height="26"
+                                                                CornerRadius="999"
+                                                                HorizontalAlignment="Center"
+                                                                Background="#12F8EFE0"
+                                                                IsHitTestVisible="False"/>
                                                         <Grid ColumnDefinitions="*,Auto">
                                                             <TextBlock Text="{Binding DisplayName}"
                                                                        FontSize="12"
