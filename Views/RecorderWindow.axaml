@@ -875,14 +875,18 @@
 
                         <Border Grid.Row="1"
                                 CornerRadius="999"
-                                Padding="10"
+                                Padding="12"
                                 HorizontalAlignment="Center"
-                                Background="#B507080C"
-                                BorderBrush="#38E7B06D"
+                                Background="#CC07070C"
+                                BorderBrush="#70E7B06D"
                                 BorderThickness="1"
-                                BoxShadow="0 16 32 0 #66000000">
+                                BoxShadow="0 22 0 0 #4D2A1711, 0 34 70 0 #AA000000"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <SkewTransform AngleX="-5" AngleY="0"/>
+                            </Border.RenderTransform>
                             <Grid ColumnDefinitions="Auto,Auto,Auto,Auto"
-                                  ColumnSpacing="8"
+                                  ColumnSpacing="11"
                                   HorizontalAlignment="Center">
                             <Button
                                     Command="{Binding StartRecordingCommand}"
@@ -1277,15 +1281,21 @@
 
                         <Border Grid.Column="1"
                                 CornerRadius="22"
-                                Padding="12"
+                                Padding="13"
                                 Background="#D810080A"
-                                BorderBrush="#4CE7B06D"
-                                BorderThickness="1">
+                                BorderBrush="#74E7B06D"
+                                BorderThickness="1"
+                                BoxShadow="0 14 0 0 #33130908, 0 28 52 0 #88000000"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <SkewTransform AngleX="4" AngleY="0"/>
+                            </Border.RenderTransform>
                             <Grid RowDefinitions="*,Auto" RowSpacing="10">
                                 <Border CornerRadius="18"
                                         Background="#181C2430"
                                         BorderBrush="#407FCAD1"
-                                        BorderThickness="1">
+                                        BorderThickness="1"
+                                        BoxShadow="inset 0 0 30 0 #44000000, 0 10 24 0 #66000000">
                                     <Grid>
                                         <Ellipse Width="120"
                                                  Height="120"
