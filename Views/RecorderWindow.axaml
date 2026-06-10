@@ -99,8 +99,9 @@
         <Grid.Background>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#02050B" Offset="0"/>
-                <GradientStop Color="#041817" Offset="0.34"/>
-                <GradientStop Color="#221118" Offset="0.72"/>
+                <GradientStop Color="#041513" Offset="0.28"/>
+                <GradientStop Color="#1B1118" Offset="0.62"/>
+                <GradientStop Color="#2A130E" Offset="0.86"/>
                 <GradientStop Color="#030407" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
@@ -173,6 +174,77 @@
                      Canvas.Left="729"
                      Canvas.Top="542"
                      Fill="#44E1786E"/>
+        </Canvas>
+
+        <Canvas IsHitTestVisible="False"
+                ClipToBounds="False"
+                Opacity="0.92"
+                RenderTransformOrigin="0.5,0.5">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="{Binding VisualBackScale}"
+                                    ScaleY="{Binding VisualBackScale}"/>
+                    <TranslateTransform X="{Binding VisualDriftX}"
+                                        Y="{Binding VisualLiftY}"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+
+            <Path Data="M 690 160 L 748 132 L 824 156 L 858 224 L 820 292 L 738 318 L 670 278 L 642 205 Z"
+                  Fill="#1820DFFF"
+                  Stroke="#4464C7B6"
+                  StrokeThickness="1.2"/>
+            <Path Data="M 708 184 L 754 162 L 808 182 L 832 230 L 802 274 L 744 292 L 696 260 L 674 210 Z"
+                  Fill="#2449DDF6"
+                  Stroke="#5CFFF4E6CF"
+                  StrokeThickness="1"/>
+            <Path Data="M 728 205 L 760 188 L 798 206 L 810 238 L 790 266 L 752 276 L 722 250 L 710 222 Z"
+                  Fill="#54A8F9FF"
+                  Stroke="#8CFFF4E6CF"
+                  StrokeThickness="1"/>
+            <Ellipse Width="74"
+                     Height="74"
+                     Canvas.Left="724"
+                     Canvas.Top="198"
+                     Fill="#60D6FFFF"/>
+
+            <Path Data="M 250 420 C 210 368, 244 310, 312 292 C 392 270, 492 304, 526 370 C 558 432, 500 502, 410 510 C 330 518, 278 474, 250 420 Z"
+                  Fill="#42E85F44"
+                  Stroke="#6AFFD2B8"
+                  StrokeThickness="1.1"/>
+            <Path Data="M 282 414 C 250 376, 284 340, 342 328 C 400 316, 462 338, 486 384 C 506 424, 462 472, 398 478 C 338 484, 306 448, 282 414 Z"
+                  Fill="#58FF8A5E"
+                  Stroke="#50FFF4E6CF"
+                  StrokeThickness="1"/>
+            <Path Data="M 330 308 C 326 352, 342 430, 308 500 M 378 300 C 366 356, 386 438, 358 512 M 426 306 C 408 360, 430 432, 412 500 M 470 336 C 440 380, 456 430, 440 470"
+                  Stroke="#4690151C"
+                  StrokeThickness="2"
+                  Stretch="None"/>
+
+            <Path Data="M 1010 358 C 1090 288, 1235 292, 1320 370 C 1246 382, 1150 424, 1038 514 C 1035 458, 1020 406, 1010 358 Z"
+                  Fill="#344DBB70"
+                  Stroke="#6464C7B6"
+                  StrokeThickness="1.2"/>
+            <Path Data="M 1024 374 C 1108 330, 1194 324, 1285 374 M 1036 400 C 1122 366, 1198 364, 1270 402 M 1052 426 C 1128 402, 1194 406, 1250 434 M 1068 456 C 1138 442, 1190 446, 1236 472"
+                  Stroke="#706EE7B8"
+                  StrokeThickness="1.5"
+                  Stretch="None"/>
+            <Path Data="M 1008 356 C 1068 352, 1206 396, 1322 370"
+                  Stroke="#52FFF4E6CF"
+                  StrokeThickness="1.2"
+                  Stretch="None"/>
+
+            <Path Data="M 150 188 C 270 88, 386 264, 510 172 S 742 66, 928 186 S 1210 104, 1390 176"
+                  Stroke="#70FFF4E6CF"
+                  StrokeThickness="1.15"
+                  Stretch="Fill"/>
+            <Path Data="M 142 210 C 272 112, 400 284, 526 198 S 752 96, 930 212 S 1220 134, 1398 206"
+                  Stroke="#5064C7B6"
+                  StrokeThickness="1.05"
+                  Stretch="Fill"/>
+            <Path Data="M 136 234 C 268 142, 410 314, 540 228 S 768 124, 940 238 S 1234 160, 1404 230"
+                  Stroke="#48E1786E"
+                  StrokeThickness="1.05"
+                  Stretch="Fill"/>
         </Canvas>
 
         <Grid Width="1320"
