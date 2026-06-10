@@ -99,9 +99,9 @@
         <Grid.Background>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#02050B" Offset="0"/>
-                <GradientStop Color="#041513" Offset="0.28"/>
-                <GradientStop Color="#1B1118" Offset="0.62"/>
-                <GradientStop Color="#2A130E" Offset="0.86"/>
+                <GradientStop Color="#031A21" Offset="0.25"/>
+                <GradientStop Color="#140B1D" Offset="0.56"/>
+                <GradientStop Color="#32110C" Offset="0.84"/>
                 <GradientStop Color="#030407" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
@@ -111,26 +111,60 @@
                  HorizontalAlignment="Right"
                  VerticalAlignment="Top"
                  Margin="0,-240,-180,0"
-                 Fill="#16FF7A4F"
+                 Fill="#24FF6C3E"
                  IsHitTestVisible="False"/>
         <Ellipse Width="460"
                  Height="460"
                  HorizontalAlignment="Left"
                  VerticalAlignment="Bottom"
                  Margin="-190,0,0,-170"
-                 Fill="#16276CFF"
+                 Fill="#22276CFF"
                  IsHitTestVisible="False"/>
         <Ellipse Width="380"
                  Height="380"
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom"
                  Margin="0,0,-130,-120"
-                 Fill="#183DFFD2"
+                 Fill="#243DFFD2"
                  IsHitTestVisible="False"/>
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.58">
+                Opacity="0.78">
+            <Ellipse Width="310"
+                     Height="310"
+                     Canvas.Left="628"
+                     Canvas.Top="96"
+                     Fill="#1010EFFF"
+                     Stroke="#8029D8FF"
+                     StrokeThickness="1.3"/>
+            <Ellipse Width="220"
+                     Height="220"
+                     Canvas.Left="672"
+                     Canvas.Top="140"
+                     Fill="#0C00F0FF"
+                     Stroke="#B7D6FFFF"
+                     StrokeThickness="1.8"/>
+            <Ellipse Width="112"
+                     Height="112"
+                     Canvas.Left="726"
+                     Canvas.Top="194"
+                     Fill="#38D6FFFF"
+                     Stroke="#EAF4E6CF"
+                     StrokeThickness="1.4"/>
+            <Path Data="M 116 438 C 170 310, 334 276, 464 346 C 594 416, 594 568, 454 638 C 302 710, 146 622, 116 438 Z"
+                  Fill="#18FF2A1E"
+                  Stroke="#9AFFA485"
+                  StrokeThickness="1.6"/>
+            <Path Data="M 1060 300 C 1150 196, 1320 210, 1470 330 C 1320 340, 1188 442, 1056 598 C 1078 482, 1082 382, 1060 300 Z"
+                  Fill="#184CFF9D"
+                  Stroke="#8A85FFCA"
+                  StrokeThickness="1.5"/>
+        </Canvas>
+
+        <Canvas IsHitTestVisible="False"
+                ClipToBounds="False"
+                Opacity="0.34">
             <!-- A soft studio shell gives the visualizer a physical room instead of a flat wallpaper. -->
             <Path Data="M 280 84 L 1260 84 L 1114 548 L 424 548 Z"
                   Fill="#33110D12"
@@ -178,7 +212,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.88"
+                Opacity="0.94"
                 RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <TransformGroup>
@@ -191,52 +225,52 @@
 
             <!-- Inner-vision forms inspired by the user's references: blue aura, red cell-map, green field. -->
             <Path Data="M 654 126 L 742 76 L 842 106 L 910 196 L 878 310 L 770 374 L 650 334 L 586 220 Z"
-                  Fill="#07122D5D"
-                  Stroke="#5040B8D6"
-                  StrokeThickness="1.4"/>
+                  Fill="#04122D5D"
+                  Stroke="#7828A7FF"
+                  StrokeThickness="1.8"/>
             <Path Data="M 676 156 L 746 112 L 830 138 L 878 208 L 850 292 L 770 338 L 680 306 L 632 226 Z"
-                  Fill="#101A5BE8"
-                  Stroke="#7864C7B6"
-                  StrokeThickness="1.25"/>
+                  Fill="#071A5BE8"
+                  Stroke="#A064C7B6"
+                  StrokeThickness="1.45"/>
             <Path Data="M 704 186 L 758 152 L 818 174 L 850 224 L 826 278 L 770 310 L 710 286 L 678 232 Z"
-                  Fill="#2259E6FF"
-                  Stroke="#A8F4E6CF"
-                  StrokeThickness="1.2"/>
+                  Fill="#1859E6FF"
+                  Stroke="#D0F4E6CF"
+                  StrokeThickness="1.45"/>
             <Path Data="M 730 212 L 764 188 L 804 204 L 824 238 L 804 272 L 766 292 L 730 272 L 708 236 Z"
-                  Fill="#4ABDFBFF"
-                  Stroke="#D8F4E6CF"
-                  StrokeThickness="1.4"/>
+                  Fill="#66BDFBFF"
+                  Stroke="#FFF4E6CF"
+                  StrokeThickness="1.8"/>
             <Ellipse Width="104"
                      Height="104"
                      Canvas.Left="708"
                      Canvas.Top="178"
-                     Fill="#24D6FFFF"/>
+                     Fill="#18D6FFFF"/>
             <Ellipse Width="52"
                      Height="52"
                      Canvas.Left="734"
                      Canvas.Top="204"
-                     Fill="#44F4E6CF"/>
+                     Fill="#66F4E6CF"/>
 
             <Path Data="M 250 420 C 210 368, 244 310, 312 292 C 392 270, 492 304, 526 370 C 558 432, 500 502, 410 510 C 330 518, 278 474, 250 420 Z"
-                  Fill="#28FF4D36"
-                  Stroke="#BEFFBFA9"
-                  StrokeThickness="1.6"/>
+                  Fill="#16FF251E"
+                  Stroke="#E8FFD0A8"
+                  StrokeThickness="2.05"/>
             <Path Data="M 282 414 C 250 376, 284 340, 342 328 C 400 316, 462 338, 486 384 C 506 424, 462 472, 398 478 C 338 484, 306 448, 282 414 Z"
-                  Fill="#2FFF8A5E"
-                  Stroke="#7CF4E6CF"
-                  StrokeThickness="1.15"/>
-            <Rectangle Width="34" Height="24" Canvas.Left="306" Canvas.Top="334" Fill="#35FFD17A" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="42" Height="30" Canvas.Left="350" Canvas.Top="326" Fill="#44FF3F32" RadiusX="6" RadiusY="6"/>
-            <Rectangle Width="38" Height="28" Canvas.Left="400" Canvas.Top="338" Fill="#48FF784F" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="48" Height="34" Canvas.Left="438" Canvas.Top="370" Fill="#42F21738" RadiusX="6" RadiusY="6"/>
-            <Rectangle Width="36" Height="42" Canvas.Left="330" Canvas.Top="382" Fill="#4CFF9F42" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="44" Height="38" Canvas.Left="378" Canvas.Top="390" Fill="#3CFF4D36" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="54" Height="34" Canvas.Left="420" Canvas.Top="426" Fill="#38FFC47A" RadiusX="7" RadiusY="7"/>
-            <Rectangle Width="40" Height="36" Canvas.Left="318" Canvas.Top="438" Fill="#42F21738" RadiusX="5" RadiusY="5"/>
-            <Rectangle Width="42" Height="32" Canvas.Left="366" Canvas.Top="452" Fill="#3AFFD17A" RadiusX="5" RadiusY="5"/>
+                  Fill="#18FF8A5E"
+                  Stroke="#A0F4E6CF"
+                  StrokeThickness="1.35"/>
+            <Rectangle Width="34" Height="24" Canvas.Left="306" Canvas.Top="334" Fill="#55FFD17A" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="42" Height="30" Canvas.Left="350" Canvas.Top="326" Fill="#66FF3F32" RadiusX="6" RadiusY="6"/>
+            <Rectangle Width="38" Height="28" Canvas.Left="400" Canvas.Top="338" Fill="#72FF784F" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="48" Height="34" Canvas.Left="438" Canvas.Top="370" Fill="#64F21738" RadiusX="6" RadiusY="6"/>
+            <Rectangle Width="36" Height="42" Canvas.Left="330" Canvas.Top="382" Fill="#70FF9F42" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="44" Height="38" Canvas.Left="378" Canvas.Top="390" Fill="#58FF4D36" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="54" Height="34" Canvas.Left="420" Canvas.Top="426" Fill="#52FFC47A" RadiusX="7" RadiusY="7"/>
+            <Rectangle Width="40" Height="36" Canvas.Left="318" Canvas.Top="438" Fill="#60F21738" RadiusX="5" RadiusY="5"/>
+            <Rectangle Width="42" Height="32" Canvas.Left="366" Canvas.Top="452" Fill="#5AFFD17A" RadiusX="5" RadiusY="5"/>
             <Path Data="M 330 308 C 326 352, 342 430, 308 500 M 378 300 C 366 356, 386 438, 358 512 M 426 306 C 408 360, 430 432, 412 500 M 470 336 C 440 380, 456 430, 440 470"
-                  Stroke="#A2141018"
-                  StrokeThickness="2"
+                  Stroke="#D2141018"
+                  StrokeThickness="2.6"
                   Stretch="None"/>
             <Path Data="M 298 300 C 276 356, 300 430, 276 492 M 514 340 C 488 386, 522 446, 492 492"
                   Stroke="#82F4E6CF"
@@ -244,33 +278,33 @@
                   Stretch="None"/>
 
             <Path Data="M 960 376 C 1072 274, 1264 280, 1398 386 C 1276 396, 1148 456, 978 596 C 990 512, 980 438, 960 376 Z"
-                  Fill="#204DBB70"
-                  Stroke="#A064C7B6"
-                  StrokeThickness="1.55"/>
+                  Fill="#0D4DBB70"
+                  Stroke="#CC64C7B6"
+                  StrokeThickness="1.9"/>
             <Path Data="M 986 382 C 1106 318, 1220 316, 1364 390 M 1004 416 C 1122 364, 1224 364, 1340 426 M 1024 452 C 1138 414, 1220 420, 1312 466 M 1046 492 C 1154 466, 1216 478, 1282 512 M 1078 532 C 1162 522, 1212 532, 1250 552"
-                  Stroke="#A86EE7B8"
-                  StrokeThickness="1.9"
+                  Stroke="#CC6EE7B8"
+                  StrokeThickness="2.2"
                   Stretch="None"/>
             <Path Data="M 962 376 C 1056 370, 1228 438, 1400 386"
-                  Stroke="#98F4E6CF"
-                  StrokeThickness="1.45"
+                  Stroke="#B8F4E6CF"
+                  StrokeThickness="1.65"
                   Stretch="None"/>
             <Path Data="M 988 396 C 1068 398, 1192 480, 1348 420"
-                  Stroke="#7064C7B6"
-                  StrokeThickness="1.15"
+                  Stroke="#9064C7B6"
+                  StrokeThickness="1.35"
                   Stretch="None"/>
 
             <Path Data="M 150 188 C 270 88, 386 264, 510 172 S 742 66, 928 186 S 1210 104, 1390 176"
-                  Stroke="#70F4E6CF"
-                  StrokeThickness="1.15"
+                  Stroke="#38F4E6CF"
+                  StrokeThickness="0.95"
                   Stretch="Fill"/>
             <Path Data="M 142 210 C 272 112, 400 284, 526 198 S 752 96, 930 212 S 1220 134, 1398 206"
-                  Stroke="#5064C7B6"
-                  StrokeThickness="1.05"
+                  Stroke="#3264C7B6"
+                  StrokeThickness="0.85"
                   Stretch="Fill"/>
             <Path Data="M 136 234 C 268 142, 410 314, 540 228 S 768 124, 940 238 S 1234 160, 1404 230"
-                  Stroke="#48E1786E"
-                  StrokeThickness="1.05"
+                  Stroke="#2CE1786E"
+                  StrokeThickness="0.85"
                   Stretch="Fill"/>
         </Canvas>
 
