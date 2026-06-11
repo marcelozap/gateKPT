@@ -165,13 +165,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _videoExportPreset = "short";
 
     [ObservableProperty]
-    private string _contentPackWorld = "Fire";
+    private string _contentPackWorld = "Own Library";
 
     [ObservableProperty]
-    private string _contentPackClipType = "Cover";
+    private string _contentPackClipType = "Loop";
 
     [ObservableProperty]
-    private string _contentPackResult = "Record or select a take, then generate the pack.";
+    private string _contentPackResult = "Record or select a take, then generate a personal listening pack.";
 
     [ObservableProperty]
     private string _lastContentPackPath = "";
@@ -192,13 +192,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _tasteMemoryStatus = "No taste saved yet.";
 
     [ObservableProperty]
-    private string _liveAlbumEra = "Album built in public";
+    private string _liveAlbumEra = "Own library era";
 
     [ObservableProperty]
-    private string _liveAlbumScene = "Night room";
+    private string _liveAlbumScene = "Private listening folder";
 
     [ObservableProperty]
-    private string _liveAlbumNote = "";
+    private string _liveAlbumNote = "Build enough loops, songs, backgrounds, and mixes that I listen to my own work first.";
 
     [ObservableProperty]
     private string _liveAlbumStatus = "No live album note saved yet.";
@@ -271,6 +271,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public IReadOnlyList<string> ContentPackWorlds { get; } =
     [
+        "Own Library",
         "Fire",
         "Storm",
         "Chrome"
@@ -278,6 +279,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public IReadOnlyList<string> ContentPackClipTypes { get; } =
     [
+        "Loop",
+        "Background",
+        "Personal Mix",
         "Cover",
         "Process",
         "Visual",
@@ -297,6 +301,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public IReadOnlyList<string> LiveAlbumScenes { get; } =
     [
+        "Private listening folder",
+        "Work focus mix",
+        "Gym loop pack",
+        "Night drive mix",
         "Night room",
         "Projector session",
         "Guitar cover",
@@ -594,7 +602,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     public string LiveAlbumPlan =>
-        $"Scene: {LiveAlbumScene}. Build one piece, keep the room open, save the moment.";
+        $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
         "Try: chrome, silk, luna, cloud, clean, warmer, room, post.";

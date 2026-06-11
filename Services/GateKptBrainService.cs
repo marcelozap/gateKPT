@@ -20,6 +20,11 @@ public sealed class GateKptBrainService
                    + BuildSessionStatus(context);
         }
 
+        if (ContainsAny(lower, "spotify", "streaming", "listen", "library", "download", "downloads", "my own music", "own music"))
+        {
+            return "Own library plan: record short loops, song seeds, background beds, and personal mixes. Save enough audio that your first move is opening your own folder, not a streaming app.";
+        }
+
         if (ContainsAny(lower, "what now", "next", "what should i do", "where do i go", "plan"))
         {
             return NextMove(context);
