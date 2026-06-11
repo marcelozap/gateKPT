@@ -492,6 +492,12 @@
               IsHitTestVisible="False"
               Opacity="0.24"
               RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform X="{Binding VisualDriftX}"
+                                        Y="{Binding VisualLiftY}"/>
+                </TransformGroup>
+            </Grid.RenderTransform>
             <Path Data="M -80 290 C 180 152, 394 420, 650 248 S 1016 94, 1340 312 S 1560 188, 1740 268"
                   Stroke="#42E1786E"
                   StrokeThickness="2.2"
@@ -500,24 +506,26 @@
                   Stroke="#3864C7B6"
                   StrokeThickness="1.5"
                   Stretch="Fill"/>
-            <Ellipse Width="420"
-                     Height="170"
+            <Ellipse Width="{Binding VisualBloomSize}"
+                     Height="190"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
-                     Fill="#1652FF9A"/>
-            <Ellipse Width="260"
-                     Height="110"
+                     Fill="#1A52FF9A"
+                     Opacity="{Binding VisualBloomOpacity}"/>
+            <Ellipse Width="{Binding VisualCoreSize}"
+                     Height="122"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
-                     Fill="#18FFD2B8"/>
+                     Fill="#24FFD2B8"
+                     Opacity="0.62"/>
             <Path Data="M 170 252 C 340 210, 470 250, 610 236 C 720 225, 820 180, 950 204 C 1080 228, 1135 294, 1290 270"
                   Stroke="#54F4E6CF"
-                  StrokeThickness="8"
+                  StrokeThickness="10"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
             <Path Data="M 238 296 C 390 280, 512 324, 660 294 C 785 268, 874 238, 1030 264 C 1148 284, 1224 330, 1384 306"
                   Stroke="#3C64C7B6"
-                  StrokeThickness="6"
+                  StrokeThickness="7"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
             <Path Data="M 450 184 C 520 250, 590 300, 682 292 C 782 284, 846 218, 940 164"
@@ -525,6 +533,23 @@
                   StrokeThickness="5"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
+            <Path Data="M 620 120 C 680 180, 712 240, 688 310 C 760 282, 826 292, 900 350 C 850 244, 768 166, 620 120 Z"
+                  Fill="#18F08A3C"
+                  Stroke="#42F4E6CF"
+                  StrokeThickness="1.4"
+                  Stretch="Fill"/>
+            <Ellipse Width="82"
+                     Height="52"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="-180,86,0,0"
+                     Fill="#36F08A3C"/>
+            <Ellipse Width="112"
+                     Height="62"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="210,100,0,0"
+                     Fill="#2B64C7B6"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
                           IsVisible="False"
                           Width="1500"
