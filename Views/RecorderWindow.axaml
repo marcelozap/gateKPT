@@ -447,16 +447,8 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.54"
+                Opacity="0.38"
                 RenderTransformOrigin="0.5,0.5">
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <TranslateTransform X="{Binding VisualDriftX}"
-                                        Y="{Binding VisualLiftY}"/>
-                    <ScaleTransform ScaleX="{Binding VisualBackScale}"
-                                    ScaleY="{Binding VisualBackScale}"/>
-                </TransformGroup>
-            </Canvas.RenderTransform>
             <Ellipse Width="5" Height="5" Canvas.Left="118" Canvas.Top="146" Fill="#C8FFD2B8"/>
             <Ellipse Width="3" Height="3" Canvas.Left="205" Canvas.Top="310" Fill="#9064C7B6"/>
             <Ellipse Width="7" Height="7" Canvas.Left="312" Canvas.Top="212" Fill="#A8E1786E"/>
@@ -474,16 +466,8 @@
               VerticalAlignment="Top"
               Margin="-60,26,-60,0"
               IsHitTestVisible="False"
-              Opacity="0.26"
+              Opacity="0.18"
               RenderTransformOrigin="0.5,0.5">
-            <Grid.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleX="{Binding VisualBackScale}"
-                                    ScaleY="{Binding VisualBackScale}"/>
-                    <TranslateTransform X="{Binding VisualDriftX}"
-                                        Y="{Binding VisualLiftY}"/>
-                </TransformGroup>
-            </Grid.RenderTransform>
             <Grid.Background>
                 <LinearGradientBrush StartPoint="50%,0%" EndPoint="50%,100%">
                     <GradientStop Color="#00F4E6CF" Offset="0"/>
@@ -506,15 +490,8 @@
               VerticalAlignment="Center"
               Margin="-110,40,-110,0"
               IsHitTestVisible="False"
-              Opacity="0.34"
+              Opacity="0.24"
               RenderTransformOrigin="0.5,0.5">
-            <Grid.RenderTransform>
-                <TransformGroup>
-                    <RotateTransform Angle="{Binding VisualRoomTilt}"/>
-                    <ScaleTransform ScaleX="{Binding VisualMidScale}"
-                                    ScaleY="{Binding VisualMidScale}"/>
-                </TransformGroup>
-            </Grid.RenderTransform>
             <Path Data="M -80 290 C 180 152, 394 420, 650 248 S 1016 94, 1340 312 S 1560 188, 1740 268"
                   Stroke="#42E1786E"
                   StrokeThickness="2.2"
@@ -524,6 +501,7 @@
                   StrokeThickness="1.5"
                   Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
+                          IsVisible="False"
                           Width="1500"
                           Height="140"
                           HorizontalAlignment="Center"
@@ -662,6 +640,7 @@
             </UniformGrid>
         </Grid>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Top"
                       Margin="-80,78,-80,0"
@@ -690,6 +669,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       Width="1450"
                       Height="120"
                       HorizontalAlignment="Center"
@@ -724,6 +704,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       Width="1500"
                       Height="150"
                       HorizontalAlignment="Center"
@@ -758,6 +739,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       Width="1780"
                       Height="190"
                       HorizontalAlignment="Center"
@@ -792,6 +774,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       Width="1260"
                       Height="110"
                       HorizontalAlignment="Center"
