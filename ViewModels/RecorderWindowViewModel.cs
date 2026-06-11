@@ -2866,28 +2866,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
         var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        var slowBreath = Math.Sin(now / 1180.0) * 0.5 + 0.5;
-        var wave = Math.Sin((now / 140.0) + SignalBars.Count * 0.52) * 0.30;
-        var drift = Math.Cos((now / 620.0) + SignalBars.Count * 0.31) * 0.18;
-        var height = 12 + (normalized * 92) + Math.Abs(wave * 24) + Math.Abs(drift * 16);
+        var slowBreath = Math.Sin(now / 6800.0) * 0.5 + 0.5;
+        var flow = (now % 22000) / 22000.0;
+        var drift = Math.Sin(flow * Math.Tau) * 0.08;
+        var height = 12 + (normalized * 82) + slowBreath * 5;
         if (peak < 0.5)
         {
-            height = 10 + slowBreath * 16 + Math.Abs(wave * 14) + Math.Abs(drift * 10);
+            height = 10 + slowBreath * 6;
         }
 
-        var idlePulse = Math.Abs(Math.Sin(now / 1500.0));
-        var visualEnergy = Math.Clamp(normalized * 1.15 + idlePulse * 0.10, 0, 1);
+        var idlePulse = 0.5 + Math.Sin(now / 9800.0) * 0.5;
+        var visualEnergy = Math.Clamp(normalized * 0.55 + idlePulse * 0.035, 0, 0.72);
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 80 + visualEnergy * 230 + Math.Abs(wave) * 18;
-        VisualBloomSize = 240 + visualEnergy * 620 + Math.Abs(drift) * 70;
-        VisualBloomOpacity = 0.12 + visualEnergy * 0.58;
-        VisualRoomScale = 1 + visualEnergy * 0.16;
-        VisualBackScale = 1 + visualEnergy * 0.24;
-        VisualMidScale = 1 + visualEnergy * 0.48;
-        VisualFrontScale = 1 + visualEnergy * 0.86;
-        VisualRoomTilt = -5 + wave * 7 + visualEnergy * 3;
-        VisualDriftX = drift * 42;
-        VisualLiftY = -visualEnergy * 66 + wave * 12;
+        VisualCoreSize = 130 + visualEnergy * 70;
+        VisualBloomSize = 360 + visualEnergy * 160;
+        VisualBloomOpacity = 0.12 + visualEnergy * 0.18;
+        VisualRoomScale = 1 + visualEnergy * 0.025;
+        VisualBackScale = 1 + visualEnergy * 0.018;
+        VisualMidScale = 1 + visualEnergy * 0.03;
+        VisualFrontScale = 1 + visualEnergy * 0.04;
+        VisualRoomTilt = -3 + drift * 1.2;
+        VisualDriftX = drift * 10;
+        VisualLiftY = flow * 22 + visualEnergy * 4;
 
         SignalBars.RemoveAt(0);
         SignalBars.Add(Math.Clamp(height, 8, 96));

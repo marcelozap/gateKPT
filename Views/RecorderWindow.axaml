@@ -500,6 +500,31 @@
                   Stroke="#3864C7B6"
                   StrokeThickness="1.5"
                   Stretch="Fill"/>
+            <Ellipse Width="420"
+                     Height="170"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Fill="#1652FF9A"/>
+            <Ellipse Width="260"
+                     Height="110"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Fill="#18FFD2B8"/>
+            <Path Data="M 170 252 C 340 210, 470 250, 610 236 C 720 225, 820 180, 950 204 C 1080 228, 1135 294, 1290 270"
+                  Stroke="#54F4E6CF"
+                  StrokeThickness="8"
+                  StrokeLineCap="Round"
+                  Stretch="Fill"/>
+            <Path Data="M 238 296 C 390 280, 512 324, 660 294 C 785 268, 874 238, 1030 264 C 1148 284, 1224 330, 1384 306"
+                  Stroke="#3C64C7B6"
+                  StrokeThickness="6"
+                  StrokeLineCap="Round"
+                  Stretch="Fill"/>
+            <Path Data="M 450 184 C 520 250, 590 300, 682 292 C 782 284, 846 218, 940 164"
+                  Stroke="#4CE1786E"
+                  StrokeThickness="5"
+                  StrokeLineCap="Round"
+                  Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
                           IsVisible="False"
                           Width="1500"
@@ -833,6 +858,7 @@
               Stretch="Fill"
               IsHitTestVisible="False"/>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Center"
                       Margin="-20,0,-20,0"
@@ -866,6 +892,7 @@
               Stretch="Fill"
               IsHitTestVisible="False"/>
         <ItemsControl ItemsSource="{Binding SignalBars}"
+                      IsVisible="False"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Bottom"
                       Margin="-130,0,-130,170"
@@ -943,6 +970,7 @@
                   Opacity="0.14"
                   Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
+                          IsVisible="False"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Bottom"
                           Margin="0,0,0,34">
@@ -1054,6 +1082,7 @@
             </Ellipse>
 
             <ItemsControl ItemsSource="{Binding SignalBars}"
+                          IsVisible="False"
                           Width="780"
                           Height="220"
                           HorizontalAlignment="Center"
@@ -1091,6 +1120,7 @@
             </ItemsControl>
 
             <ItemsControl ItemsSource="{Binding SignalBars}"
+                          IsVisible="False"
                           Width="900"
                           Height="260"
                           HorizontalAlignment="Center"
@@ -1159,6 +1189,7 @@
                   StrokeThickness="1.9"
                   Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
+                          IsVisible="False"
                           Width="1380"
                           Height="120"
                           HorizontalAlignment="Center"
