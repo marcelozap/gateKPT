@@ -359,7 +359,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.74">
+                Opacity="0.48">
             <Path Data="M 642 -120 L 810 -120 L 1026 760 L 410 760 Z"
                       Fill="#11F4E6CF"/>
             <Path Data="M 862 -80 L 1012 -54 L 1172 760 L 760 760 Z"
@@ -370,23 +370,23 @@
                      Height="118"
                      Canvas.Left="398"
                      Canvas.Top="656"
-                      Fill="#18F4E6CF"/>
+                     Fill="#10F4E6CF"/>
             <Ellipse Width="520"
                      Height="62"
                      Canvas.Left="515"
                      Canvas.Top="676"
-                     Fill="#22FFD2B8"/>
+                     Fill="#16FFD2B8"/>
             <Border Width="620"
                     Height="2"
                     Canvas.Left="470"
                     Canvas.Top="706"
-                        Background="#50F4E6CF"
+                        Background="#2AF4E6CF"
                     CornerRadius="999"/>
             <Border Width="210"
                     Height="1"
                     Canvas.Left="650"
                     Canvas.Top="318"
-                    Background="#70FFD2B8"
+                    Background="#32FFD2B8"
                     CornerRadius="999">
                 <Border.RenderTransform>
                     <RotateTransform Angle="-7"/>
@@ -395,39 +395,40 @@
         </Canvas>
 
         <Canvas IsHitTestVisible="False"
-                ClipToBounds="False">
+                ClipToBounds="False"
+                Opacity="0.72">
             <Path Data="M 1040 -20 L 1450 88 L 1370 378 L 980 238 Z"
                   Fill="#1DFFD2B8"
                   Stroke="#44FFD2B8"
                   StrokeThickness="1.4"
-                  Opacity="0.38"/>
+                  Opacity="0.22"/>
             <Path Data="M 900 30 L 1132 116 L 1110 282 L 848 220 Z"
                   Fill="#1264C7B6"
                   Stroke="#3C64C7B6"
                   StrokeThickness="1.2"
-                  Opacity="0.34"/>
+                  Opacity="0.2"/>
             <Path Data="M -80 520 L 240 438 L 328 722 L 0 832 Z"
                   Fill="#17153245"
                   Stroke="#355C8EB8"
                   StrokeThickness="1.1"
-                  Opacity="0.42"/>
+                  Opacity="0.24"/>
             <Path Data="M 1180 520 L 1540 440 L 1660 780 L 1260 850 Z"
                   Fill="#16E1786E"
                   Stroke="#38E1786E"
                   StrokeThickness="1.1"
-                  Opacity="0.38"/>
+                  Opacity="0.22"/>
             <Path Data="M 360 690 C 520 572, 706 770, 898 640 S 1240 548, 1460 700"
-                  Stroke="#7AFFD2B8"
-                  StrokeThickness="2.6"
-                  Opacity="0.36"/>
+                  Stroke="#58FFD2B8"
+                  StrokeThickness="2.1"
+                  Opacity="0.18"/>
             <Path Data="M 120 110 C 260 26, 430 176, 592 82 S 844 8, 1080 126"
-                  Stroke="#4864C7B6"
-                  StrokeThickness="2"
-                  Opacity="0.32"/>
+                  Stroke="#3864C7B6"
+                  StrokeThickness="1.5"
+                  Opacity="0.18"/>
             <Path Data="M 160 590 C 344 446, 478 684, 678 528 S 980 394, 1214 586"
-                  Stroke="#50E1786E"
-                  StrokeThickness="1.8"
-                  Opacity="0.34"/>
+                  Stroke="#3CE1786E"
+                  StrokeThickness="1.4"
+                  Opacity="0.18"/>
             <Ellipse Width="300"
                      Height="300"
                      Canvas.Left="1020"
@@ -446,7 +447,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.86"
+                Opacity="0.54"
                 RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <TransformGroup>
@@ -467,17 +468,13 @@
             <Ellipse Width="6" Height="6" Canvas.Left="1168" Canvas.Top="236" Fill="#B8F4E6CF"/>
             <Ellipse Width="3" Height="3" Canvas.Left="1284" Canvas.Top="510" Fill="#90FFD2B8"/>
             <Ellipse Width="7" Height="7" Canvas.Left="1388" Canvas.Top="118" Fill="#8C64C7B6"/>
-            <Border Width="72" Height="1.5" Canvas.Left="250" Canvas.Top="484" Background="#55FFD2B8" CornerRadius="999"/>
-            <Border Width="96" Height="1" Canvas.Left="898" Canvas.Top="456" Background="#5064C7B6" CornerRadius="999"/>
-            <Border Width="54" Height="1.5" Canvas.Left="1110" Canvas.Top="642" Background="#48E1786E" CornerRadius="999"/>
-            <Border Width="112" Height="1" Canvas.Left="420" Canvas.Top="620" Background="#36F4E6CF" CornerRadius="999"/>
         </Canvas>
 
         <Grid Height="330"
               VerticalAlignment="Top"
               Margin="-60,26,-60,0"
               IsHitTestVisible="False"
-              Opacity="0.48"
+              Opacity="0.26"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -495,13 +492,13 @@
                     <GradientStop Color="#00130F16" Offset="1"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <Path Data="M -90 268 C 110 98, 316 335, 544 176 S 908 72, 1190 254 S 1440 126, 1640 210"
-                  Stroke="#42FFD2B8"
-                  StrokeThickness="2.2"
+            <Path Data="M -90 268 C 120 132, 326 300, 544 204 S 908 104, 1190 244 S 1440 158, 1640 218"
+                  Stroke="#2CFFD2B8"
+                  StrokeThickness="1.6"
                   Stretch="Fill"/>
-            <Path Data="M -60 226 C 134 152, 266 264, 488 198 S 824 142, 1040 236 S 1310 168, 1560 218"
-                  Stroke="#3464C7B6"
-                  StrokeThickness="1.5"
+            <Path Data="M -60 226 C 140 172, 286 238, 488 210 S 824 168, 1040 226 S 1310 182, 1560 222"
+                  Stroke="#2464C7B6"
+                  StrokeThickness="1.1"
                   Stretch="Fill"/>
         </Grid>
 
@@ -509,7 +506,7 @@
               VerticalAlignment="Center"
               Margin="-110,40,-110,0"
               IsHitTestVisible="False"
-              Opacity="0.58"
+              Opacity="0.34"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -519,19 +516,19 @@
                 </TransformGroup>
             </Grid.RenderTransform>
             <Path Data="M -80 290 C 180 152, 394 420, 650 248 S 1016 94, 1340 312 S 1560 188, 1740 268"
-                  Stroke="#68E1786E"
-                  StrokeThickness="3.2"
+                  Stroke="#42E1786E"
+                  StrokeThickness="2.2"
                   Stretch="Fill"/>
             <Path Data="M -120 338 C 126 246, 366 392, 630 314 S 1028 228, 1340 350 S 1560 270, 1750 328"
-                  Stroke="#6064C7B6"
-                  StrokeThickness="2.2"
+                  Stroke="#3864C7B6"
+                  StrokeThickness="1.5"
                   Stretch="Fill"/>
             <ItemsControl ItemsSource="{Binding SignalBars}"
                           Width="1500"
                           Height="140"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          Opacity="0.46"
+                          Opacity="0.22"
                           RenderTransformOrigin="0.5,0.5">
                 <ItemsControl.RenderTransform>
                     <SkewTransform AngleX="-18" AngleY="0"/>
@@ -560,22 +557,22 @@
             </ItemsControl>
         </Grid>
 
-        <Path Data="M 20 675 C 210 448, 430 808, 705 548 S 1118 392, 1510 708"
-              Stroke="#3A64C7B6"
-              StrokeThickness="7"
-              Opacity="0.20"
-              Stretch="Fill"
-              IsHitTestVisible="False"/>
-        <Path Data="M -40 720 C 180 472, 450 850, 710 610 S 1125 460, 1540 760"
-              Stroke="#24F2EEE3"
-              StrokeThickness="3"
-              Opacity="0.18"
-              Stretch="Fill"
-              IsHitTestVisible="False"/>
-        <Path Data="M -120 520 C 128 350, 372 620, 590 430 S 910 330, 1220 520 S 1470 410, 1680 490"
-              Stroke="#3CE1786E"
+        <Path Data="M 20 675 C 210 520, 430 724, 705 590 S 1118 478, 1510 696"
+              Stroke="#2864C7B6"
               StrokeThickness="5"
-              Opacity="0.18"
+              Opacity="0.13"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+        <Path Data="M -40 720 C 180 548, 450 802, 710 642 S 1125 522, 1540 748"
+              Stroke="#18F2EEE3"
+              StrokeThickness="2.1"
+              Opacity="0.11"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+        <Path Data="M -120 520 C 128 408, 372 574, 590 468 S 910 396, 1220 520 S 1470 452, 1680 500"
+              Stroke="#24E1786E"
+              StrokeThickness="3.2"
+              Opacity="0.11"
               Stretch="Fill"
               IsHitTestVisible="False"/>
         <Ellipse Width="220"
