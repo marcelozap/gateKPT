@@ -2866,9 +2866,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
         var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-        var slowBreath = Math.Sin(now / 6800.0) * 0.5 + 0.5;
-        var flow = (now % 26000) / 26000.0;
-        var drift = Math.Sin(flow * Math.Tau) * 0.08;
+        var slowBreath = Math.Sin(now / 8600.0) * 0.5 + 0.5;
+        var flow = (now % 48000) / 48000.0;
+        var drift = Math.Sin(flow * Math.Tau) * 0.16;
         var height = 12 + (normalized * 82) + slowBreath * 5;
         if (peak < 0.5)
         {
@@ -2876,18 +2876,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var idlePulse = 0.5 + Math.Sin(now / 9800.0) * 0.5;
-        var visualEnergy = Math.Clamp(normalized * 0.72 + idlePulse * 0.045, 0, 0.8);
+        var visualEnergy = Math.Clamp(normalized * 0.78 + idlePulse * 0.055, 0, 0.86);
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 140 + visualEnergy * 120;
-        VisualBloomSize = 360 + visualEnergy * 240;
-        VisualBloomOpacity = 0.14 + visualEnergy * 0.28;
+        VisualCoreSize = 130 + visualEnergy * 170;
+        VisualBloomSize = 340 + visualEnergy * 330;
+        VisualBloomOpacity = 0.16 + visualEnergy * 0.36;
         VisualRoomScale = 1 + visualEnergy * 0.025;
-        VisualBackScale = 1 + visualEnergy * 0.018;
-        VisualMidScale = 1 + visualEnergy * 0.03;
-        VisualFrontScale = 1 + visualEnergy * 0.04;
+        VisualBackScale = 1 + visualEnergy * 0.035;
+        VisualMidScale = 1 + visualEnergy * 0.045;
+        VisualFrontScale = 1 + visualEnergy * 0.05;
         VisualRoomTilt = -3 + drift * 1.2;
-        VisualDriftX = drift * 18;
-        VisualLiftY = flow * 96 + visualEnergy * 8;
+        VisualDriftX = drift * 22;
+        VisualLiftY = -80 + flow * 170 + visualEnergy * 6;
 
         SignalBars.RemoveAt(0);
         SignalBars.Add(Math.Clamp(height, 8, 96));

@@ -225,33 +225,57 @@
                 </TransformGroup>
             </Canvas.RenderTransform>
 
-            <!-- Inner-vision forms inspired by the user's references: blue aura, red cell-map, green field. -->
+            <!-- Abstract stage forms: random enough to feel alive, slow enough to stay calm on camera. -->
+            <Ellipse Width="{Binding VisualBloomSize}"
+                     Height="210"
+                     Canvas.Left="520"
+                     Canvas.Top="344"
+                     Fill="#1C7A6E"
+                     Opacity="{Binding VisualBloomOpacity}"/>
+            <Ellipse Width="{Binding VisualCoreSize}"
+                     Height="118"
+                     Canvas.Left="655"
+                     Canvas.Top="392"
+                     Fill="#2FA38F"
+                     Opacity="0.42"/>
+            <Ellipse Width="{Binding VisualBloomSize}"
+                     Height="160"
+                     Canvas.Left="250"
+                     Canvas.Top="330"
+                     Fill="#B14A6E"
+                     Opacity="0.13"/>
+            <Ellipse Width="{Binding VisualCoreSize}"
+                     Height="88"
+                     Canvas.Left="1015"
+                     Canvas.Top="374"
+                     Fill="#FFA94F"
+                     Opacity="0.18"/>
             <Path Data="M 654 126 L 742 76 L 842 106 L 910 196 L 878 310 L 770 374 L 650 334 L 586 220 Z"
-                  Fill="#04122D5D"
-                  Stroke="#7828A7FF"
+                  Fill="#041C2F5D"
+                  Stroke="#6830A898"
                   StrokeThickness="1.8"/>
             <Path Data="M 676 156 L 746 112 L 830 138 L 878 208 L 850 292 L 770 338 L 680 306 L 632 226 Z"
-                  Fill="#071A5BE8"
-                  Stroke="#A064C7B6"
+                  Fill="#071D42D8"
+                  Stroke="#882FA38F"
                   StrokeThickness="1.45"/>
             <Path Data="M 704 186 L 758 152 L 818 174 L 850 224 L 826 278 L 770 310 L 710 286 L 678 232 Z"
-                  Fill="#1859E6FF"
-                  Stroke="#D0F4E6CF"
+                  Fill="#154F6AE8"
+                  Stroke="#B0F4E3BE"
                   StrokeThickness="1.45"/>
             <Path Data="M 730 212 L 764 188 L 804 204 L 824 238 L 804 272 L 766 292 L 730 272 L 708 236 Z"
-                  Fill="#66BDFBFF"
-                  Stroke="#FFF4E6CF"
+                  Fill="#882FA38F"
+                  Stroke="#FFFFF3D6"
                   StrokeThickness="1.8"/>
             <Ellipse Width="104"
                      Height="104"
                      Canvas.Left="708"
                      Canvas.Top="178"
-                     Fill="#18D6FFFF"/>
+                     Fill="#142FA38F"/>
             <Ellipse Width="52"
                      Height="52"
                      Canvas.Left="734"
                      Canvas.Top="204"
-                     Fill="#66F4E6CF"/>
+                     Fill="#66FFF3D6"/>
 
             <Path Data="M 250 420 C 210 368, 244 310, 312 292 C 392 270, 492 304, 526 370 C 558 432, 500 502, 410 510 C 330 518, 278 474, 250 420 Z"
                   Fill="#16FF251E"
@@ -297,16 +321,16 @@
                   Stretch="None"/>
 
             <Path Data="M 150 188 C 270 88, 386 264, 510 172 S 742 66, 928 186 S 1210 104, 1390 176"
-                  Stroke="#38F4E6CF"
-                  StrokeThickness="0.95"
+                  Stroke="#28F4E3BE"
+                  StrokeThickness="0.75"
                   Stretch="Fill"/>
             <Path Data="M 142 210 C 272 112, 400 284, 526 198 S 752 96, 930 212 S 1220 134, 1398 206"
-                  Stroke="#3264C7B6"
-                  StrokeThickness="0.85"
+                  Stroke="#302FA38F"
+                  StrokeThickness="0.7"
                   Stretch="Fill"/>
             <Path Data="M 136 234 C 268 142, 410 314, 540 228 S 768 124, 940 238 S 1234 160, 1404 230"
-                  Stroke="#2CE1786E"
-                  StrokeThickness="0.85"
+                  Stroke="#28E07A2E"
+                  StrokeThickness="0.7"
                   Stretch="Fill"/>
         </Canvas>
 
@@ -490,7 +514,7 @@
               VerticalAlignment="Center"
               Margin="-110,40,-110,0"
               IsHitTestVisible="False"
-              Opacity="0.24"
+              Opacity="0.30"
               RenderTransformOrigin="0.5,0.5">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -499,38 +523,38 @@
                 </TransformGroup>
             </Grid.RenderTransform>
             <Path Data="M -80 290 C 180 152, 394 420, 650 248 S 1016 94, 1340 312 S 1560 188, 1740 268"
-                  Stroke="#42E1786E"
+                  Stroke="#322FA38F"
                   StrokeThickness="2.2"
                   Stretch="Fill"/>
             <Path Data="M -120 338 C 126 246, 366 392, 630 314 S 1028 228, 1340 350 S 1560 270, 1750 328"
-                  Stroke="#3864C7B6"
+                  Stroke="#26F4E3BE"
                   StrokeThickness="1.5"
                   Stretch="Fill"/>
             <Ellipse Width="{Binding VisualBloomSize}"
                      Height="190"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
-                     Fill="#1A52FF9A"
+                     Fill="#262FA38F"
                      Opacity="{Binding VisualBloomOpacity}"/>
             <Ellipse Width="{Binding VisualCoreSize}"
                      Height="122"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
-                     Fill="#24FFD2B8"
-                     Opacity="0.62"/>
+                     Fill="#34FFF3D6"
+                     Opacity="0.50"/>
             <Path Data="M 170 252 C 340 210, 470 250, 610 236 C 720 225, 820 180, 950 204 C 1080 228, 1135 294, 1290 270"
-                  Stroke="#54F4E6CF"
-                  StrokeThickness="10"
+                  Stroke="#34F4E3BE"
+                  StrokeThickness="8"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
             <Path Data="M 238 296 C 390 280, 512 324, 660 294 C 785 268, 874 238, 1030 264 C 1148 284, 1224 330, 1384 306"
-                  Stroke="#3C64C7B6"
-                  StrokeThickness="7"
+                  Stroke="#302FA38F"
+                  StrokeThickness="8"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
             <Path Data="M 450 184 C 520 250, 590 300, 682 292 C 782 284, 846 218, 940 164"
-                  Stroke="#4CE1786E"
-                  StrokeThickness="5"
+                  Stroke="#26E07A2E"
+                  StrokeThickness="6"
                   StrokeLineCap="Round"
                   Stretch="Fill"/>
             <Path Data="M 620 120 C 680 180, 712 240, 688 310 C 760 282, 826 292, 900 350 C 850 244, 768 166, 620 120 Z"
@@ -1831,6 +1855,7 @@
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <ItemsControl ItemsSource="{Binding SignalBars}"
+                                              IsVisible="False"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Center"
                                               Margin="-12,0,-12,0"
