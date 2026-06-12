@@ -1429,7 +1429,7 @@
                             <Border.RenderTransform>
                                 <SkewTransform AngleX="-5" AngleY="0"/>
                             </Border.RenderTransform>
-                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto"
+                            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                   ColumnSpacing="10"
                                   HorizontalAlignment="Center">
                             <Button
@@ -1509,12 +1509,27 @@
                                     BorderThickness="1"
                                     Background="#2B120D"
                                     Foreground="#F7EBD7"/>
-                            <TextBox Grid.Column="4"
+                            <Button Grid.Column="4"
+                                    Content="HARVEST"
+                                    ToolTip.Tip="Find long-session clips"
+                                    Command="{Binding HarvestVoiceCommand}"
+                                    Padding="18,12"
+                                    MinWidth="112"
+                                    MinHeight="50"
+                                    Margin="0"
+                                    FontSize="13"
+                                    FontWeight="SemiBold"
+                                    LetterSpacing="1"
+                                    BorderBrush="#B0D6FFFF"
+                                    BorderThickness="1"
+                                    Background="#234C45"
+                                    Foreground="#F7EBD7"/>
+                            <TextBox Grid.Column="5"
                                      IsVisible="False"
                                      Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      PlaceholderText="Session 1"
                                      MinHeight="40"/>
-                            <ComboBox Grid.Column="5"
+                            <ComboBox Grid.Column="6"
                                       IsVisible="False"
                                       ItemsSource="{Binding InputDevices}"
                                       SelectedItem="{Binding SelectedInputDevice}"
@@ -1541,6 +1556,12 @@
                                        TextWrapping="Wrap"
                                        MaxLines="1"
                                        Foreground="#8CD6D8"/>
+                            <TextBlock Text="{Binding HarvestStatus}"
+                                       FontSize="11"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       MaxLines="1"
+                                       Foreground="#D6FFFF"/>
                             <TextBlock Text="{Binding LastRecorderDiagnostic}"
                                        FontSize="11"
                                        FontWeight="SemiBold"

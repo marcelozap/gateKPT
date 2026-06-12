@@ -27,6 +27,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly VisualClipRenderService _visualClip = new();
     private readonly ScreenCaptureService _screenCapture = new();
     private readonly LongSessionClipService _longSessionClips = new();
+    private readonly VoiceHarvestBridgeService _voiceHarvest = new();
     private readonly InputMonitorService _monitor = new();
     private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
@@ -166,6 +167,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _videoWorkflowStatus = "Find latest phone video, then pair it with the selected GateKPT take.";
+
+    [ObservableProperty]
+    private string _harvestStatus = "No long session harvested yet.";
 
     [ObservableProperty]
     private int _videoAudioOffsetMs = 0;
@@ -614,7 +618,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
-        "Try: start capture, clip this, stop capture, clip last, chrome, warmer, room, mix.";
+        "Try: harvest, start capture, clip this, stop capture, clip last, chrome, warmer, room, mix.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1482,6 +1486,36 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         Status = $"Opened {_longSessionClips.OutputDirectory}";
     }
 
+    [RelayCommand]
+    private async Task HarvestVoice()
+    {
+        if (IsCommandBusy || IsRecorderBusy || IsRecording)
+        {
+            Status = "Finish the current GateKPT action first.";
+            return;
+        }
+
+        IsCommandBusy = true;
+        HarvestStatus = "Harvesting long session...";
+        Status = "Looking for OBS/Elgato/Rode recordings.";
+        CommandResult = "Harvesting long session...";
+        try
+        {
+            var result = await Task.Run(() => _voiceHarvest.Harvest());
+            HarvestStatus = result.Message;
+            CommandResult = result.Message;
+            Status = result.Message;
+            if (result.Success)
+            {
+                _voiceHarvest.OpenClipsFolder();
+            }
+        }
+        finally
+        {
+            IsCommandBusy = false;
+        }
+    }
+
     private void SaveScreenCaptureMarkers()
     {
         if (string.IsNullOrWhiteSpace(_screenCaptureMarkerLogPath))
@@ -2127,6 +2161,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             CommandResult = CommandHelp;
             Status = "Showing command examples.";
             IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("harvest", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("find clips", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("process long session", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("couch recording", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("voice inbox", StringComparison.OrdinalIgnoreCase))
+        {
+            IsCommandBusy = false;
+            await HarvestVoice();
             return;
         }
 
