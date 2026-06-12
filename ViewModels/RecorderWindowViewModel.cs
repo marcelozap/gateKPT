@@ -26,6 +26,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
     private readonly VisualClipRenderService _visualClip = new();
     private readonly ScreenCaptureService _screenCapture = new();
+    private readonly LongSessionClipService _longSessionClips = new();
     private readonly InputMonitorService _monitor = new();
     private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
@@ -45,6 +46,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly DispatcherTimer _visualTimer = new() { Interval = TimeSpan.FromMilliseconds(80) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
+    private DateTimeOffset _screenCaptureStartedAt = DateTimeOffset.MinValue;
+    private string _screenCaptureMarkerLogPath = "";
+    private readonly List<LongSessionMarker> _screenCaptureMarkers = new();
     private bool _recordingSignalSeen;
     private int? _activeCaptureLayerNumber;
     private string _activeCaptureLabel = "recording";
@@ -610,7 +614,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
-        "Try: chrome, warmer, room, mix, post, start capture, stop capture.";
+        "Try: start capture, clip this, stop capture, clip last, chrome, warmer, room, mix.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1390,6 +1394,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         if (result.Success)
         {
             LastScreenCapturePath = result.Path;
+            _screenCaptureStartedAt = DateTimeOffset.Now;
+            _screenCaptureMarkers.Clear();
+            _screenCaptureMarkerLogPath = Path.ChangeExtension(result.Path, ".markers.txt");
+            SaveScreenCaptureMarkers();
         }
 
         VideoWorkflowStatus = result.Message;
@@ -1404,10 +1412,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             LastScreenCapturePath = result.Path;
             LastVideoOutputPath = result.Path;
+            SaveScreenCaptureMarkers();
             _screenCapture.OpenOutputFolder();
         }
 
-        VideoWorkflowStatus = result.Message;
+        var markerSummary = _screenCaptureMarkers.Count == 0
+            ? ""
+            : $" Markers: {_screenCaptureMarkers.Count}. Type clip last to cut the last moment.";
+        VideoWorkflowStatus = result.Message + markerSummary;
         Status = result.Message;
     }
 
@@ -1417,6 +1429,98 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _screenCapture.OpenOutputFolder();
         Status = $"Opened {_screenCapture.OutputDirectory}";
     }
+
+    private void DropScreenCaptureMarker(string rawCommand)
+    {
+        if (!_screenCapture.IsRecording || _screenCaptureStartedAt == DateTimeOffset.MinValue)
+        {
+            CommandResult = "Start capture first, then type clip this when something good happens.";
+            Status = CommandResult;
+            return;
+        }
+
+        var elapsed = DateTimeOffset.Now - _screenCaptureStartedAt;
+        var label = ExtractMarkerLabel(rawCommand);
+        var marker = new LongSessionMarker(DateTimeOffset.Now, elapsed, label);
+        _screenCaptureMarkers.Add(marker);
+        SaveScreenCaptureMarkers();
+
+        CommandResult = $"Marked {FormatMarkerTime(elapsed)}: {label}. Keep playing.";
+        Status = CommandResult;
+    }
+
+    private void ClipLastScreenCaptureMarker()
+    {
+        var marker = _screenCaptureMarkers.LastOrDefault();
+        if (marker is null)
+        {
+            CommandResult = "No marker yet. During a long capture, type clip this when a moment happens.";
+            Status = CommandResult;
+            return;
+        }
+
+        var source = LastVideoOutputPath;
+        if (string.IsNullOrWhiteSpace(source) || !File.Exists(source))
+        {
+            source = LastScreenCapturePath;
+        }
+
+        var result = _longSessionClips.CutAroundMarker(source, marker.Elapsed, marker.Label);
+        if (result.Success)
+        {
+            LastVideoOutputPath = result.Path;
+            _longSessionClips.OpenOutputFolder();
+        }
+
+        CommandResult = result.Message;
+        Status = result.Message;
+    }
+
+    private void OpenScreenClipFolder()
+    {
+        _longSessionClips.OpenOutputFolder();
+        Status = $"Opened {_longSessionClips.OutputDirectory}";
+    }
+
+    private void SaveScreenCaptureMarkers()
+    {
+        if (string.IsNullOrWhiteSpace(_screenCaptureMarkerLogPath))
+        {
+            return;
+        }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(_screenCaptureMarkerLogPath)!);
+        var lines = new List<string>
+        {
+            "GateKPT long-session markers",
+            $"capture={LastScreenCapturePath}",
+            $"started={_screenCaptureStartedAt:O}",
+            ""
+        };
+
+        lines.AddRange(_screenCaptureMarkers.Select(marker =>
+            $"{FormatMarkerTime(marker.Elapsed)} | {marker.Label} | {marker.CreatedAt:O}"));
+
+        File.WriteAllLines(_screenCaptureMarkerLogPath, lines);
+    }
+
+    private static string ExtractMarkerLabel(string rawCommand)
+    {
+        var label = rawCommand
+            .Replace("clip this", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("mark this", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("mark moment", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("drop marker", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("good moment", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("remember this", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("marker", "", StringComparison.OrdinalIgnoreCase)
+            .Trim(' ', ':', '-', '.');
+
+        return string.IsNullOrWhiteSpace(label) ? "moment" : label;
+    }
+
+    private static string FormatMarkerTime(TimeSpan time) =>
+        $"{(int)time.TotalHours:00}:{time.Minutes:00}:{time.Seconds:00}";
 
     [RelayCommand]
     private async Task MakeVisualClip()
@@ -2055,6 +2159,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return;
         }
 
+        if (command.Contains("clip last", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("make clip", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("cut clip", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("cut last", StringComparison.OrdinalIgnoreCase))
+        {
+            ClipLastScreenCaptureMarker();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("clip this", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("mark this", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("mark moment", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("drop marker", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("good moment", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("remember this", StringComparison.OrdinalIgnoreCase))
+        {
+            DropScreenCaptureMarker(command);
+            IsCommandBusy = false;
+            return;
+        }
+
         if (command.Contains("post clip", StringComparison.OrdinalIgnoreCase)
             || command.Contains("cover video", StringComparison.OrdinalIgnoreCase)
             || command.Contains("make video", StringComparison.OrdinalIgnoreCase)
@@ -2090,6 +2216,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("capture folder", StringComparison.OrdinalIgnoreCase))
         {
             OpenScreenCaptureFolder();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("open clips", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("clip folder", StringComparison.OrdinalIgnoreCase))
+        {
+            OpenScreenClipFolder();
             IsCommandBusy = false;
             return;
         }
@@ -3198,6 +3332,11 @@ public sealed record CaptureLaneItem(
 {
     public override string ToString() => Name;
 }
+
+public sealed record LongSessionMarker(
+    DateTimeOffset CreatedAt,
+    TimeSpan Elapsed,
+    string Label);
 
 public sealed record TakeTasteMemoryItem(
     DateTimeOffset When,

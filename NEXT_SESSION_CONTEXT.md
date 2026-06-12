@@ -12,7 +12,11 @@ Make one end-to-end loop feel trustworthy:
 
 `open GateKPT -> record a take -> play it -> optionally mix/shape it -> capture/render a visual clip -> save/export`
 
-Do not expand into a full DAW until this loop is boringly reliable.
+Also support the longer creator loop:
+
+`start capture -> play for 2-3 hours -> mark good moments -> stop capture -> cut clips`
+
+Do not expand into a full DAW or camera studio until these loops are boringly reliable.
 
 ## Do Not Do
 
@@ -30,6 +34,8 @@ Do not expand into a full DAW until this loop is boringly reliable.
 Good next tasks:
 
 - Clarify `MIX` result behavior and add `Open mix` if not obvious.
+- Add a visible marker list for long captures.
+- Add `cut all markers` for long-session exports.
 - Add a tiny screen-capture state: idle/capturing/saved.
 - Add command aliases: `record screen`, `stop screen`, `make visual`, `open mix`.
 - Improve `VisualClipRenderService` output quality.
@@ -52,7 +58,9 @@ Riskier tasks:
 - `Services/LayerMixdownService.cs`: combines WAV takes.
 - `Services/VisualClipRenderService.cs`: renders selected WAV into vertical MP4 visual.
 - `Services/ScreenCaptureService.cs`: starts/stops FFmpeg desktop capture.
+- `Services/LongSessionClipService.cs`: cuts short clips from a long screen capture around saved markers.
 - `Services/PhoneVideoWorkflowService.cs`: pairs phone video with GateKPT audio.
+- `LONG_SESSION_WORKFLOW.md`: Elgato/webcam long-session command flow.
 
 ## How To Verify
 

@@ -116,8 +116,33 @@ Command box supports:
 - `start capture`
 - `stop capture`
 - `open captures`
+- `clip this`
+- `clip last`
+- `open clips`
 
 This records the desktop using FFmpeg `gdigrab`. If the Windows Camera app is visible on top, it is captured too. Audio attachment may depend on DirectShow accepting the selected device name.
+
+### Long Sessions
+
+New direction: long recording is a separate workflow from short takes.
+
+Goal:
+
+`start capture -> play for 2-3 hours -> mark moments -> stop capture -> cut clips`
+
+Use:
+
+- `clip this` while recording to drop a marker.
+- `clip this chorus` or `clip this guitar idea` to label the marker.
+- `clip last` after stopping to cut a short MP4 around the latest marker.
+
+Files:
+
+- Long captures: `C:\Users\Green Machine\Videos\GateKPT Screen Captures`
+- Marker sidecars: `*.markers.txt` next to the long capture.
+- Short clips: `C:\Users\Green Machine\Videos\GateKPT Screen Clips`
+
+Elgato/webcam plan: show the camera preview on the GateKPT screen, start a long capture, drop markers while performing, then cut clips after. Do not add a big camera UI until this loop is reliable.
 
 ### Post Clip
 
