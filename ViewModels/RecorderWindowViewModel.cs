@@ -25,6 +25,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
     private readonly VisualClipRenderService _visualClip = new();
+    private readonly ScreenCaptureService _screenCapture = new();
     private readonly InputMonitorService _monitor = new();
     private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
@@ -155,6 +156,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _lastVideoOutputPath = "";
+
+    [ObservableProperty]
+    private string _lastScreenCapturePath = "";
 
     [ObservableProperty]
     private string _videoWorkflowStatus = "Find latest phone video, then pair it with the selected GateKPT take.";
@@ -606,7 +610,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
-        "Try: chrome, silk, luna, cloud, clean, warmer, room, post.";
+        "Try: chrome, warmer, room, mix, post, start capture, stop capture.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1372,6 +1376,49 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void StartScreenCapture()
+    {
+        if (_screenCapture.IsRecording)
+        {
+            VideoWorkflowStatus = "Screen capture is already recording.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        var inputName = SelectedInputDevice?.Name;
+        var result = _screenCapture.Start(inputName);
+        if (result.Success)
+        {
+            LastScreenCapturePath = result.Path;
+        }
+
+        VideoWorkflowStatus = result.Message;
+        Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void StopScreenCapture()
+    {
+        var result = _screenCapture.Stop();
+        if (result.Success)
+        {
+            LastScreenCapturePath = result.Path;
+            LastVideoOutputPath = result.Path;
+            _screenCapture.OpenOutputFolder();
+        }
+
+        VideoWorkflowStatus = result.Message;
+        Status = result.Message;
+    }
+
+    [RelayCommand]
+    private void OpenScreenCaptureFolder()
+    {
+        _screenCapture.OpenOutputFolder();
+        Status = $"Opened {_screenCapture.OutputDirectory}";
+    }
+
+    [RelayCommand]
     private async Task MakeVisualClip()
     {
         if (IsCommandBusy || IsRecorderBusy || IsRecording)
@@ -2017,6 +2064,33 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             IsCommandBusy = false;
             await MakePostClip();
+            return;
+        }
+
+        if (command.Contains("start capture", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("start screen", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("record screen", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("screen record", StringComparison.OrdinalIgnoreCase))
+        {
+            StartScreenCapture();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("stop capture", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("stop screen", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("finish capture", StringComparison.OrdinalIgnoreCase))
+        {
+            StopScreenCapture();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("open captures", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("capture folder", StringComparison.OrdinalIgnoreCase))
+        {
+            OpenScreenCaptureFolder();
+            IsCommandBusy = false;
             return;
         }
 
