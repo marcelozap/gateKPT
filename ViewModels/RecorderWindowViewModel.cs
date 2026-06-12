@@ -24,6 +24,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly AudioInputDeviceService _inputDevices = new();
     private readonly PlayableTakeRepairService _takeRepair = new();
     private readonly PhoneVideoWorkflowService _phoneVideo = new();
+    private readonly VisualClipRenderService _visualClip = new();
     private readonly InputMonitorService _monitor = new();
     private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
@@ -1371,6 +1372,48 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task MakeVisualClip()
+    {
+        if (IsCommandBusy || IsRecorderBusy || IsRecording)
+        {
+            Status = "Finish the current recording/action first.";
+            return;
+        }
+
+        var audioPath = SelectedVersion?.Path ?? CurrentFilePath;
+        if (string.IsNullOrWhiteSpace(audioPath) || !File.Exists(audioPath))
+        {
+            VideoWorkflowStatus = "Record or select one take first.";
+            Status = VideoWorkflowStatus;
+            return;
+        }
+
+        IsCommandBusy = true;
+        VideoWorkflowStatus = "Rendering visual clip...";
+        Status = "Rendering GateKPT visual MP4 from the selected take.";
+        try
+        {
+            var mood = string.IsNullOrWhiteSpace(ContentPackWorld) ? "night" : ContentPackWorld;
+            var result = await Task.Run(() => _visualClip.RenderFromAudio(audioPath, mood));
+            if (result.Success)
+            {
+                LastVideoOutputPath = result.Path;
+                VideoWorkflowStatus = result.Message;
+                Status = result.Message;
+                _visualClip.OpenOutputFolder();
+                return;
+            }
+
+            VideoWorkflowStatus = result.Message;
+            Status = result.Message;
+        }
+        finally
+        {
+            IsCommandBusy = false;
+        }
+    }
+
+    [RelayCommand]
     private async Task MakePostClip()
     {
         if (IsCommandBusy || IsRecorderBusy || IsRecording)
@@ -1406,8 +1449,19 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 var found = await Task.Run(() => _phoneVideo.FindLatestVideo());
                 if (!found.Success)
                 {
-                    VideoWorkflowStatus = found.Message;
-                    Status = found.Message;
+                    var mood = string.IsNullOrWhiteSpace(ContentPackWorld) ? "night" : ContentPackWorld;
+                    var visual = await Task.Run(() => _visualClip.RenderFromAudio(audioPath, mood));
+                    if (visual.Success)
+                    {
+                        LastVideoOutputPath = visual.Path;
+                        VideoWorkflowStatus = $"No phone video found, so GateKPT made a visual clip: {Path.GetFileName(visual.Path)}.";
+                        Status = VideoWorkflowStatus;
+                        _visualClip.OpenOutputFolder();
+                        return;
+                    }
+
+                    VideoWorkflowStatus = $"{found.Message} Also could not render visual clip: {visual.Message}";
+                    Status = VideoWorkflowStatus;
                     return;
                 }
 
@@ -1957,6 +2011,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         if (command.Contains("post clip", StringComparison.OrdinalIgnoreCase)
             || command.Contains("cover video", StringComparison.OrdinalIgnoreCase)
             || command.Contains("make video", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("visual clip", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("screen clip", StringComparison.OrdinalIgnoreCase)
             || command.Contains("use phone video", StringComparison.OrdinalIgnoreCase))
         {
             IsCommandBusy = false;
