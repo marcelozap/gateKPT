@@ -15,10 +15,15 @@ public sealed class VoiceHarvestBridgeService
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Green-Machine");
     }
 
+    public string InboxDirectory => Path.Combine(_greenMachineRoot, "data", "xiv", "voice", "inbox");
+
+    public string ProcessedDirectory => Path.Combine(_greenMachineRoot, "data", "xiv", "voice", "processed");
+
     public string ClipsDirectory => Path.Combine(_greenMachineRoot, "data", "xiv", "voice", "clips");
 
     public VoiceHarvestResult Harvest()
     {
+        EnsureVoiceFolders();
         var script = Path.Combine(_greenMachineRoot, "tools", "xiv_audio_harvest.py");
         if (!File.Exists(script))
         {
@@ -42,10 +47,32 @@ public sealed class VoiceHarvestBridgeService
 
     public void OpenClipsFolder()
     {
+        OpenFolder(ClipsDirectory);
+    }
+
+    public void OpenInboxFolder()
+    {
+        OpenFolder(InboxDirectory);
+    }
+
+    public void OpenProcessedFolder()
+    {
+        OpenFolder(ProcessedDirectory);
+    }
+
+    public void EnsureVoiceFolders()
+    {
+        Directory.CreateDirectory(InboxDirectory);
+        Directory.CreateDirectory(ProcessedDirectory);
         Directory.CreateDirectory(ClipsDirectory);
+    }
+
+    private static void OpenFolder(string path)
+    {
+        Directory.CreateDirectory(path);
         Process.Start(new ProcessStartInfo
         {
-            FileName = ClipsDirectory,
+            FileName = path,
             UseShellExecute = true
         });
     }
@@ -117,9 +144,12 @@ public sealed class VoiceHarvestBridgeService
                 clips = clipCount.GetInt32();
             }
 
-            var message = clips > 0
-                ? $"Harvested {recordings} recording(s), {FormatDuration(seconds)}, {clips} clip(s)."
-                : $"Harvested {recordings} recording(s), {FormatDuration(seconds)}, no clips yet.";
+            var message = (recordings, clips) switch
+            {
+                (0, _) => "No long recordings found. Drop OBS/Elgato files into the Voice inbox, then Harvest.",
+                (_, > 0) => $"Harvested {recordings} recording(s), {FormatDuration(seconds)}, {clips} clip(s).",
+                _ => $"Harvested {recordings} recording(s), {FormatDuration(seconds)}, no clip candidates yet."
+            };
 
             return VoiceHarvestResult.Ok(rawJson, recordings, seconds, clips, message);
         }

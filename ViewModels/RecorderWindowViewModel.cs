@@ -618,7 +618,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
-        "Try: harvest, start capture, clip this, stop capture, clip last, chrome, warmer, room, mix.";
+        "Try: harvest, open voice inbox, open harvest clips, start capture, clip this, stop capture, clip last.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -1505,7 +1505,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             HarvestStatus = result.Message;
             CommandResult = result.Message;
             Status = result.Message;
-            if (result.Success)
+            if (result.Success && result.ClipCount > 0)
             {
                 _voiceHarvest.OpenClipsFolder();
             }
@@ -1514,6 +1514,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             IsCommandBusy = false;
         }
+    }
+
+    [RelayCommand]
+    private void OpenVoiceInbox()
+    {
+        _voiceHarvest.OpenInboxFolder();
+        HarvestStatus = "Opened Voice inbox. Set OBS/Elgato recordings here.";
+        Status = HarvestStatus;
+    }
+
+    [RelayCommand]
+    private void OpenHarvestClips()
+    {
+        _voiceHarvest.OpenClipsFolder();
+        HarvestStatus = "Opened harvested clip candidates.";
+        Status = HarvestStatus;
     }
 
     private void SaveScreenCaptureMarkers()
@@ -2170,6 +2186,21 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("couch recording", StringComparison.OrdinalIgnoreCase)
             || command.Contains("voice inbox", StringComparison.OrdinalIgnoreCase))
         {
+            if (command.Contains("clips", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenHarvestClips();
+                IsCommandBusy = false;
+                return;
+            }
+
+            if (command.Contains("open", StringComparison.OrdinalIgnoreCase)
+                || command.Contains("folder", StringComparison.OrdinalIgnoreCase))
+            {
+                OpenVoiceInbox();
+                IsCommandBusy = false;
+                return;
+            }
+
             IsCommandBusy = false;
             await HarvestVoice();
             return;
@@ -2269,6 +2300,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("clip folder", StringComparison.OrdinalIgnoreCase))
         {
             OpenScreenClipFolder();
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("open harvest clips", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("harvest clips folder", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("voice clips", StringComparison.OrdinalIgnoreCase))
+        {
+            OpenHarvestClips();
             IsCommandBusy = false;
             return;
         }

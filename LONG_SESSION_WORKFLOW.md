@@ -12,6 +12,9 @@ The long session mode is for practice, livestreams, camera tests, Elgato/webcam 
 
 Type these in GateKPT:
 
+- `harvest`
+- `open voice inbox`
+- `open harvest clips`
 - `start capture`
 - `clip this`
 - `clip this chorus`
@@ -22,6 +25,16 @@ Type these in GateKPT:
 - `open clips`
 
 ## Flow
+
+### OBS / Elgato Harvest
+
+1. Type `open voice inbox`.
+2. Set OBS/Elgato recording path to that folder.
+3. Record a short real test.
+4. Type `harvest`.
+5. If clips are found, GateKPT opens the clips folder.
+
+### GateKPT Screen Capture
 
 1. Open GateKPT Music OS.
 2. Put the camera/Elgato/Windows Camera preview where you want it on screen.
