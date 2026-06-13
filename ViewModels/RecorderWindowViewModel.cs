@@ -118,6 +118,31 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private double _recGlowOpacity = 0.55;
 
+    // Stage mode: hide all chrome so the screen is a clean, screen-recordable living stage.
+    [ObservableProperty]
+    private bool _stageMode = false;
+
+    // Cam layout planning: a guide frame the user matches their webcam/Elgato feed to in OBS.
+    private int _camLayoutIndex = 0;
+
+    [ObservableProperty]
+    private bool _camGuideVisible = false;
+
+    [ObservableProperty]
+    private string _camGuideLabel = "CAM";
+
+    [ObservableProperty]
+    private double _camGuideWidth = 320;
+
+    [ObservableProperty]
+    private double _camGuideHeight = 180;
+
+    [ObservableProperty]
+    private double _camGuideLeft = 660;
+
+    [ObservableProperty]
+    private double _camGuideTop = 470;
+
     [ObservableProperty]
     private string _activeRecordingName = "Not recording";
 
@@ -266,6 +291,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             "silk-synth",
             "Soft blue. Smooth hook. Wider shine.",
             CreateSilkSynthPreset()),
+        new(
+            "Robot",
+            "robot-vocoder",
+            "Electric voice. Daft lane. Beat-ready.",
+            CreateRobotVocoderPreset()),
         new(
             "Luna",
             "luna-pop",
@@ -710,6 +740,56 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     }
 
     private void StopVisualMeter() => _liveMeter.Stop();
+
+    // Chrome = every control surface. Hidden in stage mode so only the living stage shows.
+    public bool ChromeVisible => !StageMode;
+
+    public string StageButtonLabel => StageMode ? "Exit stage" : "Stage";
+
+    partial void OnStageModeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ChromeVisible));
+        OnPropertyChanged(nameof(StageButtonLabel));
+        Status = value
+            ? "Stage mode on. Just the stage and the take. Screen-record now."
+            : "Stage mode off. Controls are back.";
+    }
+
+    [RelayCommand]
+    private void ToggleStage() => StageMode = !StageMode;
+
+    // Cam layout presets: a guide frame to line your webcam/Elgato feed up against in OBS.
+    // Cycles off -> bottom-right -> bottom-left -> side strip -> full frame -> off.
+    private static readonly (string Label, bool Visible, double Width, double Height, double Left, double Top)[] CamLayouts =
+    {
+        ("CAM off", false, 320, 180, 660, 470),
+        ("Cam: bottom right", true, 300, 170, 660, 470),
+        ("Cam: bottom left", true, 300, 170, 40, 470),
+        ("Cam: side strip", true, 250, 430, 720, 150),
+        ("Cam: full frame", true, 940, 540, 40, 90),
+    };
+
+    [RelayCommand]
+    private void CycleCamLayout()
+    {
+        _camLayoutIndex = (_camLayoutIndex + 1) % CamLayouts.Length;
+        ApplyCamLayout(_camLayoutIndex);
+    }
+
+    private void ApplyCamLayout(int index)
+    {
+        var layout = CamLayouts[index];
+        CamGuideVisible = layout.Visible;
+        CamGuideWidth = layout.Width;
+        CamGuideHeight = layout.Height;
+        CamGuideLeft = layout.Left;
+        CamGuideTop = layout.Top;
+        CamGuideLabel = layout.Label;
+        Status = layout.Visible
+            ? $"{layout.Label}. Match your OBS/Elgato source to this box."
+            : "Cam guide hidden.";
+        CommandResult = Status;
+    }
 
     [RelayCommand]
     private void FindScarlett()
@@ -2119,6 +2199,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void StageSilkSynth() => StageVocalColor("silk-synth", "silk hook");
 
     [RelayCommand]
+    private void StageRobotVocoder() => StageVocalColor("robot-vocoder", "robot vocoder");
+
+    [RelayCommand]
     private void StageLunaPop() => StageVocalColor("luna-pop", "luna vocal");
 
     [RelayCommand]
@@ -2171,6 +2254,52 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsCommandBusy = true;
         CommandResult = $"Working on: \"{command}\"...";
         await Task.Delay(180);
+
+        if (command.Contains("stage mode", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("hide ui", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("hide controls", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("clean screen", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("just the stage", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("full stage", StringComparison.OrdinalIgnoreCase)
+            || command.Equals("stage", StringComparison.OrdinalIgnoreCase))
+        {
+            StageMode = true;
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("show ui", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("show controls", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("exit stage", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("leave stage", StringComparison.OrdinalIgnoreCase))
+        {
+            StageMode = false;
+            IsCommandBusy = false;
+            return;
+        }
+
+        if (command.Contains("cam", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("camera", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("webcam", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("elgato", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("face cam", StringComparison.OrdinalIgnoreCase))
+        {
+            if (command.Contains("off", StringComparison.OrdinalIgnoreCase)
+                || command.Contains("hide", StringComparison.OrdinalIgnoreCase)
+                || command.Contains("no cam", StringComparison.OrdinalIgnoreCase))
+            {
+                _camLayoutIndex = 0;
+                ApplyCamLayout(0);
+            }
+            else
+            {
+                CycleCamLayout();
+            }
+
+            IsCommandBusy = false;
+            return;
+        }
+
         if (command.Contains("delete", StringComparison.OrdinalIgnoreCase))
         {
             DeleteSelectedOrLatest();
@@ -2703,6 +2832,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             return VocalPresets.FirstOrDefault(item => item.Slug == "silk-synth");
         }
 
+        if (text.Contains("vocoder")
+            || text.Contains("robot")
+            || text.Contains("daft")
+            || text.Contains("punk")
+            || text.Contains("talkbox"))
+        {
+            return VocalPresets.FirstOrDefault(item => item.Slug == "robot-vocoder");
+        }
+
         if (text.Contains("luna")
             || text.Contains("rauw")
             || text.Contains("reggaeton")
@@ -2762,6 +2900,23 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             EchoMix: 0.15,
             ReverbMs: 210,
             ReverbMix: 0.16,
+            TargetLayer: "Vocal");
+
+    private static AudioEditPreset CreateRobotVocoderPreset() =>
+        new(
+            "robot-vocoder",
+            "Robot Vocoder: hard-compressed electric voice, synthetic edge, tight band, short room. Live carrier layer is the next build.",
+            Gain: 1.42,
+            HighPassHz: 180,
+            LowPassHz: 6800,
+            LowShelfDb: -2.2,
+            HighShelfDb: 5.8,
+            CompressionAmount: 0.82,
+            SaturationAmount: 0.22,
+            EchoMs: 72,
+            EchoMix: 0.08,
+            ReverbMs: 120,
+            ReverbMix: 0.07,
             TargetLayer: "Vocal");
 
     private static AudioEditPreset CreateLunaPopPreset() =>

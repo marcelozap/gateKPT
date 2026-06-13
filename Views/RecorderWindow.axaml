@@ -1662,6 +1662,28 @@
                                             </Grid>
                                         </Border>
                                     </Button>
+                                    <Button Command="{Binding StageRobotVocoderCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Robot/vocoder">
+                                        <Border CornerRadius="16" BorderBrush="#D8FFF0C8" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 26 0 #7080F7FF">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                    <GradientStop Color="#030407" Offset="0"/>
+                                                    <GradientStop Color="#132B38" Offset="0.24"/>
+                                                    <GradientStop Color="#D6FFFF" Offset="0.48"/>
+                                                    <GradientStop Color="#7B53FF" Offset="0.7"/>
+                                                    <GradientStop Color="#080A12" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <Grid>
+                                                <Path Data="M 18 32 L 31 18 L 45 32 L 59 18 L 73 32 L 87 18 L 101 32 L 116 18"
+                                                      Stroke="#F8EFE0"
+                                                      StrokeThickness="1.6"/>
+                                                <Path Data="M 18 16 L 116 16 M 18 36 L 116 36"
+                                                      Stroke="#7064C7B6"
+                                                      StrokeThickness="1"/>
+                                                <Ellipse Width="24" Height="24" HorizontalAlignment="Center" Fill="#70D6FFFF"/>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
                                     <Button Command="{Binding QuickWarmerCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Warm/fire">
                                         <Border CornerRadius="16" BorderBrush="#CCFFBFA9" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 24 0 #55FF6C3E">
                                             <Border.Background>
