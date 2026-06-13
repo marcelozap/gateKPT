@@ -48,6 +48,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly DispatcherTimer _recordingTimer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly DispatcherTimer _visualTimer = new() { Interval = TimeSpan.FromMilliseconds(80) };
     private DateTimeOffset _recordingStartedAt = DateTimeOffset.MinValue;
+    private bool _recordActionInFlight;
     private DateTimeOffset _screenCaptureStartedAt = DateTimeOffset.MinValue;
     private string _screenCaptureMarkerLogPath = "";
     private readonly List<LongSessionMarker> _screenCaptureMarkers = new();
@@ -405,9 +406,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string StopButtonLabel => "STOP";
 
-    public bool CanStartRecording => !IsRecording && !IsBusy;
+    public bool CanStartRecording => !IsRecording && !IsBusy && !_recordActionInFlight;
 
-    public bool CanStopRecording => IsRecording && !IsRecorderBusy;
+    public bool CanStopRecording => IsRecording && !IsRecorderBusy && !_recordActionInFlight;
 
     public string MonitorButtonLabel =>
         IsMonitoring ? "MONITOR ON" : "Monitor";
@@ -714,32 +715,28 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         StartVisualMeter();
     }
 
-    // Keeps the background visuals reacting to live sound BEFORE and AFTER recording.
-    // While recording, the recorder owns the device and feeds PeakPercent directly,
-    // so we release the meter on record start and resume it on stop.
+    // Pre-record live metering is intentionally DISABLED: opening a second WASAPI capture
+    // on the same interface that the recorder uses caused a device-contention crash when
+    // pressing Record. The stage still breathes on idle (PushSignalBar) and reacts hard
+    // while recording via the recorder's own peak callback, so no live capture is needed.
     private void StartVisualMeter()
     {
-        if (IsRecording || _liveMeter.IsRunning)
+        // No-op by design. See comment above.
+    }
+
+    private void StopVisualMeter() => _liveMeter.Stop();
+
+    private void SetRecordActionInFlight(bool value)
+    {
+        if (_recordActionInFlight == value)
         {
             return;
         }
 
-        var preferred = SelectedInputDevice?.Name ?? InputName;
-        _liveMeter.Start(preferred, level =>
-        {
-            Dispatcher.UIThread.Post(() =>
-            {
-                if (IsRecording)
-                {
-                    return;
-                }
-
-                PeakPercent = Math.Clamp(level * 100.0, 0, 100);
-            });
-        });
+        _recordActionInFlight = value;
+        OnPropertyChanged(nameof(CanStartRecording));
+        OnPropertyChanged(nameof(CanStopRecording));
     }
-
-    private void StopVisualMeter() => _liveMeter.Stop();
 
     // Chrome = every control surface. Hidden in stage mode so only the living stage shows.
     public bool ChromeVisible => !StageMode;
@@ -878,69 +875,84 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     private void StartRecordingForLayer(string label, int? layerNumber)
     {
-        ApplySessionToStore();
-        if (IsRecording)
+        if (_recordActionInFlight)
         {
-            Status = "Already recording.";
+            Status = "One recording action at a time.";
             return;
         }
 
-        if (SelectedInputDevice is null)
+        SetRecordActionInFlight(true);
+        try
         {
-            RefreshInputDevices();
-        }
-
-        if (SelectedInputDevice is null)
-        {
-            Status = "No input selected. Click FIND INPUT and choose the real Scarlett/RC-505 input.";
-            return;
-        }
-
-        InputName = SelectedInputDevice.Name;
-
-        StopVisualMeter();
-        PeakPercent = 0;
-        _recordingSignalSeen = false;
-        _activeCaptureLabel = label;
-        _activeCaptureLayerNumber = layerNumber;
-        ActiveRecordingName = layerNumber is null
-            ? "Full loop"
-            : $"{LayerSlots.First(slot => slot.Number == layerNumber).Name} lane";
-        IsRecorderBusy = true;
-        var result = _recorder.Start(InputName, _versions.ActiveTakesDirectory, label, peak =>
-        {
-            Dispatcher.UIThread.Post(() =>
+            ApplySessionToStore();
+            if (IsRecording)
             {
-                PeakPercent = peak;
-                if (!_recordingSignalSeen && peak >= 1)
-                {
-                    _recordingSignalSeen = true;
-                    Status = peak >= 8
-                        ? $"Recording. Signal is live: {peak:0.0}%."
-                        : $"Recording. Low signal seen: {peak:0.0}%. Turn up if playback is quiet.";
-                }
-            });
-        });
-        IsRecording = result.Success;
-        IsRecorderBusy = false;
-        CurrentFilePath = result.Path;
-        WriteDiagnostic($"START | success={result.Success} | input={SelectedInputDevice.Name} | label={label} | path={result.Path} | message={result.Message}");
-        if (result.Success)
-        {
-            _recordingStartedAt = DateTimeOffset.Now;
-            RecordingElapsedLabel = "00:00";
-            _recordingTimer.Start();
-        }
-        else
-        {
-            ActiveRecordingName = "Not recording";
-        }
+                Status = "Already recording.";
+                return;
+            }
 
-        Status = result.Success
-            ? layerNumber is null
-                ? "Recording full RC-505 output. Watch the signal number move."
-                : $"Recording {LayerSlots.First(slot => slot.Number == layerNumber).Name}. Solo that RC-505 track now."
-            : result.Message;
+            if (SelectedInputDevice is null)
+            {
+                RefreshInputDevices();
+            }
+
+            if (SelectedInputDevice is null)
+            {
+                Status = "No input selected. Click FIND INPUT and choose the real Scarlett/RC-505 input.";
+                return;
+            }
+
+            InputName = SelectedInputDevice.Name;
+
+            StopVisualMeter();
+            PeakPercent = 0;
+            _recordingSignalSeen = false;
+            _activeCaptureLabel = label;
+            _activeCaptureLayerNumber = layerNumber;
+            ActiveRecordingName = layerNumber is null
+                ? "Full loop"
+                : $"{LayerSlots.First(slot => slot.Number == layerNumber).Name} lane";
+            IsRecorderBusy = true;
+            var result = _recorder.Start(InputName, _versions.ActiveTakesDirectory, label, peak =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    PeakPercent = peak;
+                    if (!_recordingSignalSeen && peak >= 1)
+                    {
+                        _recordingSignalSeen = true;
+                        Status = peak >= 8
+                            ? $"Recording. Signal is live: {peak:0.0}%."
+                            : $"Recording. Low signal seen: {peak:0.0}%. Turn up if playback is quiet.";
+                    }
+                });
+            });
+            IsRecording = result.Success;
+            IsRecorderBusy = false;
+            CurrentFilePath = result.Path;
+            WriteDiagnostic($"START | success={result.Success} | input={SelectedInputDevice.Name} | label={label} | path={result.Path} | message={result.Message}");
+            if (result.Success)
+            {
+                _recordingStartedAt = DateTimeOffset.Now;
+                RecordingElapsedLabel = "00:00";
+                _recordingTimer.Start();
+            }
+            else
+            {
+                ActiveRecordingName = "Not recording";
+            }
+
+            Status = result.Success
+                ? layerNumber is null
+                    ? "Recording full RC-505 output. Watch the signal number move."
+                    : $"Recording {LayerSlots.First(slot => slot.Number == layerNumber).Name}. Solo that RC-505 track now."
+                : result.Message;
+        }
+        finally
+        {
+            IsRecorderBusy = false;
+            SetRecordActionInFlight(false);
+        }
     }
 
     private void RefreshInputDevices()
@@ -975,90 +987,107 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task StopRecording()
     {
-        IsRecorderBusy = true;
-        await Task.Delay(80);
-        var result = await Task.Run(() => _recorder.Stop());
-        IsRecording = false;
-        _recordingTimer.Stop();
-        StartVisualMeter();
-        WriteDiagnostic($"STOP | success={result.Success} | path={result.Path} | duration={result.DurationLabel} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}% | message={result.Message}");
-        if (result.Success)
+        if (_recordActionInFlight)
         {
-            PeakPercent = result.PeakPercent;
-            CurrentFilePath = result.Path;
-            if (result.RmsPercent < 0.05)
-            {
-                _versions.MoveToTrash(result.Path);
-                CurrentFilePath = "";
-                Status = $"NO TAKE SAVED. GateKPT heard silence: peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
-                CommandResult = "No take saved. Play sound after pressing RECORD, then press STOP.";
-                SignalProbeSummary = "Folder is empty because the last take had no usable audio.";
-                WriteDiagnostic($"REJECT SILENT | raw={result.Path} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}%");
-                RefreshVersions();
-                _activeCaptureLayerNumber = null;
-                _activeCaptureLabel = "recording";
-                ActiveRecordingName = "Not recording";
-                IsRecorderBusy = false;
-                return;
-            }
-
-            var repair = _takeRepair.RepairToPlayableStereo(result.Path);
-            CurrentFilePath = repair.Path;
-            var metrics = AudioPreviewService.InspectMetrics(CurrentFilePath);
-            WriteDiagnostic($"REPAIR | success={repair.Success} | path={repair.Path} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}% | waveform={metrics.Waveform} | message={repair.Message}");
-            if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 1.5 || metrics.RmsPercent < 0.25)
-            {
-                if (File.Exists(CurrentFilePath))
-                {
-                    _versions.MoveToTrash(CurrentFilePath);
-                }
-
-                CurrentFilePath = "";
-                var isClipping = repair.Message.Contains("overloaded", StringComparison.OrdinalIgnoreCase)
-                    || repair.Message.Contains("clipping", StringComparison.OrdinalIgnoreCase);
-                Status = isClipping
-                    ? "NO TAKE SAVED. Scarlett input is clipping. Lower input gain until the meter stays below 80%."
-                    : $"NO TAKE SAVED. {repair.Message}";
-                CommandResult = isClipping
-                    ? "GateKPT rejected this on purpose: clipping makes a file that looks loud but sounds wrong. Lower Scarlett gain, record again."
-                    : $"No take saved. Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
-                SignalProbeSummary = isClipping
-                    ? "Folder is empty because the last take clipped."
-                    : "Folder is empty because GateKPT rejected the last take.";
-                RefreshVersions();
-                _activeCaptureLayerNumber = null;
-                _activeCaptureLabel = "recording";
-                ActiveRecordingName = "Not recording";
-                IsRecorderBusy = false;
-                return;
-            }
-
-            Status = repair.Success
-                ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
-                : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
-            CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%, {metrics.Waveform}";
-            WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
-            RefreshVersions();
-            AutoAssignActiveCapture(CurrentFilePath);
-            SelectFileInExplorer(CurrentFilePath);
-            IsRecorderBusy = false;
+            Status = "Finishing the recording action.";
             return;
         }
 
-        PeakPercent = result.PeakPercent;
-        if (!string.IsNullOrWhiteSpace(result.Path) && File.Exists(result.Path))
+        if (!IsRecording)
         {
-            _versions.MoveToTrash(result.Path);
-            CurrentFilePath = "";
-            RefreshVersions();
+            Status = "No active recording to stop.";
+            return;
         }
 
-        Status = result.Message;
-        WriteDiagnostic($"STOP FAILED | message={result.Message}");
-        _activeCaptureLayerNumber = null;
-        _activeCaptureLabel = "recording";
-        ActiveRecordingName = "Not recording";
-        IsRecorderBusy = false;
+        SetRecordActionInFlight(true);
+        IsRecorderBusy = true;
+        try
+        {
+            await Task.Delay(80);
+            var result = await Task.Run(() => _recorder.Stop());
+            IsRecording = false;
+            _recordingTimer.Stop();
+            StartVisualMeter();
+            WriteDiagnostic($"STOP | success={result.Success} | path={result.Path} | duration={result.DurationLabel} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}% | message={result.Message}");
+            if (result.Success)
+            {
+                PeakPercent = result.PeakPercent;
+                CurrentFilePath = result.Path;
+                if (result.RmsPercent < 0.05)
+                {
+                    _versions.MoveToTrash(result.Path);
+                    CurrentFilePath = "";
+                    Status = $"NO TAKE SAVED. GateKPT heard silence: peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
+                    CommandResult = "No take saved. Play sound after pressing RECORD, then press STOP.";
+                    SignalProbeSummary = "Folder is empty because the last take had no usable audio.";
+                    WriteDiagnostic($"REJECT SILENT | raw={result.Path} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}%");
+                    RefreshVersions();
+                    _activeCaptureLayerNumber = null;
+                    _activeCaptureLabel = "recording";
+                    ActiveRecordingName = "Not recording";
+                    return;
+                }
+
+                var repair = _takeRepair.RepairToPlayableStereo(result.Path);
+                CurrentFilePath = repair.Path;
+                var metrics = AudioPreviewService.InspectMetrics(CurrentFilePath);
+                WriteDiagnostic($"REPAIR | success={repair.Success} | path={repair.Path} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}% | waveform={metrics.Waveform} | message={repair.Message}");
+                if (!repair.Success || !metrics.Success || metrics.Duration.TotalSeconds < 0.75 || metrics.PeakPercent < 1.5 || metrics.RmsPercent < 0.25)
+                {
+                    if (File.Exists(CurrentFilePath))
+                    {
+                        _versions.MoveToTrash(CurrentFilePath);
+                    }
+
+                    CurrentFilePath = "";
+                    var isClipping = repair.Message.Contains("overloaded", StringComparison.OrdinalIgnoreCase)
+                        || repair.Message.Contains("clipping", StringComparison.OrdinalIgnoreCase);
+                    Status = isClipping
+                        ? "NO TAKE SAVED. Scarlett input is clipping. Lower input gain until the meter stays below 80%."
+                        : $"NO TAKE SAVED. {repair.Message}";
+                    CommandResult = isClipping
+                        ? "GateKPT rejected this on purpose: clipping makes a file that looks loud but sounds wrong. Lower Scarlett gain, record again."
+                        : $"No take saved. Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
+                    SignalProbeSummary = isClipping
+                        ? "Folder is empty because the last take clipped."
+                        : "Folder is empty because GateKPT rejected the last take.";
+                    RefreshVersions();
+                    _activeCaptureLayerNumber = null;
+                    _activeCaptureLabel = "recording";
+                    ActiveRecordingName = "Not recording";
+                    return;
+                }
+
+                Status = repair.Success
+                    ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
+                    : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
+                CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%, {metrics.Waveform}";
+                WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
+                RefreshVersions();
+                AutoAssignActiveCapture(CurrentFilePath);
+                SelectFileInExplorer(CurrentFilePath);
+                return;
+            }
+
+            PeakPercent = result.PeakPercent;
+            if (!string.IsNullOrWhiteSpace(result.Path) && File.Exists(result.Path))
+            {
+                _versions.MoveToTrash(result.Path);
+                CurrentFilePath = "";
+                RefreshVersions();
+            }
+
+            Status = result.Message;
+            WriteDiagnostic($"STOP FAILED | message={result.Message}");
+            _activeCaptureLayerNumber = null;
+            _activeCaptureLabel = "recording";
+            ActiveRecordingName = "Not recording";
+        }
+        finally
+        {
+            IsRecorderBusy = false;
+            SetRecordActionInFlight(false);
+        }
     }
 
     [RelayCommand]

@@ -1268,7 +1268,9 @@
             </ItemsControl>
         </Grid>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      IsVisible="{Binding ChromeVisible}">
             <StackPanel Margin="18" Spacing="14" MaxWidth="980" HorizontalAlignment="Center">
                 <Border CornerRadius="34"
                         Padding="14"
@@ -2410,6 +2412,48 @@
                            Foreground="#FFE7E2"/>
             </StackPanel>
         </Border>
+
+        <!-- Cam / Elgato layout guide: line your OBS or Elgato source up to this box. -->
+        <Canvas IsVisible="{Binding CamGuideVisible}" IsHitTestVisible="False">
+            <Grid Canvas.Left="{Binding CamGuideLeft}"
+                  Canvas.Top="{Binding CamGuideTop}"
+                  Width="{Binding CamGuideWidth}"
+                  Height="{Binding CamGuideHeight}">
+                <Rectangle RadiusX="14"
+                           RadiusY="14"
+                           Stroke="#CC7FE7DF"
+                           StrokeThickness="2"
+                           StrokeDashArray="6,4"
+                           Fill="#14041C2F"/>
+                <Border CornerRadius="10"
+                        Background="#CC041C2F"
+                        BorderBrush="#9979F0E4"
+                        BorderThickness="1"
+                        Padding="10,4"
+                        Margin="10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top">
+                    <TextBlock Text="{Binding CamGuideLabel}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               LetterSpacing="1"
+                               Foreground="#D6FFFF"/>
+                </Border>
+            </Grid>
+        </Canvas>
+
+        <!-- Minimal stage toggle: collapse all chrome for a clean screen recording. -->
+        <Button Content="{Binding StageButtonLabel}"
+                Command="{Binding ToggleStageCommand}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="0,18,18,0"
+                MinHeight="34"
+                Padding="16,7"
+                FontSize="12"
+                Background="#B3041C2F"
+                BorderBrush="#8879F0E4"
+                Foreground="#D6FFFF"/>
     </Grid>
 </Window>
 
