@@ -29,6 +29,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private readonly LongSessionClipService _longSessionClips = new();
     private readonly VoiceHarvestBridgeService _voiceHarvest = new();
     private readonly InputMonitorService _monitor = new();
+    private readonly LiveInputMeterService _liveMeter = new();
     private readonly GateKptBrainService _brain = new();
     private readonly RecorderDiagnosticLog _diagnostics;
     private readonly string _contentPackDirectory = Path.Combine(
@@ -109,6 +110,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private double _visualLiftY = 0;
 
     [ObservableProperty]
+    private double _recDotSize = 18;
+
+    [ObservableProperty]
+    private double _recGlowSize = 34;
+
+    [ObservableProperty]
+    private double _recGlowOpacity = 0.55;
+
+    [ObservableProperty]
     private string _activeRecordingName = "Not recording";
 
     [ObservableProperty]
@@ -139,10 +149,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _commandHistory = "No commands yet.";
 
     [ObservableProperty]
-    private string _signalProbeSummary = "Record one take. GateKPT verifies the audio when you stop.";
+    private string _signalProbeSummary = "One take. Play it back. Keep what feels good.";
 
     [ObservableProperty]
-    private string _lastRecorderDiagnostic = "No recorder diagnostic yet.";
+    private string _lastRecorderDiagnostic = "";
 
     [ObservableProperty]
     private string _sessionName = "Session 1";
@@ -358,8 +368,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsRecording
             ? "LIVE RECORDING"
             : string.IsNullOrWhiteSpace(CurrentFilePath)
-                ? "WAITING"
-                : "TAKE READY";
+                ? ""
+                : "TAKE";
 
     public string RecordingButtonLabel => IsRecording ? "RECORDING" : "RECORD";
 
@@ -450,22 +460,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             var metrics = AudioPreviewService.InspectMetrics(path);
             if (!metrics.Success)
             {
-                return "Record or choose one take.";
+                return "Choose a take.";
             }
 
             if (metrics.Duration.TotalSeconds < 8)
             {
-                return "Short take.";
+                return "Short.";
             }
 
             if (metrics.RmsPercent < 0.20)
             {
-                return "Quiet. Try louder.";
+                return "Quiet.";
             }
 
             if (metrics.PeakPercent > 96)
             {
-                return "Hot. Watch the gain.";
+                return "Hot.";
             }
 
             return $"{metrics.Duration:mm\\:ss}";
@@ -618,7 +628,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         $"Scene: {LiveAlbumScene}. Record, save, and build the folder you want to listen to.";
 
     public string CommandHelp =>
-        "Try: harvest, open voice inbox, open harvest clips, start capture, clip this, stop capture, clip last.";
+        "Try: chrome, warmer, room, delete last, mix, harvest.";
 
     public string LastEffectChain =>
         SelectedLayerSlot is { } slot && !string.IsNullOrWhiteSpace(slot.EffectChain)
@@ -671,7 +681,35 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         LoadTasteMemories();
         RestoreLayerDeck();
         _visualTimer.Start();
+        StartVisualMeter();
     }
+
+    // Keeps the background visuals reacting to live sound BEFORE and AFTER recording.
+    // While recording, the recorder owns the device and feeds PeakPercent directly,
+    // so we release the meter on record start and resume it on stop.
+    private void StartVisualMeter()
+    {
+        if (IsRecording || _liveMeter.IsRunning)
+        {
+            return;
+        }
+
+        var preferred = SelectedInputDevice?.Name ?? InputName;
+        _liveMeter.Start(preferred, level =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (IsRecording)
+                {
+                    return;
+                }
+
+                PeakPercent = Math.Clamp(level * 100.0, 0, 100);
+            });
+        });
+    }
+
+    private void StopVisualMeter() => _liveMeter.Stop();
 
     [RelayCommand]
     private void FindScarlett()
@@ -780,6 +818,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         InputName = SelectedInputDevice.Name;
 
+        StopVisualMeter();
         PeakPercent = 0;
         _recordingSignalSeen = false;
         _activeCaptureLabel = label;
@@ -861,6 +900,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var result = await Task.Run(() => _recorder.Stop());
         IsRecording = false;
         _recordingTimer.Stop();
+        StartVisualMeter();
         WriteDiagnostic($"STOP | success={result.Success} | path={result.Path} | duration={result.DurationLabel} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}% | message={result.Message}");
         if (result.Success)
         {
@@ -3225,18 +3265,32 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var idlePulse = 0.5 + Math.Sin(now / 9800.0) * 0.5;
-        var visualEnergy = Math.Clamp(normalized * 0.78 + idlePulse * 0.055, 0, 0.86);
+        // Punch up the loud end so the room visibly reacts to the music, with a fast
+        // attack and a small idle shimmer so it never looks frozen.
+        var react = Math.Pow(normalized, 0.72);
+        var rawEnergy = react * 0.96 + idlePulse * 0.05;
+        // Fast attack, slower release so transients pop and then settle smoothly.
+        var target = Math.Clamp(rawEnergy, 0, 1);
+        var visualEnergy = target > VisualEnergy
+            ? VisualEnergy + (target - VisualEnergy) * 0.85
+            : VisualEnergy + (target - VisualEnergy) * 0.28;
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 130 + visualEnergy * 170;
-        VisualBloomSize = 340 + visualEnergy * 330;
-        VisualBloomOpacity = 0.16 + visualEnergy * 0.36;
-        VisualRoomScale = 1 + visualEnergy * 0.025;
-        VisualBackScale = 1 + visualEnergy * 0.035;
-        VisualMidScale = 1 + visualEnergy * 0.045;
-        VisualFrontScale = 1 + visualEnergy * 0.05;
+        VisualCoreSize = 130 + visualEnergy * 230;
+        VisualBloomSize = 340 + visualEnergy * 470;
+        VisualBloomOpacity = 0.16 + visualEnergy * 0.5;
+        VisualRoomScale = 1 + visualEnergy * 0.04;
+        VisualBackScale = 1 + visualEnergy * 0.055;
+        VisualMidScale = 1 + visualEnergy * 0.07;
+        VisualFrontScale = 1 + visualEnergy * 0.08;
         VisualRoomTilt = -3 + drift * 1.2;
         VisualDriftX = drift * 22;
         VisualLiftY = -80 + flow * 170 + visualEnergy * 6;
+
+        // Recording badge pulses with the live signal.
+        var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;
+        RecDotSize = 16 + visualEnergy * 10 + recBeat * 2;
+        RecGlowSize = 26 + visualEnergy * 14 + recBeat * 4;
+        RecGlowOpacity = 0.30 + visualEnergy * 0.35 + recBeat * 0.12;
 
         SignalBars.RemoveAt(0);
         SignalBars.Add(Math.Clamp(height, 8, 96));
@@ -3398,6 +3452,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         InputName = value?.Name ?? "No input selected";
         OnPropertyChanged(nameof(AudioHealthLabel));
+
+        // Re-point the reactive backdrop at the newly selected input (not while recording).
+        if (!IsRecording)
+        {
+            StopVisualMeter();
+            StartVisualMeter();
+        }
     }
 }
 
