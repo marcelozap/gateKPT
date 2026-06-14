@@ -138,8 +138,8 @@ public sealed class LayerRecordingService : IDisposable
                 capture.RmsPercent = CalculateRmsPercent(capture.SumSquares, capture.SampleCount);
                 return capture;
             })
-            .OrderBy(capture => IsPreferredBackend(capture.Backend) ? 0 : 1)
-            .ThenByDescending(capture => IsSaneCapture(capture) ? 1 : 0)
+            .OrderByDescending(capture => IsSaneCapture(capture) ? 1 : 0)
+            .ThenBy(capture => IsPreferredBackend(capture.Backend) ? 0 : 1)
             .ThenByDescending(capture => capture.RmsPercent)
             .ThenByDescending(capture => capture.Peak * 100)
             .ThenByDescending(capture => capture.BytesWritten)
@@ -556,11 +556,10 @@ public sealed class LayerRecordingService : IDisposable
         try
         {
             device.AudioEndpointVolume.Mute = false;
-            device.AudioEndpointVolume.MasterVolumeLevelScalar = 1.0f;
         }
         catch
         {
-            // Some drivers block software gain changes.
+            // Some drivers block software gain changes. GateKPT should not force input gain.
         }
     }
 

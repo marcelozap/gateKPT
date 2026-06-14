@@ -11,8 +11,8 @@ public sealed class PlayableTakeRepairService
     private const float MinimumUsableRms = 0.0025f;
     private const float MaximumRepairablePeak = 64f;
     private const float MaximumRepairableRms = 32f;
-    private const float TargetRms = 0.24f;
-    private const float MaximumCleanGain = 30f;
+    private const float TargetRms = 0.14f;
+    private const float MaximumCleanGain = 8f;
 
     public PlayableTakeRepairResult RepairToPlayableStereo(string sourcePath)
     {
@@ -180,6 +180,11 @@ public sealed class PlayableTakeRepairService
         if (channel.Rms <= 0.0001f)
         {
             return 1f;
+        }
+
+        if (channel.Peak >= 0.96f || channel.Rms >= TargetRms)
+        {
+            return Math.Min(1f, 0.82f / Math.Max(channel.Peak, 0.82f));
         }
 
         return Math.Min(MaximumCleanGain, TargetRms / channel.Rms);
