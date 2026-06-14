@@ -709,7 +709,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
-        _visualTimer.Tick += (_, _) => PushSignalBar(PeakPercent);
+        _visualTimer.Tick += (_, _) => PushSignalBar(IsRecording ? PeakPercent : 0);
         for (var index = 0; index < 48; index++)
         {
             SignalBars.Add(10 + (index % 6) * 2);
@@ -753,15 +753,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     // Chrome = every control surface. Hidden in stage mode so only the living stage shows.
     public bool ChromeVisible => !StageMode;
 
-    public string StageButtonLabel => StageMode ? "Exit stage" : "Stage";
+    public string StageButtonLabel => StageMode ? "FULL" : "VIEW";
 
     partial void OnStageModeChanged(bool value)
     {
         OnPropertyChanged(nameof(ChromeVisible));
         OnPropertyChanged(nameof(StageButtonLabel));
         Status = value
-            ? "Stage mode on. Just the stage and the take. Screen-record now."
-            : "Stage mode off. Controls are back.";
+            ? "Clean view on."
+            : "Controls back.";
     }
 
     [RelayCommand]
@@ -903,14 +903,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return;
             }
 
-            if (SelectedInputDevice is null)
-            {
-                RefreshInputDevices();
-            }
+            RefreshInputDevices();
 
             if (SelectedInputDevice is null)
             {
-                Status = "No input selected. Press INPUT, then CAPTURE.";
+                Status = "No input. Press INPUT once, then CAPTURE.";
                 return;
             }
 
@@ -3462,11 +3459,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             height = 10 + slowBreath * 6;
         }
 
-        var idlePulse = 0.5 + Math.Sin(now / 9800.0) * 0.5;
+        var idlePulse = IsRecording ? 0.5 + Math.Sin(now / 9800.0) * 0.5 : 0;
         // Punch up the loud end so the room visibly reacts to the music, with a fast
         // attack and a small idle shimmer so it never looks frozen.
         var react = Math.Pow(normalized, 0.72);
-        var rawEnergy = react * 0.96 + idlePulse * 0.05;
+        var rawEnergy = IsRecording ? react * 0.96 + idlePulse * 0.05 : 0;
         // Fast attack, slower release so transients pop and then settle smoothly.
         var target = Math.Clamp(rawEnergy, 0, 1);
         var visualEnergy = target > VisualEnergy
@@ -3475,20 +3472,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         VisualEnergy = visualEnergy;
         VisualCoreSize = 130 + visualEnergy * 230;
         VisualBloomSize = 340 + visualEnergy * 470;
-        VisualBloomOpacity = 0.16 + visualEnergy * 0.5;
+        VisualBloomOpacity = (IsRecording ? 0.16 : 0.08) + visualEnergy * 0.5;
         VisualRoomScale = 1 + visualEnergy * 0.04;
         VisualBackScale = 1 + visualEnergy * 0.055;
         VisualMidScale = 1 + visualEnergy * 0.07;
         VisualFrontScale = 1 + visualEnergy * 0.08;
         VisualRoomTilt = -3 + drift * 1.2;
         VisualDriftX = drift * 22;
-        VisualLiftY = -80 + flow * 170 + visualEnergy * 18;
+        VisualLiftY = IsRecording ? -80 + flow * 170 + visualEnergy * 18 : 0;
 
         // Spinning record layer: slow at idle, noticeably alive while capturing.
-        var spinSpeed = IsRecording ? 9.0 + visualEnergy * 24 : 2.1 + visualEnergy * 4.2;
+        var spinSpeed = IsRecording ? 9.0 + visualEnergy * 24 : 0;
         RecordSpinAngle = (RecordSpinAngle + spinSpeed) % 360;
         RecordSpinScale = 0.96 + visualEnergy * 0.12 + (IsRecording ? 0.03 : 0);
-        RecordSpinOpacity = IsRecording ? 0.70 + visualEnergy * 0.26 : 0.46 + visualEnergy * 0.20;
+        RecordSpinOpacity = IsRecording ? 0.70 + visualEnergy * 0.26 : 0.42;
 
         // Recording badge pulses with the live signal.
         var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;
