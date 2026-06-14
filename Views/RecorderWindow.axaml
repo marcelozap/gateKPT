@@ -226,6 +226,131 @@
             </Canvas.RenderTransform>
 
             <!-- Abstract stage forms: random enough to feel alive, slow enough to stay calm on camera. -->
+            <Grid Width="360"
+                  Height="250"
+                  Canvas.Left="590"
+                  Canvas.Top="116"
+                  Opacity="0.72"
+                  RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <RotateTransform Angle="{Binding RecordSpinAngle}"/>
+                        <ScaleTransform ScaleX="{Binding VisualBackScale}"
+                                        ScaleY="{Binding VisualBackScale}"/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Ellipse Width="330"
+                         Height="146"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Fill="#00000000"
+                         Stroke="#D8F8E6B8"
+                         StrokeThickness="2.2"/>
+                <Ellipse Width="292"
+                         Height="118"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Fill="#00000000"
+                         Stroke="#8064C7B6"
+                         StrokeThickness="1.4"/>
+                <Ellipse Width="232"
+                         Height="88"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Fill="#06080A12"
+                         Stroke="#64E9B06E"
+                         StrokeThickness="1"/>
+                <Path Data="M 22 122 C 74 46, 282 46, 338 122"
+                      Stroke="#B0D6FFFF"
+                      StrokeThickness="3"
+                      StrokeLineCap="Round"
+                      Stretch="None"/>
+                <Path Data="M 22 128 C 74 206, 282 206, 338 128"
+                      Stroke="#C8E9B06E"
+                      StrokeThickness="3"
+                      StrokeLineCap="Round"
+                      Stretch="None"/>
+                <UniformGrid Rows="1"
+                             Columns="32"
+                             Width="318"
+                             Height="30"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             Margin="0,58,0,0">
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
+                </UniformGrid>
+                <UniformGrid Rows="1"
+                             Columns="32"
+                             Width="318"
+                             Height="30"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,0,58">
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
+                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
+                </UniformGrid>
+            </Grid>
             <Ellipse Width="{Binding VisualBloomSize}"
                      Height="210"
                      Canvas.Left="520"
