@@ -391,8 +391,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return "";
             }
 
-            var decibels = 20 * Math.Log10(Math.Clamp(PeakPercent / 100.0, 0.0001, 1.0));
-            return $"{decibels:0.0} dB";
+            return $"{Math.Clamp(PeakPercent, 0, 100):0}%";
         }
     }
 

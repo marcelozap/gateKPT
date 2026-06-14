@@ -339,6 +339,12 @@ public sealed class LayerRecordingService : IDisposable
                     active.SampleCount += stats.SampleCount;
                     active.BytesWritten += args.BytesRecorded;
                     _peak = Math.Max(_peak, active.Peak);
+                    var preferredVisualSourceExists = _captures.Any(capture => IsPreferredBackend(capture.Backend));
+                    if (preferredVisualSourceExists && !IsPreferredBackend(candidate.Backend))
+                    {
+                        return;
+                    }
+
                     // Drive the stage from the current usable level, not all-time max spikes.
                     // The saved take still keeps active.Peak for validation.
                     var rmsPercent = CalculateRmsPercent(stats.SumSquares, stats.SampleCount);
