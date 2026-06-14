@@ -1512,22 +1512,49 @@
                             <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                   ColumnSpacing="10"
                                   HorizontalAlignment="Center">
-                            <Button
+                            <Button Classes="record-vinyl"
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
-                                    Content="CAPTURE"
-                                    ToolTip.Tip="Capture one take"
-                                    Padding="20,13"
-                                    MinWidth="116"
-                                    MinHeight="50"
+                                    ToolTip.Tip="Start take"
+                                    Padding="0"
+                                    MinWidth="76"
+                                    MinHeight="76"
                                     Margin="0"
-                                    FontSize="15"
-                                    FontWeight="SemiBold"
-                                    LetterSpacing="1.4"
                                     BorderThickness="1"
                                     BorderBrush="#B0FFF3D6"
                                     Background="#080A12"
-                                    Foreground="#F7EBD7"/>
+                                    Foreground="#F7EBD7">
+                                <Grid Width="58"
+                                      Height="58"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Grid.RenderTransform>
+                                        <RotateTransform Angle="{Binding RecordSpinAngle}"/>
+                                    </Grid.RenderTransform>
+                                    <Ellipse Fill="#06070C"
+                                             Stroke="#F8EFE0"
+                                             StrokeThickness="1.2"/>
+                                    <Ellipse Width="42"
+                                             Height="42"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stroke="#8CD6D8"
+                                             StrokeThickness="1"
+                                             Fill="#141018"/>
+                                    <Rectangle Width="4"
+                                               Height="24"
+                                               RadiusX="999"
+                                               RadiusY="999"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               Margin="0,7,0,0"
+                                               Fill="#F8EFE0"/>
+                                    <Ellipse Width="15"
+                                             Height="15"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Fill="#E9B06E"/>
+                                </Grid>
+                            </Button>
                             <Button
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
@@ -1591,6 +1618,7 @@
                                     Foreground="#F7EBD7"/>
                             <Button Grid.Column="4"
                                     Content="INPUT"
+                                    IsVisible="False"
                                     ToolTip.Tip="Pick Scarlett / RC-505 input"
                                     Command="{Binding FindScarlettCommand}"
                                     Padding="18,12"

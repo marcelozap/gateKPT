@@ -414,7 +414,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 ? ""
                 : "TAKE";
 
-    public string RecordingButtonLabel => IsRecording ? "LIVE" : "CAPTURE";
+    public string RecordingButtonLabel => IsRecording ? "LIVE" : "";
 
     public string StopButtonLabel => "SAVE";
 
@@ -907,12 +907,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
             if (SelectedInputDevice is null)
             {
-                Status = "No input. Press INPUT once, then CAPTURE.";
+                Status = "Scarlett not found. Check USB, then try again.";
                 return;
             }
 
             InputName = SelectedInputDevice.Name;
-            Status = $"Input ready: {InputName}";
+            Status = "Rig ready.";
 
             StopVisualMeter();
             PeakPercent = 0;
