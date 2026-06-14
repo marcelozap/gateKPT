@@ -3485,10 +3485,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         VisualLiftY = -80 + flow * 170 + visualEnergy * 18;
 
         // Spinning record layer: slow at idle, noticeably alive while capturing.
-        var spinSpeed = IsRecording ? 6.5 + visualEnergy * 18 : 0.55 + visualEnergy * 2.4;
+        var spinSpeed = IsRecording ? 9.0 + visualEnergy * 24 : 2.1 + visualEnergy * 4.2;
         RecordSpinAngle = (RecordSpinAngle + spinSpeed) % 360;
         RecordSpinScale = 0.96 + visualEnergy * 0.12 + (IsRecording ? 0.03 : 0);
-        RecordSpinOpacity = IsRecording ? 0.50 + visualEnergy * 0.28 : 0.20 + visualEnergy * 0.16;
+        RecordSpinOpacity = IsRecording ? 0.70 + visualEnergy * 0.26 : 0.46 + visualEnergy * 0.20;
 
         // Recording badge pulses with the live signal.
         var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;
