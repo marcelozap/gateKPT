@@ -198,9 +198,17 @@ public sealed record RecorderVersionFile(string Name, string Path, string Size, 
                     ? "Guitar"
                     : Name.Contains("drum", StringComparison.OrdinalIgnoreCase)
                         ? "Drums"
-                        : Name.Contains("chrome", StringComparison.OrdinalIgnoreCase)
-                            ? "Chrome"
-                            : "Take";
+                        : Name.Contains("key", StringComparison.OrdinalIgnoreCase)
+                            || Name.Contains("piano", StringComparison.OrdinalIgnoreCase)
+                                ? "Keys"
+                                : Name.Contains("loop", StringComparison.OrdinalIgnoreCase)
+                                    || Name.Contains("cover-pass", StringComparison.OrdinalIgnoreCase)
+                                        ? "Loop"
+                                        : Name.Contains("idea", StringComparison.OrdinalIgnoreCase)
+                                            ? "Idea"
+                                            : Name.Contains("chrome", StringComparison.OrdinalIgnoreCase)
+                                                ? "Chrome"
+                                                : "Take";
 
             return $"{label} / {duration}";
         }

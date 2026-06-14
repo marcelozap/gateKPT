@@ -285,11 +285,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public ObservableCollection<CaptureLaneItem> CaptureLanes { get; } =
     [
-        new("Cover Pass", "cover-pass", "One usable section for a post", null),
-        new("Drum Clip", "drums", "Groove first", 1),
-        new("Guitar / Keys", "guitar-keys", "Harmony or movement", 2),
-        new("Vocal Hook", "vocals", "Lead line or hook", 4),
-        new("Visual / Dance", "visual-dance", "Audio bed for movement or visualizer", null)
+        new("Loop", "loop", "Full RC-505 sound", null, "LOOP"),
+        new("Guitar", "guitar", "Guitar pass", 2, "GTR"),
+        new("Vocal", "vocal", "Voice or hook", 4, "VOX"),
+        new("Drums", "drums", "Groove first", 1, "DRM"),
+        new("Keys", "keys", "Piano or synth", 3, "KEY"),
+        new("Idea", "idea", "Noise, note, field sound", null, "IDEA")
     ];
 
     public ObservableCollection<VocalPresetItem> VocalPresets { get; } =
@@ -3675,9 +3676,12 @@ public sealed record CaptureLaneItem(
     string Name,
     string FileLabel,
     string Detail,
-    int? LayerNumber)
+    int? LayerNumber,
+    string Icon)
 {
-    public override string ToString() => Name;
+    public string DisplayLabel => $"{Icon}  {Name}";
+
+    public override string ToString() => DisplayLabel;
 }
 
 public sealed record LongSessionMarker(
