@@ -339,7 +339,9 @@ public sealed class LayerRecordingService : IDisposable
                     active.SampleCount += stats.SampleCount;
                     active.BytesWritten += args.BytesRecorded;
                     _peak = Math.Max(_peak, active.Peak);
-                    onPeakPercent?.Invoke(Math.Round(_peak * 100, 1));
+                    // Drive the stage from the current buffer, not the all-time max.
+                    // The saved take still keeps active.Peak for validation.
+                    onPeakPercent?.Invoke(Math.Round(stats.Peak * 100, 1));
                 }
             };
             candidate.Input.RecordingStopped += (_, _) => active.Stopped.Set();
