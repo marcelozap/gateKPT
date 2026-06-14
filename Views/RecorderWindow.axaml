@@ -2470,6 +2470,36 @@
 
         <!-- Cam / Elgato layout guide: line your OBS or Elgato source up to this box. -->
         <Canvas IsVisible="{Binding CamGuideVisible}" IsHitTestVisible="False">
+            <Rectangle Canvas.Left="64"
+                       Canvas.Top="74"
+                       Width="900"
+                       Height="548"
+                       RadiusX="24"
+                       RadiusY="24"
+                       Stroke="#407FE7DF"
+                       StrokeThickness="1"
+                       StrokeDashArray="10,8"
+                       Fill="#03000000"/>
+            <Rectangle Canvas.Left="832"
+                       Canvas.Top="122"
+                       Width="86"
+                       Height="374"
+                       RadiusX="20"
+                       RadiusY="20"
+                       Fill="#102B120D"
+                       Stroke="#30E9B06E"
+                       StrokeThickness="1"
+                       StrokeDashArray="6,8"/>
+            <Rectangle Canvas.Left="190"
+                       Canvas.Top="548"
+                       Width="640"
+                       Height="58"
+                       RadiusX="20"
+                       RadiusY="20"
+                       Fill="#0E041C2F"
+                       Stroke="#2C7FE7DF"
+                       StrokeThickness="1"
+                       StrokeDashArray="6,8"/>
             <Grid Canvas.Left="{Binding CamGuideLeft}"
                   Canvas.Top="{Binding CamGuideTop}"
                   Width="{Binding CamGuideWidth}"
@@ -2493,6 +2523,20 @@
                                FontWeight="SemiBold"
                                LetterSpacing="1"
                                Foreground="#D6FFFF"/>
+                </Border>
+                <Border CornerRadius="10"
+                        Background="#B4080A12"
+                        BorderBrush="#66E9B06E"
+                        BorderThickness="1"
+                        Padding="10,4"
+                        Margin="10"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding CamGuideNote}"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap"
+                               Foreground="#F8EFE0"/>
                 </Border>
             </Grid>
         </Canvas>

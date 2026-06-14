@@ -142,6 +142,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _camGuideLabel = "CAM";
 
     [ObservableProperty]
+    private string _camGuideNote = "";
+
+    [ObservableProperty]
     private double _camGuideWidth = 320;
 
     [ObservableProperty]
@@ -764,15 +767,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [RelayCommand]
     private void ToggleStage() => StageMode = !StageMode;
 
-    // Cam layout presets: a guide frame to line your webcam/Elgato feed up against in OBS.
-    // Cycles off -> bottom-right -> bottom-left -> side strip -> full frame -> off.
-    private static readonly (string Label, bool Visible, double Width, double Height, double Left, double Top)[] CamLayouts =
+    // Cam layout presets: guide-only framing for OBS/Elgato. No camera/audio device is opened here.
+    private static readonly (string Label, string Note, bool Visible, double Width, double Height, double Left, double Top)[] CamLayouts =
     {
-        ("CAM off", false, 320, 180, 660, 470),
-        ("Cam: bottom right", true, 300, 170, 660, 470),
-        ("Cam: bottom left", true, 300, 170, 40, 470),
-        ("Cam: side strip", true, 250, 430, 720, 150),
-        ("Cam: full frame", true, 940, 540, 40, 90),
+        ("CAM off", "", false, 320, 180, 660, 470),
+        ("TikTok lower", "Face/hands low. Visuals stay above.", true, 360, 210, 330, 430),
+        ("TikTok corner", "Small face box. Keeps caption/action rail clear.", true, 250, 178, 700, 430),
+        ("YouTube corner", "Bottom-left talking head.", true, 360, 210, 74, 404),
+        ("Performance", "Full frame performance. Visuals become overlay.", true, 890, 520, 62, 94),
     };
 
     [RelayCommand]
@@ -791,8 +793,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         CamGuideLeft = layout.Left;
         CamGuideTop = layout.Top;
         CamGuideLabel = layout.Label;
+        CamGuideNote = layout.Note;
         Status = layout.Visible
-            ? $"{layout.Label}. Match your OBS/Elgato source to this box."
+            ? $"{layout.Label}. {layout.Note}"
             : "Cam guide hidden.";
         CommandResult = Status;
     }
