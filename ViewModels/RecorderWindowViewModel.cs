@@ -414,9 +414,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string RecorderStateLabel =>
         IsRecording
             ? "LIVE"
+            : _isPlaybackVisualActive
+                ? "WAV"
             : string.IsNullOrWhiteSpace(CurrentFilePath)
                 ? ""
                 : "TAKE";
+
+    public string AudioDriveLabel =>
+        IsRecording
+            ? "INPUT"
+            : _isPlaybackVisualActive
+                ? "WAV"
+                : "";
 
     public string RecordingButtonLabel => IsRecording ? "LIVE" : "";
 
@@ -3488,6 +3497,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _playbackVisualDuration = duration > TimeSpan.Zero ? duration : TimeSpan.FromSeconds(Math.Max(1, _playbackEnvelope.Length / 12.0));
         _playbackVisualStartedAt = DateTimeOffset.Now;
         _isPlaybackVisualActive = _playbackEnvelope.Length > 0;
+        OnPropertyChanged(nameof(AudioDriveLabel));
+        OnPropertyChanged(nameof(RecorderStateLabel));
         if (!_isPlaybackVisualActive)
         {
             PeakPercent = 0;
@@ -3500,6 +3511,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _playbackEnvelope = [];
         _playbackVisualDuration = TimeSpan.Zero;
         _playbackVisualStartedAt = DateTimeOffset.MinValue;
+        OnPropertyChanged(nameof(AudioDriveLabel));
+        OnPropertyChanged(nameof(RecorderStateLabel));
         if (!IsRecording)
         {
             PeakPercent = 0;
@@ -3531,8 +3544,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
         var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var slowBreath = Math.Sin(now / 8600.0) * 0.5 + 0.5;
-        var flow = (now % 48000) / 48000.0;
-        var drift = Math.Sin(flow * Math.Tau) * 0.16;
+        var flow = (now % 90000) / 90000.0;
+        var drift = Math.Sin(flow * Math.Tau) * 0.08;
         var height = 12 + (normalized * 82) + slowBreath * 5;
         if (peak < 0.5)
         {
@@ -3540,27 +3553,27 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         var isAudioActive = IsRecording || _isPlaybackVisualActive;
-        var idlePulse = isAudioActive ? 0.5 + Math.Sin(now / 9800.0) * 0.5 : 0;
-        // Punch up the loud end so the room visibly reacts to the music, with a fast
-        // attack and a small idle shimmer so it never looks frozen.
+        var idlePulse = 0.5 + Math.Sin(now / 13000.0) * 0.5;
+        // Audio is absorbed into the pools/glow. It should not yank the whole
+        // room around like a meter; the river keeps its own slow gravity.
         var react = Math.Pow(normalized, 0.72);
-        var rawEnergy = isAudioActive ? react * 0.96 + idlePulse * 0.05 : 0;
-        // Fast attack, slower release so transients pop and then settle smoothly.
+        var rawEnergy = isAudioActive ? react * 0.88 + idlePulse * 0.04 : idlePulse * 0.035;
+        // Fast enough to feel the strum, slow enough to drain like water.
         var target = Math.Clamp(rawEnergy, 0, 1);
         var visualEnergy = target > VisualEnergy
-            ? VisualEnergy + (target - VisualEnergy) * 0.85
-            : VisualEnergy + (target - VisualEnergy) * 0.28;
+            ? VisualEnergy + (target - VisualEnergy) * 0.42
+            : VisualEnergy + (target - VisualEnergy) * 0.10;
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 130 + visualEnergy * 230;
-        VisualBloomSize = 340 + visualEnergy * 470;
-        VisualBloomOpacity = (isAudioActive ? 0.16 : 0.08) + visualEnergy * 0.5;
-        VisualRoomScale = 1 + visualEnergy * 0.04;
-        VisualBackScale = 1 + visualEnergy * 0.055;
-        VisualMidScale = 1 + visualEnergy * 0.07;
-        VisualFrontScale = 1 + visualEnergy * 0.08;
-        VisualRoomTilt = -3 + drift * 1.2;
-        VisualDriftX = drift * 22;
-        VisualLiftY = isAudioActive ? -80 + flow * 170 + visualEnergy * 18 : 0;
+        VisualCoreSize = 118 + visualEnergy * 190;
+        VisualBloomSize = 300 + visualEnergy * 420;
+        VisualBloomOpacity = (isAudioActive ? 0.14 : 0.07) + visualEnergy * 0.46;
+        VisualRoomScale = 1 + visualEnergy * 0.018;
+        VisualBackScale = 1 + visualEnergy * 0.025;
+        VisualMidScale = 1 + visualEnergy * 0.035;
+        VisualFrontScale = 1 + visualEnergy * 0.042;
+        VisualRoomTilt = -2 + drift * 0.7;
+        VisualDriftX = drift * 14;
+        VisualLiftY = -34 + flow * 68;
 
         // Spinning record layer: alive while recording or playing a saved take.
         var spinSpeed = isAudioActive ? 9.0 + visualEnergy * 24 : 0;
@@ -3592,6 +3605,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PrimaryHeadline));
         OnPropertyChanged(nameof(PrimaryDetail));
         OnPropertyChanged(nameof(RecorderStateLabel));
+        OnPropertyChanged(nameof(AudioDriveLabel));
         OnPropertyChanged(nameof(NextActionLabel));
         OnPropertyChanged(nameof(RecordingButtonLabel));
         OnPropertyChanged(nameof(StopButtonLabel));

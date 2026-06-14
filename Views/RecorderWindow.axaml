@@ -270,86 +270,18 @@
                       StrokeThickness="3"
                       StrokeLineCap="Round"
                       Stretch="None"/>
-                <UniformGrid Rows="1"
-                             Columns="32"
-                             Width="318"
-                             Height="30"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Top"
-                             Margin="0,58,0,0">
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8F8E6B8"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90F8E6B8"/>
-                </UniformGrid>
-                <UniformGrid Rows="1"
-                             Columns="32"
-                             Width="318"
-                             Height="30"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Bottom"
-                             Margin="0,0,0,58">
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                    <Border Width="3" Height="18" CornerRadius="999" Background="#90E9B06E"/>
-                    <Border Width="3" Height="24" CornerRadius="999" Background="#B8E9B06E"/>
-                </UniformGrid>
+                <Path Data="M 46 92 C 118 56, 202 58, 312 92 C 252 118, 124 122, 46 92 Z"
+                      Fill="#30F4E3BE"
+                      Stroke="#A0F8EFE0"
+                      StrokeThickness="1.5"/>
+                <Path Data="M 42 154 C 108 196, 238 196, 318 154 C 250 140, 120 138, 42 154 Z"
+                      Fill="#2AE9B06E"
+                      Stroke="#8CE9B06E"
+                      StrokeThickness="1.2"/>
+                <Path Data="M 82 126 C 132 104, 228 106, 282 126 C 236 144, 130 146, 82 126 Z"
+                      Fill="#2A64C7B6"
+                      Stroke="#7F64C7B6"
+                      StrokeThickness="1.2"/>
             </Grid>
             <Ellipse Width="{Binding VisualBloomSize}"
                      Height="210"
@@ -1552,6 +1484,14 @@
                                                FontWeight="SemiBold"
                                                HorizontalAlignment="Center"
                                                Foreground="#D6FFFF"/>
+                                    <TextBlock Text="{Binding AudioDriveLabel}"
+                                               IsVisible="{Binding HasVisibleSignal}"
+                                               Margin="0,2,0,0"
+                                               FontSize="9"
+                                               FontWeight="SemiBold"
+                                               LetterSpacing="1.6"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#E9B06E"/>
                                 </StackPanel>
                             </Border>
                         </Grid>
