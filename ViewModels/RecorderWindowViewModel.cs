@@ -385,10 +385,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string MeterStateLabel =>
         IsRecording
-            ? "REC"
+            ? "LIVE"
             : SignalReady
                 ? "ARMED"
-                : "IDLE";
+                : "";
 
     public string MeterInputLabel =>
         InputName.Contains("Scarlett", StringComparison.OrdinalIgnoreCase) || InputName.Contains("Focusrite", StringComparison.OrdinalIgnoreCase)
@@ -397,14 +397,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string RecorderStateLabel =>
         IsRecording
-            ? "LIVE RECORDING"
+            ? "LIVE"
             : string.IsNullOrWhiteSpace(CurrentFilePath)
                 ? ""
                 : "TAKE";
 
-    public string RecordingButtonLabel => IsRecording ? "RECORDING" : "RECORD";
+    public string RecordingButtonLabel => IsRecording ? "LIVE" : "CAPTURE";
 
-    public string StopButtonLabel => "STOP";
+    public string StopButtonLabel => "SAVE";
 
     public bool CanStartRecording => !IsRecording && !IsBusy && !_recordActionInFlight;
 
@@ -424,7 +424,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public string RecordingGuardLabel =>
         IsRecording
-            ? $"REC {RecordingElapsedLabel}"
+            ? $"LIVE {RecordingElapsedLabel}"
             : "";
 
     public string SimpleSignalLabel => "";

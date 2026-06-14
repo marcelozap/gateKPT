@@ -1437,8 +1437,8 @@
                             <Button
                                     Command="{Binding StartRecordingCommand}"
                                     IsVisible="{Binding CanStartRecording}"
-                                    Content="REC"
-                                    ToolTip.Tip="Record one take"
+                                    Content="CAPTURE"
+                                    ToolTip.Tip="Capture one take"
                                     Padding="20,13"
                                     MinWidth="116"
                                     MinHeight="50"
@@ -1453,8 +1453,8 @@
                             <Button
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
-                                    Content="STOP"
-                                    ToolTip.Tip="Stop and save"
+                                    Content="SAVE"
+                                    ToolTip.Tip="Save this take"
                                     Padding="20,13"
                                     MinWidth="116"
                                     MinHeight="50"
@@ -2371,7 +2371,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Unmistakable "now recording" badge: pulsing red dot + REC + live timer. -->
+        <!-- Unmistakable live badge: pulsing dot + timer. -->
         <Border IsVisible="{Binding IsRecording}"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
@@ -2399,7 +2399,7 @@
                              VerticalAlignment="Center"
                              Fill="#FFFFFFFF"/>
                 </Panel>
-                <TextBlock Text="REC"
+                <TextBlock Text="LIVE"
                            FontSize="24"
                            FontWeight="Bold"
                            LetterSpacing="2"
