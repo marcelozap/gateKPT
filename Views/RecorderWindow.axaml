@@ -24,7 +24,7 @@
         <Style Selector="Button">
             <Setter Property="CornerRadius" Value="999"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="#887FCAD1"/>
+            <Setter Property="BorderBrush" Value="#B864C7B6"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="MinHeight" Value="42"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Display, Segoe UI, Arial"/>
@@ -34,14 +34,14 @@
         </Style>
         <Style Selector="Button:pointerover">
             <Setter Property="RenderTransform" Value="translateY(-2px)"/>
-            <Setter Property="BorderBrush" Value="#D8D6FFFF"/>
+            <Setter Property="BorderBrush" Value="#FFFFF3D6"/>
         </Style>
         <Style Selector="TextBox">
-            <Setter Property="CornerRadius" Value="18"/>
-            <Setter Property="Padding" Value="16,12"/>
-            <Setter Property="Background" Value="#FFE4AE"/>
+            <Setter Property="CornerRadius" Value="999"/>
+            <Setter Property="Padding" Value="20,13"/>
+            <Setter Property="Background" Value="#FFFFDCA8"/>
             <Setter Property="Foreground" Value="#050507"/>
-            <Setter Property="BorderBrush" Value="#F8DCA7"/>
+            <Setter Property="BorderBrush" Value="#FFFFF3D6"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -49,9 +49,9 @@
         <Style Selector="ComboBox">
             <Setter Property="CornerRadius" Value="18"/>
             <Setter Property="Padding" Value="14,10"/>
-            <Setter Property="Background" Value="#04100F"/>
+            <Setter Property="Background" Value="#07151A"/>
             <Setter Property="Foreground" Value="#FFF4E6CF"/>
-            <Setter Property="BorderBrush" Value="#A864C7B6"/>
+            <Setter Property="BorderBrush" Value="#CC64C7B6"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontFamily" Value="Bahnschrift, Segoe UI Variable Text, Segoe UI, Arial"/>
             <Setter Property="FontSize" Value="13"/>
@@ -68,8 +68,8 @@
             <Setter Property="Foreground" Value="#D6FFFF"/>
         </Style>
         <Style Selector="Border.take-row:pointerover">
-            <Setter Property="Background" Value="#7A10283A"/>
-            <Setter Property="BorderBrush" Value="#C864C7B6"/>
+            <Setter Property="Background" Value="#66402028"/>
+            <Setter Property="BorderBrush" Value="#E8FFDCA8"/>
             <Setter Property="RenderTransform" Value="translateY(-1px)"/>
         </Style>
         <Style Selector="Button.take-select">
@@ -92,8 +92,8 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         </Style>
         <Style Selector="ListBox.take-list ListBoxItem:selected Border.take-row">
-            <Setter Property="Background" Value="#96204A66"/>
-            <Setter Property="BorderBrush" Value="#EED6FFFF"/>
+            <Setter Property="Background" Value="#A11E3A42"/>
+            <Setter Property="BorderBrush" Value="#FFFFDCA8"/>
         </Style>
     </Window.Styles>
 
@@ -1564,12 +1564,12 @@
 
                         <Border Grid.Row="1"
                                 CornerRadius="999"
-                                Padding="10"
+                                Padding="12"
                                 HorizontalAlignment="Center"
-                                Background="#B4080A10"
-                                BorderBrush="#A064C7B6"
-                                BorderThickness="1"
-                                BoxShadow="0 22 0 0 #3410EFFF, 0 34 70 0 #AA000000, inset 0 0 34 0 #1829D8FF"
+                                Background="#D00A0C13"
+                                BorderBrush="#E064C7B6"
+                                BorderThickness="1.2"
+                                BoxShadow="0 22 0 0 #3D10EFFF, 0 38 82 0 #CC000000, inset 0 0 42 0 #282FA38F"
                                 RenderTransformOrigin="0.5,0.5">
                             <Border.RenderTransform>
                                 <SkewTransform AngleX="-5" AngleY="0"/>
@@ -1586,38 +1586,44 @@
                                     MinHeight="76"
                                     Margin="0"
                                     BorderThickness="1"
-                                    BorderBrush="#B0FFF3D6"
-                                    Background="#080A12"
+                                    BorderBrush="#FFFFF3D6"
+                                    Background="#030407"
                                     Foreground="#F7EBD7">
-                                <Grid Width="58"
-                                      Height="58"
+                                <Grid Width="62"
+                                      Height="62"
                                       RenderTransformOrigin="0.5,0.5">
                                     <Grid.RenderTransform>
                                         <RotateTransform Angle="{Binding RecordSpinAngle}"/>
                                     </Grid.RenderTransform>
                                     <Ellipse Fill="#06070C"
-                                             Stroke="#F8EFE0"
-                                             StrokeThickness="1.2"/>
-                                    <Ellipse Width="42"
-                                             Height="42"
+                                             Stroke="#FFF8EFE0"
+                                             StrokeThickness="1.8"/>
+                                    <Ellipse Width="47"
+                                             Height="47"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center"
-                                             Stroke="#8CD6D8"
-                                             StrokeThickness="1"
-                                             Fill="#141018"/>
-                                    <Rectangle Width="4"
-                                               Height="24"
+                                             Stroke="#CC64C7B6"
+                                             StrokeThickness="1.4"
+                                             Fill="#141018">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect Color="#64C7B6" BlurRadius="12" Opacity="0.45"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <Rectangle Width="5"
+                                               Height="27"
                                                RadiusX="999"
                                                RadiusY="999"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Top"
-                                               Margin="0,7,0,0"
-                                               Fill="#F8EFE0"/>
-                                    <Ellipse Width="15"
-                                             Height="15"
+                                               Margin="0,6,0,0"
+                                               Fill="#FFFFF3D6"/>
+                                    <Ellipse Width="16"
+                                             Height="16"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center"
-                                             Fill="#E9B06E"/>
+                                             Fill="#E9B06E"
+                                             Stroke="#FFFFDCA8"
+                                             StrokeThickness="1"/>
                                 </Grid>
                             </Button>
                             <Button
@@ -1633,8 +1639,8 @@
                                     FontWeight="SemiBold"
                                     LetterSpacing="1.4"
                                     BorderThickness="1"
-                                    BorderBrush="#D8FFD0A8"
-                                    Background="#FF6C3E"
+                                    BorderBrush="#FFFFDCA8"
+                                    Background="#FF7A3D"
                                     Foreground="#080A12"/>
                             <Button Grid.Column="1"
                                     Content="▶"
@@ -1647,9 +1653,9 @@
                                     FontSize="13"
                                     FontWeight="SemiBold"
                                     LetterSpacing="1"
-                                    BorderBrush="#A0F4E6CF"
-                                    BorderThickness="1"
-                                    Background="#FFF4E6CF"
+                                    BorderBrush="#FFFFF3D6"
+                                    BorderThickness="1.2"
+                                    Background="#FFFFE7B5"
                                     Foreground="#120918"/>
                             <Button Grid.Column="2"
                                     Content="1 WAV"
@@ -1662,9 +1668,9 @@
                                     FontSize="13"
                                     FontWeight="SemiBold"
                                     LetterSpacing="1"
-                                    BorderBrush="#C8D6FFFF"
-                                    BorderThickness="1"
-                                    Background="#64C7B6"
+                                    BorderBrush="#E8D6FFFF"
+                                    BorderThickness="1.2"
+                                    Background="#79E0D1"
                                     Foreground="#120918"/>
                             <Button Grid.Column="3"
                                     Content="FILES"
@@ -1677,9 +1683,9 @@
                                     FontSize="13"
                                     FontWeight="SemiBold"
                                     LetterSpacing="1"
-                                    BorderBrush="#9864C7B6"
-                                    BorderThickness="1"
-                                    Background="#2B120D"
+                                    BorderBrush="#B8E9B06E"
+                                    BorderThickness="1.2"
+                                    Background="#26110B"
                                     Foreground="#F7EBD7"/>
                             <ComboBox Grid.Column="4"
                                       ItemsSource="{Binding CaptureLanes}"
@@ -1691,9 +1697,9 @@
                                       Padding="16,10"
                                       FontSize="13"
                                       FontWeight="SemiBold"
-                                      BorderBrush="#B0D6FFFF"
-                                      BorderThickness="1"
-                                      Background="#102432"
+                                      BorderBrush="#E064C7B6"
+                                      BorderThickness="1.2"
+                                      Background="#09232A"
                                       Foreground="#D6FFFF"/>
                             <TextBox Grid.Column="5"
                                      IsVisible="False"
@@ -1711,8 +1717,8 @@
                         <Border Grid.Row="2"
                                 CornerRadius="18"
                                 Padding="12,9"
-                                Background="#4406070C"
-                                BorderBrush="#4064C7B6"
+                                Background="#6A06070C"
+                                BorderBrush="#8064C7B6"
                                 BorderThickness="1">
                         <StackPanel Spacing="4">
                             <TextBlock Text="{Binding Status}"
@@ -1747,10 +1753,10 @@
 
                 <Border CornerRadius="24"
                         Padding="14"
-                        BorderBrush="#A8D6FFFF"
-                        BorderThickness="1"
-                        Background="#A006080E"
-                        BoxShadow="0 24 48 0 #88000000, inset 0 0 34 0 #1228A7FF">
+                        BorderBrush="#D8FFDCA8"
+                        BorderThickness="1.4"
+                        Background="#B806080E"
+                        BoxShadow="0 30 64 0 #AA000000, 0 0 42 0 #3364C7B6, inset 0 0 42 0 #1828A7FF">
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1761,8 +1767,10 @@
                                      Command="{Binding RunChatCommandCommand}"
                                      Padding="16,10"
                                      MinWidth="58"
-                                     Background="#D6FFFF"
-                                     Foreground="#120918"/>
+                                     BorderBrush="#FFFFF3D6"
+                                     BorderThickness="1.2"
+                                     Background="#B9FFFF"
+                                     Foreground="#050507"/>
                         </Grid>
                         <TextBlock Text="{Binding CommandResult}"
                                    FontSize="11"
@@ -1771,10 +1779,10 @@
                                    Foreground="#E8E1D2"/>
                         <Border CornerRadius="20"
                                 Padding="12"
-                                BorderBrush="#66D6FFFF"
-                                BorderThickness="1"
-                                Background="#8A070A0E"
-                                BoxShadow="0 18 36 0 #66000000, inset 0 0 22 0 #1428A7FF">
+                                BorderBrush="#88FFDCA8"
+                                BorderThickness="1.2"
+                                Background="#96070910"
+                                BoxShadow="0 20 44 0 #88000000, 0 0 26 0 #2452FF9A, inset 0 0 34 0 #1828A7FF">
                             <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                 <Ellipse Width="260"
                                          Height="86"
@@ -1798,7 +1806,7 @@
                                          IsHitTestVisible="False"/>
                                 <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button Command="{Binding StageRawCleanCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Clean/raw take">
-                                        <Border CornerRadius="16" BorderBrush="#88F2EEE3" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 18 0 #30F8EFE0">
+                                        <Border CornerRadius="16" BorderBrush="#D8FFF3D6" BorderThickness="1.35" BoxShadow="0 14 26 0 #88000000, 0 0 20 0 #40FFF3D6, inset 0 0 20 0 #38F8EFE0">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                                                     <GradientStop Color="#050507" Offset="0"/>
@@ -1815,7 +1823,7 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding StageLateNightChromeCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Chrome/gloss">
-                                        <Border CornerRadius="16" BorderBrush="#B8D6FFFF" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #5028A7FF">
+                                        <Border CornerRadius="16" BorderBrush="#F0D6FFFF" BorderThickness="1.35" BoxShadow="0 14 28 0 #88000000, 0 0 24 0 #55D6FFFF, inset 0 0 26 0 #6028A7FF">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                                                     <GradientStop Color="#080A12" Offset="0"/>
@@ -1833,7 +1841,7 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding StageRobotVocoderCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Robot/vocoder">
-                                        <Border CornerRadius="16" BorderBrush="#D8FFF0C8" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 26 0 #7080F7FF">
+                                        <Border CornerRadius="16" BorderBrush="#F8FFF0C8" BorderThickness="1.35" BoxShadow="0 14 28 0 #88000000, 0 0 24 0 #6680F7FF, inset 0 0 30 0 #7A80F7FF">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                                                     <GradientStop Color="#030407" Offset="0"/>
@@ -1855,7 +1863,7 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding QuickWarmerCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Warm/fire">
-                                        <Border CornerRadius="16" BorderBrush="#CCFFBFA9" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 24 0 #55FF6C3E">
+                                        <Border CornerRadius="16" BorderBrush="#FFFFBFA9" BorderThickness="1.35" BoxShadow="0 14 28 0 #88000000, 0 0 28 0 #66FF6C3E, inset 0 0 30 0 #70FF6C3E">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
                                                     <GradientStop Color="#120407" Offset="0"/>
@@ -1873,7 +1881,7 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding QuickReverbCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Room/space">
-                                        <Border CornerRadius="16" BorderBrush="#A8D6FFFF" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 22 0 #334CFF9D">
+                                        <Border CornerRadius="16" BorderBrush="#D8D6FFFF" BorderThickness="1.35" BoxShadow="0 14 28 0 #88000000, 0 0 24 0 #4564C7B6, inset 0 0 28 0 #424CFF9D">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                                                     <GradientStop Color="#031A21" Offset="0"/>
@@ -1890,7 +1898,7 @@
                                         </Border>
                                     </Button>
                                     <Button Command="{Binding QuickLouderCommand}" Width="128" Height="48" Padding="0" Margin="0,0,10,0" Background="Transparent" BorderThickness="0" ToolTip.Tip="Lift/loud">
-                                        <Border CornerRadius="16" BorderBrush="#C8F6D28A" BorderThickness="1.2" BoxShadow="0 10 22 0 #66000000, inset 0 0 24 0 #38F6D28A">
+                                        <Border CornerRadius="16" BorderBrush="#F8F6D28A" BorderThickness="1.35" BoxShadow="0 14 28 0 #88000000, 0 0 22 0 #55F6D28A, inset 0 0 28 0 #48F6D28A">
                                             <Border.Background>
                                                 <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
                                                     <GradientStop Color="#05070B" Offset="0"/>
@@ -1935,14 +1943,14 @@
 
                 <Border CornerRadius="28"
                         Padding="0"
-                        BorderBrush="#80D6FFFF"
-                        BorderThickness="1"
-                        Background="#6A06080E"
+                        BorderBrush="#B064C7B6"
+                        BorderThickness="1.2"
+                        Background="#7A06080E"
                         ClipToBounds="True"
-                        BoxShadow="0 30 60 0 #99000000, inset 0 0 34 0 #1010EFFF">
+                        BoxShadow="0 30 64 0 #AA000000, 0 0 34 0 #2452FF9A, inset 0 0 40 0 #1610EFFF">
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
                         <Border Padding="14"
-                                Background="#4C0B1017">
+                                Background="#54101016">
                             <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
                                 <Ellipse Grid.RowSpan="2"
                                          Width="320"
@@ -1986,32 +1994,32 @@
                                                         CornerRadius="18"
                                                         Padding="12,10"
                                                         Margin="0,0,0,7"
-                                                        Background="#38102432"
-                                                        BorderBrush="#78D6FFFF"
+                                                        Background="#42110B12"
+                                                        BorderBrush="#88FFDCA8"
                                                         BorderThickness="1">
                                                     <Grid ColumnDefinitions="*" ColumnSpacing="10">
                                                         <Border CornerRadius="16"
-                                                                Background="#300C3E62"
-                                                                BorderBrush="#55D6FFFF"
+                                                                Background="#2E32110C"
+                                                                BorderBrush="#45FFE2A4"
                                                                 BorderThickness="1"
                                                                 IsHitTestVisible="False"/>
                                                         <Ellipse Width="190"
                                                                  Height="48"
                                                                  HorizontalAlignment="Left"
                                                                  Margin="-40,0,0,0"
-                                                                 Fill="#2432A8FF"
+                                                                 Fill="#204CFF9D"
                                                                  IsHitTestVisible="False"/>
                                                         <Ellipse Width="240"
                                                                  Height="52"
                                                                  HorizontalAlignment="Right"
                                                                  Margin="0,0,-70,0"
-                                                                 Fill="#1AFF6C3E"
+                                                                 Fill="#24FF6C3E"
                                                                  IsHitTestVisible="False"/>
                                                         <Border Width="110"
                                                                 Height="26"
                                                                 CornerRadius="999"
                                                                 HorizontalAlignment="Center"
-                                                                Background="#12F8EFE0"
+                                                                Background="#18FFDCA8"
                                                                 IsHitTestVisible="False"/>
                                                         <Grid ColumnDefinitions="*,Auto">
                                                             <TextBlock Text="{Binding DisplayName}"
@@ -2022,7 +2030,7 @@
                                                                        Text="{Binding DisplayMeta}"
                                                                        FontSize="10"
                                                                        FontWeight="SemiBold"
-                                                                       Foreground="#7FCAD1"/>
+                                                                       Foreground="#FFDCA8"/>
                                                         </Grid>
                                                     </Grid>
                                                 </Border>
@@ -2037,17 +2045,17 @@
 
                 <Border CornerRadius="28"
                         Padding="16"
-                        BorderBrush="#80D6FFFF"
-                        BorderThickness="1"
-                        Background="#6606080E"
+                        BorderBrush="#A8FFDCA8"
+                        BorderThickness="1.2"
+                        Background="#7806080E"
                         ClipToBounds="True"
-                        BoxShadow="0 28 62 0 #88000000, inset 0 0 34 0 #1010EFFF">
+                        BoxShadow="0 30 64 0 #99000000, 0 0 30 0 #204CFF9D, inset 0 0 38 0 #1810EFFF">
                     <Grid ColumnDefinitions="1.08*,0.92*" ColumnSpacing="14">
                         <Border CornerRadius="22"
                                 Padding="14"
-                                Background="#4406070C"
-                                BorderBrush="#70D6FFFF"
-                                BorderThickness="1"
+                                Background="#52100610"
+                                BorderBrush="#9A64C7B6"
+                                BorderThickness="1.1"
                                 MinHeight="150">
                             <Grid>
                                 <Path Data="M 36 26 L 106 10 L 176 42 L 202 104 L 154 142 L 82 126 L 24 72 Z"
@@ -2063,13 +2071,13 @@
                                       Stretch="None"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M -20 84 C 72 22, 142 130, 245 70 S 438 20, 620 98 S 782 50, 940 84"
-                                      Stroke="#88FF6C3E"
-                                      StrokeThickness="2"
+                                      Stroke="#B8FF6C3E"
+                                      StrokeThickness="2.4"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M -20 112 C 90 42, 190 150, 312 96 S 528 74, 724 128 S 838 88, 960 122"
-                                      Stroke="#68D6FFFF"
-                                      StrokeThickness="1.5"
+                                      Stroke="#A0D6FFFF"
+                                      StrokeThickness="1.8"
                                       Stretch="Fill"
                                       IsHitTestVisible="False"/>
                                 <Path Data="M 20 28 C 130 84, 232 10, 358 50 S 560 106, 760 36"
@@ -2133,21 +2141,21 @@
                         <Border Grid.Column="1"
                                 CornerRadius="22"
                                 Padding="14"
-                                Background="#5A10080A"
-                                BorderBrush="#80D6FFFF"
-                                BorderThickness="1"
+                                Background="#6610080A"
+                                BorderBrush="#A8FFDCA8"
+                                BorderThickness="1.2"
                                 MinWidth="320"
-                                BoxShadow="0 14 0 0 #1810EFFF, 0 28 52 0 #88000000, inset 0 0 28 0 #1010EFFF"
+                                BoxShadow="0 16 0 0 #1A64C7B6, 0 30 58 0 #99000000, inset 0 0 32 0 #1A10EFFF"
                                 RenderTransformOrigin="0.5,0.5">
                             <Border.RenderTransform>
                                 <SkewTransform AngleX="4" AngleY="0"/>
                             </Border.RenderTransform>
                             <Grid RowDefinitions="*,Auto" RowSpacing="10">
                                 <Border CornerRadius="18"
-                                        Background="#3E111C24"
-                                        BorderBrush="#70D6FFFF"
-                                        BorderThickness="1"
-                                        BoxShadow="inset 0 0 30 0 #44000000, 0 10 24 0 #66000000">
+                                        Background="#48141A20"
+                                        BorderBrush="#8A64C7B6"
+                                        BorderThickness="1.1"
+                                        BoxShadow="inset 0 0 34 0 #55000000, 0 14 28 0 #77000000, 0 0 28 0 #2552FF9A">
                                     <Grid>
                                         <Ellipse Width="120"
                                                  Height="120"
@@ -2182,6 +2190,7 @@
                                             MinWidth="58"
                                             Margin="0,0,8,0"
                                             FontSize="17"
+                                            BorderBrush="#B8FFDCA8"
                                             Background="#080A12"
                                             Foreground="#F7EBD7"/>
                                     <Button Content="↔"
@@ -2191,6 +2200,7 @@
                                             MinWidth="58"
                                             Margin="0,0,8,0"
                                             FontSize="17"
+                                            BorderBrush="#E8D6FFFF"
                                             Background="#80F7FF"
                                             Foreground="#10080A"/>
                                     <Button Content="↑"
@@ -2199,6 +2209,7 @@
                                             Padding="14,9"
                                             MinWidth="58"
                                             FontSize="17"
+                                            BorderBrush="#FFFFDCA8"
                                             Background="#FF6C3E"
                                             Foreground="#10080A"/>
                                 </WrapPanel>
