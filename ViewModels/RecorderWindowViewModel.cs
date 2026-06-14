@@ -3544,8 +3544,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var normalized = Math.Clamp(peak / 100.0, 0, 1);
         var now = DateTimeOffset.Now.ToUnixTimeMilliseconds();
         var slowBreath = Math.Sin(now / 8600.0) * 0.5 + 0.5;
-        var flow = (now % 90000) / 90000.0;
-        var drift = Math.Sin(flow * Math.Tau) * 0.08;
+        var flow = (now % 76000) / 76000.0;
+        var drift = Math.Sin(flow * Math.Tau) * 0.12;
         var height = 12 + (normalized * 82) + slowBreath * 5;
         if (peak < 0.5)
         {
@@ -3557,29 +3557,29 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         // Audio is absorbed into the pools/glow. It should not yank the whole
         // room around like a meter; the river keeps its own slow gravity.
         var react = Math.Pow(normalized, 0.72);
-        var rawEnergy = isAudioActive ? react * 0.88 + idlePulse * 0.04 : idlePulse * 0.035;
-        // Fast enough to feel the strum, slow enough to drain like water.
+        var rawEnergy = isAudioActive ? react * 1.22 + idlePulse * 0.08 : idlePulse * 0.055;
+        // Big visual bloom, still with a slow drain so the stage does not twitch.
         var target = Math.Clamp(rawEnergy, 0, 1);
         var visualEnergy = target > VisualEnergy
-            ? VisualEnergy + (target - VisualEnergy) * 0.42
-            : VisualEnergy + (target - VisualEnergy) * 0.10;
+            ? VisualEnergy + (target - VisualEnergy) * 0.62
+            : VisualEnergy + (target - VisualEnergy) * 0.14;
         VisualEnergy = visualEnergy;
-        VisualCoreSize = 118 + visualEnergy * 190;
-        VisualBloomSize = 300 + visualEnergy * 420;
-        VisualBloomOpacity = (isAudioActive ? 0.14 : 0.07) + visualEnergy * 0.46;
-        VisualRoomScale = 1 + visualEnergy * 0.018;
-        VisualBackScale = 1 + visualEnergy * 0.025;
-        VisualMidScale = 1 + visualEnergy * 0.035;
-        VisualFrontScale = 1 + visualEnergy * 0.042;
-        VisualRoomTilt = -2 + drift * 0.7;
-        VisualDriftX = drift * 14;
-        VisualLiftY = -34 + flow * 68;
+        VisualCoreSize = 145 + visualEnergy * 360;
+        VisualBloomSize = 420 + visualEnergy * 820;
+        VisualBloomOpacity = (isAudioActive ? 0.22 : 0.10) + visualEnergy * 0.68;
+        VisualRoomScale = 1 + visualEnergy * 0.035;
+        VisualBackScale = 1 + visualEnergy * 0.055;
+        VisualMidScale = 1 + visualEnergy * 0.078;
+        VisualFrontScale = 1 + visualEnergy * 0.095;
+        VisualRoomTilt = -2 + drift * 1.1;
+        VisualDriftX = drift * 28;
+        VisualLiftY = -56 + flow * 116;
 
         // Spinning record layer: alive while recording or playing a saved take.
-        var spinSpeed = isAudioActive ? 9.0 + visualEnergy * 24 : 0;
+        var spinSpeed = isAudioActive ? 13.0 + visualEnergy * 42 : 1.2;
         RecordSpinAngle = (RecordSpinAngle + spinSpeed) % 360;
-        RecordSpinScale = 0.96 + visualEnergy * 0.12 + (isAudioActive ? 0.03 : 0);
-        RecordSpinOpacity = isAudioActive ? 0.70 + visualEnergy * 0.26 : 0.42;
+        RecordSpinScale = 0.98 + visualEnergy * 0.20 + (isAudioActive ? 0.04 : 0);
+        RecordSpinOpacity = isAudioActive ? 0.82 + visualEnergy * 0.18 : 0.52;
 
         // Recording badge pulses with the live signal.
         var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;

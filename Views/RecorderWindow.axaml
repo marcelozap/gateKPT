@@ -132,7 +132,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.78">
+                Opacity="0.92">
             <Ellipse Width="310"
                      Height="310"
                      Canvas.Left="628"
@@ -214,7 +214,7 @@
 
         <Canvas IsHitTestVisible="False"
                 ClipToBounds="False"
-                Opacity="0.94"
+                Opacity="1"
                 RenderTransformOrigin="0.5,0.5">
             <Canvas.RenderTransform>
                 <TransformGroup>
@@ -230,7 +230,7 @@
                   Height="250"
                   Canvas.Left="590"
                   Canvas.Top="116"
-                  Opacity="0.72"
+                  Opacity="0.92"
                   RenderTransformOrigin="0.5,0.5">
                 <Grid.RenderTransform>
                     <TransformGroup>
@@ -244,22 +244,22 @@
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Fill="#00000000"
-                         Stroke="#D8F8E6B8"
-                         StrokeThickness="2.2"/>
+                         Stroke="#FFF8E6B8"
+                         StrokeThickness="3.1"/>
                 <Ellipse Width="292"
                          Height="118"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
                          Fill="#00000000"
-                         Stroke="#8064C7B6"
-                         StrokeThickness="1.4"/>
+                         Stroke="#CC64C7B6"
+                         StrokeThickness="2.1"/>
                 <Ellipse Width="232"
                          Height="88"
                          HorizontalAlignment="Center"
                          VerticalAlignment="Center"
-                         Fill="#06080A12"
-                         Stroke="#64E9B06E"
-                         StrokeThickness="1"/>
+                         Fill="#12080A12"
+                         Stroke="#CCE9B06E"
+                         StrokeThickness="1.5"/>
                 <Path Data="M 22 122 C 74 46, 282 46, 338 122"
                       Stroke="#B0D6FFFF"
                       StrokeThickness="3"
@@ -271,17 +271,17 @@
                       StrokeLineCap="Round"
                       Stretch="None"/>
                 <Path Data="M 46 92 C 118 56, 202 58, 312 92 C 252 118, 124 122, 46 92 Z"
-                      Fill="#30F4E3BE"
-                      Stroke="#A0F8EFE0"
-                      StrokeThickness="1.5"/>
+                      Fill="#58F4E3BE"
+                      Stroke="#FFF8EFE0"
+                      StrokeThickness="2.3"/>
                 <Path Data="M 42 154 C 108 196, 238 196, 318 154 C 250 140, 120 138, 42 154 Z"
-                      Fill="#2AE9B06E"
-                      Stroke="#8CE9B06E"
-                      StrokeThickness="1.2"/>
+                      Fill="#55E9B06E"
+                      Stroke="#E8E9B06E"
+                      StrokeThickness="2"/>
                 <Path Data="M 82 126 C 132 104, 228 106, 282 126 C 236 144, 130 146, 82 126 Z"
-                      Fill="#2A64C7B6"
-                      Stroke="#7F64C7B6"
-                      StrokeThickness="1.2"/>
+                      Fill="#5064C7B6"
+                      Stroke="#E064C7B6"
+                      StrokeThickness="2"/>
             </Grid>
             <Ellipse Width="{Binding VisualBloomSize}"
                      Height="210"
@@ -294,29 +294,29 @@
                      Canvas.Left="655"
                      Canvas.Top="392"
                      Fill="#2FA38F"
-                     Opacity="0.42"/>
+                     Opacity="0.72"/>
             <Ellipse Width="{Binding VisualBloomSize}"
                      Height="160"
                      Canvas.Left="250"
                      Canvas.Top="330"
                      Fill="#B14A6E"
-                     Opacity="0.13"/>
+                     Opacity="0.31"/>
             <Ellipse Width="{Binding VisualCoreSize}"
                      Height="88"
                      Canvas.Left="1015"
                      Canvas.Top="374"
                      Fill="#FFA94F"
-                     Opacity="0.18"/>
+                     Opacity="0.42"/>
             <Path Data="M 654 126 L 742 76 L 842 106 L 910 196 L 878 310 L 770 374 L 650 334 L 586 220 Z"
-                  Fill="#041C2F5D"
-                  Stroke="#6830A898"
+                  Fill="#101C2F5D"
+                  Stroke="#A830A898"
                   StrokeThickness="1.8"/>
             <Path Data="M 676 156 L 746 112 L 830 138 L 878 208 L 850 292 L 770 338 L 680 306 L 632 226 Z"
-                  Fill="#071D42D8"
-                  Stroke="#882FA38F"
+                  Fill="#141D42D8"
+                  Stroke="#D82FA38F"
                   StrokeThickness="1.45"/>
             <Path Data="M 704 186 L 758 152 L 818 174 L 850 224 L 826 278 L 770 310 L 710 286 L 678 232 Z"
-                  Fill="#154F6AE8"
+                  Fill="#2D4F6AE8"
                   Stroke="#B0F4E3BE"
                   StrokeThickness="1.45"/>
             <Path Data="M 730 212 L 764 188 L 804 204 L 824 238 L 804 272 L 766 292 L 730 272 L 708 236 Z"
@@ -327,19 +327,19 @@
                      Height="104"
                      Canvas.Left="708"
                      Canvas.Top="178"
-                     Fill="#142FA38F"/>
+                     Fill="#302FA38F"/>
             <Ellipse Width="52"
                      Height="52"
                      Canvas.Left="734"
                      Canvas.Top="204"
-                     Fill="#66FFF3D6"/>
+                     Fill="#A8FFF3D6"/>
 
             <Path Data="M 250 420 C 210 368, 244 310, 312 292 C 392 270, 492 304, 526 370 C 558 432, 500 502, 410 510 C 330 518, 278 474, 250 420 Z"
-                  Fill="#16FF251E"
+                  Fill="#32FF251E"
                   Stroke="#E8FFD0A8"
                   StrokeThickness="2.05"/>
             <Path Data="M 282 414 C 250 376, 284 340, 342 328 C 400 316, 462 338, 486 384 C 506 424, 462 472, 398 478 C 338 484, 306 448, 282 414 Z"
-                  Fill="#18FF8A5E"
+                  Fill="#35FF8A5E"
                   Stroke="#A0F4E6CF"
                   StrokeThickness="1.35"/>
             <Rectangle Width="34" Height="24" Canvas.Left="306" Canvas.Top="334" Fill="#55FFD17A" RadiusX="5" RadiusY="5"/>
@@ -361,7 +361,7 @@
                   Stretch="None"/>
 
             <Path Data="M 960 376 C 1072 274, 1264 280, 1398 386 C 1276 396, 1148 456, 978 596 C 990 512, 980 438, 960 376 Z"
-                  Fill="#0D4DBB70"
+                  Fill="#244DBB70"
                   Stroke="#CC64C7B6"
                   StrokeThickness="1.9"/>
             <Path Data="M 986 382 C 1106 318, 1220 316, 1364 390 M 1004 416 C 1122 364, 1224 364, 1340 426 M 1024 452 C 1138 414, 1220 420, 1312 466 M 1046 492 C 1154 466, 1216 478, 1282 512 M 1078 532 C 1162 522, 1212 532, 1250 552"
@@ -378,16 +378,16 @@
                   Stretch="None"/>
 
             <Path Data="M 150 188 C 270 88, 386 264, 510 172 S 742 66, 928 186 S 1210 104, 1390 176"
-                  Stroke="#28F4E3BE"
-                  StrokeThickness="0.75"
+                  Stroke="#42F4E3BE"
+                  StrokeThickness="1.25"
                   Stretch="Fill"/>
             <Path Data="M 142 210 C 272 112, 400 284, 526 198 S 752 96, 930 212 S 1220 134, 1398 206"
-                  Stroke="#302FA38F"
-                  StrokeThickness="0.7"
+                  Stroke="#502FA38F"
+                  StrokeThickness="1.15"
                   Stretch="Fill"/>
             <Path Data="M 136 234 C 268 142, 410 314, 540 228 S 768 124, 940 238 S 1234 160, 1404 230"
-                  Stroke="#28E07A2E"
-                  StrokeThickness="0.7"
+                  Stroke="#50E07A2E"
+                  StrokeThickness="1.15"
                   Stretch="Fill"/>
         </Canvas>
 
