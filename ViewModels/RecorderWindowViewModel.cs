@@ -55,6 +55,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private bool _recordingSignalSeen;
     private int? _activeCaptureLayerNumber;
     private string _activeCaptureLabel = "recording";
+    private double[] _playbackEnvelope = [];
+    private DateTimeOffset _playbackVisualStartedAt = DateTimeOffset.MinValue;
+    private TimeSpan _playbackVisualDuration = TimeSpan.Zero;
+    private bool _isPlaybackVisualActive;
 
     [ObservableProperty]
     private string _inputName = "Scarlett not selected";
@@ -709,7 +713,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         _diagnostics = new RecorderDiagnosticLog(_versions.RootDirectory);
         _recordingTimer.Tick += (_, _) => UpdateRecordingElapsed();
-        _visualTimer.Tick += (_, _) => PushSignalBar(IsRecording ? PeakPercent : 0);
+        _visualTimer.Tick += (_, _) => DriveVisualTick();
         for (var index = 0; index < 48; index++)
         {
             SignalBars.Add(10 + (index % 6) * 2);
@@ -1111,11 +1115,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         CurrentFilePath = path;
+        StopPlaybackVisual();
         _playback.StopAll();
         var metrics = AudioPreviewService.InspectMetrics(path);
         var outputId = SelectedOutputDevice?.Id ?? "";
         var outputName = _playback.GetOutputName(outputId);
         var result = _playback.PlayOnce(0, path, 100, outputId);
+        if (result.Success)
+        {
+            StartPlaybackVisual(path, metrics.Duration);
+        }
+
         Status = result.Success
             ? $"Playing latest inside GateKPT -> {outputName}: {Path.GetFileName(path)}"
             : result.Message;
@@ -1156,6 +1166,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void StopPlayback()
     {
         _playback.StopAll();
+        StopPlaybackVisual();
         Status = "Internal playback stopped. If Windows player opened, close/pause it there.";
     }
 
@@ -3427,6 +3438,75 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
     }
 
+    private void DriveVisualTick()
+    {
+        var drivePeak = GetVisualDrivePeak();
+        if (_isPlaybackVisualActive)
+        {
+            if (Math.Abs(PeakPercent - drivePeak) > 0.1)
+            {
+                PeakPercent = drivePeak;
+            }
+            else
+            {
+                PushSignalBar(drivePeak);
+            }
+
+            return;
+        }
+
+        PushSignalBar(drivePeak);
+    }
+
+    private double GetVisualDrivePeak()
+    {
+        if (IsRecording)
+        {
+            return PeakPercent;
+        }
+
+        if (!_isPlaybackVisualActive || _playbackEnvelope.Length == 0 || _playbackVisualDuration <= TimeSpan.Zero)
+        {
+            return 0;
+        }
+
+        var elapsed = DateTimeOffset.Now - _playbackVisualStartedAt;
+        if (elapsed >= _playbackVisualDuration)
+        {
+            StopPlaybackVisual();
+            return 0;
+        }
+
+        var progress = Math.Clamp(elapsed.TotalMilliseconds / Math.Max(1, _playbackVisualDuration.TotalMilliseconds), 0, 0.999);
+        var index = (int)Math.Clamp(progress * _playbackEnvelope.Length, 0, _playbackEnvelope.Length - 1);
+        return _playbackEnvelope[index];
+    }
+
+    private void StartPlaybackVisual(string path, TimeSpan duration)
+    {
+        _playbackEnvelope = AudioPreviewService.BuildEnvelope(path);
+        _playbackVisualDuration = duration > TimeSpan.Zero ? duration : TimeSpan.FromSeconds(Math.Max(1, _playbackEnvelope.Length / 12.0));
+        _playbackVisualStartedAt = DateTimeOffset.Now;
+        _isPlaybackVisualActive = _playbackEnvelope.Length > 0;
+        if (!_isPlaybackVisualActive)
+        {
+            PeakPercent = 0;
+        }
+    }
+
+    private void StopPlaybackVisual()
+    {
+        _isPlaybackVisualActive = false;
+        _playbackEnvelope = [];
+        _playbackVisualDuration = TimeSpan.Zero;
+        _playbackVisualStartedAt = DateTimeOffset.MinValue;
+        if (!IsRecording)
+        {
+            PeakPercent = 0;
+            PushSignalBar(0);
+        }
+    }
+
     partial void OnPeakPercentChanged(double value)
     {
         PushSignalBar(value);
@@ -3459,11 +3539,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             height = 10 + slowBreath * 6;
         }
 
-        var idlePulse = IsRecording ? 0.5 + Math.Sin(now / 9800.0) * 0.5 : 0;
+        var isAudioActive = IsRecording || _isPlaybackVisualActive;
+        var idlePulse = isAudioActive ? 0.5 + Math.Sin(now / 9800.0) * 0.5 : 0;
         // Punch up the loud end so the room visibly reacts to the music, with a fast
         // attack and a small idle shimmer so it never looks frozen.
         var react = Math.Pow(normalized, 0.72);
-        var rawEnergy = IsRecording ? react * 0.96 + idlePulse * 0.05 : 0;
+        var rawEnergy = isAudioActive ? react * 0.96 + idlePulse * 0.05 : 0;
         // Fast attack, slower release so transients pop and then settle smoothly.
         var target = Math.Clamp(rawEnergy, 0, 1);
         var visualEnergy = target > VisualEnergy
@@ -3472,20 +3553,20 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         VisualEnergy = visualEnergy;
         VisualCoreSize = 130 + visualEnergy * 230;
         VisualBloomSize = 340 + visualEnergy * 470;
-        VisualBloomOpacity = (IsRecording ? 0.16 : 0.08) + visualEnergy * 0.5;
+        VisualBloomOpacity = (isAudioActive ? 0.16 : 0.08) + visualEnergy * 0.5;
         VisualRoomScale = 1 + visualEnergy * 0.04;
         VisualBackScale = 1 + visualEnergy * 0.055;
         VisualMidScale = 1 + visualEnergy * 0.07;
         VisualFrontScale = 1 + visualEnergy * 0.08;
         VisualRoomTilt = -3 + drift * 1.2;
         VisualDriftX = drift * 22;
-        VisualLiftY = IsRecording ? -80 + flow * 170 + visualEnergy * 18 : 0;
+        VisualLiftY = isAudioActive ? -80 + flow * 170 + visualEnergy * 18 : 0;
 
-        // Spinning record layer: slow at idle, noticeably alive while capturing.
-        var spinSpeed = IsRecording ? 9.0 + visualEnergy * 24 : 0;
+        // Spinning record layer: alive while recording or playing a saved take.
+        var spinSpeed = isAudioActive ? 9.0 + visualEnergy * 24 : 0;
         RecordSpinAngle = (RecordSpinAngle + spinSpeed) % 360;
-        RecordSpinScale = 0.96 + visualEnergy * 0.12 + (IsRecording ? 0.03 : 0);
-        RecordSpinOpacity = IsRecording ? 0.70 + visualEnergy * 0.26 : 0.42;
+        RecordSpinScale = 0.96 + visualEnergy * 0.12 + (isAudioActive ? 0.03 : 0);
+        RecordSpinOpacity = isAudioActive ? 0.70 + visualEnergy * 0.26 : 0.42;
 
         // Recording badge pulses with the live signal.
         var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;

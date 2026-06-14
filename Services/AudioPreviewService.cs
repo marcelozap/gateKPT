@@ -64,6 +64,80 @@ public static class AudioPreviewService
         }
     }
 
+    public static double[] BuildEnvelope(string path, int bins = 240)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            return [];
+        }
+
+        try
+        {
+            using var reader = new AudioFileReader(path);
+            var binCount = Math.Max(24, bins);
+            var binSquares = new double[binCount];
+            var binCounts = new long[binCount];
+            var binPeaks = new float[binCount];
+            var channels = Math.Max(1, reader.WaveFormat.Channels);
+            var totalFrames = Math.Max(1L, (long)(reader.TotalTime.TotalSeconds * reader.WaveFormat.SampleRate));
+            var buffer = new float[Math.Max(reader.WaveFormat.SampleRate / 10, 4096) * channels];
+            var frameIndex = 0L;
+            int read;
+            while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                for (var index = 0; index < read; index += channels)
+                {
+                    var sum = 0d;
+                    var peak = 0f;
+                    for (var channel = 0; channel < channels && index + channel < read; channel++)
+                    {
+                        var sample = float.IsFinite(buffer[index + channel]) ? buffer[index + channel] : 0;
+                        var value = Math.Abs(sample);
+                        sum += sample * sample;
+                        peak = Math.Max(peak, value);
+                    }
+
+                    var bin = (int)Math.Clamp(frameIndex * binCount / totalFrames, 0, binCount - 1);
+                    binSquares[bin] += sum / channels;
+                    binCounts[bin]++;
+                    binPeaks[bin] = Math.Max(binPeaks[bin], peak);
+                    frameIndex++;
+                }
+            }
+
+            var envelope = new double[binCount];
+            for (var index = 0; index < binCount; index++)
+            {
+                var rms = binCounts[index] <= 0 ? 0 : Math.Sqrt(binSquares[index] / binCounts[index]);
+                envelope[index] = Math.Clamp(Math.Max(rms * 320, binPeaks[index] * 24), 0, 100);
+            }
+
+            SmoothEnvelope(envelope);
+            return envelope;
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private static void SmoothEnvelope(double[] envelope)
+    {
+        if (envelope.Length < 3)
+        {
+            return;
+        }
+
+        var previous = envelope[0];
+        for (var index = 1; index < envelope.Length; index++)
+        {
+            envelope[index] = envelope[index] > previous
+                ? previous + (envelope[index] - previous) * 0.78
+                : previous + (envelope[index] - previous) * 0.36;
+            previous = envelope[index];
+        }
+    }
+
     private static string BuildWaveform(float[] peaks)
     {
         var chars = new char[peaks.Length];
