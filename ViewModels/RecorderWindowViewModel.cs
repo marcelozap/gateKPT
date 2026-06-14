@@ -910,11 +910,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
             if (SelectedInputDevice is null)
             {
-                Status = "No input selected. Click FIND INPUT and choose the real Scarlett/RC-505 input.";
+                Status = "No input selected. Press INPUT, then CAPTURE.";
                 return;
             }
 
             InputName = SelectedInputDevice.Name;
+            Status = $"Input ready: {InputName}";
 
             StopVisualMeter();
             PeakPercent = 0;

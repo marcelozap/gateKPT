@@ -1567,12 +1567,11 @@
                                     Background="#2B120D"
                                     Foreground="#F7EBD7"/>
                             <Button Grid.Column="4"
-                                    Content="HARVEST"
-                                    IsVisible="False"
-                                    ToolTip.Tip="Find long-session clips"
-                                    Command="{Binding HarvestVoiceCommand}"
+                                    Content="INPUT"
+                                    ToolTip.Tip="Pick Scarlett / RC-505 input"
+                                    Command="{Binding FindScarlettCommand}"
                                     Padding="18,12"
-                                    MinWidth="112"
+                                    MinWidth="102"
                                     MinHeight="50"
                                     Margin="0"
                                     FontSize="13"
@@ -1580,8 +1579,8 @@
                                     LetterSpacing="1"
                                     BorderBrush="#B0D6FFFF"
                                     BorderThickness="1"
-                                    Background="#234C45"
-                                    Foreground="#F7EBD7"/>
+                                    Background="#102432"
+                                    Foreground="#D6FFFF"/>
                             <TextBox Grid.Column="5"
                                      IsVisible="False"
                                      Text="{Binding SessionName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
