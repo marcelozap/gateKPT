@@ -1401,8 +1401,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         LastExportedMixPath = result.Path;
         RefreshVersions();
         SelectedVersion = Versions.FirstOrDefault(item => item.Path == result.Path) ?? SelectedVersion;
-        Status = result.Message;
-        CommandResult = $"Mix ready: {Path.GetFileName(result.Path)}";
+        Status = $"One WAV ready from {sourcePaths.Count} take(s).";
+        CommandResult = $"Made one WAV: {Path.GetFileName(result.Path)}";
     }
 
     [RelayCommand]
@@ -2434,6 +2434,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             || command.Contains("mixdown", StringComparison.OrdinalIgnoreCase)
             || command.Equals("mix", StringComparison.OrdinalIgnoreCase)
             || command.Contains("mix session", StringComparison.OrdinalIgnoreCase)
+            || command.Contains("one wav", StringComparison.OrdinalIgnoreCase)
             || command.Contains("combine", StringComparison.OrdinalIgnoreCase)
             || command.Contains("bounce", StringComparison.OrdinalIgnoreCase))
         {

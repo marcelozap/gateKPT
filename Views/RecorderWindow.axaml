@@ -1537,8 +1537,8 @@
                                     Background="#FFF4E6CF"
                                     Foreground="#120918"/>
                             <Button Grid.Column="2"
-                                    Content="MIX"
-                                    ToolTip.Tip="Mix session"
+                                    Content="1 WAV"
+                                    ToolTip.Tip="Combine this session into one WAV"
                                     Command="{Binding MixSessionTakesCommand}"
                                     Padding="18,12"
                                     MinWidth="92"
