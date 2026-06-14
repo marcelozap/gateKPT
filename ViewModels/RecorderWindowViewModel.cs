@@ -119,6 +119,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     [ObservableProperty]
     private double _recGlowOpacity = 0.55;
 
+    [ObservableProperty]
+    private double _recordSpinAngle = 0;
+
+    [ObservableProperty]
+    private double _recordSpinScale = 1;
+
+    [ObservableProperty]
+    private double _recordSpinOpacity = 0.22;
+
     // Stage mode: hide all chrome so the screen is a clean, screen-recordable living stage.
     [ObservableProperty]
     private bool _stageMode = false;
@@ -3468,7 +3477,13 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         VisualFrontScale = 1 + visualEnergy * 0.08;
         VisualRoomTilt = -3 + drift * 1.2;
         VisualDriftX = drift * 22;
-        VisualLiftY = -80 + flow * 170 + visualEnergy * 6;
+        VisualLiftY = -80 + flow * 170 + visualEnergy * 18;
+
+        // Spinning record layer: slow at idle, noticeably alive while capturing.
+        var spinSpeed = IsRecording ? 6.5 + visualEnergy * 18 : 0.55 + visualEnergy * 2.4;
+        RecordSpinAngle = (RecordSpinAngle + spinSpeed) % 360;
+        RecordSpinScale = 0.96 + visualEnergy * 0.12 + (IsRecording ? 0.03 : 0);
+        RecordSpinOpacity = IsRecording ? 0.50 + visualEnergy * 0.28 : 0.20 + visualEnergy * 0.16;
 
         // Recording badge pulses with the live signal.
         var recBeat = 0.5 + Math.Sin(now / 520.0) * 0.5;

@@ -1313,6 +1313,61 @@
                               Stretch="None"
                               IsHitTestVisible="False"/>
 
+                        <Grid Grid.RowSpan="3"
+                              Width="188"
+                              Height="188"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Center"
+                              Margin="0,-30,30,0"
+                              Opacity="{Binding RecordSpinOpacity}"
+                              RenderTransformOrigin="0.5,0.5"
+                              IsHitTestVisible="False">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="{Binding RecordSpinAngle}"/>
+                                    <ScaleTransform ScaleX="{Binding RecordSpinScale}"
+                                                    ScaleY="{Binding RecordSpinScale}"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Ellipse Fill="#0F03050A"
+                                     Stroke="#D0F8EFE0"
+                                     StrokeThickness="1.2"/>
+                            <Ellipse Width="156"
+                                     Height="156"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="#22080A12"
+                                     Stroke="#8C64C7B6"
+                                     StrokeThickness="1"/>
+                            <Ellipse Width="114"
+                                     Height="114"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="#1808060C"
+                                     Stroke="#66E1786E"
+                                     StrokeThickness="1"/>
+                            <Ellipse Width="54"
+                                     Height="54"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="#C8F8EFE0"
+                                     Stroke="#FFE9B06E"
+                                     StrokeThickness="2"/>
+                            <Ellipse Width="13"
+                                     Height="13"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="#06070C"/>
+                            <Path Data="M 20 92 C 54 78, 92 78, 128 92 S 164 106, 184 92"
+                                  Stroke="#B064C7B6"
+                                  StrokeThickness="2.2"
+                                  StrokeLineCap="Round"
+                                  Stretch="Fill"/>
+                            <Path Data="M 92 8 L 104 72 L 92 92 L 80 72 Z"
+                                  Fill="#66E1786E"
+                                  Stretch="Fill"/>
+                        </Grid>
+
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="18">
                             <StackPanel>
                                 <TextBlock Text="GateKPT Music OS"
