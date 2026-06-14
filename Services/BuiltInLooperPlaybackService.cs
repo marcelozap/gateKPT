@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -62,9 +63,11 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                 Volume = (float)Math.Clamp(volume / 100.0, 0, 1)
             };
             var loop = new LoopStream(reader);
+            ForceCurrentProcessVolumeToMax();
             var output = CreateOutput(outputDeviceId);
             output.Init(loop);
             output.Play();
+            ForceCurrentProcessVolumeToMaxSoon();
             _playing[trackNumber] = new PlaybackHandle(reader, loop, output);
             return new LooperPlaybackResult(true, $"Looping track {trackNumber}: {Path.GetFileName(path)}");
         }
@@ -94,6 +97,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
             var output = CreateOutput(outputDeviceId);
             output.Init(reader);
             output.Play();
+            ForceCurrentProcessVolumeToMaxSoon();
             _playing[trackNumber] = new PlaybackHandle(reader, output);
             return new LooperPlaybackResult(true, $"Playing: {Path.GetFileName(path)}");
         }
@@ -126,6 +130,7 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
                     }.Take(TimeSpan.FromSeconds(1.4));
                     output.Init(signal);
                     output.Play();
+                    ForceCurrentProcessVolumeToMaxSoon();
                     outputs.Add(output);
                     labels.Add(candidate.Label);
                 }
@@ -220,6 +225,18 @@ public sealed class BuiltInLooperPlaybackService : IDisposable
         {
             // Windows sometimes locks mixer state; playback still continues through normal fallbacks.
         }
+    }
+
+    private static void ForceCurrentProcessVolumeToMaxSoon()
+    {
+        ForceCurrentProcessVolumeToMax();
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(180);
+            ForceCurrentProcessVolumeToMax();
+            await Task.Delay(520);
+            ForceCurrentProcessVolumeToMax();
+        });
     }
 
     private static IEnumerable<OutputCandidate> CreateTestOutputCandidates(string outputDeviceId)
