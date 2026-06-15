@@ -504,9 +504,22 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         get
         {
             var mixable = Versions.Count(version => IsMixableTake(version.Path));
-            return mixable <= 1
+            var countLabel = mixable <= 1
                 ? "One take"
                 : $"{mixable} takes";
+            return string.IsNullOrWhiteSpace(TakeHealthLabel)
+                ? countLabel
+                : $"{countLabel} / {TakeHealthLabel}";
+        }
+    }
+
+    public string TakeHealthLabel
+    {
+        get
+        {
+            var path = SelectedVersion?.Path ?? CurrentFilePath;
+            var metrics = AudioPreviewService.InspectMetrics(path);
+            return BuildTakeHealthLabel(metrics);
         }
     }
 
@@ -516,27 +529,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             var path = SelectedVersion?.Path ?? CurrentFilePath;
             var metrics = AudioPreviewService.InspectMetrics(path);
-            if (!metrics.Success)
-            {
-                return "Choose a take.";
-            }
-
-            if (metrics.Duration.TotalSeconds < 8)
-            {
-                return "Short.";
-            }
-
-            if (metrics.RmsPercent < 0.20)
-            {
-                return "Quiet.";
-            }
-
-            if (metrics.PeakPercent > 96)
-            {
-                return "Hot.";
-            }
-
-            return $"{metrics.Duration:mm\\:ss}";
+            return BuildTakeHealthLabel(metrics);
         }
     }
 
@@ -2751,6 +2744,31 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _diagnostics.Write(message);
     }
 
+    private static string BuildTakeHealthLabel(AudioPreviewMetrics metrics)
+    {
+        if (!metrics.Success)
+        {
+            return "";
+        }
+
+        if (metrics.Duration.TotalSeconds < 0.75)
+        {
+            return "Short";
+        }
+
+        if (metrics.PeakPercent > 96)
+        {
+            return "Hot";
+        }
+
+        if (metrics.RmsPercent < 0.25)
+        {
+            return "Quiet";
+        }
+
+        return "Good";
+    }
+
     private void WriteTakeMetadata(string path, AudioPreviewMetrics metrics, string repairMessage)
     {
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
@@ -2780,6 +2798,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 lane = SelectedCaptureLane?.Name ?? ActiveRecordingName,
                 label = _activeCaptureLabel,
                 input = SelectedInputDevice?.Name ?? InputName,
+                inputMode = repairMessage.Contains("Input 1 locked", StringComparison.OrdinalIgnoreCase)
+                    ? "Scarlett input 1 locked to stereo"
+                    : "auto",
+                health = BuildTakeHealthLabel(metrics),
                 savedAt = DateTimeOffset.Now,
                 durationSeconds = Math.Round(metrics.Duration.TotalSeconds, 3),
                 peakPercent = Math.Round(metrics.PeakPercent, 3),
@@ -3432,6 +3454,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(VersionListHint));
         OnPropertyChanged(nameof(VisualPaintingSignal));
         OnPropertyChanged(nameof(SessionFolderLabel));
+        OnPropertyChanged(nameof(TakeHealthLabel));
         OnPropertyChanged(nameof(SelectedTakeMixLabel));
     }
 
@@ -3774,6 +3797,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
         OnPropertyChanged(nameof(PostReadySignal));
+        OnPropertyChanged(nameof(TakeHealthLabel));
+        OnPropertyChanged(nameof(SelectedTakeMixLabel));
         OnPropertyChanged(nameof(RecorderStateLabel));
         OnPropertyChanged(nameof(NextActionLabel));
     }
@@ -3794,6 +3819,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(LatestTakeTitle));
         OnPropertyChanged(nameof(LatestTakeDetail));
         OnPropertyChanged(nameof(PostReadySignal));
+        OnPropertyChanged(nameof(TakeHealthLabel));
+        OnPropertyChanged(nameof(SelectedTakeMixLabel));
     }
 
     partial void OnLastExportedMixPathChanged(string value)

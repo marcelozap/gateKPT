@@ -74,10 +74,13 @@ public sealed class PlayableTakeRepairService
             var leftRms = routing.Left.Rms * 100;
             var rightRms = routing.Right.Rms * 100;
             var peakPercent = Math.Max(routing.Left.Peak, routing.Right.Peak) * 100;
+            var inputMode = routing.Left.Index == 0 && routing.Right.Index == 0
+                ? "Input 1 locked to stereo"
+                : $"Channels {routing.Left.Index + 1}/{routing.Right.Index + 1}";
             return new PlayableTakeRepairResult(
                 true,
                 sourcePath,
-                $"Playable stereo take boosted and verified. Duration {stats.DurationSeconds:0.0}s. Input L ch {routing.Left.Index + 1} RMS {leftRms:0.00}%, R ch {routing.Right.Index + 1} RMS {rightRms:0.00}%, peak {peakPercent:0.0}%. Raw capture archived.");
+                $"Playable stereo take boosted and verified. {inputMode}. Duration {stats.DurationSeconds:0.0}s. L RMS {leftRms:0.00}%, R RMS {rightRms:0.00}%, peak {peakPercent:0.0}%. Raw capture archived.");
         }
         catch (Exception ex)
         {
