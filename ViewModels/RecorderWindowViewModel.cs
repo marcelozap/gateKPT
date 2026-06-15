@@ -636,6 +636,24 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "vertical short"
             : "same shape";
 
+    public bool IsScreenCapturing => _screenCapture.IsRecording;
+
+    public string ScreenCaptureActionLabel => IsScreenCapturing ? "STOP" : "REC";
+
+    public string VideoLaneTitle =>
+        IsScreenCapturing
+            ? $"screen {RecordingElapsedLabel}"
+            : string.IsNullOrWhiteSpace(LastVideoOutputPath)
+                ? "screen / elgato / clips"
+                : Path.GetFileName(LastVideoOutputPath);
+
+    public string VideoLaneStatus =>
+        IsScreenCapturing
+            ? "mark good moments while it runs"
+            : string.IsNullOrWhiteSpace(VideoWorkflowStatus)
+                ? HarvestStatus
+                : VideoWorkflowStatus;
+
     public string ContentPackTakeLabel
     {
         get
@@ -1585,6 +1603,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         VideoWorkflowStatus = result.Message;
         Status = result.Message;
+        OnPropertyChanged(nameof(IsScreenCapturing));
+        OnPropertyChanged(nameof(ScreenCaptureActionLabel));
+        OnPropertyChanged(nameof(VideoLaneTitle));
+        OnPropertyChanged(nameof(VideoLaneStatus));
     }
 
     [RelayCommand]
@@ -1604,6 +1626,35 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : $" Markers: {_screenCaptureMarkers.Count}. Type clip last to cut the last moment.";
         VideoWorkflowStatus = result.Message + markerSummary;
         Status = result.Message;
+        OnPropertyChanged(nameof(IsScreenCapturing));
+        OnPropertyChanged(nameof(ScreenCaptureActionLabel));
+        OnPropertyChanged(nameof(VideoLaneTitle));
+        OnPropertyChanged(nameof(VideoLaneStatus));
+    }
+
+    [RelayCommand]
+    private void ToggleScreenCapture()
+    {
+        if (_screenCapture.IsRecording)
+        {
+            StopScreenCapture();
+        }
+        else
+        {
+            StartScreenCapture();
+        }
+    }
+
+    [RelayCommand]
+    private void MarkMoment()
+    {
+        DropScreenCaptureMarker("clip this");
+    }
+
+    [RelayCommand]
+    private void ClipLastMoment()
+    {
+        ClipLastScreenCaptureMarker();
     }
 
     [RelayCommand]
@@ -3647,6 +3698,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(RecordingGuardLabel));
         OnPropertyChanged(nameof(CaptureInstruction));
+        OnPropertyChanged(nameof(VideoLaneTitle));
     }
 
     partial void OnInputNameChanged(string value)
@@ -3699,12 +3751,25 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(PhoneVideoLabel));
         OnPropertyChanged(nameof(VideoLayerTitle));
         OnPropertyChanged(nameof(VideoLayerDetail));
+        OnPropertyChanged(nameof(VideoLaneStatus));
     }
 
     partial void OnLastVideoOutputPathChanged(string value)
     {
         OnPropertyChanged(nameof(LastVideoOutputLabel));
         OnPropertyChanged(nameof(VideoLayerDetail));
+        OnPropertyChanged(nameof(VideoLaneTitle));
+        OnPropertyChanged(nameof(VideoLaneStatus));
+    }
+
+    partial void OnVideoWorkflowStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(VideoLaneStatus));
+    }
+
+    partial void OnHarvestStatusChanged(string value)
+    {
+        OnPropertyChanged(nameof(VideoLaneStatus));
     }
 
     partial void OnLastContentPackPathChanged(string value)
@@ -3721,6 +3786,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(VideoSyncLabel));
         OnPropertyChanged(nameof(VideoLayerDetail));
+        OnPropertyChanged(nameof(VideoLaneStatus));
     }
 
     partial void OnVideoExportPresetChanged(string value)
