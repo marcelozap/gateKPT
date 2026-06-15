@@ -13,7 +13,10 @@ public static class AutoSaveFileNamer
         Directory.CreateDirectory(directory);
         var safeLabel = Sanitize(label);
         var safeExtension = extension.StartsWith('.') ? extension : $".{extension}";
-        return Path.Combine(directory, $"{safeLabel}-{DateTime.Now:yyyyMMdd-HHmmss}{safeExtension}");
+        var takeNumber = Directory
+            .GetFiles(directory, $"{safeLabel}-*{safeExtension}")
+            .Length + 1;
+        return Path.Combine(directory, $"{safeLabel}-{takeNumber:00}-{DateTime.Now:yyyyMMdd-HHmmss}{safeExtension}");
     }
 
     public static string Sanitize(string value)
