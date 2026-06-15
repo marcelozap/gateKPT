@@ -1684,7 +1684,7 @@
                                 </Grid>
                             </Button>
                             <Button Grid.Column="1"
-                                    Content="▶"
+                                    Content="Play"
                                     ToolTip.Tip="Play latest"
                                     Command="{Binding PlaySelectedCommand}"
                                     Padding="18,12"
@@ -1699,7 +1699,7 @@
                                     Background="#FFFFE7B5"
                                     Foreground="#120918"/>
                             <Button Grid.Column="2"
-                                    Content="1 WAV"
+                                    Content="Mix"
                                     ToolTip.Tip="Combine this session into one WAV"
                                     Command="{Binding MixSessionTakesCommand}"
                                     Padding="18,12"
@@ -1714,7 +1714,7 @@
                                     Background="#79E0D1"
                                     Foreground="#120918"/>
                             <Button Grid.Column="3"
-                                    Content="FILES"
+                                    Content="Files"
                                     ToolTip.Tip="Open folder"
                                     Command="{Binding OpenFolderCommand}"
                                     Padding="18,12"
@@ -2542,7 +2542,7 @@
                                     BorderBrush="#FFFFDCA8"
                                     Background="#FF6C3E"
                                     Foreground="#080A12"/>
-                            <Button Content="MARK"
+                            <Button Content="Pin"
                                     Command="{Binding MarkMomentCommand}"
                                     Padding="16,11"
                                     MinWidth="92"
@@ -2550,7 +2550,7 @@
                                     BorderBrush="#E8D6FFFF"
                                     Background="#80F7FF"
                                     Foreground="#120918"/>
-                            <Button Content="CLIP"
+                            <Button Content="Cut"
                                     Command="{Binding ClipLastMomentCommand}"
                                     Padding="16,11"
                                     MinWidth="84"
@@ -2558,7 +2558,7 @@
                                     BorderBrush="#FFFFF3D6"
                                     Background="#FFFFE7B5"
                                     Foreground="#120918"/>
-                            <Button Content="INBOX"
+                            <Button Content="In"
                                     Command="{Binding OpenVoiceInboxCommand}"
                                     Padding="16,11"
                                     MinWidth="104"
@@ -2566,7 +2566,7 @@
                                     BorderBrush="#B8E9B06E"
                                     Background="#26110B"
                                     Foreground="#F8EFE0"/>
-                            <Button Content="FIND"
+                            <Button Content="Scan"
                                     Command="{Binding HarvestVoiceCommand}"
                                     Padding="16,11"
                                     MinWidth="110"
@@ -2574,7 +2574,7 @@
                                     BorderBrush="#A8FFDCA8"
                                     Background="#07151A"
                                     Foreground="#FFDCA8"/>
-                            <Button Content="OUT"
+                            <Button Content="Out"
                                     Command="{Binding OpenVideoOutputFolderCommand}"
                                     Padding="16,11"
                                     MinWidth="96"
