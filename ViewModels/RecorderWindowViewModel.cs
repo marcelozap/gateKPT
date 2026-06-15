@@ -2760,7 +2760,17 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         try
         {
-            var metadataPath = Path.ChangeExtension(path, ".json");
+            var takeDirectory = Path.GetDirectoryName(path);
+            if (string.IsNullOrWhiteSpace(takeDirectory))
+            {
+                return;
+            }
+
+            var metadataDirectory = Path.Combine(takeDirectory, ".gatekpt");
+            Directory.CreateDirectory(metadataDirectory);
+            var metadataPath = Path.Combine(
+                metadataDirectory,
+                $"{Path.GetFileNameWithoutExtension(path)}.json");
             var payload = new
             {
                 kind = "gatekpt-take",
