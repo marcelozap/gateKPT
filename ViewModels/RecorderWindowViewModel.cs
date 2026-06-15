@@ -756,7 +756,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             : "Ready. Press the record disc and play.";
         SignalProbeSummary = SelectedInputDevice is null
             ? ""
-            : $"Input: {SelectedInputDevice.Name}";
+            : "Input locked.";
         RefreshVersions();
         LoadTasteMemories();
         RestoreLayerDeck();
@@ -845,7 +845,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         {
             InputName = SelectedInputDevice.Name;
             Status = "Input locked.";
-            SignalProbeSummary = SelectedInputDevice.Name;
+            SignalProbeSummary = "Input locked.";
             return;
         }
 
@@ -856,14 +856,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private async Task CheckSignal()
     {
         RefreshInputDevices();
-        Status = "Scanning every input for sound. Play the RC-505 now.";
+        Status = "Listening for sound...";
         var results = await _inputDevices.ProbeAllAsync(Path.Combine(_versions.RootDirectory, "diagnostics"), 2);
         var best = results.FirstOrDefault(result => result.Success);
         if (best is null)
         {
             PeakPercent = 0;
             SignalReady = false;
-            Status = "No Windows input could be tested.";
+            Status = "No input found.";
             return;
         }
 
@@ -875,8 +875,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         SignalProbeSummary = $"Probe: {best.Name} | peak {best.PeakPercent:0.0}% | RMS {best.RmsPercent:0.00}%";
         WriteDiagnostic($"CHECK SIGNAL | selected={best.Name} | peak={best.PeakPercent:0.0}% | rms={best.RmsPercent:0.00}% | bytes={best.BytesWritten} | ready={SignalReady}");
         Status = SignalReady
-            ? $"Sound found: {best.Name}. Peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Now press {RecordingButtonLabel}."
-            : $"No signal found. Loudest input was {best.Name}: peak {best.PeakPercent:0.0}%, RMS {best.RmsPercent:0.00}%. Check RC-505 output into Scarlett input.";
+            ? "Sound found. Press record."
+            : "No sound yet.";
+        SignalProbeSummary = SignalReady ? "Input locked." : "";
         OnPropertyChanged(nameof(AudioHealthLabel));
     }
 
@@ -970,8 +971,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                     {
                         _recordingSignalSeen = true;
                         Status = peak >= 8
-                            ? $"Recording. Signal is live: {peak:0.0}%."
-                            : $"Recording. Low signal seen: {peak:0.0}%. Turn up if playback is quiet.";
+                            ? "Recording. Sound is in."
+                            : "Recording. Quiet, but saving.";
                     }
                 });
             });
@@ -1067,9 +1068,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 {
                     _versions.MoveToTrash(result.Path);
                     CurrentFilePath = "";
-                    Status = $"NO TAKE SAVED. GateKPT heard silence: peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%.";
-                    CommandResult = "No take saved. Play sound after pressing RECORD, then press STOP.";
-                    SignalProbeSummary = "Folder is empty because the last take had no usable audio.";
+                    Status = "No take saved.";
+                    CommandResult = "No sound came in. Try one short take again.";
+                    SignalProbeSummary = "";
                     WriteDiagnostic($"REJECT SILENT | raw={result.Path} | peak={result.PeakPercent:0.0}% | rms={result.RmsPercent:0.00}%");
                     RefreshVersions();
                     _activeCaptureLayerNumber = null;
@@ -1093,14 +1094,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                     var isClipping = repair.Message.Contains("overloaded", StringComparison.OrdinalIgnoreCase)
                         || repair.Message.Contains("clipping", StringComparison.OrdinalIgnoreCase);
                     Status = isClipping
-                        ? "NO TAKE SAVED. Scarlett input is clipping. Lower input gain until the meter stays below 80%."
-                        : $"NO TAKE SAVED. {repair.Message}";
+                        ? "Too loud. Lower input and try again."
+                        : "No take saved.";
                     CommandResult = isClipping
-                        ? "GateKPT rejected this on purpose: clipping makes a file that looks loud but sounds wrong. Lower Scarlett gain, record again."
-                        : $"No take saved. Final check: {metrics.Duration.TotalSeconds:0.00}s, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%.";
-                    SignalProbeSummary = isClipping
-                        ? "Folder is empty because the last take clipped."
-                        : "Folder is empty because GateKPT rejected the last take.";
+                        ? "Input was too hot. Lower Scarlett gain."
+                        : "GateKPT kept the folder clean.";
+                    SignalProbeSummary = "";
                     RefreshVersions();
                     _activeCaptureLayerNumber = null;
                     _activeCaptureLabel = "recording";
@@ -1108,10 +1107,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                     return;
                 }
 
-                Status = repair.Success
-                    ? $"Saved playable take: {Path.GetFileName(repair.Path)}. {repair.Message}"
-                    : $"Saved take: {Path.GetFileName(result.Path)}. Peak {result.PeakPercent:0.0}%, RMS {result.RmsPercent:0.00}%. {repair.Message}";
-                CommandResult = $"Take verified: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%, {metrics.Waveform}";
+                Status = "Saved. Press play.";
+                CommandResult = $"Saved take: {metrics.Duration:mm\\:ss}.";
+                SignalProbeSummary = "Playable take.";
                 WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
                 RefreshVersions();
                 AutoAssignActiveCapture(CurrentFilePath);
@@ -1127,7 +1125,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 RefreshVersions();
             }
 
-            Status = result.Message;
+            Status = "No take saved.";
             WriteDiagnostic($"STOP FAILED | message={result.Message}");
             _activeCaptureLayerNumber = null;
             _activeCaptureLabel = "recording";
@@ -1166,7 +1164,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ? "Playing take."
             : result.Message;
         CommandResult = result.Success
-            ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {outputName}."
+            ? $"Playing: {metrics.Duration:mm\\:ss}."
             : result.Message;
     }
 
@@ -3492,11 +3490,11 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         RecordingElapsedLabel = $"{(int)elapsed.TotalMinutes:00}:{elapsed.Seconds:00}";
         if (elapsed.TotalSeconds >= 3 && PeakPercent < 1)
         {
-            Status = $"Recording, but no sound is entering {InputName}. Play now or stop.";
+            Status = "Recording. No sound yet.";
         }
         else if (elapsed.TotalSeconds >= 3 && PeakPercent < 20)
         {
-            Status = $"Recording quiet signal from {InputName}: {PeakPercent:0.0}%. It will save, but may play back soft.";
+            Status = "Recording. Quiet, but saving.";
         }
 
         if (elapsed.TotalSeconds >= 8 && PeakPercent < 1)
