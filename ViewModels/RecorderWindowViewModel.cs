@@ -944,6 +944,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 return;
             }
 
+            if (IsMonitoring)
+            {
+                _monitor.Stop();
+                IsMonitoring = false;
+            }
+
             RefreshInputDevices();
 
             if (SelectedInputDevice is null)
