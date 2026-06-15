@@ -1115,6 +1115,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
                 Status = "Saved. Press play.";
                 CommandResult = $"{metrics.Duration:mm\\:ss}.";
                 SignalProbeSummary = "";
+                WriteTakeMetadata(CurrentFilePath, metrics, repair.Message);
                 WriteDiagnostic($"SAVED PLAYABLE | path={CurrentFilePath} | duration={metrics.Duration.TotalSeconds:0.00}s | peak={metrics.PeakPercent:0.0}% | rms={metrics.RmsPercent:0.00}%");
                 RefreshVersions();
                 AutoAssignActiveCapture(CurrentFilePath);
@@ -2748,6 +2749,43 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         LastRecorderDiagnostic = message;
         _diagnostics.Write(message);
+    }
+
+    private void WriteTakeMetadata(string path, AudioPreviewMetrics metrics, string repairMessage)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+        {
+            return;
+        }
+
+        try
+        {
+            var metadataPath = Path.ChangeExtension(path, ".json");
+            var payload = new
+            {
+                kind = "gatekpt-take",
+                version = 1,
+                file = Path.GetFileName(path),
+                session = ActiveSessionLabel,
+                lane = SelectedCaptureLane?.Name ?? ActiveRecordingName,
+                label = _activeCaptureLabel,
+                input = SelectedInputDevice?.Name ?? InputName,
+                savedAt = DateTimeOffset.Now,
+                durationSeconds = Math.Round(metrics.Duration.TotalSeconds, 3),
+                peakPercent = Math.Round(metrics.PeakPercent, 3),
+                rmsPercent = Math.Round(metrics.RmsPercent, 3),
+                repair = repairMessage,
+                note = "Raw take kept safe. Shape copies separately."
+            };
+            File.WriteAllText(metadataPath, JsonSerializer.Serialize(payload, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
+        }
+        catch (Exception ex)
+        {
+            WriteDiagnostic($"METADATA FAILED | path={path} | message={ex.Message}");
+        }
     }
 
     private void DeleteSelectedOrLatest()
