@@ -218,10 +218,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private string _lastScreenCapturePath = "";
 
     [ObservableProperty]
-    private string _videoWorkflowStatus = "Find latest phone video, then pair it with the selected GateKPT take.";
+    private string _videoWorkflowStatus = "Record screen, mark a moment, cut a clip.";
 
     [ObservableProperty]
-    private string _harvestStatus = "No long session harvested yet.";
+    private string _harvestStatus = "";
 
     [ObservableProperty]
     private int _videoAudioOffsetMs = 0;
@@ -581,7 +581,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     public string VersionListHint =>
         Versions.Count == 0
             ? "No takes."
-            : $"{Versions.Count} take(s).";
+            : Versions.Count == 1 ? "One take." : $"{Versions.Count} takes.";
 
     public string LayerDeckSummary
     {
@@ -644,12 +644,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         IsScreenCapturing
             ? $"screen {RecordingElapsedLabel}"
             : string.IsNullOrWhiteSpace(LastVideoOutputPath)
-                ? "screen / elgato / clips"
+                ? "screen / clips"
                 : Path.GetFileName(LastVideoOutputPath);
 
     public string VideoLaneStatus =>
         IsScreenCapturing
-            ? "mark good moments while it runs"
+            ? "Mark moments while it runs."
             : string.IsNullOrWhiteSpace(VideoWorkflowStatus)
                 ? HarvestStatus
                 : VideoWorkflowStatus;
@@ -1592,7 +1592,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     {
         if (_screenCapture.IsRecording)
         {
-            VideoWorkflowStatus = "Screen capture is already recording.";
+            VideoWorkflowStatus = "Already recording screen.";
             Status = VideoWorkflowStatus;
             return;
         }
@@ -1608,8 +1608,8 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             SaveScreenCaptureMarkers();
         }
 
-        VideoWorkflowStatus = result.Message;
-        Status = result.Message;
+        VideoWorkflowStatus = result.Success ? "Screen recording. Mark good moments." : result.Message;
+        Status = VideoWorkflowStatus;
         OnPropertyChanged(nameof(IsScreenCapturing));
         OnPropertyChanged(nameof(ScreenCaptureActionLabel));
         OnPropertyChanged(nameof(VideoLaneTitle));
@@ -1630,9 +1630,9 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
         var markerSummary = _screenCaptureMarkers.Count == 0
             ? ""
-            : $" Markers: {_screenCaptureMarkers.Count}. Type clip last to cut the last moment.";
-        VideoWorkflowStatus = result.Message + markerSummary;
-        Status = result.Message;
+            : $" {_screenCaptureMarkers.Count} marked.";
+        VideoWorkflowStatus = result.Success ? $"Screen saved.{markerSummary}" : result.Message;
+        Status = VideoWorkflowStatus;
         OnPropertyChanged(nameof(IsScreenCapturing));
         OnPropertyChanged(nameof(ScreenCaptureActionLabel));
         OnPropertyChanged(nameof(VideoLaneTitle));
@@ -1668,14 +1668,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void OpenScreenCaptureFolder()
     {
         _screenCapture.OpenOutputFolder();
-        Status = $"Opened {_screenCapture.OutputDirectory}";
+        Status = "Opened screen folder.";
     }
 
     private void DropScreenCaptureMarker(string rawCommand)
     {
         if (!_screenCapture.IsRecording || _screenCaptureStartedAt == DateTimeOffset.MinValue)
         {
-            CommandResult = "Start capture first, then type clip this when something good happens.";
+            CommandResult = "Start screen recording first.";
             Status = CommandResult;
             return;
         }
@@ -1686,7 +1686,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         _screenCaptureMarkers.Add(marker);
         SaveScreenCaptureMarkers();
 
-        CommandResult = $"Marked {FormatMarkerTime(elapsed)}: {label}. Keep playing.";
+        CommandResult = $"Marked {FormatMarkerTime(elapsed)}.";
         Status = CommandResult;
     }
 
@@ -1695,7 +1695,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         var marker = _screenCaptureMarkers.LastOrDefault();
         if (marker is null)
         {
-            CommandResult = "No marker yet. During a long capture, type clip this when a moment happens.";
+            CommandResult = "Mark a moment first.";
             Status = CommandResult;
             return;
         }
@@ -1713,14 +1713,14 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             _longSessionClips.OpenOutputFolder();
         }
 
-        CommandResult = result.Message;
-        Status = result.Message;
+        CommandResult = result.Success ? "Clip ready." : result.Message;
+        Status = CommandResult;
     }
 
     private void OpenScreenClipFolder()
     {
         _longSessionClips.OpenOutputFolder();
-        Status = $"Opened {_longSessionClips.OutputDirectory}";
+        Status = "Opened clips folder.";
     }
 
     [RelayCommand]
@@ -1733,15 +1733,15 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         IsCommandBusy = true;
-        HarvestStatus = "Harvesting long session...";
-        Status = "Looking for OBS/Elgato/Rode recordings.";
-        CommandResult = "Harvesting long session...";
+        HarvestStatus = "Finding clips...";
+        Status = "Finding clips...";
+        CommandResult = "Finding clips...";
         try
         {
             var result = await Task.Run(() => _voiceHarvest.Harvest());
-            HarvestStatus = result.Message;
-            CommandResult = result.Message;
-            Status = result.Message;
+            HarvestStatus = result.Success ? "Clips checked." : result.Message;
+            CommandResult = HarvestStatus;
+            Status = HarvestStatus;
             if (result.Success && result.ClipCount > 0)
             {
                 _voiceHarvest.OpenClipsFolder();
@@ -1757,7 +1757,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void OpenVoiceInbox()
     {
         _voiceHarvest.OpenInboxFolder();
-        HarvestStatus = "Opened Voice inbox. Set OBS/Elgato recordings here.";
+        HarvestStatus = "Opened video inbox.";
         Status = HarvestStatus;
     }
 
@@ -1765,7 +1765,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
     private void OpenHarvestClips()
     {
         _voiceHarvest.OpenClipsFolder();
-        HarvestStatus = "Opened harvested clip candidates.";
+        HarvestStatus = "Opened clips.";
         Status = HarvestStatus;
     }
 

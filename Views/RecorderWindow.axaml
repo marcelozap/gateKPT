@@ -2558,7 +2558,7 @@
                                     BorderBrush="#FFFFF3D6"
                                     Background="#FFFFE7B5"
                                     Foreground="#120918"/>
-                            <Button Content="ELGATO"
+                            <Button Content="INBOX"
                                     Command="{Binding OpenVoiceInboxCommand}"
                                     Padding="16,11"
                                     MinWidth="104"
@@ -2566,7 +2566,7 @@
                                     BorderBrush="#B8E9B06E"
                                     Background="#26110B"
                                     Foreground="#F8EFE0"/>
-                            <Button Content="HARVEST"
+                            <Button Content="FIND"
                                     Command="{Binding HarvestVoiceCommand}"
                                     Padding="16,11"
                                     MinWidth="110"
@@ -2574,7 +2574,7 @@
                                     BorderBrush="#A8FFDCA8"
                                     Background="#07151A"
                                     Foreground="#FFDCA8"/>
-                            <Button Content="Exports"
+                            <Button Content="OUT"
                                     Command="{Binding OpenVideoOutputFolderCommand}"
                                     Padding="16,11"
                                     MinWidth="96"
