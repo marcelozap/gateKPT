@@ -640,18 +640,18 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
     public bool IsScreenCapturing => _screenCapture.IsRecording;
 
-    public string ScreenCaptureActionLabel => IsScreenCapturing ? "STOP" : "REC";
+    public string ScreenCaptureActionLabel => IsScreenCapturing ? "Stop" : "Screen";
 
     public string VideoLaneTitle =>
         IsScreenCapturing
             ? $"screen {RecordingElapsedLabel}"
             : string.IsNullOrWhiteSpace(LastVideoOutputPath)
-                ? "screen / clips"
+                ? "Screen"
                 : Path.GetFileName(LastVideoOutputPath);
 
     public string VideoLaneStatus =>
         IsScreenCapturing
-            ? "Mark moments while it runs."
+            ? "Pin good moments."
             : string.IsNullOrWhiteSpace(VideoWorkflowStatus)
                 ? HarvestStatus
                 : VideoWorkflowStatus;
