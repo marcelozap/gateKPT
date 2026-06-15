@@ -1334,7 +1334,12 @@
                         BorderBrush="#A064C7B6"
                         BorderThickness="1"
                         ClipToBounds="True"
-                        BoxShadow="0 30 70 0 #AA000000, inset 0 0 50 0 #2310EFFF">
+                        BoxShadow="0 30 70 0 #AA000000, inset 0 0 50 0 #2310EFFF"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="{Binding VisualMidScale}"
+                                        ScaleY="{Binding VisualMidScale}"/>
+                    </Border.RenderTransform>
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                             <GradientStop Color="#C6060A12" Offset="0"/>
@@ -1629,11 +1634,10 @@
                             <Button
                                     Command="{Binding StopRecordingCommand}"
                                     IsVisible="{Binding CanStopRecording}"
-                                    Content="SAVE"
                                     ToolTip.Tip="Save this take"
-                                    Padding="20,13"
-                                    MinWidth="116"
-                                    MinHeight="50"
+                                    Padding="0"
+                                    MinWidth="76"
+                                    MinHeight="76"
                                     Margin="0"
                                     FontSize="15"
                                     FontWeight="SemiBold"
@@ -1641,7 +1645,44 @@
                                     BorderThickness="1"
                                     BorderBrush="#FFFFDCA8"
                                     Background="#FF7A3D"
-                                    Foreground="#080A12"/>
+                                    Foreground="#080A12">
+                                <Grid Width="62"
+                                      Height="62"
+                                      RenderTransformOrigin="0.5,0.5">
+                                    <Grid.RenderTransform>
+                                        <RotateTransform Angle="{Binding RecordSpinAngle}"/>
+                                    </Grid.RenderTransform>
+                                    <Ellipse Fill="#1B0506"
+                                             Stroke="#FFFFF3D6"
+                                             StrokeThickness="1.8"/>
+                                    <Ellipse Width="47"
+                                             Height="47"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stroke="#FFFFDCA8"
+                                             StrokeThickness="1.4"
+                                             Fill="#E1786E">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect Color="#FF6C3E" BlurRadius="18" Opacity="0.7"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <Rectangle Width="18"
+                                               Height="18"
+                                               RadiusX="3"
+                                               RadiusY="3"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Fill="#06070C"/>
+                                    <Rectangle Width="5"
+                                               Height="27"
+                                               RadiusX="999"
+                                               RadiusY="999"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               Margin="0,6,0,0"
+                                               Fill="#FFFFF3D6"/>
+                                </Grid>
+                            </Button>
                             <Button Grid.Column="1"
                                     Content="▶"
                                     ToolTip.Tip="Play latest"
@@ -1756,7 +1797,12 @@
                         BorderBrush="#D8FFDCA8"
                         BorderThickness="1.4"
                         Background="#B806080E"
-                        BoxShadow="0 30 64 0 #AA000000, 0 0 42 0 #3364C7B6, inset 0 0 42 0 #1828A7FF">
+                        BoxShadow="0 30 64 0 #AA000000, 0 0 42 0 #3364C7B6, inset 0 0 42 0 #1828A7FF"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="{Binding VisualFrontScale}"
+                                        ScaleY="{Binding VisualFrontScale}"/>
+                    </Border.RenderTransform>
                     <StackPanel Spacing="9">
                         <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                             <TextBox Text="{Binding ChatText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -1947,7 +1993,12 @@
                         BorderThickness="1.2"
                         Background="#7A06080E"
                         ClipToBounds="True"
-                        BoxShadow="0 30 64 0 #AA000000, 0 0 34 0 #2452FF9A, inset 0 0 40 0 #1610EFFF">
+                        BoxShadow="0 30 64 0 #AA000000, 0 0 34 0 #2452FF9A, inset 0 0 40 0 #1610EFFF"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="{Binding VisualMidScale}"
+                                        ScaleY="{Binding VisualMidScale}"/>
+                    </Border.RenderTransform>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="0">
                         <Border Padding="14"
                                 Background="#54101016">
@@ -2049,7 +2100,12 @@
                         BorderThickness="1.2"
                         Background="#7806080E"
                         ClipToBounds="True"
-                        BoxShadow="0 30 64 0 #99000000, 0 0 30 0 #204CFF9D, inset 0 0 38 0 #1810EFFF">
+                        BoxShadow="0 30 64 0 #99000000, 0 0 30 0 #204CFF9D, inset 0 0 38 0 #1810EFFF"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="{Binding VisualBackScale}"
+                                        ScaleY="{Binding VisualBackScale}"/>
+                    </Border.RenderTransform>
                     <Grid ColumnDefinitions="1.08*,0.92*" ColumnSpacing="14">
                         <Border CornerRadius="22"
                                 Padding="14"
