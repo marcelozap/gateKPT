@@ -751,6 +751,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         SelectedVocalPreset = VocalPresets.FirstOrDefault();
         RefreshInputDevices();
         RefreshOutputDevices();
+        Status = SelectedInputDevice is null
+            ? "Plug in Scarlett, then press the record disc."
+            : "Ready. Press the record disc and play.";
+        SignalProbeSummary = SelectedInputDevice is null
+            ? ""
+            : $"Input: {SelectedInputDevice.Name}";
         RefreshVersions();
         LoadTasteMemories();
         RestoreLayerDeck();
@@ -838,11 +844,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         if (SelectedInputDevice is not null)
         {
             InputName = SelectedInputDevice.Name;
-            Status = $"Input selected: {SelectedInputDevice.Name}";
+            Status = "Input locked.";
+            SignalProbeSummary = SelectedInputDevice.Name;
             return;
         }
 
-        Status = "No active recording input found in Windows.";
+        Status = "No input found.";
     }
 
     [RelayCommand]
@@ -938,12 +945,12 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
 
             if (SelectedInputDevice is null)
             {
-                Status = "Scarlett not found. Check USB, then try again.";
+                Status = "No input found. Plug in Scarlett, then press record again.";
                 return;
             }
 
             InputName = SelectedInputDevice.Name;
-            Status = "Rig ready.";
+            Status = "Recording...";
 
             StopVisualMeter();
             PeakPercent = 0;
@@ -984,9 +991,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             }
 
             Status = result.Success
-                ? layerNumber is null
-                    ? "Recording full RC-505 output. Watch the signal number move."
-                    : $"Recording {LayerSlots.First(slot => slot.Number == layerNumber).Name}. Solo that RC-505 track now."
+                ? "Recording. Play now."
                 : result.Message;
         }
         finally
@@ -1009,6 +1014,10 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
             ?? InputDevices.FirstOrDefault(device => device.IsPreferred)
             ?? InputDevices.FirstOrDefault();
         InputName = SelectedInputDevice?.Name ?? "No input selected";
+        if (SelectedInputDevice is not null && string.IsNullOrWhiteSpace(SignalProbeSummary))
+        {
+            SignalProbeSummary = $"Input: {SelectedInputDevice.Name}";
+        }
     }
 
     private void RefreshOutputDevices()
@@ -1154,7 +1163,7 @@ public sealed partial class RecorderWindowViewModel : ViewModelBase
         }
 
         Status = result.Success
-            ? $"Playing latest inside GateKPT -> {outputName}: {Path.GetFileName(path)}"
+            ? "Playing take."
             : result.Message;
         CommandResult = result.Success
             ? $"Playing verified take: {metrics.Duration:mm\\:ss}, peak {metrics.PeakPercent:0.0}%, RMS {metrics.RmsPercent:0.00}%. Output: {outputName}."
