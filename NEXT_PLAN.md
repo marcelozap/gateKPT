@@ -17,6 +17,7 @@ Shipped and pushed:
 - Recording saves into session folders under `Music/GateKPT Recorder/takes/<session>`.
 - Capture lanes exist: Loop, Guitar, Vocal, Drums, Keys, Idea.
 - New take filenames are numbered by lane, like `guitar-01-YYYYMMDD-HHMMSS.wav`.
+- Each saved playable WAV now gets hidden metadata in `.gatekpt/`, so the visible take folder stays clean.
 - Play runs the selected/latest take.
 - Mix combines usable session takes into one WAV.
 - Files opens the current recording folder.
@@ -58,12 +59,11 @@ The pre-record visual meter caused device contention before. Keep pre-record met
 
 ## Next Safe Build Order
 
-1. Add take metadata sidecar JSON for every saved WAV.
-2. Add input-channel preference for Scarlett input 1.
-3. Improve visual stage motion without touching audio capture.
-4. Add center-take mix selection.
-5. Add A/B take compare.
-6. Add screen capture clip review.
+1. Add input-channel preference for Scarlett input 1.
+2. Improve visual stage motion without touching audio capture.
+3. Add center-take mix selection.
+4. Add A/B take compare.
+5. Add screen capture clip review.
 
 ## Tomorrow Test
 
