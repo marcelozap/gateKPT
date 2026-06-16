@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import { HubNav } from "@/components/HubNav";
 import { getSiteUrl } from "@/lib/siteUrl";
 import "./globals.css";
 
-const inter = Inter({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - Make Sound Visible",
+    default: "GateKPT - What Does Sound Look Like?",
     template: "%s - GateKPT",
   },
   description:
-    "A small example of guitar, atmosphere, and motion becoming one visual world.",
+    "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - Make Sound Visible",
+    title: "GateKPT - What Does Sound Look Like?",
     description:
-      "A small example of guitar, atmosphere, and motion becoming one visual world.",
+      "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
     type: "website",
     url: getSiteUrl(),
   },
@@ -38,7 +38,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={spaceGrotesk.variable}>
       <body className="font-body">
         <a href="#main-content" className="skip-link">
           Skip to main content

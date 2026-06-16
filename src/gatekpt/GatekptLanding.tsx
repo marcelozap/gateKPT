@@ -20,9 +20,9 @@ type MoodBed = {
 };
 
 const cuePath = [
-  ["01", "Fire crackle", "Warm sparks"],
-  ["02", "Storm", "Rain pulse"],
-  ["03", "Soft chrome", "Glass shimmer"],
+  ["01", "Chrome", "glass guitar"],
+  ["02", "Fire", "orange room"],
+  ["03", "Storm", "blue air"],
 ];
 
 const socialChannels = [
@@ -58,7 +58,7 @@ function buildMoodBed(audioContext: AudioContext, mood: string, destination: Aud
   const gains: GainNode[] = [];
   const filters: BiquadFilterNode[] = [];
 
-  if (mood === "Fire crackle") {
+  if (mood === "Fire") {
     const fire = createNoiseSource(audioContext);
     const filter = audioContext.createBiquadFilter();
     const gain = audioContext.createGain();
@@ -240,8 +240,8 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       const signal = smoothedSignalRef.current;
       const mood = activeCueRef.current;
       const guitarColor = "#6ee7ff";
-      const moodRgb = mood === "Fire crackle" ? "240, 138, 60" : mood === "Soft chrome" ? "201, 184, 255" : "110, 231, 255";
-      const moodColor = mood === "Fire crackle" ? "#f08a3c" : mood === "Soft chrome" ? "#c9b8ff" : "#6ee7ff";
+      const moodRgb = mood === "Fire" ? "240, 138, 60" : mood === "Chrome" ? "201, 184, 255" : "110, 231, 255";
+      const moodColor = mood === "Fire" ? "#f08a3c" : mood === "Chrome" ? "#c9b8ff" : "#6ee7ff";
       signal.bass = signal.bass * 0.78 + bassRaw * 0.22;
       signal.mid = signal.mid * 0.78 + midRaw * 0.22;
       signal.high = signal.high * 0.78 + highRaw * 0.22;
@@ -262,7 +262,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       const audioContext = audioContextRef.current;
       if (bed && audioContext) {
         const now = audioContext.currentTime;
-        if (mood === "Soft chrome") {
+        if (mood === "Chrome") {
           [196, 293.66, 440].forEach((base, index) => {
             bed.oscillators[index]?.frequency.setTargetAtTime(base * melodyRatio, now, 0.18);
           });
@@ -282,7 +282,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
       ctx.clearRect(0, 0, width, height);
       const base = ctx.createLinearGradient(0, 0, width, height);
-      base.addColorStop(0, mood === "Fire crackle" ? "#231207" : mood === "Soft chrome" ? "#111225" : "#102018");
+      base.addColorStop(0, mood === "Fire" ? "#231207" : mood === "Chrome" ? "#111225" : "#102018");
       base.addColorStop(0.55, "#07100d");
       base.addColorStop(1, mood === "Storm" ? "#0b1722" : "#18160f");
       ctx.fillStyle = base;
@@ -295,7 +295,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       ctx.fillStyle = mist;
       ctx.fillRect(0, 0, width, height);
 
-      if (mood === "Fire crackle") {
+      if (mood === "Fire") {
         for (let ember = 0; ember < 28; ember += 1) {
           const drift = (nowMs / (70 + ember * 4) + ember * 41) % height;
           const x = ((ember * 83 + Math.sin(nowMs / 1200 + ember) * 38) % width + width) % width;
@@ -453,9 +453,9 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="gk-label text-[#6ee7ff]">Question</p>
+            <p className="gk-label text-[#6ee7ff]">XIV sketch</p>
             <p className="mt-1 text-sm font-medium leading-6 text-[#e8e1d2]/68">
-              What if the room answered the guitar?
+              Guitar in front. Weather behind it.
             </p>
           </div>
           {status === "listening" || status === "demo" || status === "starting" ? (
@@ -467,7 +467,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
             <div className="flex flex-wrap gap-2">
               <button type="button" onClick={startDemo} className="gk-button-signal">
                 <Waves className="h-4 w-4" />
-                Listen
+                Enter
               </button>
             </div>
           )}
@@ -480,7 +480,7 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 export function GatekptLanding() {
   const [activeCueIndex, setActiveCueIndex] = useState(0);
   const activeCue = cuePath[activeCueIndex]?.[1] || "Drums";
-  const moodClass = activeCueIndex === 0 ? "gk-mood-fire" : activeCueIndex === 1 ? "gk-mood-storm" : "gk-mood-chrome";
+  const moodClass = activeCueIndex === 1 ? "gk-mood-fire" : activeCueIndex === 2 ? "gk-mood-storm" : "gk-mood-chrome";
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050403] text-[#e8e1d2]">
@@ -490,20 +490,23 @@ export function GatekptLanding() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 py-1.5 pl-1.5 pr-3 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
               <Image src="/gatekpt-icon.png" alt="" width={28} height={28} className="rounded-full" />
-              GateKPT
+              GateKPT / XIV
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
               What does sound look like?
             </h1>
+            <p className="mt-6 max-w-xl text-lg font-semibold leading-8 text-[#e8e1d2]/68">
+              One guitar loop. Three rooms. A small door into the world.
+            </p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.12, duration: 0.6, ease: "easeOut" }}>
             <div className="gk-panel relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
               <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle_at_28%_22%,rgba(198,169,109,0.18),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(110,231,255,0.14),transparent_30%),repeating-linear-gradient(155deg,rgba(232,225,210,0.06)_0_1px,transparent_1px_34px)]" />
               <div className="relative">
-                <p className="gk-label text-[#d08a56]">Pick a feeling</p>
+                <p className="gk-label text-[#d08a56]">Choose the air</p>
                 <h2 className="mt-4 text-4xl font-black leading-none tracking-[-0.055em]">
-                  Fire. Storm. Chrome.
+                  Chrome. Fire. Storm.
                 </h2>
                 <div className="mt-8 grid gap-3" id="preview">
                   {cuePath.map(([number, item, detail], index) => (

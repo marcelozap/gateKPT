@@ -4,9 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/#preview", label: "Play" },
-  { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
+  { href: "/", label: "GateKPT" },
+  { href: "/#preview", label: "Sound" },
+  { href: "https://marcelozapata.dev", label: "XIV", external: true },
 ];
 
 export function HubNav() {
@@ -25,7 +25,7 @@ export function HubNav() {
           <Image src="/gatekpt-icon.png" alt="" width={24} height={24} className="rounded-full" />
           <span className="text-sm font-semibold tracking-tight text-white">GateKPT</span>
           <span className="hidden text-[11px] text-apple-label3 sm:inline">/</span>
-          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">Music</span>
+          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">XIV</span>
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-0.5 sm:gap-1.5">
