@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 const links = [
-  { href: "/", label: "GateKPT" },
+  { href: "/", label: "XIV" },
   { href: "/#preview", label: "Sound" },
-  { href: "https://marcelozapata.dev", label: "XIV", external: true },
+  { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
 ];
 
 export function HubNav() {
@@ -18,14 +17,13 @@ export function HubNav() {
       <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          title="GateKPT music home"
-          aria-label="GateKPT music home"
+          title="XIV music home"
+          aria-label="XIV music home"
           className="flex items-center gap-1.5 rounded-md px-1 outline-none focus-visible:ring-2 focus-visible:ring-[#e37b45]/50"
         >
-          <Image src="/gatekpt-icon.png" alt="" width={24} height={24} className="rounded-full" />
-          <span className="text-sm font-semibold tracking-tight text-white">GateKPT</span>
+          <span className="text-sm font-semibold tracking-tight text-white">XIV</span>
           <span className="hidden text-[11px] text-apple-label3 sm:inline">/</span>
-          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">XIV</span>
+          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">Music</span>
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-0.5 sm:gap-1.5">

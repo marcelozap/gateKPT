@@ -445,9 +445,9 @@ function TerrainSignalPreview({ activeCue }: { activeCue: string }) {
 
   return (
     <div className="gk-panel relative overflow-hidden rounded-[2rem]">
-      <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="GateKPT sound preview" />
+      <canvas ref={canvasRef} className="h-[31rem] w-full" aria-label="XIV sound preview" />
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-center justify-between gap-3">
-        <span className="gk-chip gk-chip-signal">{status === "listening" ? "Live sound" : status === "demo" ? "GateKPT guitar" : "Preview"}</span>
+        <span className="gk-chip gk-chip-signal">{status === "listening" ? "Live sound" : status === "demo" ? "XIV guitar" : "Preview"}</span>
         <span className="gk-chip">Signal {level}%</span>
       </div>
       <div className="absolute inset-x-5 bottom-5 rounded-[1.4rem] border border-white/10 bg-[#07100d]/82 p-4 backdrop-blur-md">
@@ -490,7 +490,7 @@ export function GatekptLanding() {
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: "easeOut" }}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#c6a96d]/25 bg-[#c6a96d]/10 py-1.5 pl-1.5 pr-3 text-[11px] font-black uppercase tracking-[0.24em] text-[#c6a96d]">
               <Image src="/gatekpt-icon.png" alt="" width={28} height={28} className="rounded-full" />
-              GateKPT / XIV
+              XIV
             </div>
             <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-[-0.065em] sm:text-6xl lg:text-7xl">
               What does sound look like?

@@ -12,8 +12,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - What Does Sound Look Like?",
-    template: "%s - GateKPT",
+    default: "XIV - What Does Sound Look Like?",
+    template: "%s - XIV",
   },
   description:
     "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - What Does Sound Look Like?",
+    title: "XIV - What Does Sound Look Like?",
     description:
       "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
     type: "website",
@@ -40,9 +40,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={spaceGrotesk.variable}>
       <body className="font-body">
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
         <HubNav />
         <main id="main-content" className="relative z-10 outline-none" tabIndex={-1}>
           {children}
