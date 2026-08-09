@@ -668,6 +668,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gki-verdict{margin-top:22px;font-size:16px;line-height:1.55;max-width:46ch;
   border-left:2px solid var(--ok);padding-left:15px;color:var(--near);animation:xin .22s var(--xease)}
 .gki-verdict.miss{border-color:var(--miss)}
+.gki-skip{margin-top:18px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--chrome)}
 
 /* ── actions ── */
 .gki-actions{margin-top:38px;display:flex;gap:26px;align-items:center;flex-wrap:wrap}
@@ -711,6 +712,25 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gki-st{font-size:10px;color:var(--ghost)}
 .gki-maprow.seen .gki-st{color:var(--ok)}
 
+.gki-entries{position:fixed;inset:0;z-index:34;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgba(5,7,13,.94);backdrop-filter:blur(14px);animation:xin .2s var(--xease)}
+.gki-entries.on{display:flex}
+.gki-entries-panel{width:min(920px,92vw);max-height:min(720px,88vh);display:flex;flex-direction:column;
+  border:1px solid var(--ghost);background:rgba(11,17,28,.86);border-radius:2px;padding:24px}
+.gki-entries-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;
+  border-bottom:1px solid var(--ghost);padding-bottom:20px}
+.gki-entries-head h2{margin:0;color:var(--focal);font-size:clamp(26px,3vw,38px);line-height:1.1;
+  letter-spacing:-.03em;font-weight:500}
+.gki-entry-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px;overflow:auto;padding-right:4px}
+.gki-entry-card{display:grid;grid-template-columns:54px 1fr;gap:4px 14px;text-align:left;border:1px solid var(--ghost);
+  background:rgba(5,7,13,.42);color:var(--near);border-radius:2px;padding:15px;cursor:pointer;
+  transition:border-color .15s var(--xease),background .15s var(--xease),color .15s var(--xease)}
+.gki-entry-card:hover{border-color:var(--visor-35);background:rgba(125,249,255,.05);color:var(--focal)}
+.gki-entry-id{grid-row:1 / span 4;color:var(--visor-deep);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.gki-entry-card strong{color:var(--focal);font-size:17px;font-weight:500}
+.gki-entry-card span:not(.gki-entry-id){font-size:14px;line-height:1.45}
+.gki-entry-card small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--chrome)}
+
 @media (prefers-reduced-motion:reduce){
   .gki-bloom,.gki-slot,.gki-visor::after,.gki-verdict,.gki-map{animation:none!important}
   .gki-opt,.gki-go,.gki-ladder i,.gki-pips i{transition:none!important}
@@ -726,4 +746,64 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   .gki-visor{left:-14px;right:-14px}
   .gki-ladder i{width:19px}
   .gki-opts{max-width:none}
+  .gki-entries{padding:16px}
+  .gki-entries-panel{max-height:88vh;padding:18px}
+  .gki-entries-head{align-items:flex-start}
+  .gki-entry-list{grid-template-columns:1fr}
+}
+
+/* -------------------------------------------------------------------
+   ONE LAYER, ONE SCREEN
+   Was 28 states (4 beats x 7). Now 7. Idea on the left, evidence on
+   the right. The essence keeps peak contrast; the number is large but
+   drawn in accent so SIZE creates the hierarchy rather than a second
+   competing --focal element.
+   ------------------------------------------------------------------- */
+.gki-layer{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:44px;
+  align-items:start;width:100%;
+}
+.gki-layer-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.gki-layer-main .gki-essence{max-width:20ch}
+.gki-layer-main .gki-breaks{
+  font-size:17px;line-height:1.55;letter-spacing:0;color:var(--near);
+  max-width:36ch;padding-left:14px;border-left:2px solid var(--ghost);
+}
+.gki-layer-main .gki-breaks em{color:var(--neon-magenta);text-shadow:none}
+
+.gki-layer-fig{
+  display:flex;flex-direction:column;align-items:flex-start;min-width:0;
+  padding-left:36px;border-left:1px solid var(--ghost);
+}
+.gki-layer-fig .gki-figure{
+  font-size:clamp(52px,6.4vw,86px);line-height:.94;letter-spacing:-.04em;
+  color:var(--visor);text-shadow:0 0 34px rgba(125,249,255,.24);
+}
+.gki-layer-fig .gki-unit{font-size:.3em;color:var(--visor-deep);margin-left:.1em}
+.gki-layer-fig .gki-figcap{
+  margin-top:16px;font-size:15px;line-height:1.5;color:var(--near);max-width:30ch;
+}
+.gki-layer-fig .gki-src{
+  margin-top:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--chrome);border-bottom:1px solid var(--ghost);padding-bottom:3px;
+  transition:color .15s,border-color .15s;
+}
+.gki-layer-fig .gki-src:hover{color:var(--visor);border-color:var(--visor-35)}
+
+/* Optional check. Inline, collapsed by default, never blocks advance. */
+.gki-reflect{margin-top:30px;padding-top:22px;border-top:1px solid var(--ghost);width:100%}
+.gki-reflect .gki-q{font-size:17px;line-height:1.45;max-width:46ch;margin-bottom:14px}
+.gki-reflect .gki-opts{margin-top:0;max-width:520px}
+.gki-reflect .gki-opt{padding:12px 15px;font-size:15px}
+.gki-reflect .gki-verdict{margin-top:16px;font-size:15px}
+
+@media(max-width:860px){
+  .gki-layer{grid-template-columns:1fr;gap:26px}
+  .gki-layer-fig{
+    padding-left:0;padding-top:22px;
+    border-left:0;border-top:1px solid var(--ghost);
+  }
+  .gki-layer-fig .gki-figure{font-size:clamp(46px,13vw,62px)}
+  .gki-layer-main .gki-essence{max-width:none}
+  .gki-reflect{margin-top:22px;padding-top:18px}
 }

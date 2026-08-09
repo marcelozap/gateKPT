@@ -1,5 +1,20 @@
 "use client";
 
+/* -------------------------------------------------------------------
+   GateKPT - the map.
+
+   WAS: 4 beats x 7 layers = 28 states. That was tuned for retention,
+   which is the wrong goal. This is free reference knowledge, and
+   making someone click 28 times to read seven facts works against it.
+
+   NOW: one layer = one screen. 7 screens. Essence, number, source and
+   failure mode are all visible together, because they are one idea
+   about one layer, not four.
+
+   The reflection question is an inline toggle, not a state and not a
+   gate. Nothing is withheld.
+   ------------------------------------------------------------------- */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LAYERS } from "./stack";
 
@@ -9,10 +24,11 @@ const FADE = 130; // must match .gki-slot.out transition in globals.css
 export function GatekptLanding() {
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
-  const [bi, setBi] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
+  const [openQ, setOpenQ] = useState(false);
   const [seen, setSeen] = useState<Set<number>>(new Set());
   const [mapOpen, setMapOpen] = useState(false);
+  const [entriesOpen, setEntriesOpen] = useState(false);
   const [fading, setFading] = useState(false);
   const [sweep, setSweep] = useState(0);
 
@@ -20,8 +36,6 @@ export function GatekptLanding() {
   const answered = picked !== null;
   const layer = LAYERS[li];
 
-  /* body gets the instrument class: no scroll, dark base.
-     Reading routes (/briefs, /work) must NOT set this. */
   useEffect(() => {
     document.body.classList.add("gk-instrument");
     return () => document.body.classList.remove("gk-instrument");
@@ -32,6 +46,8 @@ export function GatekptLanding() {
     setFading(true);
     timer.current = setTimeout(() => {
       fn();
+      setPicked(null);
+      setOpenQ(false);
       setFading(false);
       setSweep((s) => s + 1);
     }, FADE);
@@ -40,49 +56,45 @@ export function GatekptLanding() {
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   const next = useCallback(() => {
-    if (phase === "boot") { go(() => { setPhase("run"); setLi(0); setBi(0); setPicked(null); }); return; }
+    if (phase === "boot") { go(() => { setPhase("run"); setLi(0); }); return; }
     if (phase === "end") return;
-    if (bi === 3 && !answered) return;              // <- the gate
-    if (bi < 3) { go(() => setBi((b) => b + 1)); return; }
-    if (li < LAYERS.length - 1) { go(() => { setLi((l) => l + 1); setBi(0); setPicked(null); }); return; }
+    if (li < LAYERS.length - 1) { go(() => setLi((l) => l + 1)); return; }
     go(() => setPhase("end"));
-  }, [phase, bi, li, answered, go]);
+  }, [phase, li, go]);
 
   const prev = useCallback(() => {
     if (phase !== "run") return;
-    if (bi > 0) { go(() => { setBi((b) => b - 1); setPicked(null); }); return; }
-    if (li > 0) { go(() => { setLi((l) => l - 1); setBi(3); setPicked(null); }); return; }
+    if (li > 0) { go(() => setLi((l) => l - 1)); return; }
     go(() => setPhase("boot"));
-  }, [phase, bi, li, go]);
+  }, [phase, li, go]);
 
   const jump = useCallback((n: number) => {
     if (n < 0 || n >= LAYERS.length) return;
     setMapOpen(false);
-    go(() => { setPhase("run"); setLi(n); setBi(0); setPicked(null); });
+    go(() => { setPhase("run"); setLi(n); });
   }, [go]);
 
-  /* fading guard: a keypress mid-transition must not open the gate
-     without an answer ever being recorded */
   const choose = useCallback((i: number) => {
-    if (phase !== "run" || bi !== 3 || answered || fading) return;
+    if (phase !== "run" || answered || fading) return;
     setPicked(i);
     setSeen((s) => new Set(s).add(li));
-  }, [phase, bi, answered, fading, li]);
+  }, [phase, answered, fading, li]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = e.key;
+      if (entriesOpen) { if (k === "Escape") setEntriesOpen(false); return; }
       if (k === "Escape") { e.preventDefault(); setMapOpen((m) => !m); return; }
       if (mapOpen) { if (/^[1-7]$/.test(k)) jump(Number(k) - 1); return; }
       if (k === " " || k === "ArrowRight" || k === "Enter") { e.preventDefault(); next(); }
       else if (k === "ArrowLeft") { e.preventDefault(); prev(); }
-      else if (k === "a" || k === "A") choose(0);
-      else if (k === "b" || k === "B") choose(1);
+      else if (k === "a" || k === "A") { if (openQ) choose(0); }
+      else if (k === "b" || k === "B") { if (openQ) choose(1); }
       else if (/^[1-7]$/.test(k)) jump(Number(k) - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [mapOpen, next, prev, choose, jump]);
+  }, [entriesOpen, mapOpen, openQ, next, prev, choose, jump]);
 
   useEffect(() => {
     const block = (e: Event) => e.preventDefault();
@@ -100,9 +112,7 @@ export function GatekptLanding() {
     const end = (e: TouchEvent) => {
       const dx = e.changedTouches[0].clientX - sx;
       const dy = Math.abs(e.changedTouches[0].clientY - sy);
-      if (Math.abs(dx) > 48 && dy < 70) {
-        if (dx < 0) next(); else prev();
-      }
+      if (Math.abs(dx) > 48 && dy < 70) { if (dx < 0) next(); else prev(); }
     };
     window.addEventListener("touchstart", start, { passive: true });
     window.addEventListener("touchend", end, { passive: true });
@@ -113,24 +123,30 @@ export function GatekptLanding() {
   }, [next, prev]);
 
   const where = phase === "boot" ? "SEVEN LAYERS"
-              : phase === "end"  ? "COMPLETE"
+              : phase === "end"  ? "END OF MAP"
               : `${layer.id}  -  ${layer.name.toUpperCase()}`;
-  const count = phase === "boot" ? "NOT STARTED"
+  const count = phase === "boot" ? "START"
               : phase === "end"  ? "07 / 07"
               : `${String(li + 1).padStart(2, "0")} / 07`;
-  const gateHeld = phase === "run" && bi === 3 && answered;
 
   const body = () => {
     if (phase === "boot") return (
       <>
-        <span className="gki-kicker gki-mono">GateKPT  -  Stack Trainer</span>
-        <p className="gki-essence">The AI stack has seven layers. Hold all seven.</p>
+        <span className="gki-kicker gki-mono">GateKPT</span>
+        <p className="gki-essence">A public map of the AI stack.</p>
+        <p className="gki-donep">
+          Seven layers. Each one has a number and a source. Free, and updated as
+          I learn more.
+        </p>
         <div className="gki-actions">
           <button className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
-            Begin - L01
+            Start at Power
+          </button>
+          <button className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+            Open entries
           </button>
           <button className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
-            See the map
+            Jump to a layer
           </button>
         </div>
       </>
@@ -138,92 +154,97 @@ export function GatekptLanding() {
 
     if (phase === "end") return (
       <>
-        <span className="gki-kicker gki-mono">L01 - L07  -  Complete</span>
-        <p className="gki-doneh">You now hold the whole ladder.</p>
+        <span className="gki-kicker gki-mono">L01 - L07</span>
+        <p className="gki-doneh">That is the whole stack.</p>
         <p className="gki-donep">
-          Seven layers, seven anchors, seven failure modes. Each layer constrains the
-          ones above it - that relationship is the thing worth keeping.
+          Each layer limits the ones above it. Power sets what chips can run,
+          chips set what models cost, and business decides if any of it is used.
         </p>
         <div className="gki-actions">
-          <button
-            className="gki-go"
-            onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}
-          >
-            Open the map
+          <button className="gki-go" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
+            Back to the layers
           </button>
           <button
             className="gki-ghost gki-mono"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSeen(new Set());
-              go(() => { setPhase("run"); setLi(0); setBi(0); setPicked(null); });
-            }}
+            onClick={(e) => { e.stopPropagation(); go(() => { setPhase("run"); setLi(0); }); }}
           >
-            Run it again
+            Start over
           </button>
         </div>
       </>
     );
 
-    if (bi === 0) return (
-      <>
-        <span className="gki-kicker gki-mono">{layer.id} - {layer.name}</span>
-        <p className="gki-essence">{layer.essence}</p>
-      </>
-    );
-
-    if (bi === 1) return (
-      <>
-        <span className="gki-kicker gki-mono">The anchor</span>
-        <p className="gki-figure gki-mono">
-          {layer.fig}<span className="gki-unit">{layer.unit}</span>
-        </p>
-        <p className="gki-figcap">{layer.figcap}</p>
-        <a
-          className="gki-src gki-mono"
-          href={layer.srcUrl}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {layer.src}
-        </a>
-      </>
-    );
-
-    if (bi === 2) return (
-      <>
-        <span className="gki-kicker gki-mono">What breaks</span>
-        <p className="gki-breaks" dangerouslySetInnerHTML={{ __html: layer.brk }} />
-      </>
-    );
-
+    /* ONE LAYER, ONE SCREEN.
+       Left column carries the idea, right column carries the evidence.
+       The essence holds peak contrast; the number is large but rendered
+       in accent, so size creates the hierarchy instead of a second
+       competing --focal element. */
     return (
       <>
-        <span className="gki-kicker gki-mono">Check - answer to continue</span>
-        <p className="gki-q">{layer.q}</p>
-        <div className="gki-opts">
-          {layer.a.map((text, i) => (
-            <button
-              key={i}
-              className={
-                "gki-opt" +
-                (answered && i === layer.right ? " right" : "") +
-                (answered && i === picked && i !== layer.right ? " wrong" : "")
-              }
-              disabled={answered}
-              onClick={(e) => { e.stopPropagation(); choose(i); }}
+        <span className="gki-kicker gki-mono">{layer.id} - {layer.name}</span>
+
+        <div className="gki-layer">
+          <div className="gki-layer-main">
+            <p className="gki-essence">{layer.essence}</p>
+            <p className="gki-breaks" dangerouslySetInnerHTML={{ __html: layer.brk }} />
+          </div>
+
+          <div className="gki-layer-fig">
+            <p className="gki-figure gki-mono">
+              {layer.fig}<span className="gki-unit">{layer.unit}</span>
+            </p>
+            <p className="gki-figcap">{layer.figcap}</p>
+            <a
+              className="gki-src gki-mono"
+              href={layer.srcUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
             >
-              <span className="gki-key gki-mono">{i === 0 ? "A" : "B"}</span>
-              <span>{text}</span>
-            </button>
-          ))}
+              {layer.src}
+            </a>
+          </div>
         </div>
-        {answered && (
-          <p className={"gki-verdict" + (picked === layer.right ? "" : " miss")}>
-            {layer.why}
-          </p>
-        )}
+
+        {/* Optional. Inline, never a gate, never its own screen. */}
+        <div className="gki-reflect">
+          {!openQ && (
+            <button
+              className="gki-ghost gki-mono"
+              onClick={(e) => { e.stopPropagation(); setOpenQ(true); }}
+            >
+              Quick check
+            </button>
+          )}
+
+          {openQ && (
+            <>
+              <p className="gki-q">{layer.q}</p>
+              <div className="gki-opts">
+                {layer.a.map((text, i) => (
+                  <button
+                    key={i}
+                    className={
+                      "gki-opt" +
+                      (answered && i === layer.right ? " right" : "") +
+                      (answered && i === picked && i !== layer.right ? " wrong" : "")
+                    }
+                    disabled={answered}
+                    onClick={(e) => { e.stopPropagation(); choose(i); }}
+                  >
+                    <span className="gki-key gki-mono">{i === 0 ? "A" : "B"}</span>
+                    <span>{text}</span>
+                  </button>
+                ))}
+              </div>
+              {answered && (
+                <p className={"gki-verdict" + (picked === layer.right ? "" : " miss")}>
+                  {layer.why}
+                </p>
+              )}
+            </>
+          )}
+        </div>
       </>
     );
   };
@@ -232,18 +253,13 @@ export function GatekptLanding() {
     <div
       onClick={() => { if (mapOpen) { setMapOpen(false); return; } next(); }}
       role="application"
-      aria-label="GateKPT stack trainer"
+      aria-label="GateKPT AI stack map"
     >
-      {/* Decorative atmosphere. */}
       <div className="gki-atmos" aria-hidden="true">
-        <div className="gki-bloom xb1" />
-        <div className="gki-bloom xb2" />
-        <div className="gki-bloom xb3" />
-        <div className="gki-bloom xb4" />
+        <div className="gki-bloom xb1" /><div className="gki-bloom xb2" />
+        <div className="gki-bloom xb3" /><div className="gki-bloom xb4" />
         <div className="gki-bloom xb5" />
-        <div className="gki-signage" />
-        <div className="gki-substrate" />
-        <div className="gki-vignette" />
+        <div className="gki-signage" /><div className="gki-substrate" /><div className="gki-vignette" />
       </div>
       <svg className="gki-grain" aria-hidden="true">
         <filter id="gki-grain-f">
@@ -252,22 +268,15 @@ export function GatekptLanding() {
         <rect width="100%" height="100%" filter="url(#gki-grain-f)" />
       </svg>
 
-      {/* Peripheral chrome. */}
       <div className="gki-edge gki-mono" style={{ top: 26, left: 30, display: "flex", alignItems: "center", gap: 9 }}>
         <span className="gki-mark" />
         <span style={{ color: "var(--focal)", letterSpacing: "0.2em" }}>GATEKPT</span>
       </div>
       <div className="gki-edge gki-mono" style={{ top: 26, right: 30 }}>{where}</div>
       <div className="gki-edge gki-mono" style={{ bottom: 26, left: 30 }}>{count}</div>
-      <div className={"gki-hint gki-mono" + (gateHeld ? " lit" : "")}>
-        {gateHeld ? "Space  -  next layer" : "Space  -  advance    Esc  -  map"}
-      </div>
+      <div className="gki-hint gki-mono">Space  -  next    Esc  -  all layers</div>
 
-      <div className="gki-pips" aria-hidden="true">
-        {[0, 1, 2, 3].map((i) => (
-          <i key={i} className={phase === "run" && i === bi ? "now" : ""} />
-        ))}
-      </div>
+      {/* Beat pips removed - there are no beats now, only layers. */}
       <div className="gki-ladder" aria-hidden="true">
         {LAYERS.map((_, i) => (
           <i key={i} className={
@@ -278,7 +287,6 @@ export function GatekptLanding() {
         ))}
       </div>
 
-      {/* Focal frame. */}
       <div className="gki-stage">
         <div className="gki-frame">
           <span className="gki-tick xt-a" /><span className="gki-tick xt-b" />
@@ -290,11 +298,10 @@ export function GatekptLanding() {
         </div>
       </div>
 
-      {/* Recognition map. */}
       <div
         className={"gki-map" + (mapOpen ? " on" : "")}
         role="dialog"
-        aria-label="Layer map"
+        aria-label="All layers"
         aria-hidden={!mapOpen}
       >
         <div>
@@ -310,9 +317,46 @@ export function GatekptLanding() {
             >
               <span className="gki-lid">{l.id}</span>
               <span>{l.name}</span>
-              <span className="gki-st">{seen.has(i) ? "OK held" : "-"}</span>
+              <span className="gki-st">{l.fig}{l.unit}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div
+        className={"gki-entries" + (entriesOpen ? " on" : "")}
+        role="dialog"
+        aria-label="GateKPT entries"
+        aria-hidden={!entriesOpen}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="gki-entries-panel">
+          <div className="gki-entries-head">
+            <div>
+              <span className="gki-kicker gki-mono">Entries</span>
+              <h2>Notes by layer.</h2>
+            </div>
+            <button className="gki-ghost gki-mono" onClick={() => setEntriesOpen(false)}>
+              Close
+            </button>
+          </div>
+          <div className="gki-entry-list">
+            {LAYERS.map((item, index) => (
+              <button
+                key={item.id}
+                className="gki-entry-card"
+                onClick={() => {
+                  setEntriesOpen(false);
+                  jump(index);
+                }}
+              >
+                <span className="gki-entry-id gki-mono">{item.id}</span>
+                <strong>{item.name}</strong>
+                <span>{item.essence}</span>
+                <small>{item.src}</small>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

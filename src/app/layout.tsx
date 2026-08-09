@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s - GateKPT",
   },
   description:
-    "A public map of the modern AI stack: power and silicon, data, models, prompting, evaluation, deployment, and industry context.",
+    "A public map of the AI stack: power, chips, data, models, software, testing, and business. Seven layers, one number and one source each.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GateKPT - The AI Stack, Mapped End to End",
     description:
-      "Infrastructure, data, models, prompting, evaluation, deployment, and industry context. Seven layers, mapped.",
+      "Power, chips, data, models, software, testing, business. Seven layers, mapped.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",

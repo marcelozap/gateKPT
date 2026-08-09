@@ -15,8 +15,8 @@ export default function Home() {
             GateKPT - the AI stack, mapped end to end.
           </h1>
           <p style={{ marginBottom: 40 }}>
-            A public map of the modern AI stack: power and silicon, data, models,
-            prompting, evaluation, deployment, and industry context.
+            A public map of the AI stack: power, chips, data, models, software,
+            testing, and business. One number and one source per layer.
           </p>
           {LAYERS.map((l) => (
             <section key={l.id} style={{ marginBottom: 32 }}>
