@@ -12,11 +12,11 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: {
-    default: "XIV - What Does Sound Look Like?",
-    template: "%s - XIV",
+    default: "GateKPT - AI From the Ground Up",
+    template: "%s - GateKPT",
   },
   description:
-    "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
+    "A public AI learning hub for hardware, data, models, prompting, engineering, markets, and real-world deployment.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "XIV - What Does Sound Look Like?",
+    title: "GateKPT - AI From the Ground Up",
     description:
-      "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
+      "A public AI learning hub for hardware, data, models, prompting, engineering, markets, and real-world deployment.",
     type: "website",
     url: getSiteUrl(),
   },

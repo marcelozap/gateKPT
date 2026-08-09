@@ -3,8 +3,10 @@
 import Link from "next/link";
 
 const links = [
-  { href: "/", label: "XIV" },
-  { href: "/#preview", label: "Sound" },
+  { href: "/#stack", label: "Stack" },
+  { href: "/#tracks", label: "Tracks" },
+  { href: "/#prompting", label: "Prompting" },
+  { href: "/#brief", label: "Brief" },
   { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
 ];
 
@@ -17,13 +19,13 @@ export function HubNav() {
       <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link
           href="/"
-          title="XIV music home"
-          aria-label="XIV music home"
-          className="flex items-center gap-1.5 rounded-md px-1 outline-none focus-visible:ring-2 focus-visible:ring-[#e37b45]/50"
+          title="GateKPT AI learning hub"
+          aria-label="GateKPT AI learning hub"
+          className="flex items-center gap-1.5 rounded-md px-1 outline-none focus-visible:ring-2 focus-visible:ring-emerald-600/50"
         >
-          <span className="text-sm font-semibold tracking-tight text-white">XIV</span>
+          <span className="text-sm font-semibold tracking-tight text-white">GateKPT</span>
           <span className="hidden text-[11px] text-apple-label3 sm:inline">/</span>
-          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">Music</span>
+          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">AI Groundwork</span>
         </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-0.5 sm:gap-1.5">
@@ -33,7 +35,7 @@ export function HubNav() {
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noreferrer" : undefined}
-              className="rounded-lg px-2 py-1.5 text-[12px] font-medium text-white/60 outline-none transition hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#e37b45]/40 sm:px-3 sm:text-[13px]"
+              className="rounded-lg px-2 py-1.5 text-[12px] font-medium text-white/60 outline-none transition hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-500/40 sm:px-3 sm:text-[13px]"
             >
               {link.label}
             </Link>
