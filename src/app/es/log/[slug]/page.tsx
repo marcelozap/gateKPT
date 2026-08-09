@@ -8,40 +8,40 @@ type EntryPageProps = {
 };
 
 export function generateStaticParams() {
-  return getJournalEntries("en").map((entry) => ({ slug: entry.slug }));
+  return getJournalEntries("es").map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata({ params }: EntryPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const entry = getJournalEntry(slug);
+  const entry = getJournalEntry(slug, "es");
   if (!entry) return {};
 
   return {
-    title: `${entry.title} - GateKPT Field Log`,
+    title: `${entry.title} - GateKPT Diario`,
     description: entry.summary,
     openGraph: {
-      title: `${entry.title} - GateKPT Field Log`,
+      title: `${entry.title} - GateKPT Diario`,
       description: entry.summary,
       type: "article",
     },
   };
 }
 
-export default async function EntryPage({ params }: EntryPageProps) {
+export default async function SpanishEntryPage({ params }: EntryPageProps) {
   const { slug } = await params;
-  const entry = getJournalEntry(slug);
+  const entry = getJournalEntry(slug, "es");
   if (!entry) notFound();
 
   return (
     <main className="gkl-page">
       <div className="gkl-atmos" aria-hidden="true" />
       <header className="gkl-header">
-        <Link href="/" className="gkl-mark gki-mono">
+        <Link href="/es" className="gkl-mark gki-mono">
           GateKPT
         </Link>
         <div className="gkl-nav">
-          <Link href={`/es/log/${entry.slug}`} className="gki-mono">ES</Link>
-          <Link href="/log" className="gki-mono">Field log</Link>
+          <Link href={`/log/${entry.slug}`} className="gki-mono">EN</Link>
+          <Link href="/es/log" className="gki-mono">Diario</Link>
         </div>
       </header>
 
@@ -60,8 +60,8 @@ export default async function EntryPage({ params }: EntryPageProps) {
         </div>
 
         <footer className="gkl-footer">
-          <Link href="/log" className="gki-ghost gki-mono">
-            Back to field log
+          <Link href="/es/log" className="gki-ghost gki-mono">
+            Volver al diario
           </Link>
         </footer>
       </article>

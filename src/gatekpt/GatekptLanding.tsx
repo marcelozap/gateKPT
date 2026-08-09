@@ -16,13 +16,76 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { JOURNAL_ENTRIES } from "./journal";
-import { LAYERS } from "./stack";
+import { getJournalEntries, type Locale } from "./journal";
+import { LAYERS, LAYERS_ES } from "./stack";
 
 type Phase = "boot" | "run" | "end";
 const FADE = 130; // must match .gki-slot.out transition in globals.css
 
-export function GatekptLanding() {
+const COPY = {
+  en: {
+    whereBoot: "SEVEN LAYERS",
+    whereEnd: "END OF MAP",
+    countBoot: "START",
+    homeTitle: "AI from the physical layer up.",
+    homeBody:
+      "A research log for understanding what actually runs modern AI: power, chips, data, models, software, testing, and business. Each layer has a number and a source.",
+    openLog: "Open field log",
+    exploreMap: "Explore map",
+    layers: "Layers",
+    fieldLog: "Field log",
+    viewAll: "View all",
+    endKicker: "L01 - L07",
+    endTitle: "The stack is physical, logical, and human.",
+    endBody:
+      "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
+    backLayers: "Back to the layers",
+    startOver: "Start over",
+    hint: "Space  -  next    Esc  -  all layers",
+    back: "Back",
+    log: "Log",
+    forward: "Forward",
+    load: "FIELD LOG ONLINE",
+    switchLabel: "ES",
+    switchHref: "/es",
+  },
+  es: {
+    whereBoot: "SIETE CAPAS",
+    whereEnd: "FIN DEL MAPA",
+    countBoot: "INICIO",
+    homeTitle: "IA desde la capa fisica hacia arriba.",
+    homeBody:
+      "Un diario de investigacion para entender que hace funcionar la IA moderna: energia, chips, datos, modelos, software, pruebas y contexto. Cada capa tiene un numero y una fuente.",
+    openLog: "Abrir diario",
+    exploreMap: "Explorar mapa",
+    layers: "Capas",
+    fieldLog: "Diario",
+    viewAll: "Ver todo",
+    endKicker: "L01 - L07",
+    endTitle: "El stack es fisico, logico y humano.",
+    endBody:
+      "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
+    backLayers: "Volver a las capas",
+    startOver: "Empezar de nuevo",
+    hint: "Espacio  -  avanzar    Esc  -  todas las capas",
+    back: "Atras",
+    log: "Diario",
+    forward: "Avanzar",
+    load: "DIARIO EN LINEA",
+    switchLabel: "EN",
+    switchHref: "/",
+  },
+} as const;
+
+type GatekptLandingProps = {
+  locale?: Locale;
+};
+
+export function GatekptLanding({ locale = "en" }: GatekptLandingProps) {
+  const copy = COPY[locale];
+  const layers = locale === "es" ? LAYERS_ES : LAYERS;
+  const entries = getJournalEntries(locale);
+  const logHref = locale === "es" ? "/es/log" : "/log";
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(new Set());
@@ -31,7 +94,7 @@ export function GatekptLanding() {
   const [sweep, setSweep] = useState(0);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const layer = LAYERS[li];
+  const layer = layers[li];
 
   useEffect(() => {
     document.body.classList.add("gk-instrument");
@@ -60,7 +123,7 @@ export function GatekptLanding() {
       return;
     }
     if (phase === "end") return;
-    if (li < LAYERS.length - 1) {
+    if (li < layers.length - 1) {
       const n = li + 1;
       go(() => {
         setLi(n);
@@ -69,7 +132,7 @@ export function GatekptLanding() {
       return;
     }
     go(() => setPhase("end"));
-  }, [phase, li, go]);
+  }, [phase, li, go, layers.length]);
 
   const prev = useCallback(() => {
     if (phase !== "run") return;
@@ -85,14 +148,14 @@ export function GatekptLanding() {
   }, [phase, li, go]);
 
   const jump = useCallback((n: number) => {
-    if (n < 0 || n >= LAYERS.length) return;
+    if (n < 0 || n >= layers.length) return;
     setMapOpen(false);
     go(() => {
       setPhase("run");
       setLi(n);
       setSeen((s) => new Set(s).add(n));
     });
-  }, [go]);
+  }, [go, layers.length]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -133,10 +196,10 @@ export function GatekptLanding() {
     };
   }, [next, prev]);
 
-  const where = phase === "boot" ? "SEVEN LAYERS"
-              : phase === "end"  ? "END OF MAP"
+  const where = phase === "boot" ? copy.whereBoot
+              : phase === "end"  ? copy.whereEnd
               : `${layer.id}  -  ${layer.name.toUpperCase()}`;
-  const count = phase === "boot" ? "START"
+  const count = phase === "boot" ? copy.countBoot
               : phase === "end"  ? "07 / 07"
               : `${String(li + 1).padStart(2, "0")} / 07`;
 
@@ -145,35 +208,32 @@ export function GatekptLanding() {
       <div className="gki-home">
         <section className="gki-home-main">
           <span className="gki-kicker gki-mono">GateKPT</span>
-          <p className="gki-essence">AI from the physical layer up.</p>
-          <p className="gki-donep">
-            A public research terminal for understanding what actually runs modern
-            AI: infrastructure, data, models, deployment, evaluation, and business context.
-          </p>
+          <p className="gki-essence">{copy.homeTitle}</p>
+          <p className="gki-donep">{copy.homeBody}</p>
           <div className="gki-actions">
-            <Link href="/log" className="gki-go" onClick={(e) => e.stopPropagation()}>
-              Open field log
+            <Link href={logHref} className="gki-go" onClick={(e) => e.stopPropagation()}>
+              {copy.openLog}
             </Link>
             <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); next(); }}>
-              Explore map
+              {copy.exploreMap}
             </button>
             <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
-              Layers
+              {copy.layers}
             </button>
           </div>
         </section>
 
         <aside className="gki-home-log" aria-label="Recent field log entries">
           <div className="gki-home-log-head">
-            <span className="gki-kicker gki-mono">Field log</span>
-            <Link href="/log" className="gki-mini gki-mono" onClick={(e) => e.stopPropagation()}>
-              View all
+            <span className="gki-kicker gki-mono">{copy.fieldLog}</span>
+            <Link href={logHref} className="gki-mini gki-mono" onClick={(e) => e.stopPropagation()}>
+              {copy.viewAll}
             </Link>
           </div>
           <div className="gki-home-log-list">
-            {JOURNAL_ENTRIES.slice(0, 3).map((entry) => (
+            {entries.slice(0, 3).map((entry) => (
               <Link
-                href={`/log/${entry.slug}`}
+                href={`${logHref}/${entry.slug}`}
                 key={`${entry.date}-${entry.title}`}
                 className="gki-home-entry"
                 onClick={(e) => e.stopPropagation()}
@@ -190,22 +250,19 @@ export function GatekptLanding() {
 
     if (phase === "end") return (
       <>
-        <span className="gki-kicker gki-mono">L01 - L07</span>
-        <p className="gki-doneh">The stack is physical, logical, and human.</p>
-        <p className="gki-donep">
-          Each layer limits the ones above it. Power sets what chips can run,
-          chips set what models cost, and human workflows decide whether any of it matters.
-        </p>
+        <span className="gki-kicker gki-mono">{copy.endKicker}</span>
+        <p className="gki-doneh">{copy.endTitle}</p>
+        <p className="gki-donep">{copy.endBody}</p>
         <div className="gki-actions">
           <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
-            Back to the layers
+            {copy.backLayers}
           </button>
           <button
             type="button"
             className="gki-ghost gki-mono"
             onClick={(e) => { e.stopPropagation(); go(() => { setPhase("run"); setLi(0); }); }}
           >
-            Start over
+            {copy.startOver}
           </button>
         </div>
       </>
@@ -271,7 +328,7 @@ export function GatekptLanding() {
         <div className="gki-loadmark gki-mono">
           <span>GATEKPT</span>
           <i />
-          <small>FIELD LOG ONLINE</small>
+          <small>{copy.load}</small>
         </div>
       </div>
 
@@ -279,27 +336,30 @@ export function GatekptLanding() {
         <span className="gki-mark" />
         <span style={{ color: "var(--focal)", letterSpacing: "0.2em" }}>GATEKPT</span>
       </div>
+      <Link className="gki-lang gki-mono" href={copy.switchHref} onClick={(e) => e.stopPropagation()}>
+        {copy.switchLabel}
+      </Link>
       <div className="gki-edge gki-mono" style={{ top: 26, right: 30 }}>{where}</div>
       <div className="gki-edge gki-mono" style={{ bottom: 26, left: 30 }}>{count}</div>
-      <div className="gki-hint gki-mono">Space  -  next    Esc  -  all layers</div>
+      <div className="gki-hint gki-mono">{copy.hint}</div>
       <div className="gki-controls gki-mono" onClick={(e) => e.stopPropagation()}>
         <button type="button" onClick={prev} disabled={phase === "boot"}>
-          Back
+          {copy.back}
         </button>
-        <Link href="/log">
-          Log
+        <Link href={logHref}>
+          {copy.log}
         </Link>
         <button type="button" onClick={() => setMapOpen(true)}>
-          Layers
+          {copy.layers}
         </button>
         <button type="button" onClick={next} disabled={phase === "end"}>
-          Forward
+          {copy.forward}
         </button>
       </div>
 
       {/* Beat pips removed - there are no beats now, only layers. */}
       <div className="gki-ladder" aria-hidden="true">
-        {LAYERS.map((_, i) => (
+        {layers.map((_, i) => (
           <i key={i} className={
             phase === "end" ? "done"
             : phase !== "run" ? ""
@@ -326,7 +386,7 @@ export function GatekptLanding() {
         aria-hidden={!mapOpen}
       >
         <div>
-          {LAYERS.map((l, i) => (
+          {layers.map((l, i) => (
             <div
               key={l.id}
               className={

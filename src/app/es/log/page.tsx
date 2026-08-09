@@ -2,40 +2,40 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getJournalEntries } from "@/gatekpt/journal";
 
-const entries = getJournalEntries("en");
+const entries = getJournalEntries("es");
 
 export const metadata: Metadata = {
-  title: "Field Log - GateKPT",
+  title: "Diario - GateKPT",
   description:
-    "Public GateKPT journal entries on AI power, chips, data, models, software, testing, and real-world systems.",
+    "Entradas publicas de GateKPT sobre energia, chips, datos, modelos, software, pruebas y sistemas reales de IA.",
 };
 
-export default function LogPage() {
+export default function SpanishLogPage() {
   return (
     <main className="gkl-page">
       <div className="gkl-atmos" aria-hidden="true" />
       <header className="gkl-header">
-        <Link href="/" className="gkl-mark gki-mono">
+        <Link href="/es" className="gkl-mark gki-mono">
           GateKPT
         </Link>
         <div className="gkl-nav">
-          <Link href="/es/log" className="gki-mono">ES</Link>
-          <span className="gki-mono">Field log</span>
+          <Link href="/log" className="gki-mono">EN</Link>
+          <span className="gki-mono">Diario</span>
         </div>
       </header>
 
       <section className="gkl-hero">
-        <span className="gki-kicker gki-mono">Public journal</span>
-        <h1>Ideas on AI, organized as entries.</h1>
+        <span className="gki-kicker gki-mono">Diario publico</span>
+        <h1>Ideas sobre IA, organizadas como entradas.</h1>
         <p>
-          This is the readable archive: notes, research, framing, and working ideas
-          about the AI stack from the physical layer up.
+          Este es el archivo legible: notas, investigacion, marcos mentales e
+          ideas en proceso sobre el stack de IA desde la capa fisica hacia arriba.
         </p>
       </section>
 
-      <section className="gkl-list" aria-label="Journal entries">
+      <section className="gkl-list" aria-label="Entradas del diario">
         {entries.map((entry) => (
-          <Link href={`/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
+          <Link href={`/es/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
             <span className="gkl-date gki-mono">{entry.date}</span>
             <div>
               <span className="gkl-layer gki-mono">{entry.layer}</span>

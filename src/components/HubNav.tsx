@@ -3,10 +3,9 @@
 import Link from "next/link";
 
 const links = [
+  { href: "/log", label: "Log" },
   { href: "/#stack", label: "Stack" },
-  { href: "/#tracks", label: "Tracks" },
-  { href: "/#prompting", label: "Prompting" },
-  { href: "/#brief", label: "Brief" },
+  { href: "/es", label: "ES" },
   { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
 ];
 

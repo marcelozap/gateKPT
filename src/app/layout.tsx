@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s - GateKPT",
   },
   description:
-    "A public research terminal for the AI stack: power, chips, data, models, software, evaluation, and business context.",
+    "A public research terminal for the AI stack: power, chips, data, models, software, testing, and business context.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [

@@ -1,24 +1,28 @@
+import type { Metadata } from "next";
 import { GatekptLanding } from "@/gatekpt/GatekptLanding";
-import { LAYERS } from "@/gatekpt/stack";
+import { LAYERS_ES } from "@/gatekpt/stack";
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: "GateKPT - IA desde la capa fisica hacia arriba",
+  description:
+    "Un diario publico de investigacion sobre IA: energia, chips, datos, modelos, software, pruebas y contexto.",
+};
+
+export default function SpanishHome() {
   return (
     <>
-      <GatekptLanding />
+      <GatekptLanding locale="es" />
 
-      {/* A state machine has no crawlable body text. This carries the full
-          seven-layer content for search engines and for anyone without JS.
-          Do not ship "/" without it. */}
       <noscript>
         <div style={{ position: "relative", zIndex: 40, maxWidth: 680, margin: "0 auto", padding: "64px 24px", background: "#05070D", color: "#93A0B4", font: "400 17px/1.65 system-ui, sans-serif" }}>
           <h1 style={{ color: "#F4F8FC", fontSize: 34, letterSpacing: "-0.03em", marginBottom: 8 }}>
-            GateKPT - AI from the physical layer up.
+            GateKPT - IA desde la capa fisica hacia arriba.
           </h1>
           <p style={{ marginBottom: 40 }}>
-            A public research terminal for the AI stack: power, chips, data,
-            models, software, testing, and business context.
+            Un diario publico de investigacion sobre IA: energia, chips,
+            datos, modelos, software, pruebas y contexto.
           </p>
-          {LAYERS.map((l) => (
+          {LAYERS_ES.map((l) => (
             <section key={l.id} style={{ marginBottom: 32 }}>
               <h2 style={{ color: "#F4F8FC", fontSize: 20, marginBottom: 6 }}>
                 {l.id} - {l.name}
