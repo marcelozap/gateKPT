@@ -693,6 +693,13 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gki-hint{position:fixed;z-index:6;bottom:26px;right:30px;font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ghost);transition:color .3s}
 .gki-hint.lit{color:var(--visor-deep)}
+.gki-controls{position:fixed;z-index:7;right:30px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px}
+.gki-controls button{border:1px solid var(--ghost);background:rgba(11,17,28,.58);color:var(--chrome);
+  border-radius:2px;padding:7px 10px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.gki-controls button:hover:not(:disabled){color:var(--visor);border-color:var(--visor-35);background:rgba(125,249,255,.05)}
+.gki-controls button:disabled{opacity:.34;cursor:default}
 
 /* ── map overlay ── */
 .gki-map{position:fixed;inset:0;z-index:30;display:none;place-items:center;
@@ -717,14 +724,17 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gki-entries-head h2{margin:0;color:var(--focal);font-size:clamp(26px,3vw,38px);line-height:1.1;
   letter-spacing:-.03em;font-weight:500}
 .gki-entry-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px;overflow:auto;padding-right:4px}
+.gki-journal-list{display:grid;gap:10px;margin-top:20px;padding-bottom:20px;border-bottom:1px solid var(--ghost)}
 .gki-entry-card{display:grid;grid-template-columns:54px 1fr;gap:4px 14px;text-align:left;border:1px solid var(--ghost);
   background:rgba(5,7,13,.42);color:var(--near);border-radius:2px;padding:15px;cursor:pointer;
   transition:border-color .15s var(--xease),background .15s var(--xease),color .15s var(--xease)}
+.gki-journal-card{display:grid;grid-template-columns:84px 1fr;gap:4px 16px;text-align:left;border:1px solid var(--ghost);
+  background:rgba(125,249,255,.035);color:var(--near);border-radius:2px;padding:15px}
 .gki-entry-card:hover{border-color:var(--visor-35);background:rgba(125,249,255,.05);color:var(--focal)}
 .gki-entry-id{grid-row:1 / span 4;color:var(--visor-deep);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
-.gki-entry-card strong{color:var(--focal);font-size:17px;font-weight:500}
-.gki-entry-card span:not(.gki-entry-id){font-size:14px;line-height:1.45}
-.gki-entry-card small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--chrome)}
+.gki-entry-card strong,.gki-journal-card strong{color:var(--focal);font-size:17px;font-weight:500}
+.gki-entry-card span:not(.gki-entry-id),.gki-journal-card span:not(.gki-entry-id){font-size:14px;line-height:1.45}
+.gki-entry-card small,.gki-journal-card small{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--chrome)}
 
 @media (prefers-reduced-motion:reduce){
   .gki-bloom,.gki-slot,.gki-visor::after,.gki-verdict,.gki-map{animation:none!important}
@@ -732,6 +742,8 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 }
 @media(max-width:640px){
   .gki-hint,.gki-substrate{display:none}
+  .gki-controls{right:16px;top:auto;bottom:48px;transform:none;flex-direction:row}
+  .gki-controls button{padding:6px 8px;font-size:9px}
   .gki-bloom{filter:blur(60px)}
   .gki-frame{min-height:290px}
   .xt-a,.xt-b,.gki-visor{top:-18px}
@@ -745,6 +757,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   .gki-entries-panel{max-height:88vh;padding:18px}
   .gki-entries-head{align-items:flex-start}
   .gki-entry-list{grid-template-columns:1fr}
+  .gki-journal-card{grid-template-columns:1fr}
 }
 
 /* -------------------------------------------------------------------

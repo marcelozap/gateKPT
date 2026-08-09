@@ -21,6 +21,27 @@ import { LAYERS } from "./stack";
 type Phase = "boot" | "run" | "end";
 const FADE = 130; // must match .gki-slot.out transition in globals.css
 
+const JOURNAL_ENTRIES = [
+  {
+    date: "2026-08-09",
+    title: "First public map",
+    layer: "L01-L07",
+    summary: "Collapsed the AI stack into seven sourced layers: power, chips, data, models, software, testing, and business.",
+  },
+  {
+    date: "Next",
+    title: "Prompting patterns",
+    layer: "Prompt lab",
+    summary: "Turn loose questions into structured model work orders with context, constraints, examples, and checks.",
+  },
+  {
+    date: "Next",
+    title: "Weekly AI brief",
+    layer: "Briefs",
+    summary: "A repeatable format for tracking what changed, why it matters, and which layer of the stack it touches.",
+  },
+] as const;
+
 export function GatekptLanding() {
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
@@ -139,13 +160,13 @@ export function GatekptLanding() {
           I learn more.
         </p>
         <div className="gki-actions">
-          <button className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
+          <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
             Start at Power
           </button>
-          <button className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+          <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
             Open entries
           </button>
-          <button className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
+          <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
             Jump to a layer
           </button>
         </div>
@@ -161,10 +182,11 @@ export function GatekptLanding() {
           chips set what models cost, and business decides if any of it is used.
         </p>
         <div className="gki-actions">
-          <button className="gki-go" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
+          <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
             Back to the layers
           </button>
           <button
+            type="button"
             className="gki-ghost gki-mono"
             onClick={(e) => { e.stopPropagation(); go(() => { setPhase("run"); setLi(0); }); }}
           >
@@ -210,10 +232,11 @@ export function GatekptLanding() {
         <div className="gki-reflect">
           {!openQ && (
             <button
+              type="button"
               className="gki-ghost gki-mono"
               onClick={(e) => { e.stopPropagation(); setOpenQ(true); }}
             >
-              Quick check
+              Show question
             </button>
           )}
 
@@ -223,6 +246,7 @@ export function GatekptLanding() {
               <div className="gki-opts">
                 {layer.a.map((text, i) => (
                   <button
+                    type="button"
                     key={i}
                     className={
                       "gki-opt" +
@@ -251,7 +275,7 @@ export function GatekptLanding() {
 
   return (
     <div
-      onClick={() => { if (mapOpen) { setMapOpen(false); return; } next(); }}
+      onClick={() => { if (mapOpen) setMapOpen(false); }}
       role="application"
       aria-label="GateKPT AI stack map"
     >
@@ -275,6 +299,20 @@ export function GatekptLanding() {
       <div className="gki-edge gki-mono" style={{ top: 26, right: 30 }}>{where}</div>
       <div className="gki-edge gki-mono" style={{ bottom: 26, left: 30 }}>{count}</div>
       <div className="gki-hint gki-mono">Space  -  next    Esc  -  all layers</div>
+      <div className="gki-controls gki-mono" onClick={(e) => e.stopPropagation()}>
+        <button type="button" onClick={prev} disabled={phase === "boot"}>
+          Prev
+        </button>
+        <button type="button" onClick={() => setEntriesOpen(true)}>
+          Entries
+        </button>
+        <button type="button" onClick={() => setMapOpen(true)}>
+          Layers
+        </button>
+        <button type="button" onClick={next} disabled={phase === "end"}>
+          Next
+        </button>
+      </div>
 
       {/* Beat pips removed - there are no beats now, only layers. */}
       <div className="gki-ladder" aria-hidden="true">
@@ -334,15 +372,26 @@ export function GatekptLanding() {
           <div className="gki-entries-head">
             <div>
               <span className="gki-kicker gki-mono">Entries</span>
-              <h2>Notes by layer.</h2>
+              <h2>Journal and layer notes.</h2>
             </div>
-            <button className="gki-ghost gki-mono" onClick={() => setEntriesOpen(false)}>
+            <button type="button" className="gki-ghost gki-mono" onClick={() => setEntriesOpen(false)}>
               Close
             </button>
+          </div>
+          <div className="gki-journal-list">
+            {JOURNAL_ENTRIES.map((entry) => (
+              <article key={`${entry.date}-${entry.title}`} className="gki-journal-card">
+                <span className="gki-entry-id gki-mono">{entry.date}</span>
+                <strong>{entry.title}</strong>
+                <span>{entry.summary}</span>
+                <small>{entry.layer}</small>
+              </article>
+            ))}
           </div>
           <div className="gki-entry-list">
             {LAYERS.map((item, index) => (
               <button
+                type="button"
                 key={item.id}
                 className="gki-entry-card"
                 onClick={() => {
