@@ -690,11 +690,6 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   transition:background .35s var(--xease),box-shadow .35s var(--xease)}
 .gki-ladder i.done{background:var(--visor-deep)}
 .gki-ladder i.now{background:var(--visor);box-shadow:0 0 12px var(--visor)}
-.gki-pips{position:fixed;z-index:6;left:30px;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:7px}
-.gki-pips i{width:2px;height:2px;border-radius:50%;background:var(--ghost);
-  transition:background .26s var(--xease),height .26s var(--xease)}
-.gki-pips i.now{background:var(--visor);height:15px;border-radius:1px;box-shadow:0 0 9px var(--visor)}
 .gki-hint{position:fixed;z-index:6;bottom:26px;right:30px;font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--ghost);transition:color .3s}
 .gki-hint.lit{color:var(--visor-deep)}
@@ -733,10 +728,10 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 
 @media (prefers-reduced-motion:reduce){
   .gki-bloom,.gki-slot,.gki-visor::after,.gki-verdict,.gki-map{animation:none!important}
-  .gki-opt,.gki-go,.gki-ladder i,.gki-pips i{transition:none!important}
+  .gki-opt,.gki-go,.gki-ladder i{transition:none!important}
 }
 @media(max-width:640px){
-  .gki-pips,.gki-hint,.gki-substrate{display:none}
+  .gki-hint,.gki-substrate{display:none}
   .gki-bloom{filter:blur(60px)}
   .gki-frame{min-height:290px}
   .xt-a,.xt-b,.gki-visor{top:-18px}
