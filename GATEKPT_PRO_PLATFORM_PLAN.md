@@ -215,6 +215,8 @@ This pillar should make a senior engineer think:
 
 ## Design Direction
 
+Use `GATEKPT_DESIGN_STANDARD.md` as the source of truth for visual rules, interaction modes, color, typography, motion, and public-safe language.
+
 Professional, dark, high-contrast, precise.
 
 Not:
