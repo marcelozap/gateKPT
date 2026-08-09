@@ -1,22 +1,29 @@
-import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
-import { HubNav } from "@/components/HubNav";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { getSiteUrl } from "@/lib/siteUrl";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jbmono",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - AI From the Ground Up",
+    default: "GateKPT - The AI Stack, Mapped End to End",
     template: "%s - GateKPT",
   },
   description:
-    "A public AI learning hub for hardware, data, models, prompting, engineering, markets, and real-world deployment.",
+    "A public map of the modern AI stack: power and silicon, data, models, prompting, evaluation, deployment, and industry context.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -26,21 +33,29 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - AI From the Ground Up",
+    title: "GateKPT - The AI Stack, Mapped End to End",
     description:
-      "A public AI learning hub for hardware, data, models, prompting, engineering, markets, and real-world deployment.",
+      "Infrastructure, data, models, prompting, evaluation, deployment, and industry context. Seven layers, mapped.",
     type: "website",
     url: getSiteUrl(),
+    siteName: "GateKPT",
   },
+  twitter: { card: "summary_large_image" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#05070D",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={spaceGrotesk.variable}>
+    <html lang="en" className={`${inter.variable} ${jetBrainsMono.variable}`}>
       <body className="font-body">
-        <HubNav />
         <main id="main-content" className="relative z-10 outline-none" tabIndex={-1}>
           {children}
         </main>

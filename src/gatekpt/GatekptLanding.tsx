@@ -1,354 +1,322 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  BadgeDollarSign,
-  BrainCircuit,
-  BriefcaseBusiness,
-  Cpu,
-  Database,
-  FileText,
-  Gauge,
-  GraduationCap,
-  LineChart,
-  Map,
-  MessageSquareText,
-  Newspaper,
-  ShieldCheck,
-  Sparkles,
-  Workflow,
-  Zap,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { LAYERS } from "./stack";
 
-const entryPaths = [
-  {
-    label: "Beginner",
-    title: "What is this?",
-    detail: "Plain-language foundations before jargon.",
-    icon: GraduationCap,
-  },
-  {
-    label: "Engineer",
-    title: "How is it built?",
-    detail: "Systems, APIs, data, prompts, evals.",
-    icon: Workflow,
-  },
-  {
-    label: "Market",
-    title: "Why now?",
-    detail: "Compute, companies, costs, talent, timing.",
-    icon: LineChart,
-  },
-];
+type Phase = "boot" | "run" | "end";
+const FADE = 130; // must match .gki-slot.out transition in globals.css
 
-const stackLayers = [
-  {
-    title: "Compute",
-    eyebrow: "Physical",
-    detail: "GPUs, memory, networking, data centers, power, cooling.",
-    icon: Cpu,
-    color: "text-cyan-200",
-  },
-  {
-    title: "Data",
-    eyebrow: "Trust",
-    detail: "Schemas, pipelines, traceability, quality, governance.",
-    icon: Database,
-    color: "text-emerald-200",
-  },
-  {
-    title: "Models",
-    eyebrow: "Reasoning",
-    detail: "Tokens, embeddings, transformers, training, inference.",
-    icon: BrainCircuit,
-    color: "text-violet-200",
-  },
-  {
-    title: "Deployment",
-    eyebrow: "Workflow",
-    detail: "APIs, agents, RAG, evals, guardrails, human review.",
-    icon: BriefcaseBusiness,
-    color: "text-amber-200",
-  },
-];
+export function GatekptLanding() {
+  const [phase, setPhase] = useState<Phase>("boot");
+  const [li, setLi] = useState(0);
+  const [bi, setBi] = useState(0);
+  const [picked, setPicked] = useState<number | null>(null);
+  const [seen, setSeen] = useState<Set<number>>(new Set());
+  const [mapOpen, setMapOpen] = useState(false);
+  const [fading, setFading] = useState(false);
+  const [sweep, setSweep] = useState(0);
 
-const tracks = [
-  {
-    title: "Prompt Lab",
-    detail: "Turn a vague question into a clean model work order.",
-    icon: MessageSquareText,
-  },
-  {
-    title: "Risk Controls",
-    detail: "Bias, privacy, source attribution, confidence, and review.",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Weekly Signal",
-    detail: "AI news simplified, organized, and mapped back to fundamentals.",
-    icon: Newspaper,
-  },
-];
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const answered = picked !== null;
+  const layer = LAYERS[li];
 
-const promptSteps = ["Role", "Context", "Task", "Constraints", "Example", "Format", "Check"];
+  /* body gets the instrument class: no scroll, dark base.
+     Reading routes (/briefs, /work) must NOT set this. */
+  useEffect(() => {
+    document.body.classList.add("gk-instrument");
+    return () => document.body.classList.remove("gk-instrument");
+  }, []);
 
-const weeklyFlow = [
-  [Newspaper, "Collect", "What actually happened?"],
-  [Gauge, "Filter", "What is signal vs noise?"],
-  [Map, "Map", "Where does it sit in the stack?"],
-  [FileText, "Write", "What evergreen note should exist?"],
-  [Zap, "Publish", "What is useful enough to share?"],
-];
+  const go = useCallback((fn: () => void) => {
+    if (timer.current) clearTimeout(timer.current);
+    setFading(true);
+    timer.current = setTimeout(() => {
+      fn();
+      setFading(false);
+      setSweep((s) => s + 1);
+    }, FADE);
+  }, []);
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+
+  const next = useCallback(() => {
+    if (phase === "boot") { go(() => { setPhase("run"); setLi(0); setBi(0); setPicked(null); }); return; }
+    if (phase === "end") return;
+    if (bi === 3 && !answered) return;              // <- the gate
+    if (bi < 3) { go(() => setBi((b) => b + 1)); return; }
+    if (li < LAYERS.length - 1) { go(() => { setLi((l) => l + 1); setBi(0); setPicked(null); }); return; }
+    go(() => setPhase("end"));
+  }, [phase, bi, li, answered, go]);
+
+  const prev = useCallback(() => {
+    if (phase !== "run") return;
+    if (bi > 0) { go(() => { setBi((b) => b - 1); setPicked(null); }); return; }
+    if (li > 0) { go(() => { setLi((l) => l - 1); setBi(3); setPicked(null); }); return; }
+    go(() => setPhase("boot"));
+  }, [phase, bi, li, go]);
+
+  const jump = useCallback((n: number) => {
+    if (n < 0 || n >= LAYERS.length) return;
+    setMapOpen(false);
+    go(() => { setPhase("run"); setLi(n); setBi(0); setPicked(null); });
+  }, [go]);
+
+  /* fading guard: a keypress mid-transition must not open the gate
+     without an answer ever being recorded */
+  const choose = useCallback((i: number) => {
+    if (phase !== "run" || bi !== 3 || answered || fading) return;
+    setPicked(i);
+    setSeen((s) => new Set(s).add(li));
+  }, [phase, bi, answered, fading, li]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const k = e.key;
+      if (k === "Escape") { e.preventDefault(); setMapOpen((m) => !m); return; }
+      if (mapOpen) { if (/^[1-7]$/.test(k)) jump(Number(k) - 1); return; }
+      if (k === " " || k === "ArrowRight" || k === "Enter") { e.preventDefault(); next(); }
+      else if (k === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (k === "a" || k === "A") choose(0);
+      else if (k === "b" || k === "B") choose(1);
+      else if (/^[1-7]$/.test(k)) jump(Number(k) - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mapOpen, next, prev, choose, jump]);
+
+  useEffect(() => {
+    const block = (e: Event) => e.preventDefault();
+    window.addEventListener("wheel", block, { passive: false });
+    window.addEventListener("touchmove", block, { passive: false });
+    return () => {
+      window.removeEventListener("wheel", block);
+      window.removeEventListener("touchmove", block);
+    };
+  }, []);
+
+  useEffect(() => {
+    let sx = 0, sy = 0;
+    const start = (e: TouchEvent) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; };
+    const end = (e: TouchEvent) => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = Math.abs(e.changedTouches[0].clientY - sy);
+      if (Math.abs(dx) > 48 && dy < 70) {
+        if (dx < 0) next(); else prev();
+      }
+    };
+    window.addEventListener("touchstart", start, { passive: true });
+    window.addEventListener("touchend", end, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", start);
+      window.removeEventListener("touchend", end);
+    };
+  }, [next, prev]);
+
+  const where = phase === "boot" ? "SEVEN LAYERS"
+              : phase === "end"  ? "COMPLETE"
+              : `${layer.id}  -  ${layer.name.toUpperCase()}`;
+  const count = phase === "boot" ? "NOT STARTED"
+              : phase === "end"  ? "07 / 07"
+              : `${String(li + 1).padStart(2, "0")} / 07`;
+  const gateHeld = phase === "run" && bi === 3 && answered;
+
+  const body = () => {
+    if (phase === "boot") return (
+      <>
+        <span className="gki-kicker gki-mono">GateKPT  -  Stack Trainer</span>
+        <p className="gki-essence">The AI stack has seven layers. Hold all seven.</p>
+        <div className="gki-actions">
+          <button className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
+            Begin - L01
+          </button>
+          <button className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
+            See the map
+          </button>
+        </div>
+      </>
+    );
+
+    if (phase === "end") return (
+      <>
+        <span className="gki-kicker gki-mono">L01 - L07  -  Complete</span>
+        <p className="gki-doneh">You now hold the whole ladder.</p>
+        <p className="gki-donep">
+          Seven layers, seven anchors, seven failure modes. Each layer constrains the
+          ones above it - that relationship is the thing worth keeping.
+        </p>
+        <div className="gki-actions">
+          <button
+            className="gki-go"
+            onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}
+          >
+            Open the map
+          </button>
+          <button
+            className="gki-ghost gki-mono"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSeen(new Set());
+              go(() => { setPhase("run"); setLi(0); setBi(0); setPicked(null); });
+            }}
+          >
+            Run it again
+          </button>
+        </div>
+      </>
+    );
+
+    if (bi === 0) return (
+      <>
+        <span className="gki-kicker gki-mono">{layer.id} - {layer.name}</span>
+        <p className="gki-essence">{layer.essence}</p>
+      </>
+    );
+
+    if (bi === 1) return (
+      <>
+        <span className="gki-kicker gki-mono">The anchor</span>
+        <p className="gki-figure gki-mono">
+          {layer.fig}<span className="gki-unit">{layer.unit}</span>
+        </p>
+        <p className="gki-figcap">{layer.figcap}</p>
+        <a
+          className="gki-src gki-mono"
+          href={layer.srcUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {layer.src}
+        </a>
+      </>
+    );
+
+    if (bi === 2) return (
+      <>
+        <span className="gki-kicker gki-mono">What breaks</span>
+        <p className="gki-breaks" dangerouslySetInnerHTML={{ __html: layer.brk }} />
+      </>
+    );
+
+    return (
+      <>
+        <span className="gki-kicker gki-mono">Check - answer to continue</span>
+        <p className="gki-q">{layer.q}</p>
+        <div className="gki-opts">
+          {layer.a.map((text, i) => (
+            <button
+              key={i}
+              className={
+                "gki-opt" +
+                (answered && i === layer.right ? " right" : "") +
+                (answered && i === picked && i !== layer.right ? " wrong" : "")
+              }
+              disabled={answered}
+              onClick={(e) => { e.stopPropagation(); choose(i); }}
+            >
+              <span className="gki-key gki-mono">{i === 0 ? "A" : "B"}</span>
+              <span>{text}</span>
+            </button>
+          ))}
+        </div>
+        {answered && (
+          <p className={"gki-verdict" + (picked === layer.right ? "" : " miss")}>
+            {layer.why}
+          </p>
+        )}
+      </>
+    );
+  };
+
   return (
-    <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-300">
-      {children}
-    </p>
-  );
-}
+    <div
+      onClick={() => { if (mapOpen) { setMapOpen(false); return; } next(); }}
+      role="application"
+      aria-label="GateKPT stack trainer"
+    >
+      {/* Decorative atmosphere. */}
+      <div className="gki-atmos" aria-hidden="true">
+        <div className="gki-bloom xb1" />
+        <div className="gki-bloom xb2" />
+        <div className="gki-bloom xb3" />
+        <div className="gki-bloom xb4" />
+        <div className="gki-bloom xb5" />
+        <div className="gki-signage" />
+        <div className="gki-substrate" />
+        <div className="gki-vignette" />
+      </div>
+      <svg className="gki-grain" aria-hidden="true">
+        <filter id="gki-grain-f">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#gki-grain-f)" />
+      </svg>
 
-function Atmosphere() {
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:64px_64px] opacity-28" />
-      <div className="absolute left-[10%] top-[18%] h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl" />
-      <div className="absolute right-[6%] top-[8%] h-96 w-96 rounded-full bg-cyan-400/10 blur-3xl" />
-      <div className="absolute bottom-[-18rem] left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full border border-cyan-300/10" />
-      <div className="absolute bottom-[-12rem] left-1/2 h-[25rem] w-[25rem] -translate-x-1/2 rounded-full border border-emerald-300/10" />
+      {/* Peripheral chrome. */}
+      <div className="gki-edge gki-mono" style={{ top: 26, left: 30, display: "flex", alignItems: "center", gap: 9 }}>
+        <span className="gki-mark" />
+        <span style={{ color: "var(--focal)", letterSpacing: "0.2em" }}>GATEKPT</span>
+      </div>
+      <div className="gki-edge gki-mono" style={{ top: 26, right: 30 }}>{where}</div>
+      <div className="gki-edge gki-mono" style={{ bottom: 26, left: 30 }}>{count}</div>
+      <div className={"gki-hint gki-mono" + (gateHeld ? " lit" : "")}>
+        {gateHeld ? "Space  -  next layer" : "Space  -  advance    Esc  -  map"}
+      </div>
+
+      <div className="gki-pips" aria-hidden="true">
+        {[0, 1, 2, 3].map((i) => (
+          <i key={i} className={phase === "run" && i === bi ? "now" : ""} />
+        ))}
+      </div>
+      <div className="gki-ladder" aria-hidden="true">
+        {LAYERS.map((_, i) => (
+          <i key={i} className={
+            phase === "end" ? "done"
+            : phase !== "run" ? ""
+            : i < li ? "done" : i === li ? "now" : ""
+          } />
+        ))}
+      </div>
+
+      {/* Focal frame. */}
+      <div className="gki-stage">
+        <div className="gki-frame">
+          <span className="gki-tick xt-a" /><span className="gki-tick xt-b" />
+          <span className="gki-tick xt-c" /><span className="gki-tick xt-d" />
+          <span key={sweep} className="gki-visor" />
+          <div className={"gki-slot" + (fading ? " out" : "")} aria-live="polite">
+            {body()}
+          </div>
+        </div>
+      </div>
+
+      {/* Recognition map. */}
+      <div
+        className={"gki-map" + (mapOpen ? " on" : "")}
+        role="dialog"
+        aria-label="Layer map"
+        aria-hidden={!mapOpen}
+      >
+        <div>
+          {LAYERS.map((l, i) => (
+            <div
+              key={l.id}
+              className={
+                "gki-maprow gki-mono" +
+                (phase === "run" && i === li ? " now" : "") +
+                (seen.has(i) ? " seen" : "")
+              }
+              onClick={(e) => { e.stopPropagation(); jump(i); }}
+            >
+              <span className="gki-lid">{l.id}</span>
+              <span>{l.name}</span>
+              <span className="gki-st">{seen.has(i) ? "OK held" : "-"}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-export function GatekptLanding() {
-  return (
-    <main className="min-h-screen overflow-hidden bg-[#050706] text-white">
-      <section className="relative border-b border-white/10 px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <Atmosphere />
-        <div className="relative mx-auto grid max-w-7xl gap-10 lg:min-h-[35rem] lg:grid-cols-[1fr_0.88fr] lg:items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="max-w-3xl"
-          >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/8 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-emerald-200">
-              <Sparkles className="h-4 w-4" />
-              Interactive AI learning notebook
-            </div>
-            <h1 className="text-5xl font-black leading-[0.92] sm:text-6xl lg:text-7xl">
-              AI, organized for focus.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg font-medium leading-8 text-white/68">
-              GateKPT breaks the AI era into learnable pieces: hardware, data,
-              models, prompting, markets, workflow, and risk.
-            </p>
-            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
-              {entryPaths.map((path) => (
-                <a
-                  key={path.label}
-                  href="#tracks"
-                  className="group rounded-lg border border-white/10 bg-white/[0.045] p-4 transition hover:border-emerald-300/35 hover:bg-emerald-300/8"
-                >
-                  <path.icon className="h-5 w-5 text-emerald-200" />
-                  <p className="mt-4 text-xs font-black uppercase tracking-[0.16em] text-white/44">
-                    {path.label}
-                  </p>
-                  <p className="mt-1 text-base font-black text-white">{path.title}</p>
-                  <p className="mt-2 text-xs font-medium leading-5 text-white/52">{path.detail}</p>
-                </a>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.aside
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.5, ease: "easeOut" }}
-            className="rounded-lg border border-white/10 bg-[#0d1210]/88 p-5 shadow-2xl shadow-black/50 backdrop-blur"
-          >
-            <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-5">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">Today&apos;s rep</p>
-                <h2 className="mt-3 text-2xl font-black leading-tight">Prompting is not magic.</h2>
-                <p className="mt-2 text-sm font-medium leading-6 text-white/58">
-                  It is structured communication with a model.
-                </p>
-              </div>
-              <MessageSquareText className="h-7 w-7 shrink-0 text-cyan-200" />
-            </div>
-
-            <div className="mt-5 rounded-lg border border-cyan-300/20 bg-cyan-300/8 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-200">Simple frame</p>
-              <p className="mt-3 text-sm font-semibold leading-6 text-white/78">
-                Give the model a role, the context, the task, the format, and the way you will check the answer.
-              </p>
-            </div>
-
-            <div className="mt-5 grid gap-2">
-              {["One concept", "One example", "One practice rep"].map((item) => (
-                <div key={item} className="flex items-center justify-between rounded-md border border-white/10 bg-black/30 px-3 py-2">
-                  <span className="text-sm font-bold text-white/74">{item}</span>
-                  <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                </div>
-              ))}
-            </div>
-          </motion.aside>
-        </div>
-      </section>
-
-      <section id="stack" className="px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-6 lg:grid-cols-[0.68fr_1.32fr] lg:items-center">
-            <div>
-              <SectionLabel>Stack map</SectionLabel>
-              <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-                Four layers. Then everything else starts making sense.
-              </h2>
-              <p className="mt-4 text-sm font-medium leading-6 text-white/56">
-                Fewer boxes, clearer order: physical infrastructure first, then trusted data,
-                then model behavior, then real deployment.
-              </p>
-            </div>
-
-            <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
-              <div className="grid gap-3 md:grid-cols-4">
-                {stackLayers.map((layer, index) => (
-                  <article key={layer.title} className="relative rounded-md border border-white/10 bg-black/26 p-4">
-                    {index < stackLayers.length - 1 ? (
-                      <div className="absolute right-[-0.8rem] top-1/2 z-10 hidden h-px w-6 bg-white/20 md:block" />
-                    ) : null}
-                    <div className="flex items-center justify-between">
-                      <layer.icon className={`h-5 w-5 ${layer.color}`} />
-                      <span className="text-[10px] font-black uppercase tracking-[0.16em] text-white/36">
-                        0{index + 1}
-                      </span>
-                    </div>
-                    <p className="mt-5 text-[10px] font-black uppercase tracking-[0.16em] text-white/36">
-                      {layer.eyebrow}
-                    </p>
-                    <h3 className="mt-1 text-lg font-black">{layer.title}</h3>
-                    <p className="mt-3 text-xs font-medium leading-5 text-white/54">{layer.detail}</p>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="tracks" className="border-y border-white/10 bg-[#e9e3d4] px-4 py-12 text-[#111] sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-emerald-800">Learning design</p>
-            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-              The brain learns by chunking, not by staring at a wall of options.
-            </h2>
-            <p className="mt-4 text-sm font-semibold leading-6 text-black/62">
-              Every topic should become a small loop: concept, example, rep, check. That is the product idea.
-            </p>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {tracks.map((track) => (
-              <article key={track.title} className="rounded-lg border border-black/10 bg-[#f8f4ea] p-5 shadow-sm">
-                <track.icon className="h-6 w-6 text-emerald-800" />
-                <h3 className="mt-5 text-xl font-black">{track.title}</h3>
-                <p className="mt-3 text-sm font-semibold leading-6 text-black/58">{track.detail}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="prompting" className="px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-          <div>
-            <SectionLabel>Prompt lab</SectionLabel>
-            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-              A prompt is a work order.
-            </h2>
-            <p className="mt-5 text-base font-medium leading-7 text-white/62">
-              Prompting gets easier when the model knows who it is, what it has, what to do,
-              what to avoid, how to format the answer, and how success will be judged.
-            </p>
-          </div>
-
-          <div className="rounded-lg border border-white/10 bg-white/[0.045] p-5">
-            <div className="grid gap-2 sm:grid-cols-7">
-              {promptSteps.map((step, index) => (
-                <div key={step} className="rounded-md border border-emerald-300/20 bg-emerald-300/8 p-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-200">
-                    0{index + 1}
-                  </p>
-                  <p className="mt-2 text-sm font-black text-white">{step}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-lg border border-cyan-300/20 bg-cyan-300/8 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-200">Better prompt</p>
-              <p className="mt-3 text-sm font-semibold leading-6 text-white/74">
-                Explain what a GPU does in AI to a beginner software engineer. Compare it to a CPU,
-                explain why memory bandwidth matters, and give one LLM training example.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="brief" className="border-t border-white/10 bg-black/35 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <SectionLabel>Weekly brief</SectionLabel>
-            <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-              Research once. Publish clearly. Keep the foundation.
-            </h2>
-            <p className="mt-5 text-base font-medium leading-7 text-white/62">
-              The weekly workflow turns news into a cleaner map: what happened, why it matters,
-              what to learn, and what is safe to share publicly.
-            </p>
-          </div>
-          <div className="grid gap-3">
-            {weeklyFlow.map(([Icon, label, detail]) => (
-              <div key={label as string} className="flex items-center gap-4 rounded-lg border border-white/10 bg-white/[0.04] p-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-cyan-300/12 text-cyan-200">
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-black text-white">{label as string}</p>
-                  <p className="mt-1 text-xs font-medium text-white/52">{detail as string}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-t border-white/10 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <Sparkles className="h-6 w-6 text-emerald-200" />
-            <h3 className="mt-4 text-lg font-black">Interactive learning</h3>
-            <p className="mt-2 text-sm leading-6 text-white/56">
-              Concepts should invite action: read, test, compare, and explain back.
-            </p>
-          </div>
-          <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <BadgeDollarSign className="h-6 w-6 text-amber-200" />
-            <h3 className="mt-4 text-lg font-black">Market context</h3>
-            <p className="mt-2 text-sm leading-6 text-white/56">
-              Public companies, private rounds, compute costs, margins, and talent pressure.
-            </p>
-          </div>
-          <div className="rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <Workflow className="h-6 w-6 text-cyan-200" />
-            <h3 className="mt-4 text-lg font-black">Builder notes</h3>
-            <p className="mt-2 text-sm leading-6 text-white/56">
-              Practical explanations for engineers, beginners, operators, and future projects.
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
+export default GatekptLanding;

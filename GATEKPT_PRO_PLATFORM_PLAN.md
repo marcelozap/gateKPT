@@ -4,7 +4,7 @@ GateKPT should become a professional AI research and learning platform: sharp en
 
 The standard is not "nice portfolio page." The standard is:
 
-> A public AI intelligence workspace for learning, trading awareness, career growth, and real-world engineering practice.
+> A public AI intelligence workspace for learning, industry awareness, career growth, and real-world engineering practice.
 
 ## North Star
 
@@ -132,7 +132,7 @@ Output formats:
 
 Purpose:
 
-Support trading awareness without giving financial advice.
+Support industry awareness without giving financial advice.
 
 Coverage:
 
