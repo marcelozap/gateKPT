@@ -15,50 +15,18 @@
    ------------------------------------------------------------------- */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { JOURNAL_ENTRIES } from "./journal";
 import { LAYERS } from "./stack";
 
 type Phase = "boot" | "run" | "end";
 const FADE = 130; // must match .gki-slot.out transition in globals.css
-
-const JOURNAL_ENTRIES = [
-  {
-    date: "2026-08-09",
-    title: "AI stack ground map",
-    layer: "L01-L07",
-    summary: "A first public version of the system map: power, chips, data, models, software, evaluation, and business context.",
-  },
-  {
-    date: "2026-08-09",
-    title: "Why power comes first",
-    layer: "L01 Power",
-    summary: "AI is not only software. Compute depends on electricity, cooling, sites, interconnect, and physical buildout timelines.",
-  },
-  {
-    date: "2026-08-09",
-    title: "Data before model behavior",
-    layer: "L03 Data",
-    summary: "A model can only reason over what has been structured, linked, governed, retrieved, and trusted enough to use.",
-  },
-  {
-    date: "Planned",
-    title: "Prompting as work design",
-    layer: "Prompt lab",
-    summary: "A practical guide for turning loose requests into context, constraints, examples, output formats, and verification steps.",
-  },
-  {
-    date: "Planned",
-    title: "Weekly AI brief format",
-    layer: "Briefs",
-    summary: "A recurring note format for tracking what changed, why it matters, and which layer of the stack it touches.",
-  },
-] as const;
 
 export function GatekptLanding() {
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(new Set());
   const [mapOpen, setMapOpen] = useState(false);
-  const [entriesOpen, setEntriesOpen] = useState(false);
   const [fading, setFading] = useState(false);
   const [sweep, setSweep] = useState(0);
 
@@ -129,7 +97,6 @@ export function GatekptLanding() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = e.key;
-      if (entriesOpen) { if (k === "Escape") setEntriesOpen(false); return; }
       if (k === "Escape") { e.preventDefault(); setMapOpen((m) => !m); return; }
       if (mapOpen) { if (/^[1-7]$/.test(k)) jump(Number(k) - 1); return; }
       if (k === " " || k === "ArrowRight" || k === "Enter") { e.preventDefault(); next(); }
@@ -138,7 +105,7 @@ export function GatekptLanding() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [entriesOpen, mapOpen, next, prev, jump]);
+  }, [mapOpen, next, prev, jump]);
 
   useEffect(() => {
     const block = (e: Event) => e.preventDefault();
@@ -184,9 +151,9 @@ export function GatekptLanding() {
             AI: infrastructure, data, models, deployment, evaluation, and business context.
           </p>
           <div className="gki-actions">
-            <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+            <Link href="/log" className="gki-go" onClick={(e) => e.stopPropagation()}>
               Open field log
-            </button>
+            </Link>
             <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); next(); }}>
               Explore map
             </button>
@@ -199,22 +166,22 @@ export function GatekptLanding() {
         <aside className="gki-home-log" aria-label="Recent field log entries">
           <div className="gki-home-log-head">
             <span className="gki-kicker gki-mono">Field log</span>
-            <button type="button" className="gki-mini gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+            <Link href="/log" className="gki-mini gki-mono" onClick={(e) => e.stopPropagation()}>
               View all
-            </button>
+            </Link>
           </div>
           <div className="gki-home-log-list">
             {JOURNAL_ENTRIES.slice(0, 3).map((entry) => (
-              <button
-                type="button"
+              <Link
+                href={`/log/${entry.slug}`}
                 key={`${entry.date}-${entry.title}`}
                 className="gki-home-entry"
-                onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}
+                onClick={(e) => e.stopPropagation()}
               >
                 <span className="gki-entry-id gki-mono">{entry.date}</span>
                 <strong>{entry.title}</strong>
                 <span>{entry.summary}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </aside>
@@ -319,9 +286,9 @@ export function GatekptLanding() {
         <button type="button" onClick={prev} disabled={phase === "boot"}>
           Back
         </button>
-        <button type="button" onClick={() => setEntriesOpen(true)}>
+        <Link href="/log">
           Log
-        </button>
+        </Link>
         <button type="button" onClick={() => setMapOpen(true)}>
           Layers
         </button>
@@ -377,53 +344,6 @@ export function GatekptLanding() {
         </div>
       </div>
 
-      <div
-        className={"gki-entries" + (entriesOpen ? " on" : "")}
-        role="dialog"
-        aria-label="GateKPT entries"
-        aria-hidden={!entriesOpen}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="gki-entries-panel">
-          <div className="gki-entries-head">
-            <div>
-              <span className="gki-kicker gki-mono">Entries</span>
-              <h2>Field log and layer notes.</h2>
-            </div>
-            <button type="button" className="gki-ghost gki-mono" onClick={() => setEntriesOpen(false)}>
-              Close
-            </button>
-          </div>
-          <div className="gki-journal-list">
-            {JOURNAL_ENTRIES.map((entry) => (
-              <article key={`${entry.date}-${entry.title}`} className="gki-journal-card">
-                <span className="gki-entry-id gki-mono">{entry.date}</span>
-                <strong>{entry.title}</strong>
-                <span>{entry.summary}</span>
-                <small>{entry.layer}</small>
-              </article>
-            ))}
-          </div>
-          <div className="gki-entry-list">
-            {LAYERS.map((item, index) => (
-              <button
-                type="button"
-                key={item.id}
-                className="gki-entry-card"
-                onClick={() => {
-                  setEntriesOpen(false);
-                  jump(index);
-                }}
-              >
-                <span className="gki-entry-id gki-mono">{item.id}</span>
-                <strong>{item.name}</strong>
-                <span>{item.essence}</span>
-                <small>{item.src}</small>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
