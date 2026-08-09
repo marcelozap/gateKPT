@@ -175,25 +175,50 @@ export function GatekptLanding() {
 
   const body = () => {
     if (phase === "boot") return (
-      <>
-        <span className="gki-kicker gki-mono">GateKPT</span>
-        <p className="gki-essence">AI from the physical layer up.</p>
-        <p className="gki-donep">
-          A public research terminal for understanding what actually runs modern
-          AI: infrastructure, data, models, deployment, evaluation, and business context.
-        </p>
-        <div className="gki-actions">
-          <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
-            Open the map
-          </button>
-          <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
-            Read entries
-          </button>
-          <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
-            All layers
-          </button>
-        </div>
-      </>
+      <div className="gki-home">
+        <section className="gki-home-main">
+          <span className="gki-kicker gki-mono">GateKPT</span>
+          <p className="gki-essence">AI from the physical layer up.</p>
+          <p className="gki-donep">
+            A public research terminal for understanding what actually runs modern
+            AI: infrastructure, data, models, deployment, evaluation, and business context.
+          </p>
+          <div className="gki-actions">
+            <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+              Open field log
+            </button>
+            <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); next(); }}>
+              Explore map
+            </button>
+            <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
+              Layers
+            </button>
+          </div>
+        </section>
+
+        <aside className="gki-home-log" aria-label="Recent field log entries">
+          <div className="gki-home-log-head">
+            <span className="gki-kicker gki-mono">Field log</span>
+            <button type="button" className="gki-mini gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
+              View all
+            </button>
+          </div>
+          <div className="gki-home-log-list">
+            {JOURNAL_ENTRIES.slice(0, 3).map((entry) => (
+              <button
+                type="button"
+                key={`${entry.date}-${entry.title}`}
+                className="gki-home-entry"
+                onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}
+              >
+                <span className="gki-entry-id gki-mono">{entry.date}</span>
+                <strong>{entry.title}</strong>
+                <span>{entry.summary}</span>
+              </button>
+            ))}
+          </div>
+        </aside>
+      </div>
     );
 
     if (phase === "end") return (
@@ -274,6 +299,14 @@ export function GatekptLanding() {
         </filter>
         <rect width="100%" height="100%" filter="url(#gki-grain-f)" />
       </svg>
+
+      <div className="gki-loadscreen" aria-hidden="true">
+        <div className="gki-loadmark gki-mono">
+          <span>GATEKPT</span>
+          <i />
+          <small>FIELD LOG ONLINE</small>
+        </div>
+      </div>
 
       <div className="gki-edge gki-mono" style={{ top: 26, left: 30, display: "flex", alignItems: "center", gap: 9 }}>
         <span className="gki-mark" />
