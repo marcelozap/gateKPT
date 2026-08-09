@@ -11,8 +11,7 @@
    failure mode are all visible together, because they are one idea
    about one layer, not four.
 
-   The reflection question is an inline toggle, not a state and not a
-   gate. Nothing is withheld.
+   This is a public reference map, not a training test. Nothing is withheld.
    ------------------------------------------------------------------- */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -24,29 +23,39 @@ const FADE = 130; // must match .gki-slot.out transition in globals.css
 const JOURNAL_ENTRIES = [
   {
     date: "2026-08-09",
-    title: "First public map",
+    title: "AI stack ground map",
     layer: "L01-L07",
-    summary: "Collapsed the AI stack into seven sourced layers: power, chips, data, models, software, testing, and business.",
+    summary: "A first public version of the system map: power, chips, data, models, software, evaluation, and business context.",
   },
   {
-    date: "Next",
-    title: "Prompting patterns",
+    date: "2026-08-09",
+    title: "Why power comes first",
+    layer: "L01 Power",
+    summary: "AI is not only software. Compute depends on electricity, cooling, sites, interconnect, and physical buildout timelines.",
+  },
+  {
+    date: "2026-08-09",
+    title: "Data before model behavior",
+    layer: "L03 Data",
+    summary: "A model can only reason over what has been structured, linked, governed, retrieved, and trusted enough to use.",
+  },
+  {
+    date: "Planned",
+    title: "Prompting as work design",
     layer: "Prompt lab",
-    summary: "Turn loose questions into structured model work orders with context, constraints, examples, and checks.",
+    summary: "A practical guide for turning loose requests into context, constraints, examples, output formats, and verification steps.",
   },
   {
-    date: "Next",
-    title: "Weekly AI brief",
+    date: "Planned",
+    title: "Weekly AI brief format",
     layer: "Briefs",
-    summary: "A repeatable format for tracking what changed, why it matters, and which layer of the stack it touches.",
+    summary: "A recurring note format for tracking what changed, why it matters, and which layer of the stack it touches.",
   },
 ] as const;
 
 export function GatekptLanding() {
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
-  const [picked, setPicked] = useState<number | null>(null);
-  const [openQ, setOpenQ] = useState(false);
   const [seen, setSeen] = useState<Set<number>>(new Set());
   const [mapOpen, setMapOpen] = useState(false);
   const [entriesOpen, setEntriesOpen] = useState(false);
@@ -54,7 +63,6 @@ export function GatekptLanding() {
   const [sweep, setSweep] = useState(0);
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const answered = picked !== null;
   const layer = LAYERS[li];
 
   useEffect(() => {
@@ -67,8 +75,6 @@ export function GatekptLanding() {
     setFading(true);
     timer.current = setTimeout(() => {
       fn();
-      setPicked(null);
-      setOpenQ(false);
       setFading(false);
       setSweep((s) => s + 1);
     }, FADE);
@@ -77,29 +83,48 @@ export function GatekptLanding() {
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
   const next = useCallback(() => {
-    if (phase === "boot") { go(() => { setPhase("run"); setLi(0); }); return; }
+    if (phase === "boot") {
+      go(() => {
+        setPhase("run");
+        setLi(0);
+        setSeen((s) => new Set(s).add(0));
+      });
+      return;
+    }
     if (phase === "end") return;
-    if (li < LAYERS.length - 1) { go(() => setLi((l) => l + 1)); return; }
+    if (li < LAYERS.length - 1) {
+      const n = li + 1;
+      go(() => {
+        setLi(n);
+        setSeen((s) => new Set(s).add(n));
+      });
+      return;
+    }
     go(() => setPhase("end"));
   }, [phase, li, go]);
 
   const prev = useCallback(() => {
     if (phase !== "run") return;
-    if (li > 0) { go(() => setLi((l) => l - 1)); return; }
+    if (li > 0) {
+      const n = li - 1;
+      go(() => {
+        setLi(n);
+        setSeen((s) => new Set(s).add(n));
+      });
+      return;
+    }
     go(() => setPhase("boot"));
   }, [phase, li, go]);
 
   const jump = useCallback((n: number) => {
     if (n < 0 || n >= LAYERS.length) return;
     setMapOpen(false);
-    go(() => { setPhase("run"); setLi(n); });
+    go(() => {
+      setPhase("run");
+      setLi(n);
+      setSeen((s) => new Set(s).add(n));
+    });
   }, [go]);
-
-  const choose = useCallback((i: number) => {
-    if (phase !== "run" || answered || fading) return;
-    setPicked(i);
-    setSeen((s) => new Set(s).add(li));
-  }, [phase, answered, fading, li]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -109,13 +134,11 @@ export function GatekptLanding() {
       if (mapOpen) { if (/^[1-7]$/.test(k)) jump(Number(k) - 1); return; }
       if (k === " " || k === "ArrowRight" || k === "Enter") { e.preventDefault(); next(); }
       else if (k === "ArrowLeft") { e.preventDefault(); prev(); }
-      else if (k === "a" || k === "A") { if (openQ) choose(0); }
-      else if (k === "b" || k === "B") { if (openQ) choose(1); }
       else if (/^[1-7]$/.test(k)) jump(Number(k) - 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [entriesOpen, mapOpen, openQ, next, prev, choose, jump]);
+  }, [entriesOpen, mapOpen, next, prev, jump]);
 
   useEffect(() => {
     const block = (e: Event) => e.preventDefault();
@@ -156,18 +179,18 @@ export function GatekptLanding() {
         <span className="gki-kicker gki-mono">GateKPT</span>
         <p className="gki-essence">A public map of the AI stack.</p>
         <p className="gki-donep">
-          Seven layers. Each one has a number and a source. Free, and updated as
-          I learn more.
+          Browse the system underneath modern AI: infrastructure, data, models,
+          deployment, evaluation, and business context.
         </p>
         <div className="gki-actions">
           <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
-            Start at Power
+            Open the map
           </button>
           <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setEntriesOpen(true); }}>
-            Open entries
+            Read entries
           </button>
           <button type="button" className="gki-ghost gki-mono" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
-            Jump to a layer
+            All layers
           </button>
         </div>
       </>
@@ -228,47 +251,6 @@ export function GatekptLanding() {
           </div>
         </div>
 
-        {/* Optional. Inline, never a gate, never its own screen. */}
-        <div className="gki-reflect">
-          {!openQ && (
-            <button
-              type="button"
-              className="gki-ghost gki-mono"
-              onClick={(e) => { e.stopPropagation(); setOpenQ(true); }}
-            >
-              Show question
-            </button>
-          )}
-
-          {openQ && (
-            <>
-              <p className="gki-q">{layer.q}</p>
-              <div className="gki-opts">
-                {layer.a.map((text, i) => (
-                  <button
-                    type="button"
-                    key={i}
-                    className={
-                      "gki-opt" +
-                      (answered && i === layer.right ? " right" : "") +
-                      (answered && i === picked && i !== layer.right ? " wrong" : "")
-                    }
-                    disabled={answered}
-                    onClick={(e) => { e.stopPropagation(); choose(i); }}
-                  >
-                    <span className="gki-key gki-mono">{i === 0 ? "A" : "B"}</span>
-                    <span>{text}</span>
-                  </button>
-                ))}
-              </div>
-              {answered && (
-                <p className={"gki-verdict" + (picked === layer.right ? "" : " miss")}>
-                  {layer.why}
-                </p>
-              )}
-            </>
-          )}
-        </div>
       </>
     );
   };
