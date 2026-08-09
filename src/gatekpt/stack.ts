@@ -40,10 +40,6 @@ export type Layer = {
   src: string;
   srcUrl: string;
   brk: string; // contains <em> around the failure phrase
-  q: string;
-  a: [string, string];
-  right: 0 | 1;
-  why: string;
 };
 
 export const LAYERS: Layer[] = [
@@ -57,10 +53,6 @@ export const LAYERS: Layer[] = [
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",
     brk: "A data center takes about 18 months to build. <em>The power connection takes longer.</em>",
-    q: "Which takes longer?",
-    a: ["Building the data center", "Connecting it to the grid"],
-    right: 1,
-    why: "More money builds faster. More money does not move you up the grid queue. That makes power the limit on everything above it.",
   },
   {
     id: "L02",
@@ -72,10 +64,6 @@ export const LAYERS: Layer[] = [
     src: "NVIDIA, H100 overview",
     srcUrl: "https://www.nvidia.com/en-us/data-center/h100/",
     brk: "The chip finishes its math early <em>and waits on memory.</em>",
-    q: "What usually limits speed?",
-    a: ["How fast the chip does math", "How fast memory feeds it"],
-    right: 1,
-    why: "Every word a model writes has to cross the memory bus first. The math is rarely the slow part.",
   },
   {
     id: "L03",
@@ -87,25 +75,17 @@ export const LAYERS: Layer[] = [
     src: "Gartner, AI-ready data risk",
     srcUrl: "https://www.gartner.com/en/newsroom/press-releases/2025-02-26-lack-of-ai-ready-data-puts-ai-projects-at-risk",
     brk: "Collecting data is cheap. <em>Deciding what is correct is not.</em>",
-    q: "Where does the real cost sit?",
-    a: ["Collecting and storing it", "Labeling and checking it"],
-    right: 1,
-    why: "Storage keeps getting cheaper. Expert time does not.",
   },
   {
     id: "L04",
     name: "Models",
-    essence: "Training builds the model. Running it is what costs.",
+    essence: "Building the model is one cost. Running it is the recurring one.",
     fig: "40",
     unit: "GB",
     figcap: "Memory used by one long request to Llama 3 70B.",
     src: "NVIDIA, KV cache offload",
     srcUrl: "https://developer.nvidia.com/blog/accelerate-large-scale-llm-inference-and-kv-cache-offload-with-cpu-gpu-memory-sharing/",
-    brk: "Everyone quotes the training cost. <em>The bill comes from running it.</em>",
-    q: "On a long chat, what uses the most memory?",
-    a: ["The model itself", "The saved conversation"],
-    right: 1,
-    why: "The model loads once. Every open conversation stacks memory on top. Long chats hit the ceiling before big models do.",
+    brk: "Everyone quotes the build cost. <em>The bill comes from running it.</em>",
   },
   {
     id: "L05",
@@ -117,10 +97,6 @@ export const LAYERS: Layer[] = [
     src: "RAG systems review, 2025",
     srcUrl: "https://arxiv.org/html/2507.18910v1",
     brk: "If the right page was never found, <em>no prompt can fix it.</em>",
-    q: "AI answers wrong from your own documents. Check what first?",
-    a: ["The prompt you wrote", "What it searched and found"],
-    right: 1,
-    why: "Most wrong answers are search failures, not model failures. Check what it found before you rewrite the prompt.",
   },
   {
     id: "L06",
@@ -132,10 +108,6 @@ export const LAYERS: Layer[] = [
     src: "NIST AI Risk Framework",
     srcUrl: "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
     brk: "It worked last week, the model updated, <em>and nobody can prove either part.</em>",
-    q: "When should you write the tests?",
-    a: ["After it works", "Before you build it"],
-    right: 1,
-    why: "Tests written first define what good means. Tests written after tend to match whatever you already built.",
   },
   {
     id: "L07",
@@ -147,9 +119,5 @@ export const LAYERS: Layer[] = [
     src: "IBM, AI data quality",
     srcUrl: "https://www.ibm.com/think/topics/ai-data-quality",
     brk: "The tech worked. <em>Then it changed hands and the goal changed.</em>",
-    q: "Where do company AI projects usually stop?",
-    a: ["The tech is not good enough", "The handoff between teams"],
-    right: 1,
-    why: "One team builds it, another team judges it, and they are measuring different things.",
   },
 ];

@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { LAYERS } from "@/gatekpt/stack";
 
 export const runtime = "nodejs";
-export const alt = "GateKPT - the AI stack, mapped end to end.";
+export const alt = "GateKPT - AI from the physical layer up.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -17,7 +17,7 @@ export default function OpengraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px 72px",
-          backgroundColor: "#05070D",
+          backgroundColor: "#02050A",
           backgroundImage: [
             "radial-gradient(720px 620px at 88% 8%, rgba(125,249,255,0.20), transparent 62%)",
             "radial-gradient(640px 560px at 6% 96%, rgba(255,45,149,0.17), transparent 64%)",
@@ -71,7 +71,7 @@ export default function OpengraphImage() {
               maxWidth: 900,
             }}
           >
-            The AI stack, mapped end to end.
+            AI from the physical layer up.
           </div>
           <div
             style={{
@@ -82,7 +82,7 @@ export default function OpengraphImage() {
               maxWidth: 760,
             }}
           >
-            Power, chips, data, models, software, testing, and business.
+            A public research terminal for the system underneath modern AI.
           </div>
         </div>
 

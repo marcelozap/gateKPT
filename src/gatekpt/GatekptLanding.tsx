@@ -11,7 +11,7 @@
    failure mode are all visible together, because they are one idea
    about one layer, not four.
 
-   This is a public reference map, not a training test. Nothing is withheld.
+   This is a public reference map, not an exam. Nothing is withheld.
    ------------------------------------------------------------------- */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -177,10 +177,10 @@ export function GatekptLanding() {
     if (phase === "boot") return (
       <>
         <span className="gki-kicker gki-mono">GateKPT</span>
-        <p className="gki-essence">A public map of the AI stack.</p>
+        <p className="gki-essence">AI from the physical layer up.</p>
         <p className="gki-donep">
-          Browse the system underneath modern AI: infrastructure, data, models,
-          deployment, evaluation, and business context.
+          A public research terminal for understanding what actually runs modern
+          AI: infrastructure, data, models, deployment, evaluation, and business context.
         </p>
         <div className="gki-actions">
           <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); next(); }}>
@@ -199,10 +199,10 @@ export function GatekptLanding() {
     if (phase === "end") return (
       <>
         <span className="gki-kicker gki-mono">L01 - L07</span>
-        <p className="gki-doneh">That is the whole stack.</p>
+        <p className="gki-doneh">The stack is physical, logical, and human.</p>
         <p className="gki-donep">
           Each layer limits the ones above it. Power sets what chips can run,
-          chips set what models cost, and business decides if any of it is used.
+          chips set what models cost, and human workflows decide whether any of it matters.
         </p>
         <div className="gki-actions">
           <button type="button" className="gki-go" onClick={(e) => { e.stopPropagation(); setMapOpen(true); }}>
@@ -265,6 +265,7 @@ export function GatekptLanding() {
         <div className="gki-bloom xb1" /><div className="gki-bloom xb2" />
         <div className="gki-bloom xb3" /><div className="gki-bloom xb4" />
         <div className="gki-bloom xb5" />
+        <div className="gki-rain" />
         <div className="gki-signage" /><div className="gki-substrate" /><div className="gki-vignette" />
       </div>
       <svg className="gki-grain" aria-hidden="true">
@@ -283,16 +284,16 @@ export function GatekptLanding() {
       <div className="gki-hint gki-mono">Space  -  next    Esc  -  all layers</div>
       <div className="gki-controls gki-mono" onClick={(e) => e.stopPropagation()}>
         <button type="button" onClick={prev} disabled={phase === "boot"}>
-          Prev
+          Back
         </button>
         <button type="button" onClick={() => setEntriesOpen(true)}>
-          Entries
+          Log
         </button>
         <button type="button" onClick={() => setMapOpen(true)}>
           Layers
         </button>
         <button type="button" onClick={next} disabled={phase === "end"}>
-          Next
+          Forward
         </button>
       </div>
 
@@ -354,7 +355,7 @@ export function GatekptLanding() {
           <div className="gki-entries-head">
             <div>
               <span className="gki-kicker gki-mono">Entries</span>
-              <h2>Journal and layer notes.</h2>
+              <h2>Field log and layer notes.</h2>
             </div>
             <button type="button" className="gki-ghost gki-mono" onClick={() => setEntriesOpen(false)}>
               Close
