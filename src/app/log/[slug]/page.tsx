@@ -40,8 +40,8 @@ export default async function EntryPage({ params }: EntryPageProps) {
           GateKPT
         </Link>
         <div className="gkl-nav">
-          <Link href={`/es/log/${entry.slug}`} className="gki-mono">ES</Link>
-          <Link href="/log" className="gki-mono">Notes</Link>
+          <Link href={`/es/notes/${entry.slug}`} className="gki-mono">ES</Link>
+          <Link href="/notes" className="gki-mono">Notes</Link>
         </div>
       </header>
 
@@ -60,7 +60,7 @@ export default async function EntryPage({ params }: EntryPageProps) {
         </div>
 
         <footer className="gkl-footer">
-          <Link href="/log" className="gki-ghost gki-mono">
+          <Link href="/notes" className="gki-ghost gki-mono">
             Back to notes
           </Link>
         </footer>

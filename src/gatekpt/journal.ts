@@ -9,6 +9,19 @@ export type JournalEntry = {
 
 export const JOURNAL_ENTRIES: JournalEntry[] = [
   {
+    slug: "wall-e",
+    date: "2026-08-12",
+    title: "Wall-E and the reason to keep learning",
+    layer: "Journal",
+    summary:
+      "A simple note on technology, attention, comfort, and why learning still has to stay human.",
+    body: [
+      "Wall-E is a useful story for thinking about AI because it is not really about machines replacing people. It is about people becoming too passive inside systems built for comfort.",
+      "That is why I want GateKPT to stay simple. The point is not to sound advanced. The point is to keep learning active: look at the system, ask what changed, check the source, and think for yourself.",
+      "Good technology should make people more capable, not less present. That is the line I want to keep coming back to as I learn AI from the ground up.",
+    ],
+  },
+  {
     slug: "ai-stack-ground-map",
     date: "2026-08-09",
     title: "My simple map of AI",

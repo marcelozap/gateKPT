@@ -85,7 +85,7 @@ export function GatekptLanding({ locale = "en" }: GatekptLandingProps) {
   const copy = COPY[locale];
   const layers = locale === "es" ? LAYERS_ES : LAYERS;
   const entries = getJournalEntries(locale);
-  const logHref = locale === "es" ? "/es/log" : "/log";
+  const logHref = locale === "es" ? "/es/notes" : "/notes";
   const [phase, setPhase] = useState<Phase>("boot");
   const [li, setLi] = useState(0);
   const [seen, setSeen] = useState<Set<number>>(new Set());

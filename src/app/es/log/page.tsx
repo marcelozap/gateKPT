@@ -23,7 +23,7 @@ export default function SpanishLogPage() {
           GateKPT
         </Link>
         <div className="gkl-nav">
-          <Link href="/log" className="gki-mono">EN</Link>
+          <Link href="/notes" className="gki-mono">EN</Link>
           <span className="gki-mono">Notas</span>
         </div>
       </header>
@@ -44,7 +44,7 @@ export default function SpanishLogPage() {
         </div>
         <div className="gkl-list">
           {trainingEntries.map((entry) => (
-            <Link href={`/es/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
+            <Link href={`/es/notes/${entry.slug}`} className="gkl-card" key={entry.slug}>
               <div>
                 <h2>{entry.title}</h2>
                 <p>{entry.summary}</p>
@@ -61,7 +61,7 @@ export default function SpanishLogPage() {
         </div>
         <div className="gkl-list">
           {journalEntries.map((entry) => (
-            <Link href={`/es/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
+            <Link href={`/es/notes/${entry.slug}`} className="gkl-card" key={entry.slug}>
               <div>
                 <h2>{entry.title}</h2>
                 <p>{entry.summary}</p>
