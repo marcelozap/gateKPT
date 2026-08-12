@@ -12,11 +12,11 @@ export default function Home() {
       <noscript>
         <div style={{ position: "relative", zIndex: 40, maxWidth: 680, margin: "0 auto", padding: "64px 24px", background: "#05070D", color: "#93A0B4", font: "400 17px/1.65 system-ui, sans-serif" }}>
           <h1 style={{ color: "#F4F8FC", fontSize: 34, letterSpacing: "-0.03em", marginBottom: 8 }}>
-            GateKPT - AI from the physical layer up.
+            GateKPT - AI explained from the ground up.
           </h1>
           <p style={{ marginBottom: 40 }}>
-            A public research terminal for the AI stack: power, chips, data,
-            models, software, testing, and business context.
+            A public notebook for understanding the systems behind modern AI:
+            electricity, chips, data, models, software, testing, and real-world use.
           </p>
           {LAYERS.map((l) => (
             <section key={l.id} style={{ marginBottom: 32 }}>

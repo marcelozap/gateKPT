@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { LAYERS } from "@/gatekpt/stack";
 
 export const runtime = "nodejs";
-export const alt = "GateKPT - AI from the physical layer up.";
+export const alt = "GateKPT - AI explained from the ground up.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -71,7 +71,7 @@ export default function OpengraphImage() {
               maxWidth: 900,
             }}
           >
-            AI from the physical layer up.
+            AI explained from the ground up.
           </div>
           <div
             style={{
@@ -82,7 +82,7 @@ export default function OpengraphImage() {
               maxWidth: 760,
             }}
           >
-            A public research terminal for the system underneath modern AI.
+            Plain notes and source-backed maps for understanding modern AI.
           </div>
         </div>
 

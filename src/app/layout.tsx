@@ -19,11 +19,11 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - AI From the Physical Layer Up",
+    default: "GateKPT - AI Explained From the Ground Up",
     template: "%s - GateKPT",
   },
   description:
-    "A public research terminal for the AI stack: power, chips, data, models, software, testing, and business context.",
+    "A public notebook for understanding the systems behind modern AI: electricity, chips, data, models, software, testing, and real-world use.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - AI From the Physical Layer Up",
+    title: "GateKPT - AI Explained From the Ground Up",
     description:
-      "A public research terminal for the system underneath modern AI.",
+      "Plain notes and source-backed maps for understanding what runs modern AI.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",

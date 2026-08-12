@@ -613,6 +613,12 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gki-vignette{position:absolute;inset:0;
   background:radial-gradient(ellipse 78% 68% at 50% 46%,transparent 28%,rgba(2,5,10,.88) 100%),
              linear-gradient(180deg,rgba(2,5,10,.24),transparent 28%,rgba(2,5,10,.42))}
+.gki-atmos::before{content:"";position:absolute;inset:-2%;
+  background-image:linear-gradient(90deg,rgba(2,5,10,.86) 0%,rgba(2,5,10,.66) 34%,rgba(2,5,10,.34) 62%,rgba(2,5,10,.76) 100%),
+                   url("/brand/xiv-visor-city-reference.png");
+  background-size:cover;background-position:center 42%;
+  opacity:.3;filter:saturate(1.14) contrast(1.08) blur(.4px);
+  mix-blend-mode:screen}
 .gki-grain{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.035;mix-blend-mode:overlay}
 .gki-loadscreen{position:fixed;inset:0;z-index:90;pointer-events:none;display:grid;place-items:center;
   background:radial-gradient(ellipse 70% 54% at 50% 48%,rgba(6,18,29,.96),rgba(2,5,10,.98) 72%);
@@ -848,8 +854,12 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gkl-hero h1,.gkl-article h1{margin:0;color:var(--focal);font-size:clamp(42px,7vw,86px);
   line-height:.98;letter-spacing:-.055em;font-weight:500;text-shadow:0 0 52px rgba(125,249,255,.16)}
 .gkl-hero p,.gkl-article-head p{margin-top:24px;max-width:680px;color:var(--near);font-size:18px;line-height:1.62}
+.gkl-section{position:relative;z-index:1;display:grid;gap:16px;max-width:980px;margin-top:30px}
+.gkl-section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;border-bottom:1px solid var(--ghost);padding-bottom:12px}
+.gkl-section-head .gki-kicker{margin-bottom:0}
+.gkl-section-head p{margin:0;color:var(--chrome);font-size:14px;line-height:1.45}
 .gkl-list{display:grid;gap:12px;max-width:980px}
-.gkl-card{display:grid;grid-template-columns:116px 1fr;gap:22px;text-decoration:none;color:var(--near);
+.gkl-card{display:grid;grid-template-columns:1fr;gap:12px;text-decoration:none;color:var(--near);
   border:1px solid rgba(125,249,255,.12);background:linear-gradient(90deg,rgba(7,16,26,.62),rgba(2,5,10,.4));
   padding:22px;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s}
 .gkl-card:hover{border-color:var(--visor-35);background:linear-gradient(90deg,rgba(125,249,255,.06),rgba(255,45,149,.025));

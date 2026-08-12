@@ -3,11 +3,15 @@ import type { Metadata } from "next";
 import { getJournalEntries } from "@/gatekpt/journal";
 
 const entries = getJournalEntries("en");
+const trainingEntries = entries.filter((entry) =>
+  ["prompting-as-work-design", "weekly-ai-brief-format"].includes(entry.slug),
+);
+const journalEntries = entries.filter((entry) => !trainingEntries.includes(entry));
 
 export const metadata: Metadata = {
-  title: "Field Log - GateKPT",
+  title: "Notes - GateKPT",
   description:
-    "Public GateKPT journal entries on AI power, chips, data, models, software, testing, and real-world systems.",
+    "Public GateKPT notes on AI power, chips, data, models, software, testing, and real-world systems.",
 };
 
 export default function LogPage() {
@@ -20,30 +24,51 @@ export default function LogPage() {
         </Link>
         <div className="gkl-nav">
           <Link href="/es/log" className="gki-mono">ES</Link>
-          <span className="gki-mono">Field log</span>
+          <span className="gki-mono">Notes</span>
         </div>
       </header>
 
       <section className="gkl-hero">
-        <span className="gki-kicker gki-mono">Public journal</span>
-        <h1>Ideas on AI, organized as entries.</h1>
+        <span className="gki-kicker gki-mono">GateKPT</span>
+        <h1>Training and journals.</h1>
         <p>
-          This is the readable archive: notes, research, framing, and working ideas
-          about the AI stack from the physical layer up.
+          Simple notes from what I am learning, practicing, and turning into public
+          systems.
         </p>
       </section>
 
-      <section className="gkl-list" aria-label="Journal entries">
-        {entries.map((entry) => (
-          <Link href={`/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
-            <span className="gkl-date gki-mono">{entry.date}</span>
-            <div>
-              <span className="gkl-layer gki-mono">{entry.layer}</span>
-              <h2>{entry.title}</h2>
-              <p>{entry.summary}</p>
-            </div>
-          </Link>
-        ))}
+      <section className="gkl-section" aria-label="Training">
+        <div className="gkl-section-head">
+          <span className="gki-kicker gki-mono">Training</span>
+          <p>Practice reps for using AI clearly.</p>
+        </div>
+        <div className="gkl-list">
+          {trainingEntries.map((entry) => (
+            <Link href={`/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
+              <div>
+                <h2>{entry.title}</h2>
+                <p>{entry.summary}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="gkl-section" aria-label="Journals">
+        <div className="gkl-section-head">
+          <span className="gki-kicker gki-mono">Journals</span>
+          <p>What I am mapping as I learn AI from the ground up.</p>
+        </div>
+        <div className="gkl-list">
+          {journalEntries.map((entry) => (
+            <Link href={`/log/${entry.slug}`} className="gkl-card" key={entry.slug}>
+              <div>
+                <h2>{entry.title}</h2>
+                <p>{entry.summary}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </section>
     </main>
   );

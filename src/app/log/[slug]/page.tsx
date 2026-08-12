@@ -17,10 +17,10 @@ export async function generateMetadata({ params }: EntryPageProps): Promise<Meta
   if (!entry) return {};
 
   return {
-    title: `${entry.title} - GateKPT Field Log`,
+    title: `${entry.title} - GateKPT Notes`,
     description: entry.summary,
     openGraph: {
-      title: `${entry.title} - GateKPT Field Log`,
+      title: `${entry.title} - GateKPT Notes`,
       description: entry.summary,
       type: "article",
     },
@@ -41,7 +41,7 @@ export default async function EntryPage({ params }: EntryPageProps) {
         </Link>
         <div className="gkl-nav">
           <Link href={`/es/log/${entry.slug}`} className="gki-mono">ES</Link>
-          <Link href="/log" className="gki-mono">Field log</Link>
+          <Link href="/log" className="gki-mono">Notes</Link>
         </div>
       </header>
 
@@ -61,7 +61,7 @@ export default async function EntryPage({ params }: EntryPageProps) {
 
         <footer className="gkl-footer">
           <Link href="/log" className="gki-ghost gki-mono">
-            Back to field log
+            Back to notes
           </Link>
         </footer>
       </article>

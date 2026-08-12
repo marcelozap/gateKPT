@@ -24,54 +24,54 @@ const FADE = 130; // must match .gki-slot.out transition in globals.css
 
 const COPY = {
   en: {
-    whereBoot: "SEVEN LAYERS",
+    whereBoot: "AI MAP",
     whereEnd: "END OF MAP",
     countBoot: "START",
-    homeTitle: "AI from the physical layer up.",
+    homeTitle: "AI, explained from the ground up.",
     homeBody:
-      "A research log for understanding what actually runs modern AI: power, chips, data, models, software, testing, and business. Each layer has a number and a source.",
-    openLog: "Open field log",
-    exploreMap: "Explore map",
-    layers: "Layers",
-    fieldLog: "Field log",
+      "A public notebook for learning what actually runs modern AI: electricity, chips, data, models, software, testing, and real-world use. Each idea has a number and a source.",
+    openLog: "Read notes",
+    exploreMap: "Start learning",
+    layers: "Map",
+    fieldLog: "Latest notes",
     viewAll: "View all",
     endKicker: "L01 - L07",
-    endTitle: "The stack is physical, logical, and human.",
+    endTitle: "AI is hardware, software, and people.",
     endBody:
-      "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
-    backLayers: "Back to the layers",
+      "Electricity limits the chips. Chips change the cost. Data shapes the answer. People decide whether the system matters.",
+    backLayers: "Open map",
     startOver: "Start over",
-    hint: "Space  -  next    Esc  -  all layers",
+    hint: "Space  -  next    Esc  -  map",
     back: "Back",
-    log: "Log",
-    forward: "Forward",
-    load: "FIELD LOG ONLINE",
+    log: "Notes",
+    forward: "Next",
+    load: "GATEKPT ONLINE",
     switchLabel: "ES",
     switchHref: "/es",
   },
   es: {
-    whereBoot: "SIETE CAPAS",
+    whereBoot: "MAPA DE IA",
     whereEnd: "FIN DEL MAPA",
     countBoot: "INICIO",
-    homeTitle: "IA desde la capa fisica hacia arriba.",
+    homeTitle: "IA, explicada desde la base.",
     homeBody:
-      "Un diario de investigacion para entender que hace funcionar la IA moderna: energia, chips, datos, modelos, software, pruebas y contexto. Cada capa tiene un numero y una fuente.",
-    openLog: "Abrir diario",
-    exploreMap: "Explorar mapa",
-    layers: "Capas",
-    fieldLog: "Diario",
+      "Un cuaderno publico para aprender que hace funcionar la IA moderna: electricidad, chips, datos, modelos, software, pruebas y uso real. Cada idea tiene un numero y una fuente.",
+    openLog: "Leer notas",
+    exploreMap: "Empezar",
+    layers: "Mapa",
+    fieldLog: "Notas recientes",
     viewAll: "Ver todo",
     endKicker: "L01 - L07",
-    endTitle: "El stack es fisico, logico y humano.",
+    endTitle: "La IA es hardware, software y personas.",
     endBody:
-      "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
-    backLayers: "Volver a las capas",
+      "La electricidad limita los chips. Los chips cambian el costo. Los datos forman la respuesta. Las personas deciden si el sistema importa.",
+    backLayers: "Abrir mapa",
     startOver: "Empezar de nuevo",
-    hint: "Espacio  -  avanzar    Esc  -  todas las capas",
+    hint: "Espacio  -  avanzar    Esc  -  mapa",
     back: "Atras",
-    log: "Diario",
-    forward: "Avanzar",
-    load: "DIARIO EN LINEA",
+    log: "Notas",
+    forward: "Siguiente",
+    load: "GATEKPT EN LINEA",
     switchLabel: "EN",
     switchHref: "/",
   },
@@ -223,7 +223,7 @@ export function GatekptLanding({ locale = "en" }: GatekptLandingProps) {
           </div>
         </section>
 
-        <aside className="gki-home-log" aria-label="Recent field log entries">
+        <aside className="gki-home-log" aria-label="Recent notes">
           <div className="gki-home-log-head">
             <span className="gki-kicker gki-mono">{copy.fieldLog}</span>
             <Link href={logHref} className="gki-mini gki-mono" onClick={(e) => e.stopPropagation()}>
@@ -308,7 +308,7 @@ export function GatekptLanding({ locale = "en" }: GatekptLandingProps) {
     <div
       onClick={() => { if (mapOpen) setMapOpen(false); }}
       role="application"
-      aria-label="GateKPT AI stack map"
+      aria-label="GateKPT AI learning map"
     >
       <div className="gki-atmos" aria-hidden="true">
         <div className="gki-bloom xb1" /><div className="gki-bloom xb2" />
@@ -382,7 +382,7 @@ export function GatekptLanding({ locale = "en" }: GatekptLandingProps) {
       <div
         className={"gki-map" + (mapOpen ? " on" : "")}
         role="dialog"
-        aria-label="All layers"
+        aria-label="Full map"
         aria-hidden={!mapOpen}
       >
         <div>
