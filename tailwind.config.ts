@@ -48,14 +48,12 @@ const config: Config = {
         },
       },
       fontFamily: {
-        // Inter loaded via Next/font; falls back to SF Pro on Apple devices
         display: ["var(--font-inter)", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
         body:    ["var(--font-inter)", "-apple-system", "BlinkMacSystemFont", "system-ui", "sans-serif"],
         mono: [
+          "var(--font-jbmono)",
           "ui-monospace",
-          "'SF Mono'",
           "Menlo",
-          "'JetBrains Mono'",
           "monospace",
         ],
       },

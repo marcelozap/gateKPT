@@ -1,22 +1,33 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
-import { HubNav } from "@/components/HubNav";
+import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import { getSiteUrl } from "@/lib/siteUrl";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jbmono",
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "XIV - What Does Sound Look Like?",
-    template: "%s - XIV",
+    default: "GateKPT - AI From the Physical Layer Up",
+    template: "%s - GateKPT",
   },
   description:
-    "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
+    "A public research terminal for the AI stack: power, chips, data, models, software, testing, and business context.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -26,11 +37,30 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "XIV - What Does Sound Look Like?",
-    description:
-      "A public music-art sketch from XIV: guitar, atmosphere, and motion in one living visual.",
+    title: "GateKPT - AI From the Physical Layer Up",
+    description: "A public research terminal for the system underneath modern AI.",
     type: "website",
     url: getSiteUrl(),
+    siteName: "GateKPT",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "GateKPT - AI from the physical layer up.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GateKPT - AI From the Physical Layer Up",
+    description: "A public research terminal for the system underneath modern AI.",
+    images: [
+      {
+        url: "/opengraph-image",
+        alt: "GateKPT - AI from the physical layer up.",
+      },
+    ],
   },
 };
 
@@ -38,9 +68,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={spaceGrotesk.variable}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${newsreader.variable}`}>
       <body className="font-body">
-        <HubNav />
         <main id="main-content" className="relative z-10 outline-none" tabIndex={-1}>
           {children}
         </main>

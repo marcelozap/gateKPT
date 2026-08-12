@@ -3,38 +3,22 @@
 import Link from "next/link";
 
 const links = [
-  { href: "/", label: "XIV" },
-  { href: "/#preview", label: "Sound" },
-  { href: "https://marcelozapata.dev", label: "Marcelo", external: true },
+  { href: "/", label: "Stack" },
+  { href: "/log", label: "Field log" },
+  { href: "/notes/the-only-thing-paying-attention", label: "Note 001" },
 ];
 
 export function HubNav() {
   return (
-    <header
-      className="sticky top-0 z-[100] material-ultra-thin"
-      style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
-    >
-      <div className="mx-auto flex h-11 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link
-          href="/"
-          title="XIV music home"
-          aria-label="XIV music home"
-          className="flex items-center gap-1.5 rounded-md px-1 outline-none focus-visible:ring-2 focus-visible:ring-[#e37b45]/50"
-        >
-          <span className="text-sm font-semibold tracking-tight text-white">XIV</span>
-          <span className="hidden text-[11px] text-apple-label3 sm:inline">/</span>
-          <span className="hidden text-[11px] font-medium text-apple-label2 sm:inline">Music</span>
+    <header className="gkh-nav">
+      <div className="gkh-inner">
+        <Link href="/" title="GateKPT home" aria-label="GateKPT home" className="gkh-brand gki-mono">
+          GateKPT
         </Link>
 
-        <nav aria-label="Primary" className="flex items-center gap-0.5 sm:gap-1.5">
+        <nav aria-label="Primary" className="gkh-links">
           {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              target={link.external ? "_blank" : undefined}
-              rel={link.external ? "noreferrer" : undefined}
-              className="rounded-lg px-2 py-1.5 text-[12px] font-medium text-white/60 outline-none transition hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-[#e37b45]/40 sm:px-3 sm:text-[13px]"
-            >
+            <Link key={link.href} href={link.href} className="gkh-link gki-mono">
               {link.label}
             </Link>
           ))}
