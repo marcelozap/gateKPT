@@ -8,3 +8,5 @@ dist-desktop/
 .DS_Store
 *.tsbuildinfo
 data/xiv/
+.vercel
+.env*

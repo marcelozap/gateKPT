@@ -1,7 +1,10 @@
 /**
  * Canonical origin for metadataBase / Open Graph.
- * NEXT_PUBLIC_SITE_URL (https, no trailing slash) → Vercel VERCEL_URL → localhost.
+ * Defaults to the public domain so aliased preview builds still produce
+ * shareable social URLs.
  */
+const PUBLIC_SITE_URL = "https://www.gatekpt.ai";
+
 export function getSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) {
@@ -9,11 +12,9 @@ export function getSiteUrl(): string {
     return withScheme.replace(/\/+$/, "");
   }
 
-  const vercel = process.env.VERCEL_URL?.trim();
-  if (vercel) {
-    const host = vercel.replace(/^https?:\/\//i, "");
-    return `https://${host.replace(/\/+$/, "")}`;
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3001";
   }
 
-  return "http://localhost:3001";
+  return PUBLIC_SITE_URL;
 }
