@@ -334,7 +334,7 @@ export const localeCopy = {
     endTitle: "The stack is physical, logical, and human.",
     endBody:
       "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
-    endNote: "New note: The Only Thing Paying Attention",
+    endNote: "New note: WALL-E",
     backLayers: "Back to the layers",
     startOver: "Start over",
     hint: "Space  -  next    Esc  -  all layers",
@@ -345,7 +345,7 @@ export const localeCopy = {
     switchLabel: "ES",
     switchHref: "/es",
     logHref: "/log",
-    noteHref: "/notes/the-only-thing-paying-attention",
+    noteHref: "/notes/wall-e",
   },
   es: {
     whereBoot: "SIETE CAPAS",
@@ -363,7 +363,7 @@ export const localeCopy = {
     endTitle: "El stack es fisico, logico y humano.",
     endBody:
       "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
-    endNote: "Nueva nota: The Only Thing Paying Attention",
+    endNote: "Nueva nota: WALL-E",
     backLayers: "Volver a las capas",
     startOver: "Empezar de nuevo",
     hint: "Espacio  -  avanzar    Esc  -  todas las capas",
@@ -374,30 +374,22 @@ export const localeCopy = {
     switchLabel: "EN",
     switchHref: "/",
     logHref: "/es/log",
-    noteHref: "/notes/the-only-thing-paying-attention",
+    noteHref: "/notes/wall-e",
   },
 } as const;
 
 export const note001 = {
-  slug: "the-only-thing-paying-attention",
+  slug: "wall-e",
   displayKicker: "NOTE Nº 001",
-  title: "The Only Thing Paying Attention",
+  title: "WALL-E",
   description:
-    "The Axiom passengers weren't lazy - they stopped looking up. A note on comfort as the mechanism of agency loss, and curiosity as the only exit.",
-  publishedTime: "2026-08-11T09:00:00-04:00",
+    "The most human character in WALL-E is a robot. A short note on curiosity, agency, and what AI may be exploring in us.",
+  publishedTime: "2026-08-12T09:00:00-04:00",
   citation: "WALL-E, dir. Andrew Stanton, Pixar, 2008.",
   body: [
-    "Everyone posts the Axiom frame to say people got lazy. That is not what the movie is about.",
-    "The passengers were fine. Each had a screen a few inches from their face and a pool on board they never knew existed. Nothing was taken from them. They stopped looking up.",
-    "Three people I know have three unrelated relationships to the same tool. At work I am more or less required to use it. My sister uses it as a therapist. The woman who rang me up at a sporting goods store last weekend may never have opened it once. Most arguments about whether AI matters are arguments between people whose days look nothing alike.",
-    "Which suggests the tool has no fixed depth. It returns something shaped like whatever you walked up to it with - the question you already had, the problem you were already sitting on. The ceiling is set outside the model.",
-    "So the failure mode isn't capability. It's comfort.",
-    "Nobody takes your agency. You trade it, and the trade is good every single time. The draft comes back fine. The option is already selected. The sentence is already formed. No single exchange is a loss, which is exactly why the total is hard to see. Nothing that felt bad could spread this fast.",
-    "WALL-E gave humanity seven hundred years to arrive at that ship. The mechanism it depicts has no such pacing requirement.",
-    "The captain breaks out of it, and how he does it is the part worth keeping. Nobody warns him. Nobody presents evidence. He gets curious about a plant, and about a word he doesn't know, and the whole system loses him in an afternoon. Curiosity is the only exit the film offers - and it isn't offered as a discipline. It's offered as an accident a person allowed.",
-    "So instead of asking whether AI is a big deal:",
-    "If this is a tool - how are we using it?",
-    "Are we using it to explore our curiosity, or is it exploring us?",
+    "The most human character in WALL-E is a robot.",
+    "Not because he feels things. Because he wants something nobody sold him.",
+    "So when you open AI: are you using it to explore your curiosity, or is it exploring you?",
   ],
 };
 

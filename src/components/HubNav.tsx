@@ -5,7 +5,7 @@ import Link from "next/link";
 const links = [
   { href: "/", label: "Stack" },
   { href: "/log", label: "Field log" },
-  { href: "/notes/the-only-thing-paying-attention", label: "Note 001" },
+  { href: "/notes/wall-e", label: "Note 001" },
 ];
 
 export function HubNav() {
