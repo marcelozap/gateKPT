@@ -383,12 +383,18 @@ export const note001 = {
   displayKicker: "NOTE Nº 001",
   title: "WALL-E",
   description:
-    "The most human character in WALL-E is a robot. A short note on curiosity, agency, and what AI may be exploring in us.",
+    "The most human character in WALL-E is a robot. A note on curiosity, agency, and what AI may be exploring in us.",
   publishedTime: "2026-08-12T09:00:00-04:00",
   citation: "WALL-E, dir. Andrew Stanton, Pixar, 2008.",
   body: [
     "The most human character in WALL-E is a robot.",
     "Not because he feels things. Because he wants something nobody sold him.",
+    "That is the part of the film I keep coming back to. WALL-E is surrounded by a world designed to make wanting unnecessary, but he keeps wanting anyway. He collects small objects. He watches an old musical. He reaches toward a life he cannot explain yet.",
+    "Everyone posts the Axiom frame to say people got lazy. That is not quite what the movie is about. The passengers were given everything they needed: screens a few inches from their faces, food that arrived without effort, entertainment that never stopped. Nothing was taken from them. They stopped looking up.",
+    "The difference matters because comfort does not feel like a loss while it is happening. The draft comes back fine. The option is already selected. The sentence is already formed. No single exchange feels like surrender, which is exactly why the total is hard to see.",
+    "That is where AI makes the question current. The tool can help you explore a question you already have, or it can make questions unnecessary by giving you something smooth before you have decided what you want to know.",
+    "The convenience is real. So is the risk. If every answer arrives before your curiosity has had time to develop, you may start mistaking friction for a problem and wanting for inefficiency.",
+    "WALL-E does not escape the Axiom because someone gives him a better explanation. He escapes because he remains interested. Curiosity opens a door the system did not plan to offer.",
     "So when you open AI: are you using it to explore your curiosity, or is it exploring you?",
   ],
 };
