@@ -256,7 +256,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                   <p className="gki-essence">{copy.homeTitle}</p>
                   <p className="gki-donep">{copy.homeBody}</p>
                   <div className="gki-actions">
-                    <Link className="gki-go" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
+                    <Link className="gki-go" href={copy.noteHref} onClick={(event) => event.stopPropagation()}>
                       {copy.openLog}
                     </Link>
                     <button
@@ -293,7 +293,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                     {entries.slice(0, 3).map((entry) => (
                       <Link
                         key={`${entry.date}-${entry.title}`}
-                        href={`${copy.logHref}/${entry.slug}`}
+                        href={entry.slug === "wall-e" ? copy.noteHref : `${copy.logHref}/${entry.slug}`}
                         className="gki-home-entry"
                         onClick={(event) => event.stopPropagation()}
                       >

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HubNav } from "@/components/HubNav";
-import { getEntry, logEntriesEn } from "@/gatekpt/content";
+import { getEntries, getEntry } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function generateStaticParams() {
-  return logEntriesEn.map((entry) => ({ slug: entry.slug }));
+  return getEntries("en").map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

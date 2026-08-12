@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HubNav } from "@/components/HubNav";
-import { getEntry, logEntriesEs } from "@/gatekpt/content";
+import { getEntries, getEntry } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function generateStaticParams() {
-  return logEntriesEs.map((entry) => ({ slug: entry.slug }));
+  return getEntries("es").map((entry) => ({ slug: entry.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -48,7 +48,7 @@ export default async function SpanishLogEntryPage({ params }: Props) {
   return (
     <div className="gkl-page">
       <div className="gkl-atmos" aria-hidden="true" />
-      <HubNav />
+      <HubNav locale="es" />
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
           <Link href="/es/log" className="gkl-back gki-mono">

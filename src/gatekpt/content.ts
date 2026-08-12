@@ -322,12 +322,12 @@ export const localeCopy = {
     whereBoot: "SEVEN LAYERS",
     whereEnd: "END OF MAP",
     countBoot: "START",
-    homeTitle: "AI from the physical layer up.",
+    homeTitle: "A field log for understanding AI as a system.",
     homeBody:
-      "A research log for understanding what actually runs modern AI: power, chips, data, models, software, testing, and business. Each layer has a number and a source.",
-    openLog: "Open field log",
-    exploreMap: "Explore map",
-    layers: "Layers",
+      "GateKPT follows what sits underneath AI: power, chips, data, models, software, testing, and business context. Start with the latest writing or explore the stack.",
+    openLog: "Read latest note",
+    exploreMap: "Explore stack",
+    layers: "Stack map",
     fieldLog: "Field log",
     viewAll: "View all",
     endKicker: "L01 - L07",
@@ -335,11 +335,11 @@ export const localeCopy = {
     endBody:
       "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
     endNote: "New note: WALL-E",
-    backLayers: "Back to the layers",
+    backLayers: "View stack map",
     startOver: "Start over",
     hint: "Space  -  next    Esc  -  all layers",
     back: "Back",
-    log: "Log",
+    log: "Field log",
     forward: "Forward",
     load: "FIELD LOG ONLINE",
     switchLabel: "ES",
@@ -351,12 +351,12 @@ export const localeCopy = {
     whereBoot: "SIETE CAPAS",
     whereEnd: "FIN DEL MAPA",
     countBoot: "INICIO",
-    homeTitle: "IA desde la capa fisica hacia arriba.",
+    homeTitle: "Un diario para entender la IA como sistema.",
     homeBody:
-      "Un diario de investigacion para entender que hace funcionar la IA moderna: energia, chips, datos, modelos, software, pruebas y contexto. Cada capa tiene un numero y una fuente.",
-    openLog: "Abrir diario",
-    exploreMap: "Explorar mapa",
-    layers: "Capas",
+      "GateKPT sigue lo que existe debajo de la IA: energia, chips, datos, modelos, software, pruebas y contexto de negocio. Empieza con la nota mas reciente o explora el stack.",
+    openLog: "Leer la nota reciente",
+    exploreMap: "Explorar el stack",
+    layers: "Mapa del stack",
     fieldLog: "Diario",
     viewAll: "Ver todo",
     endKicker: "L01 - L07",
@@ -364,7 +364,7 @@ export const localeCopy = {
     endBody:
       "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
     endNote: "Nueva nota: WALL-E",
-    backLayers: "Volver a las capas",
+    backLayers: "Ver el mapa del stack",
     startOver: "Empezar de nuevo",
     hint: "Espacio  -  avanzar    Esc  -  todas las capas",
     back: "Atras",
@@ -399,8 +399,26 @@ export const note001 = {
   ],
 };
 
+const fieldLogEntryEn: LogEntry = {
+  slug: note001.slug,
+  date: "2026-08-12",
+  title: note001.title,
+  layer: note001.displayKicker,
+  summary: note001.description,
+  body: note001.body,
+};
+
+const fieldLogEntryEs: LogEntry = {
+  slug: note001.slug,
+  date: "2026-08-12",
+  title: note001.title,
+  layer: "NOTA 001",
+  summary: "Una nota en ingles sobre curiosidad, agencia y lo que la IA puede estar explorando en nosotros.",
+  body: note001.body,
+};
+
 export function getEntries(locale: Locale) {
-  return locale === "es" ? logEntriesEs : logEntriesEn;
+  return locale === "es" ? [fieldLogEntryEs] : [fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
