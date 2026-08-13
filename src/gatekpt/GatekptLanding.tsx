@@ -21,11 +21,28 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const layerCount = layers.length;
   const layer = layers[layerIndex];
+  const layerHref = locale === "es" ? "/es#layers" : "/#layers";
 
   useEffect(() => {
     document.body.classList.add("gk-instrument");
     return () => document.body.classList.remove("gk-instrument");
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.location.hash !== "#layers") return;
+    setPhase("run");
+    setLayerIndex(0);
+    setSeen((value) => new Set(value).add(0));
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (phase === "run" && window.location.hash !== "#layers") {
+      window.history.replaceState(null, "", `${window.location.pathname}#layers`);
+    } else if (phase === "boot" && window.location.hash === "#layers") {
+      window.history.replaceState(null, "", window.location.pathname || "/");
+    }
+  }, [phase]);
 
   const transition = useCallback((update: () => void) => {
     if (timeoutRef.current) {
@@ -261,16 +278,18 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                     <Link className="gki-go" href={copy.noteHref} onClick={(event) => event.stopPropagation()}>
                       {copy.openLog}
                     </Link>
-                    <button
-                      type="button"
+                    <Link
+                      href={layerHref}
                       className="gki-ghost gki-mono"
                       onClick={(event) => {
                         event.stopPropagation();
+                        event.preventDefault();
+                        window.history.replaceState(null, "", layerHref);
                         goForward();
                       }}
                     >
                       {copy.exploreMap}
-                    </button>
+                    </Link>
                   </div>
                 </section>
 
