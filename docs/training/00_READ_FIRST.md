@@ -7,8 +7,9 @@ Read this folder before changing GateKPT content, design, navigation, or teachin
 1. `xiv_visual_origin.md`
 2. `site_language.md`
 3. `ai_layers_teaching_model.md`
-4. `privacy_and_data_references.md`
-5. `source_references/`
+4. `journal_entry_standard.md`
+5. `privacy_and_data_references.md`
+6. `source_references/`
 
 ## Non-Negotiables
 
