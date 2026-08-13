@@ -2,6 +2,8 @@
 
 This file is the working standard for the public GateKPT website.
 
+`GATEKPT_GUIDELINES.md` governs the writing and public voice. `CLAUDE.md` gives agents the short operating rules. This file is the detailed source map for the current implementation.
+
 GateKPT is a public AI research and writing site. It explains the system underneath AI and publishes Marcelo's own notes, observations, and experiments.
 
 XIV is the wider creative language: disciplined, cinematic, technical, musical, physical, and human. GateKPT uses that language for an AI research context. It should feel like a field instrument or editorial research terminal, not a generic SaaS site, trading dashboard, or gaming interface.
