@@ -110,6 +110,13 @@ When adding code-backed notes in `src/gatekpt/content.ts`, update both the Engli
 - Any unstable claim is verified or marked before publishing.
 - The final page has English and Spanish paths if the entry is meant to be bilingual.
 
+## Visual Checklist
+
+- On writing index cards, dates/note numbers live in a consistent metadata rail.
+- Titles, summaries, and buttons start on the same text rail across entries.
+- Featured entries may be larger, but their words should not drift to a different horizontal start.
+- If a card stacks on mobile, preserve the order: metadata, title, summary, action.
+
 ## Bilingual Checklist
 
 - English entry exists.

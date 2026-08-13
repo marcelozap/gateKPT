@@ -2393,3 +2393,45 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
     animation: none;
   }
 }
+
+/* Published writing alignment standard: metadata left, words start on the same rail. */
+.gkl-list {
+  --gkl-meta-rail: clamp(112px, 14vw, 180px);
+}
+
+.gkl-entry,
+.gkl-entry-featured {
+  align-items: start;
+  display: grid;
+  gap: clamp(24px, 4vw, 48px);
+  grid-template-columns: var(--gkl-meta-rail) minmax(0, 1fr);
+}
+
+.gkl-entry-meta {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.gkl-entry-copy {
+  grid-column: 2;
+  max-width: 760px;
+}
+
+.gkl-entry-copy h3,
+.gkl-entry-copy p,
+.gkl-entry-copy .gkl-read {
+  margin-left: 0;
+}
+
+@media (max-width: 720px) {
+  .gkl-entry,
+  .gkl-entry-featured {
+    gap: 18px;
+    grid-template-columns: 1fr;
+  }
+
+  .gkl-entry-meta,
+  .gkl-entry-copy {
+    grid-column: 1;
+  }
+}
