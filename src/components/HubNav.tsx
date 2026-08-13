@@ -10,7 +10,7 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const links = [
     { href: isSpanish ? "/es" : "/", label: isSpanish ? "Stack" : "Stack" },
     { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Diario" : "Field log" },
-    { href: "/notes/the-place-you-started", label: isSpanish ? "Nota 002" : "Note 002" },
+    { href: "/notes/the-mental-time-trap", label: isSpanish ? "Nota 002" : "Note 002" },
   ];
 
   return (

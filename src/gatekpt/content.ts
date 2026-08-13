@@ -352,7 +352,7 @@ export const localeCopy = {
     switchLabel: "ES",
     switchHref: "/es",
     logHref: "/log",
-    noteHref: "/notes/the-place-you-started",
+    noteHref: "/notes/the-mental-time-trap",
   },
   es: {
     whereBoot: "SIETE CAPAS",
@@ -381,7 +381,7 @@ export const localeCopy = {
     switchLabel: "EN",
     switchHref: "/",
     logHref: "/es/log",
-    noteHref: "/notes/the-place-you-started",
+    noteHref: "/notes/the-mental-time-trap",
   },
 } as const;
 
@@ -452,63 +452,102 @@ const fieldLogEntryEs: LogEntry = {
 };
 
 export const note002 = {
-  slug: "the-place-you-started",
+  slug: "the-mental-time-trap",
   displayKicker: "NOTE Nº 002",
-  title: "The House You Started In",
+  title: "The Mental Time Trap",
   description:
-    "A degree can feel like a border. It can also become the material you use to build what comes next.",
+    "A useful label can become a room you stop trying to leave. A note on time, identity, and using AI to test your limits.",
   publishedTime: "2026-08-13T09:00:00-04:00",
   citation: "Up, dir. Pete Docter, Pixar, 2009.",
   body: [
     {
-      text: "A lot of young people feel boxed in by what they studied. Marketing. Business. Finance. Design. Communications. Whatever the label is, it starts to feel like a border.",
+      text: "Time is dangerous when you spend too much of it inside the same story.",
     },
     {
-      text: "I'm not technical. I can't code. I'm not that kind of person.",
+      text: "At first, a label is useful.",
     },
     {
-      text: "But most of that is internal. It is a mental block, not a permanent limit.",
+      text: "Manager. Analyst. Marketer. Operator. Non-technical. Creative. Business person.",
     },
     {
-      text: "A degree is not a cage. It is a house: a place where you learned how to see problems, communicate, organize, design, make decisions, or understand people.",
+      text: "It helps people understand what you do.",
     },
     {
-      text: "The mistake is treating the house like a final address.",
+      text: "But stay inside that label long enough, and it starts to feel like who you are.",
     },
     {
-      text: "That is why AI matters so much right now. Not because it magically makes you an expert overnight. Not because it replaces effort. Because it gives you a bridge into skills that used to feel locked away.",
+      text: "That is the mental time trap.",
     },
     {
-      text: "You can ask. You can test. You can build. You can make mistakes privately. You can shorten the distance between a question and an attempt.",
+      text: "You do something for years or decades. You build a life around it. People recognize you for it. You get rewarded for staying consistent. Then one day, the world changes, and the label that once gave you structure starts keeping you in place.",
     },
     {
       text: "Someone who studied marketing can learn to work with campaign data. Someone from finance can build a small automation. Someone from design can prototype a workflow. The degree remains useful. It becomes context.",
     },
     {
-      text: "In Up, Carl's house begins as the thing that holds him to the past. Then it becomes the thing that carries him toward the future.",
+      text: "That is what I think about with Carl in UP.",
       footnote: "1",
     },
     {
-      text: "He does not have to erase the life he built to move. He has to lift it.",
+      text: "He was not just an old man sitting in a house. He was someone frozen in time.",
     },
     {
-      text: "That is the useful analogy. Your degree is not baggage you need to hide. It is material you can build from.",
+      text: "The house was memory. The routine was safety. The dream was still there, but buried under years of grief, repetition, and identity.",
     },
     {
-      text: "AI is not the destination. It is not a new identity. It is a bridge, and you still have to walk.",
+      text: "Then a push came.",
     },
     {
-      text: "THE FIRST VERSION OF YOU IS NOT THE FINAL VERSION.",
+      text: "Not a full plan. Not a perfect roadmap. Not permission.",
+    },
+    {
+      text: "A push.",
+    },
+    {
+      text: "That is what AI can be for people right now.",
+    },
+    {
+      text: "A push out of the version of yourself you accepted too early.",
+    },
+    {
+      text: "Not because AI makes you someone else. Not because it removes the work. But because it lets you question the walls around your current identity.",
+    },
+    {
+      text: "I'm not technical. I'm not good with data. I can't build. That is not my role. It is too late to learn.",
+    },
+    {
+      text: "How many of those are facts, and how many are just old sentences with time wrapped around them?",
+    },
+    {
+      text: "The danger is not being bad at something. The danger is letting time convince you that you cannot become anything else.",
+    },
+    {
+      text: "AI is shrinking the distance between curiosity and execution. You can ask. You can test. You can build. You can learn in private. You can step into rooms that used to feel locked.",
+    },
+    {
+      text: "But only if you move.",
+    },
+    {
+      text: "Because the trap is comfortable.",
+    },
+    {
+      text: "It looks like stability. It sounds like experience. It feels like being realistic.",
+    },
+    {
+      text: "But sometimes being realistic is just fear with a better outfit.",
+    },
+    {
+      text: "Do not get caught sleeping inside a label.",
+    },
+    {
+      text: "The tools are already here.",
+    },
+    {
+      text: "Sometimes all you need is a push.",
+    },
+    {
+      text: "The only way is UP.",
       kind: "turn",
-    },
-    {
-      text: "Do not get boxed in by what you think you are bad at.",
-    },
-    {
-      text: "Do not get boxed in by the first version of yourself.",
-    },
-    {
-      text: "You are capable of more than you know.",
     },
   ],
 };
