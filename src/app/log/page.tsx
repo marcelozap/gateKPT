@@ -32,7 +32,7 @@ export default function LogPage() {
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/brand/xiv-holy-grail-reference.png"
+              src="/brand/xiv-holy-grail-reference-v2.png"
               alt="A neon city collage of a lone figure wearing a glowing visor"
               width={1680}
               height={945}

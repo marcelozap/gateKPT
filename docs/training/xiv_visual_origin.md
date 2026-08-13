@@ -18,12 +18,13 @@ GateKPT should keep the original XIV feeling: cinematic editorial technology.
 
 Use this as the primary visual reference:
 
-`public/brand/xiv-holy-grail-reference.png`
+`public/brand/xiv-holy-grail-reference-v2.png`
 
 This image is the clean public-safe version of the original XIV desktop wallpaper collage that started the whole direction. It is the source of truth for atmosphere. It should influence the homepage, writing pages, and social imagery unless Marcelo provides a newer explicit reference.
 
-Keep the older supporting asset available, but secondary:
+Keep the older supporting assets available, but secondary:
 
+`public/brand/xiv-holy-grail-reference.png`
 `public/brand/xiv-visor-city-reference.png`
 
 ## Origin Rule

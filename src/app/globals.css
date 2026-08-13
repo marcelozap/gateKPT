@@ -1539,7 +1539,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
              linear-gradient(180deg,rgba(2,5,10,.24),transparent 28%,rgba(2,5,10,.42))}
 .gki-atmos::before{content:"";position:absolute;inset:-2%;
   background-image:linear-gradient(90deg,rgba(2,5,10,.86) 0%,rgba(2,5,10,.66) 34%,rgba(2,5,10,.34) 62%,rgba(2,5,10,.76) 100%),
-                   url("/brand/xiv-holy-grail-reference.png");
+                   url("/brand/xiv-holy-grail-reference-v2.png");
   background-size:cover;background-position:center 42%;
   opacity:.3;filter:saturate(1.14) contrast(1.08) blur(.4px);
   mix-blend-mode:screen}
@@ -1820,7 +1820,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   inset: 0;
   background:
     linear-gradient(90deg, rgba(2, 5, 10, 0.86), rgba(2, 5, 10, 0.58) 44%, rgba(2, 5, 10, 0.82)),
-    url("/brand/xiv-holy-grail-reference.png");
+    url("/brand/xiv-holy-grail-reference-v2.png");
   background-position: center 42%;
   background-size: cover;
   opacity: 0.26;
