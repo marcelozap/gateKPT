@@ -421,7 +421,7 @@ export const localeCopy = {
     switchLabel: "ES",
     switchHref: "/es",
     logHref: "/log",
-    noteHref: "/notes/the-mental-time-trap",
+    noteHref: "/notes/the-trap-of-time",
   },
   es: {
     whereBoot: "ESCRITURA + CAPAS DE IA",
@@ -452,7 +452,7 @@ export const localeCopy = {
     switchLabel: "EN",
     switchHref: "/",
     logHref: "/es/log",
-    noteHref: "/notes/the-mental-time-trap",
+    noteHref: "/es/notes/the-trap-of-time",
   },
 } as const;
 
@@ -523,9 +523,9 @@ const fieldLogEntryEs: LogEntry = {
 };
 
 export const note002 = {
-  slug: "the-mental-time-trap",
+  slug: "the-trap-of-time",
   displayKicker: "NOTE Nº 002",
-  title: "The Mental Time Trap",
+  title: "The Trap of Time",
   description:
     "A useful label can become a room you stop trying to leave. A note on time, identity, and using AI to test your limits.",
   publishedTime: "2026-08-13T09:00:00-04:00",
@@ -547,7 +547,7 @@ export const note002 = {
       text: "But stay inside that label long enough, and it starts to feel like who you are.",
     },
     {
-      text: "That is the mental time trap.",
+      text: "That is the trap of time.",
     },
     {
       text: "You do something for years or decades. You build a life around it. People recognize you for it. You get rewarded for staying consistent. Then one day, the world changes, and the label that once gave you structure starts keeping you in place.",
@@ -636,7 +636,7 @@ const fieldLogEntryNote002: LogEntry = {
 const fieldLogEntryNote002Es: LogEntry = {
   slug: note002.slug,
   date: "2026-08-13",
-  title: "La Trampa Mental Del Tiempo",
+  title: "La Trampa Del Tiempo",
   layer: "NOTA 002",
   summary:
     "Una etiqueta util puede convertirse en una habitacion que dejas de intentar abandonar. Una nota sobre tiempo, identidad y usar IA para probar tus limites.",
@@ -647,7 +647,7 @@ const fieldLogEntryNote002Es: LogEntry = {
     "Gerente. Analista. Marketer. Operador. No tecnico. Creativo. Persona de negocio.",
     "Ayuda a que la gente entienda lo que haces.",
     "Pero si te quedas dentro de esa etiqueta el tiempo suficiente, empieza a sentirse como quien eres.",
-    "Esa es la trampa mental del tiempo.",
+    "Esa es la trampa del tiempo.",
     "Haces algo durante anos o decadas. Construyes una vida alrededor de eso. La gente te reconoce por eso. Te premian por mantenerte consistente. Entonces un dia el mundo cambia, y la etiqueta que antes te daba estructura empieza a mantenerte en el mismo lugar.",
     "Alguien que estudio marketing puede aprender a trabajar con datos de campanas. Alguien de finanzas puede construir una automatizacion pequena. Alguien de diseno puede prototipar un flujo de trabajo. El titulo sigue siendo util. Se vuelve contexto.",
     "Eso es lo que pienso cuando veo a Carl en UP.",
