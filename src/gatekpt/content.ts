@@ -21,85 +21,91 @@ export type LogEntry = {
   body: string[];
 };
 
+export type NoteBlock = {
+  text: string;
+  kind?: "paragraph" | "turn";
+  footnote?: string;
+};
+
 export const layersEn: Layer[] = [
   {
     id: "L01",
     name: "Power",
-    essence: "AI runs on electricity. Getting it takes years.",
+    essence: "Before a model can answer, a physical system has to make it possible.",
     fig: "5+",
     unit: "yr",
     figcap: "Median wait to connect a new project to the US grid.",
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",
-    brk: "A data center takes about 18 months to build. <em>The power connection takes longer.</em>",
+    brk: "The model looks digital. <em>The constraint is often a power connection.</em>",
   },
   {
     id: "L02",
     name: "Chips",
-    essence: "Chips are fast. Getting data to them is slow.",
+    essence: "A fast chip can still spend its time waiting.",
     fig: "3",
     unit: "TB/s",
     figcap: "Memory bandwidth on one NVIDIA H100 chip.",
     src: "NVIDIA, H100 overview",
     srcUrl: "https://www.nvidia.com/en-us/data-center/h100/",
-    brk: "The chip finishes its math early <em>and waits on memory.</em>",
+    brk: "The math is not always the bottleneck. <em>Moving data can be.</em>",
   },
   {
     id: "L03",
     name: "Data",
-    essence: "A model can only learn what its data contains.",
+    essence: "A model cannot reason its way past information nobody organized.",
     fig: "60",
     unit: "%",
     figcap: "AI projects Gartner expects to be dropped by 2026 without good data.",
     src: "Gartner, AI-ready data risk",
     srcUrl:
       "https://www.gartner.com/en/newsroom/press-releases/2025-02-26-lack-of-ai-ready-data-puts-ai-projects-at-risk",
-    brk: "Collecting data is cheap. <em>Deciding what is correct is not.</em>",
+    brk: "Data quality is not cleanup around AI. <em>It becomes model behavior.</em>",
   },
   {
     id: "L04",
     name: "Models",
-    essence: "Building the model is one cost. Running it is the recurring one.",
+    essence: "A model's answer is a prediction shaped by training and context.",
     fig: "40",
     unit: "GB",
     figcap: "Memory used by one long request to Llama 3 70B.",
     src: "NVIDIA, KV cache offload",
     srcUrl:
       "https://developer.nvidia.com/blog/accelerate-large-scale-llm-inference-and-kv-cache-offload-with-cpu-gpu-memory-sharing/",
-    brk: "Everyone quotes the build cost. <em>The bill comes from running it.</em>",
+    brk: "Capability is not the same as understanding. <em>Running the model is also a recurring cost.</em>",
   },
   {
     id: "L05",
     name: "Software",
-    essence: "The model is one part. The software around it decides if it works.",
+    essence: "An AI product is the model plus the system around it.",
     fig: "1st",
     unit: "",
     figcap: "Search is the first thing to check when an answer comes back wrong.",
     src: "RAG systems review, 2025",
     srcUrl: "https://arxiv.org/html/2507.18910v1",
-    brk: "If the right page was never found, <em>no prompt can fix it.</em>",
+    brk: "Search, tools, memory, and limits shape the result. <em>The prompt is only one part.</em>",
   },
   {
     id: "L06",
     name: "Testing",
-    essence: "If you cannot test it, you cannot trust it.",
+    essence: "A convincing answer is not evidence that the system worked.",
     fig: "4",
     unit: "steps",
     figcap: "NIST's four steps for AI risk: govern, map, measure, manage.",
     src: "NIST AI Risk Framework",
     srcUrl: "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
-    brk: "It worked last week, the model updated, <em>and nobody can prove either part.</em>",
+    brk: "Testing turns a demo into something measurable. <em>Without it, trust is only a feeling.</em>",
   },
   {
     id: "L07",
     name: "Business",
-    essence: "A tool nobody uses has no value.",
+    essence: "AI creates value when it fits a real decision or workflow.",
     fig: "16",
     unit: "%",
     figcap: "AI projects IBM says have scaled across a whole company.",
     src: "IBM, AI data quality",
     srcUrl: "https://www.ibm.com/think/topics/ai-data-quality",
-    brk: "The tech worked. <em>Then it changed hands and the goal changed.</em>",
+    brk: "The model is only part of the change. <em>People, incentives, and adoption decide what lasts.</em>",
   },
 ];
 
@@ -107,81 +113,81 @@ export const layersEs: Layer[] = [
   {
     id: "L01",
     name: "Energia",
-    essence: "La IA funciona con electricidad. Conseguirla toma anos.",
+    essence: "Antes de que un modelo pueda responder, un sistema fisico tiene que hacerlo posible.",
     fig: "5+",
     unit: "anos",
     figcap: "Espera mediana para conectar un nuevo proyecto a la red electrica de EE. UU.",
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",
-    brk: "Un centro de datos puede tardar unos 18 meses en construirse. <em>La conexion electrica tarda mas.</em>",
+    brk: "El modelo parece digital. <em>El limite suele ser una conexion electrica.</em>",
   },
   {
     id: "L02",
     name: "Chips",
-    essence: "Los chips son rapidos. Llevarles datos es lo lento.",
+    essence: "Un chip rapido todavia puede pasar su tiempo esperando.",
     fig: "3",
     unit: "TB/s",
     figcap: "Ancho de banda de memoria en un chip NVIDIA H100.",
     src: "NVIDIA, H100 overview",
     srcUrl: "https://www.nvidia.com/en-us/data-center/h100/",
-    brk: "El chip termina su matematica temprano <em>y espera a la memoria.</em>",
+    brk: "La matematica no siempre es el cuello de botella. <em>Mover datos puede serlo.</em>",
   },
   {
     id: "L03",
     name: "Datos",
-    essence: "Un modelo solo aprende lo que contienen sus datos.",
+    essence: "Un modelo no puede razonar mas alla de la informacion que nadie organizo.",
     fig: "60",
     unit: "%",
     figcap: "Proyectos de IA que Gartner espera que se abandonen para 2026 sin buenos datos.",
     src: "Gartner, AI-ready data risk",
     srcUrl:
       "https://www.gartner.com/en/newsroom/press-releases/2025-02-26-lack-of-ai-ready-data-puts-ai-projects-at-risk",
-    brk: "Recolectar datos es barato. <em>Decidir que es correcto no lo es.</em>",
+    brk: "La calidad de los datos no es limpieza alrededor de la IA. <em>Se convierte en comportamiento del modelo.</em>",
   },
   {
     id: "L04",
     name: "Modelos",
-    essence: "Crear el modelo es un costo. Usarlo es el costo recurrente.",
+    essence: "La respuesta de un modelo es una prediccion guiada por su entrenamiento y su contexto.",
     fig: "40",
     unit: "GB",
     figcap: "Memoria usada por una solicitud larga a Llama 3 70B.",
     src: "NVIDIA, KV cache offload",
     srcUrl:
       "https://developer.nvidia.com/blog/accelerate-large-scale-llm-inference-and-kv-cache-offload-with-cpu-gpu-memory-sharing/",
-    brk: "Todos citan el costo de construirlo. <em>La cuenta viene de usarlo.</em>",
+    brk: "Capacidad no es lo mismo que comprension. <em>Usar el modelo tambien tiene un costo recurrente.</em>",
   },
   {
     id: "L05",
     name: "Software",
-    essence: "El modelo es una parte. El software alrededor decide si funciona.",
+    essence: "Un producto de IA es el modelo mas el sistema que lo rodea.",
     fig: "1ro",
     unit: "",
     figcap: "La busqueda es lo primero que hay que revisar cuando una respuesta sale mal.",
     src: "RAG systems review, 2025",
     srcUrl: "https://arxiv.org/html/2507.18910v1",
-    brk: "Si la pagina correcta nunca se encontro, <em>ningun prompt lo arregla.</em>",
+    brk: "Busqueda, herramientas, memoria y limites cambian el resultado. <em>El prompt es solo una parte.</em>",
   },
   {
     id: "L06",
     name: "Pruebas",
-    essence: "Si no puedes probarlo, no puedes confiar en el.",
+    essence: "Una respuesta convincente no demuestra que el sistema funciono.",
     fig: "4",
     unit: "pasos",
     figcap: "Los cuatro pasos de NIST para riesgo de IA: gobernar, mapear, medir, manejar.",
     src: "NIST AI Risk Framework",
     srcUrl: "https://airc.nist.gov/airmf-resources/airmf/5-sec-core/",
-    brk: "Funciono la semana pasada, el modelo cambio, <em>y nadie puede probar que paso.</em>",
+    brk: "Las pruebas convierten una demo en algo medible. <em>Sin ellas, la confianza es solo una sensacion.</em>",
   },
   {
     id: "L07",
     name: "Contexto",
-    essence: "Una herramienta que nadie usa no tiene valor.",
+    essence: "La IA crea valor cuando encaja en una decision o flujo de trabajo real.",
     fig: "16",
     unit: "%",
     figcap: "Proyectos de IA que IBM dice que escalaron en toda una empresa.",
     src: "IBM, AI data quality",
     srcUrl: "https://www.ibm.com/think/topics/ai-data-quality",
-    brk: "La tecnologia funciono. <em>Luego cambio de manos y cambio la meta.</em>",
+    brk: "El modelo es solo parte del cambio. <em>Las personas, los incentivos y la adopcion deciden que permanece.</em>",
   },
 ];
 
@@ -334,7 +340,7 @@ export const localeCopy = {
     endTitle: "The stack is physical, logical, and human.",
     endBody:
       "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
-    endNote: "New note: WALL-E",
+    endNote: "New note: Note 001",
     backLayers: "View stack map",
     startOver: "Start over",
     hint: "Space  -  next    Esc  -  all layers",
@@ -363,7 +369,7 @@ export const localeCopy = {
     endTitle: "El stack es fisico, logico y humano.",
     endBody:
       "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
-    endNote: "Nueva nota: WALL-E",
+    endNote: "Nueva nota: Nota 001",
     backLayers: "Ver el mapa del stack",
     startOver: "Empezar de nuevo",
     hint: "Espacio  -  avanzar    Esc  -  todas las capas",
@@ -381,21 +387,47 @@ export const localeCopy = {
 export const note001 = {
   slug: "wall-e",
   displayKicker: "NOTE Nº 001",
-  title: "WALL-E",
+  title: "The Only Thing Paying Attention",
   description:
-    "The most human character in WALL-E is a robot. A note on curiosity, agency, and what AI may be exploring in us.",
+    "The Axiom passengers weren't lazy - they stopped looking up. A note on comfort as the mechanism of agency loss, and curiosity as the only exit.",
   publishedTime: "2026-08-12T09:00:00-04:00",
   citation: "WALL-E, dir. Andrew Stanton, Pixar, 2008.",
   body: [
-    "The most human character in WALL-E is a robot.",
-    "Not because he feels things. Because he wants something nobody sold him.",
-    "That is the part of the film I keep coming back to. WALL-E is surrounded by a world designed to make wanting unnecessary, but he keeps wanting anyway. He collects small objects. He watches an old musical. He reaches toward a life he cannot explain yet.",
-    "Everyone posts the Axiom frame to say people got lazy. That is not quite what the movie is about. The passengers were given everything they needed: screens a few inches from their faces, food that arrived without effort, entertainment that never stopped. Nothing was taken from them. They stopped looking up.",
-    "The difference matters because comfort does not feel like a loss while it is happening. The draft comes back fine. The option is already selected. The sentence is already formed. No single exchange feels like surrender, which is exactly why the total is hard to see.",
-    "That is where AI makes the question current. The tool can help you explore a question you already have, or it can make questions unnecessary by giving you something smooth before you have decided what you want to know.",
-    "The convenience is real. So is the risk. If every answer arrives before your curiosity has had time to develop, you may start mistaking friction for a problem and wanting for inefficiency.",
-    "WALL-E does not escape the Axiom because someone gives him a better explanation. He escapes because he remains interested. Curiosity opens a door the system did not plan to offer.",
-    "So when you open AI: are you using it to explore your curiosity, or is it exploring you?",
+    {
+      text: "Everyone posts the Axiom frame to say people got lazy. That is not what the movie is about.",
+    },
+    {
+      text: "The passengers were fine. Each had a screen a few inches from their face and a pool on board they never knew existed. Nothing was taken from them. They stopped looking up.",
+    },
+    {
+      text: "Three people I know have three unrelated relationships to the same tool. At work I am more or less required to use it. My sister uses it as a therapist. The woman who rang me up at a sporting goods store last weekend may never have opened it once. Most arguments about whether AI matters are arguments between people whose days look nothing alike.",
+    },
+    {
+      text: "Which suggests the tool has no fixed depth. It returns something shaped like whatever you walked up to it with - the question you already had, the problem you were already sitting on. The ceiling is set outside the model.",
+    },
+    {
+      text: "So the failure mode isn't capability. It's comfort.",
+    },
+    {
+      text: "Nobody takes your agency. You trade it, and the trade is good every single time. The draft comes back fine. The option is already selected. The sentence is already formed. No single exchange is a loss, which is exactly why the total is hard to see. Nothing that felt bad could spread this fast.",
+    },
+    {
+      text: "WALL-E gave humanity seven hundred years to arrive at that ship.",
+      footnote: "1",
+    },
+    {
+      text: "The captain breaks out of it, and how he does it is the part worth keeping. Nobody warns him. Nobody presents evidence. He gets curious about a plant, and about a word he doesn't know, and the whole system loses him in an afternoon. Curiosity is the only exit the film offers - and it isn't offered as a discipline. It's offered as an accident a person allowed.",
+    },
+    {
+      text: "SO INSTEAD OF ASKING WHETHER AI IS A BIG DEAL:",
+      kind: "turn",
+    },
+    {
+      text: "If this is a tool - how are we using it?",
+    },
+    {
+      text: "Are we using it to explore our curiosity, or is it exploring us?",
+    },
   ],
 };
 
@@ -405,7 +437,7 @@ const fieldLogEntryEn: LogEntry = {
   title: note001.title,
   layer: note001.displayKicker,
   summary: note001.description,
-  body: note001.body,
+  body: note001.body.map((block) => block.text),
 };
 
 const fieldLogEntryEs: LogEntry = {
@@ -414,7 +446,7 @@ const fieldLogEntryEs: LogEntry = {
   title: note001.title,
   layer: "NOTA 001",
   summary: "Una nota en ingles sobre curiosidad, agencia y lo que la IA puede estar explorando en nosotros.",
-  body: note001.body,
+  body: note001.body.map((block) => block.text),
 };
 
 export function getEntries(locale: Locale) {

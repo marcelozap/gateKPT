@@ -66,7 +66,7 @@ export default function LogPage() {
             <div className="gkl-entry-copy">
               <h3>{note001.title}</h3>
               <p>{note001.description}</p>
-              <span className="gkl-read">Open WALL-E <span aria-hidden="true">-&gt;</span></span>
+              <span className="gkl-read">Open Note 001 <span aria-hidden="true">-&gt;</span></span>
             </div>
           </Link>
         </section>

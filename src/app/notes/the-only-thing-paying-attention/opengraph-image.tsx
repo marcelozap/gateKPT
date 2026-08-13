@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "NOTE Nº 001 - WALL-E - gatekpt.ai";
+export const alt = "NOTE Nº 001 - The Only Thing Paying Attention - gatekpt.ai";
 export const size = {
   width: 1200,
   height: 630,
@@ -63,7 +63,7 @@ export default function Image() {
               maxWidth: 930,
             }}
           >
-            WALL-E
+            The Only Thing Paying Attention
           </h1>
           <p
             style={{
@@ -75,7 +75,7 @@ export default function Image() {
               maxWidth: 900,
             }}
           >
-            The most human character in WALL-E is a robot.
+            A note on comfort, agency, and curiosity.
           </p>
         </div>
         <div

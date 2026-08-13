@@ -736,8 +736,8 @@ button {
   justify-content: space-between;
   gap: 18px;
   margin: 0 auto;
-  max-width: 1120px;
-  min-height: 58px;
+  max-width: 1400px;
+  min-height: 74px;
   padding: 0 22px;
 }
 
@@ -791,6 +791,7 @@ button {
   pointer-events: none;
   background:
     repeating-linear-gradient(0deg, rgba(244, 239, 228, 0.025) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, rgba(244, 239, 228, 0.018) 0 1px, transparent 1px 86px),
     linear-gradient(180deg, rgba(8, 8, 6, 0.2), rgba(8, 8, 6, 0.86));
 }
 
@@ -1122,8 +1123,8 @@ button {
 }
 
 .gkn-shell {
-  max-width: 840px;
-  padding-top: 72px;
+  max-width: 1040px;
+  padding-top: clamp(70px, 9vw, 118px);
 }
 
 .gkn-article {
@@ -1132,42 +1133,52 @@ button {
 
 .gkn-head {
   border-bottom: 1px solid rgba(143, 240, 255, 0.22);
-  padding-bottom: 34px;
-  margin-bottom: 38px;
+  margin-bottom: 52px;
+  padding-bottom: 42px;
 }
 
-.gkn-head .gki-kicker {
-  display: block;
-  margin-top: 2px;
+.gkn-head-meta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.gkn-head-meta .gkn-back,
+.gkn-head-meta .gki-kicker {
+  margin: 0;
 }
 
 .gkn-head h1 {
   color: var(--ink);
   font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
-  font-size: clamp(48px, 7vw, 88px);
+  font-size: clamp(58px, 8vw, 112px);
   font-weight: 640;
-  line-height: 0.98;
+  letter-spacing: 0;
+  line-height: 0.9;
   margin: 0;
+  max-width: 1020px;
 }
 
 .gkn-head p {
   color: var(--ink-soft);
-  font-size: 18px;
-  line-height: 1.55;
-  margin: 24px 0 0;
-  max-width: 680px;
+  font-size: clamp(19px, 2vw, 24px);
+  line-height: 1.48;
+  margin: 30px 0 0;
+  max-width: 960px;
 }
 
 .gkn-body {
   color: rgba(244, 239, 228, 0.86);
   font-family: var(--font-newsreader), Georgia, "Times New Roman", serif;
-  font-size: 19px;
-  line-height: 1.7;
+  font-size: clamp(20px, 1.65vw, 23px);
+  line-height: 1.68;
   max-width: 68ch;
 }
 
 .gkn-body p {
-  margin: 0 0 1.18em;
+  margin: 0 0 1.28em;
 }
 
 .gkn-body p:first-child::first-letter {
@@ -1181,9 +1192,11 @@ button {
 .gkn-body .gkn-turn {
   color: var(--visor);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
-  margin-top: 2.1em;
+  line-height: 1.3;
+  margin-bottom: 1.35em;
+  margin-top: 2.8em;
   text-transform: uppercase;
 }
 
@@ -1199,7 +1212,7 @@ button {
   border-top: 1px solid rgba(244, 239, 228, 0.13);
   color: var(--ink-dim);
   font-size: 13px;
-  margin-top: 48px;
+  margin-top: 64px;
   max-width: 68ch;
   padding-top: 20px;
 }

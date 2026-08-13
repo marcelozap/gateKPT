@@ -8,9 +8,9 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();
   const isSpanish = locale === "es";
   const links = [
-    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Inicio" : "Home" },
+    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Stack" : "Stack" },
     { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Diario" : "Field log" },
-    { href: "/notes/wall-e", label: isSpanish ? "Ultima nota" : "Latest note" },
+    { href: "/notes/wall-e", label: isSpanish ? "Nota 001" : "Note 001" },
   ];
 
   return (
@@ -25,7 +25,6 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
           >
             GateKPT
           </Link>
-          <span className="gkh-context">AI field log</span>
         </div>
 
         <nav aria-label="Primary" className="gkh-links">

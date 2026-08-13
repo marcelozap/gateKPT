@@ -24,7 +24,7 @@ export const metadata: Metadata = {
         url: `${canonical}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "NOTE Nº 001 - WALL-E - gatekpt.ai",
+        alt: "NOTE Nº 001 - The Only Thing Paying Attention - gatekpt.ai",
       },
     ],
   },
@@ -44,17 +44,22 @@ export default function NotePage() {
       <main className="gkn-shell">
         <article className="gkn-article">
           <header className="gkn-head">
-            <Link href="/" className="gkn-back gki-mono">
-              Back to stack map
-            </Link>
-            <span className="gki-kicker gki-mono">{note001.displayKicker}</span>
+            <div className="gkn-head-meta">
+              <Link href="/" className="gkn-back gki-mono">
+                Back to stack map
+              </Link>
+              <span className="gki-kicker gki-mono">{note001.displayKicker}</span>
+            </div>
             <h1>{note001.title}</h1>
             <p>{note001.description}</p>
           </header>
 
           <div className="gkn-body">
-            {note001.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
+            {note001.body.map((block) => (
+              <p key={block.text} className={block.kind === "turn" ? "gkn-turn" : undefined}>
+                {block.text}
+                {block.footnote ? <sup className="gkn-ref">{block.footnote}</sup> : null}
+              </p>
             ))}
           </div>
 
