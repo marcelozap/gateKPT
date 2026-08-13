@@ -2236,3 +2236,121 @@ body.gk-instrument .gki-layer-more li {
     transform: none;
   }
 }
+
+/* Button wake state: make the main instrument controls visibly respond. */
+body.gk-instrument .gki-go,
+body.gk-instrument .gki-ghost,
+body.gk-instrument .gki-mini,
+body.gk-instrument .gki-home-entry,
+body.gk-instrument .gki-controls button {
+  overflow: hidden;
+  position: relative;
+  transform: translateY(0);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+body.gk-instrument .gki-controls button:disabled {
+  transform: none;
+}
+
+body.gk-instrument .gki-go::before,
+body.gk-instrument .gki-ghost::before,
+body.gk-instrument .gki-mini::before,
+body.gk-instrument .gki-controls button::before {
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.34) 44%, rgba(125, 249, 255, 0.5) 50%, transparent 58%);
+  content: "";
+  inset: -40% -80%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-42%) skewX(-18deg);
+}
+
+body.gk-instrument .gki-home-entry::before {
+  background: linear-gradient(90deg, rgba(125, 249, 255, 0.72), transparent 70%);
+  content: "";
+  height: 1px;
+  left: 12px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 12px;
+  top: 0;
+  transform: translateX(-18px);
+}
+
+body.gk-instrument .gki-go:hover,
+body.gk-instrument .gki-ghost:hover,
+body.gk-instrument .gki-mini:hover,
+body.gk-instrument .gki-home-entry:hover,
+body.gk-instrument .gki-controls button:hover:not(:disabled),
+body.gk-instrument .gki-go:focus-visible,
+body.gk-instrument .gki-ghost:focus-visible,
+body.gk-instrument .gki-mini:focus-visible,
+body.gk-instrument .gki-home-entry:focus-visible,
+body.gk-instrument .gki-controls button:focus-visible:not(:disabled) {
+  background:
+    linear-gradient(90deg, rgba(125, 249, 255, 0.16), rgba(255, 255, 255, 0.045)),
+    rgba(3, 12, 18, 0.82);
+  border-color: rgba(240, 255, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+    0 0 22px rgba(125, 249, 255, 0.38),
+    0 0 66px rgba(32, 210, 255, 0.22);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+body.gk-instrument .gki-go:hover::before,
+body.gk-instrument .gki-ghost:hover::before,
+body.gk-instrument .gki-mini:hover::before,
+body.gk-instrument .gki-controls button:hover:not(:disabled)::before,
+body.gk-instrument .gki-go:focus-visible::before,
+body.gk-instrument .gki-ghost:focus-visible::before,
+body.gk-instrument .gki-mini:focus-visible::before,
+body.gk-instrument .gki-controls button:focus-visible:not(:disabled)::before {
+  animation: gki-button-scan 720ms ease;
+  opacity: 1;
+}
+
+body.gk-instrument .gki-home-entry:hover::before,
+body.gk-instrument .gki-home-entry:focus-visible::before {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 160ms ease, transform 220ms ease;
+}
+
+body.gk-instrument .gki-go:active,
+body.gk-instrument .gki-ghost:active,
+body.gk-instrument .gki-mini:active,
+body.gk-instrument .gki-controls button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+@keyframes gki-button-scan {
+  0% {
+    transform: translateX(-42%) skewX(-18deg);
+  }
+
+  100% {
+    transform: translateX(42%) skewX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.gk-instrument .gki-go:hover::before,
+  body.gk-instrument .gki-ghost:hover::before,
+  body.gk-instrument .gki-mini:hover::before,
+  body.gk-instrument .gki-controls button:hover:not(:disabled)::before,
+  body.gk-instrument .gki-go:focus-visible::before,
+  body.gk-instrument .gki-ghost:focus-visible::before,
+  body.gk-instrument .gki-mini:focus-visible::before,
+  body.gk-instrument .gki-controls button:focus-visible:not(:disabled)::before {
+    animation: none;
+  }
+}
