@@ -32,8 +32,8 @@ export default function LogPage() {
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/brand/xiv-visor-city-reference.png"
-              alt="A lone figure overlooking a rain-lit city through a glowing visor"
+              src="/brand/xiv-holy-grail-reference.png"
+              alt="A neon city collage of a lone figure wearing a glowing visor"
               width={1680}
               height={945}
               priority

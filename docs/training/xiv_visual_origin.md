@@ -18,9 +18,25 @@ GateKPT should keep the original XIV feeling: cinematic editorial technology.
 
 Use this as the primary visual reference:
 
+`public/brand/xiv-holy-grail-reference.png`
+
+This image is the clean public-safe version of the original XIV desktop wallpaper collage that started the whole direction. It is the source of truth for atmosphere. It should influence the homepage, writing pages, and social imagery unless Marcelo provides a newer explicit reference.
+
+Keep the older supporting asset available, but secondary:
+
 `public/brand/xiv-visor-city-reference.png`
 
-This image is the source of truth for atmosphere. It should influence the homepage, writing pages, and social imagery unless Marcelo provides a newer explicit reference.
+## Origin Rule
+
+The raw desktop screenshot is the emotional origin, but do not publish it directly because it contains desktop icons, folders, taskbar UI, and Windows activation text.
+
+Future XIV images should stay close to the holy-grail source:
+
+- Four-panel or collage energy is acceptable.
+- The visor should be bright and readable.
+- Cyan and magenta city light should feel intense, not washed out.
+- The figure should feel focused and private, not posed like stock photography.
+- The image should feel like something Marcelo would use as a desktop world, not a generic website background.
 
 ## Avoid Drift
 

@@ -30,8 +30,8 @@ export default function SpanishLogPage() {
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/brand/xiv-visor-city-reference.png"
-              alt="Una figura mirando una ciudad nocturna con un visor encendido"
+              src="/brand/xiv-holy-grail-reference.png"
+              alt="Un collage de ciudad neon con una figura usando un visor encendido"
               width={1680}
               height={945}
               priority
