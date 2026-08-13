@@ -10,6 +10,7 @@ export type Layer = {
   src: string;
   srcUrl: string;
   brk: string;
+  details: string[];
 };
 
 export type LogEntry = {
@@ -39,6 +40,11 @@ export const layersEn: Layer[] = [
     src: "OpenAI Help, Tokens",
     srcUrl: "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
     brk: "The first layer is not magic. <em>It is the instruction you put into the system.</em>",
+    details: [
+      "The app packages your message, files, images, and constraints into a request.",
+      "Better inputs reduce guessing because the system has more structure.",
+      "This is where business users have immediate leverage.",
+    ],
   },
   {
     id: "L02",
@@ -50,6 +56,11 @@ export const layersEn: Layer[] = [
     src: "OpenAI Help, Tokens",
     srcUrl: "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
     brk: "You write sentences. <em>The model sees chunks of text called tokens.</em>",
+    details: [
+      "Models process pieces of text, not full human sentences.",
+      "Longer context costs more memory and compute.",
+      "Token limits decide how much the model can keep in view.",
+    ],
   },
   {
     id: "L03",
@@ -61,6 +72,11 @@ export const layersEn: Layer[] = [
     src: "OpenAI API, Prompt engineering",
     srcUrl: "https://developers.openai.com/api/docs/guides/prompt-engineering",
     brk: "Your prompt is only part of the moment. <em>Files, memory, search, and instructions shape the answer.</em>",
+    details: [
+      "The app may add system instructions, uploaded files, search results, or saved memory.",
+      "Bad context can make a strong model answer poorly.",
+      "This is why formatting, retrieval, and source quality matter.",
+    ],
   },
   {
     id: "L04",
@@ -72,6 +88,11 @@ export const layersEn: Layer[] = [
     src: "OpenAI API, Key concepts",
     srcUrl: "https://developers.openai.com/api/docs/concepts",
     brk: "The model is not reading your mind. <em>It is producing the next useful text from the context.</em>",
+    details: [
+      "The model generates likely next tokens from the context it received.",
+      "It can sound confident without being correct.",
+      "Testing decides whether the answer is useful enough to trust.",
+    ],
   },
   {
     id: "L05",
@@ -83,6 +104,11 @@ export const layersEn: Layer[] = [
     src: "OpenAI API, Function calling",
     srcUrl: "https://developers.openai.com/api/docs/guides/function-calling",
     brk: "A chatbot talks. <em>An AI system can use tools, data, and workflows.</em>",
+    details: [
+      "Tools let AI search, calculate, read files, or trigger workflows.",
+      "This is where a chatbot becomes an operating layer for work.",
+      "Permissions, logs, and review matter once the system can act.",
+    ],
   },
   {
     id: "L06",
@@ -94,6 +120,11 @@ export const layersEn: Layer[] = [
     src: "NVIDIA, H100 overview",
     srcUrl: "https://www.nvidia.com/en-us/data-center/h100/",
     brk: "The answer feels instant. <em>Underneath it, chips are moving data at physical speed.</em>",
+    details: [
+      "GPUs run many math operations in parallel.",
+      "Moving data through memory can be the bottleneck.",
+      "Hardware choices shape speed, cost, and availability.",
+    ],
   },
   {
     id: "L07",
@@ -105,6 +136,11 @@ export const layersEn: Layer[] = [
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",
     brk: "The experience starts with text. <em>The limit can end at a power connection.</em>",
+    details: [
+      "Data centers need electricity, cooling, land, and grid access.",
+      "Local communities feel the buildout through taxes, bills, zoning, and noise.",
+      "The cloud has a physical address.",
+    ],
   },
 ];
 
@@ -119,6 +155,11 @@ export const layersEs: Layer[] = [
     src: "OpenAI Help, Tokens",
     srcUrl: "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
     brk: "La primera capa no es magia. <em>Es la instruccion que pones en el sistema.</em>",
+    details: [
+      "La app convierte tu mensaje, archivos, imagenes y limites en una solicitud.",
+      "Mejores entradas reducen adivinanza porque el sistema recibe mas estructura.",
+      "Aqui una persona de negocio puede mejorar resultados de inmediato.",
+    ],
   },
   {
     id: "L02",
@@ -130,6 +171,11 @@ export const layersEs: Layer[] = [
     src: "OpenAI Help, Tokens",
     srcUrl: "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
     brk: "Tu escribes frases. <em>El modelo ve partes de texto llamadas tokens.</em>",
+    details: [
+      "Los modelos procesan piezas de texto, no frases humanas completas.",
+      "Mas contexto cuesta mas memoria y computo.",
+      "Los limites de tokens deciden cuanto puede mantener el modelo a la vista.",
+    ],
   },
   {
     id: "L03",
@@ -141,6 +187,11 @@ export const layersEs: Layer[] = [
     src: "OpenAI API, Prompt engineering",
     srcUrl: "https://developers.openai.com/api/docs/guides/prompt-engineering",
     brk: "Tu prompt es solo una parte. <em>Archivos, memoria, busqueda e instrucciones forman la respuesta.</em>",
+    details: [
+      "La app puede agregar instrucciones, archivos, busqueda o memoria guardada.",
+      "Mal contexto puede hacer que un modelo fuerte responda mal.",
+      "Por eso importan el formato, la recuperacion y la calidad de fuentes.",
+    ],
   },
   {
     id: "L04",
@@ -152,6 +203,11 @@ export const layersEs: Layer[] = [
     src: "OpenAI API, Key concepts",
     srcUrl: "https://developers.openai.com/api/docs/concepts",
     brk: "El modelo no lee tu mente. <em>Produce el siguiente texto util desde el contexto.</em>",
+    details: [
+      "El modelo genera tokens probables desde el contexto que recibio.",
+      "Puede sonar seguro sin estar correcto.",
+      "Las pruebas deciden si la respuesta es suficientemente util para confiar.",
+    ],
   },
   {
     id: "L05",
@@ -163,6 +219,11 @@ export const layersEs: Layer[] = [
     src: "OpenAI API, Function calling",
     srcUrl: "https://developers.openai.com/api/docs/guides/function-calling",
     brk: "Un chatbot conversa. <em>Un sistema de IA puede usar herramientas, datos y flujos de trabajo.</em>",
+    details: [
+      "Las herramientas dejan que la IA busque, calcule, lea archivos o active flujos.",
+      "Aqui un chatbot se vuelve una capa operativa para el trabajo.",
+      "Permisos, registros y revision importan cuando el sistema puede actuar.",
+    ],
   },
   {
     id: "L06",
@@ -174,6 +235,11 @@ export const layersEs: Layer[] = [
     src: "NVIDIA, H100 overview",
     srcUrl: "https://www.nvidia.com/en-us/data-center/h100/",
     brk: "La respuesta parece instantanea. <em>Debajo, los chips mueven datos a velocidad fisica.</em>",
+    details: [
+      "Los GPU corren muchas operaciones matematicas en paralelo.",
+      "Mover datos por memoria puede ser el cuello de botella.",
+      "El hardware cambia velocidad, costo y disponibilidad.",
+    ],
   },
   {
     id: "L07",
@@ -185,6 +251,11 @@ export const layersEs: Layer[] = [
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",
     brk: "La experiencia empieza con texto. <em>El limite puede terminar en una conexion electrica.</em>",
+    details: [
+      "Los centros de datos necesitan electricidad, enfriamiento, terreno y acceso a la red.",
+      "Las comunidades sienten la expansion en impuestos, facturas, permisos y ruido.",
+      "La nube tiene direccion fisica.",
+    ],
   },
 ];
 
@@ -331,6 +402,8 @@ export const localeCopy = {
     openLog: "Read latest note",
     exploreMap: "Learn the layers",
     layers: "AI layers",
+    writingBadge: "Original published writing",
+    moreLabel: "Hover for more signal",
     fieldLog: "Published writing",
     viewAll: "All writing",
     endKicker: "L01 - L07",
@@ -360,6 +433,8 @@ export const localeCopy = {
     openLog: "Leer la nota reciente",
     exploreMap: "Aprender las capas",
     layers: "Capas de IA",
+    writingBadge: "Escritura original publicada",
+    moreLabel: "Pasa el cursor para mas senal",
     fieldLog: "Escritura publicada",
     viewAll: "Toda la escritura",
     endKicker: "L01 - L07",

@@ -214,6 +214,9 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
       <Link className="gki-lang gki-mono" href={copy.switchHref} onClick={(event) => event.stopPropagation()}>
         {copy.switchLabel}
       </Link>
+      <Link className="gki-writing-badge gki-mono" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
+        {copy.writingBadge}
+      </Link>
       <div className="gki-edge gki-mono gki-where">{where}</div>
       <div className="gki-edge gki-mono gki-count">{count}</div>
       <div className="gki-hint gki-mono">{copy.hint}</div>
@@ -222,7 +225,6 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
         <button type="button" onClick={goBack} disabled={phase === "boot" || fading}>
           {copy.back}
         </button>
-        <Link href={copy.logHref}>{copy.log}</Link>
         <button type="button" onClick={() => setMapOpen(true)}>
           {copy.layers}
         </button>
@@ -268,16 +270,6 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                       }}
                     >
                       {copy.exploreMap}
-                    </button>
-                    <button
-                      type="button"
-                      className="gki-ghost gki-mono"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setMapOpen(true);
-                      }}
-                    >
-                      {copy.layers}
                     </button>
                   </div>
                 </section>
@@ -366,6 +358,14 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                     >
                       {layer.src}
                     </a>
+                  </div>
+                  <div className="gki-layer-more" tabIndex={0} aria-label={`${copy.moreLabel}: ${layer.name}`}>
+                    <span className="gki-layer-more-label gki-mono">{copy.moreLabel}</span>
+                    <ul>
+                      {layer.details.map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </>
