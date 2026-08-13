@@ -1,3 +1,4 @@
+import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
 import type { Metadata } from "next";
 import { GatekptLanding } from "@/gatekpt/GatekptLanding";
 import { layersEs } from "@/gatekpt/content";
@@ -46,6 +47,7 @@ function NoScriptStack() {
 export default function SpanishHome() {
   return (
     <div lang="es" translate="no">
+      <SpanishDocumentGuard />
       <GatekptLanding locale="es" />
       <noscript>
         <NoScriptStack />

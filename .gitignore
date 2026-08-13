@@ -10,3 +10,4 @@ dist-desktop/
 data/xiv/
 .vercel
 .env*
+tmp-live-check/
