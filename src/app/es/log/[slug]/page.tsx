@@ -46,7 +46,7 @@ export default async function SpanishLogEntryPage({ params }: Props) {
   }
 
   return (
-    <div className="gkl-page">
+    <div className="gkl-page" lang="es" translate="no">
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav locale="es" />
       <main className="gkl-shell gkl-shell-narrow">

@@ -18,7 +18,7 @@ export default function SpanishLogPage() {
   const latest = entries[0];
 
   return (
-    <div className="gkl-page">
+    <div className="gkl-page" lang="es" translate="no">
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav locale="es" />
       <main className="gkl-shell">

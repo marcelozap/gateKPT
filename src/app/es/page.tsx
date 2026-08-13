@@ -45,11 +45,11 @@ function NoScriptStack() {
 
 export default function SpanishHome() {
   return (
-    <>
+    <div lang="es" translate="no">
       <GatekptLanding locale="es" />
       <noscript>
         <NoScriptStack />
       </noscript>
-    </>
+    </div>
   );
 }

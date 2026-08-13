@@ -62,6 +62,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  other: {
+    "google": "notranslate",
+  },
 };
 
 export default function RootLayout({
