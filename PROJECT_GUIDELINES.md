@@ -8,6 +8,8 @@ GateKPT is a public AI research and writing site. It explains the system underne
 
 XIV is the wider creative language: disciplined, cinematic, technical, musical, physical, and human. GateKPT uses that language for an AI research context. It should feel like a field instrument or editorial research terminal, not a generic SaaS site, trading dashboard, or gaming interface.
 
+Before changing GateKPT content, design, navigation, or teaching models, read `docs/training/00_READ_FIRST.md`.
+
 ## Project Location
 
 - Repository: `marcelozap/gateKPT`

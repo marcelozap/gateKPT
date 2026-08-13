@@ -1913,6 +1913,46 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   }
 }
 
+/* Final homepage instrument refinements. */
+body.gk-instrument .gki-ladder {
+  bottom: calc(50vh - min(300px, calc((100svh - 180px) / 2)) - 34px);
+  left: 50%;
+  top: auto;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+body.gk-instrument .gki-ladder i {
+  height: 2px;
+  width: 32px;
+}
+
+body.gk-instrument .gki-essence,
+body.gk-instrument .gki-doneh {
+  color: #f8fbff;
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.9),
+    0 0 14px rgba(125, 249, 255, 0.2),
+    0 0 38px rgba(125, 249, 255, 0.14);
+}
+
+body.gk-instrument .gki-layer-main .gki-essence {
+  max-width: 23ch;
+}
+
+@media (max-width: 820px) {
+  body.gk-instrument .gki-ladder {
+    display: flex;
+    bottom: 98px;
+    gap: 4px;
+    width: auto;
+  }
+
+  body.gk-instrument .gki-ladder i {
+    width: 20px;
+  }
+}
+
 @media (max-width: 640px) {
   .gki-stage {
     padding: 72px 24px 96px;
