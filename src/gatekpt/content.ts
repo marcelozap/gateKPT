@@ -633,8 +633,49 @@ const fieldLogEntryNote002: LogEntry = {
   body: note002.body.map((block) => block.text),
 };
 
+const fieldLogEntryNote002Es: LogEntry = {
+  slug: note002.slug,
+  date: "2026-08-13",
+  title: "La Trampa Mental Del Tiempo",
+  layer: "NOTA 002",
+  summary:
+    "Una etiqueta util puede convertirse en una habitacion que dejas de intentar abandonar. Una nota sobre tiempo, identidad y usar IA para probar tus limites.",
+  noteHref: `/es/notes/${note002.slug}`,
+  body: [
+    "El tiempo es peligroso cuando pasas demasiado dentro de la misma historia.",
+    "Al principio, una etiqueta es util.",
+    "Gerente. Analista. Marketer. Operador. No tecnico. Creativo. Persona de negocio.",
+    "Ayuda a que la gente entienda lo que haces.",
+    "Pero si te quedas dentro de esa etiqueta el tiempo suficiente, empieza a sentirse como quien eres.",
+    "Esa es la trampa mental del tiempo.",
+    "Haces algo durante anos o decadas. Construyes una vida alrededor de eso. La gente te reconoce por eso. Te premian por mantenerte consistente. Entonces un dia el mundo cambia, y la etiqueta que antes te daba estructura empieza a mantenerte en el mismo lugar.",
+    "Alguien que estudio marketing puede aprender a trabajar con datos de campanas. Alguien de finanzas puede construir una automatizacion pequena. Alguien de diseno puede prototipar un flujo de trabajo. El titulo sigue siendo util. Se vuelve contexto.",
+    "Eso es lo que pienso cuando veo a Carl en UP.",
+    "No era solo un anciano sentado en una casa. Era alguien congelado en el tiempo.",
+    "La casa era memoria. La rutina era seguridad. El sueno seguia ahi, pero enterrado bajo anos de duelo, repeticion e identidad.",
+    "Entonces llego un empujon.",
+    "No un plan completo. No un mapa perfecto. No permiso.",
+    "Un empujon.",
+    "Eso es lo que la IA puede ser para la gente ahora mismo.",
+    "Un empujon fuera de la version de ti mismo que aceptaste demasiado temprano.",
+    "No porque la IA te convierta en otra persona. No porque quite el trabajo. Sino porque te deja cuestionar las paredes alrededor de tu identidad actual.",
+    "No soy tecnico. No soy bueno con datos. No puedo construir. Ese no es mi rol. Ya es demasiado tarde para aprender.",
+    "Cuantas de esas cosas son hechos, y cuantas son solo frases viejas envueltas en tiempo?",
+    "El peligro no es ser malo en algo. El peligro es dejar que el tiempo te convenza de que no puedes convertirte en otra cosa.",
+    "La IA esta reduciendo la distancia entre curiosidad y ejecucion. Puedes preguntar. Puedes probar. Puedes construir. Puedes aprender en privado. Puedes entrar a lugares que antes parecian cerrados.",
+    "Pero solo si te mueves.",
+    "Porque la trampa es comoda.",
+    "Parece estabilidad. Suena como experiencia. Se siente como ser realista.",
+    "Pero a veces ser realista es solo miedo con mejor ropa.",
+    "No te quedes dormido dentro de una etiqueta.",
+    "Las herramientas ya estan aqui.",
+    "A veces todo lo que necesitas es un empujon.",
+    "The only way is UP.",
+  ],
+};
+
 export function getEntries(locale: Locale) {
-  return locale === "es" ? [fieldLogEntryEs] : [fieldLogEntryNote002, fieldLogEntryEn];
+  return locale === "es" ? [fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
