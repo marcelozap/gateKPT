@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
-import { note001 } from "@/gatekpt/content";
+import { getEntries } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default function LogPage() {
+  const entries = getEntries("en");
+  const latest = entries[0];
+
   return (
     <div className="gkl-page">
       <div className="gkl-atmos" aria-hidden="true" />
@@ -48,7 +51,7 @@ export default function LogPage() {
               human questions enter it.
             </p>
           </div>
-          <Link href="/notes/wall-e" className="gkl-primary">
+          <Link href={latest.noteHref ?? `/log/${latest.slug}`} className="gkl-primary">
             Read the full note <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>
@@ -56,19 +59,28 @@ export default function LogPage() {
         <section className="gkl-list" aria-labelledby="gkl-list-title">
           <div className="gkl-list-head">
             <h2 id="gkl-list-title">Published writing</h2>
-            <span className="gkl-label gki-mono">01 note</span>
+            <span className="gkl-label gki-mono">{String(entries.length).padStart(2, "0")} notes</span>
           </div>
-          <Link href="/notes/wall-e" className="gkl-entry gkl-entry-featured">
-            <div className="gkl-entry-meta gki-mono">
-              <span>{note001.publishedTime.slice(0, 10)}</span>
-              <span>{note001.displayKicker}</span>
-            </div>
-            <div className="gkl-entry-copy">
-              <h3>{note001.title}</h3>
-              <p>{note001.description}</p>
-              <span className="gkl-read">Open Note 001 <span aria-hidden="true">-&gt;</span></span>
-            </div>
-          </Link>
+          {entries.map((entry, index) => {
+            const href = entry.noteHref ?? `/log/${entry.slug}`;
+            return (
+              <Link
+                key={entry.slug}
+                href={href}
+                className={`gkl-entry${index === 0 ? " gkl-entry-featured" : ""}`}
+              >
+                <div className="gkl-entry-meta gki-mono">
+                  <span>{entry.date}</span>
+                  <span>{entry.layer}</span>
+                </div>
+                <div className="gkl-entry-copy">
+                  <h3>{entry.title}</h3>
+                  <p>{entry.summary}</p>
+                  <span className="gkl-read">Open {entry.layer} <span aria-hidden="true">-&gt;</span></span>
+                </div>
+              </Link>
+            );
+          })}
         </section>
       </main>
     </div>

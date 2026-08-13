@@ -293,7 +293,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                     {entries.slice(0, 3).map((entry) => (
                       <Link
                         key={`${entry.date}-${entry.title}`}
-                        href={entry.slug === "wall-e" ? copy.noteHref : `${copy.logHref}/${entry.slug}`}
+                        href={entry.noteHref ?? `${copy.logHref}/${entry.slug}`}
                         className="gki-home-entry"
                         onClick={(event) => event.stopPropagation()}
                       >

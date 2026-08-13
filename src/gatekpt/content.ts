@@ -19,6 +19,7 @@ export type LogEntry = {
   layer: string;
   summary: string;
   body: string[];
+  noteHref?: string;
 };
 
 export type NoteBlock = {
@@ -340,7 +341,7 @@ export const localeCopy = {
     endTitle: "The stack is physical, logical, and human.",
     endBody:
       "Each layer limits the ones above it. Power sets what chips can run, chips set what models cost, and human workflows decide whether any of it matters.",
-    endNote: "New note: Note 001",
+    endNote: "New note: Note 002",
     backLayers: "View stack map",
     startOver: "Start over",
     hint: "Space  -  next    Esc  -  all layers",
@@ -351,7 +352,7 @@ export const localeCopy = {
     switchLabel: "ES",
     switchHref: "/es",
     logHref: "/log",
-    noteHref: "/notes/wall-e",
+    noteHref: "/notes/the-place-you-started",
   },
   es: {
     whereBoot: "SIETE CAPAS",
@@ -369,7 +370,7 @@ export const localeCopy = {
     endTitle: "El stack es fisico, logico y humano.",
     endBody:
       "Cada capa limita las capas de arriba. La energia define que chips pueden correr, los chips definen el costo de los modelos y los flujos humanos deciden si algo importa.",
-    endNote: "Nueva nota: Nota 001",
+    endNote: "Nueva nota: Nota 002",
     backLayers: "Ver el mapa del stack",
     startOver: "Empezar de nuevo",
     hint: "Espacio  -  avanzar    Esc  -  todas las capas",
@@ -380,7 +381,7 @@ export const localeCopy = {
     switchLabel: "EN",
     switchHref: "/",
     logHref: "/es/log",
-    noteHref: "/notes/wall-e",
+    noteHref: "/notes/the-place-you-started",
   },
 } as const;
 
@@ -433,11 +434,12 @@ export const note001 = {
 
 const fieldLogEntryEn: LogEntry = {
   slug: note001.slug,
-  date: "2026-08-12",
-  title: note001.title,
-  layer: note001.displayKicker,
-  summary: note001.description,
-  body: note001.body.map((block) => block.text),
+    date: "2026-08-12",
+    title: note001.title,
+    layer: note001.displayKicker,
+    summary: note001.description,
+    noteHref: "/notes/wall-e",
+    body: note001.body.map((block) => block.text),
 };
 
 const fieldLogEntryEs: LogEntry = {
@@ -449,8 +451,74 @@ const fieldLogEntryEs: LogEntry = {
   body: note001.body.map((block) => block.text),
 };
 
+export const note002 = {
+  slug: "the-place-you-started",
+  displayKicker: "NOTE Nº 002",
+  title: "The Place You Started",
+  description:
+    "A degree can feel like a border. AI can become a bridge into skills you thought belonged to someone else.",
+  publishedTime: "2026-08-13T09:00:00-04:00",
+  citation: "Up, dir. Pete Docter, Pixar, 2009.",
+  body: [
+    {
+      text: "A lot of young people feel boxed in by what they studied. Marketing. Business. Finance. Design. Communications. Whatever the label is, it starts to feel like a border.",
+    },
+    {
+      text: "I'm not technical. I can't code. I'm not that kind of person.",
+    },
+    {
+      text: "But most of that is internal. It is a mental block, not a permanent limit.",
+    },
+    {
+      text: "That is why AI matters so much right now. Not because it magically makes you an expert overnight. Not because it replaces effort. But because it gives you a bridge into skills that used to feel locked away.",
+    },
+    {
+      text: "You can ask. You can test. You can build. You can make mistakes privately. You can shorten the distance between a question and an attempt.",
+    },
+    {
+      text: "And if you are young, that is an advantage. Your habits are still forming. You may have less distance between what you have done and what you think you are allowed to become.",
+    },
+    {
+      text: "Carl looked like an old man stuck in his house.",
+      footnote: "1",
+    },
+    {
+      text: "But he was not done.",
+    },
+    {
+      text: "All he needed was a push.",
+    },
+    {
+      text: "Then the thing that kept him stuck became the thing that carried him upward.",
+    },
+    {
+      text: "DO NOT GET BOXED IN BY YOUR DEGREE.",
+      kind: "turn",
+    },
+    {
+      text: "Do not get boxed in by what you think you are bad at.",
+    },
+    {
+      text: "Do not get boxed in by the first version of yourself.",
+    },
+    {
+      text: "You are capable of more than you know.",
+    },
+  ],
+};
+
+const fieldLogEntryNote002: LogEntry = {
+  slug: note002.slug,
+  date: "2026-08-13",
+  title: note002.title,
+  layer: note002.displayKicker,
+  summary: note002.description,
+  noteHref: `/notes/${note002.slug}`,
+  body: note002.body.map((block) => block.text),
+};
+
 export function getEntries(locale: Locale) {
-  return locale === "es" ? [fieldLogEntryEs] : [fieldLogEntryEn];
+  return locale === "es" ? [fieldLogEntryEs] : [fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
