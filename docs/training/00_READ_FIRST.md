@@ -8,6 +8,7 @@ Read this folder before changing GateKPT content, design, navigation, or teachin
 2. `site_language.md`
 3. `ai_layers_teaching_model.md`
 4. `privacy_and_data_references.md`
+5. `source_references/`
 
 ## Non-Negotiables
 
@@ -18,6 +19,7 @@ Read this folder before changing GateKPT content, design, navigation, or teachin
 - Teach from the reader's experience outward. Start with what the person does, then reveal the system underneath.
 - Treat pasted articles as training references, not automatically verified public claims.
 - Verify current privacy, legal, product, and policy claims from primary sources before publishing them.
+- Keep source articles, transcript summaries, screenshots, and images in `docs/training/source_references/`.
 
 ## Current GateKPT Teaching Direction
 
