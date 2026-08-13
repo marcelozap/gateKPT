@@ -454,9 +454,9 @@ const fieldLogEntryEs: LogEntry = {
 export const note002 = {
   slug: "the-place-you-started",
   displayKicker: "NOTE Nº 002",
-  title: "The Place You Started",
+  title: "The House You Started In",
   description:
-    "A degree can feel like a border. AI can become a bridge into skills you thought belonged to someone else.",
+    "A degree can feel like a border. It can also become the material you use to build what comes next.",
   publishedTime: "2026-08-13T09:00:00-04:00",
   citation: "Up, dir. Pete Docter, Pixar, 2009.",
   body: [
@@ -470,29 +470,35 @@ export const note002 = {
       text: "But most of that is internal. It is a mental block, not a permanent limit.",
     },
     {
-      text: "That is why AI matters so much right now. Not because it magically makes you an expert overnight. Not because it replaces effort. But because it gives you a bridge into skills that used to feel locked away.",
+      text: "A degree is not a cage. It is a house: a place where you learned how to see problems, communicate, organize, design, make decisions, or understand people.",
+    },
+    {
+      text: "The mistake is treating the house like a final address.",
+    },
+    {
+      text: "That is why AI matters so much right now. Not because it magically makes you an expert overnight. Not because it replaces effort. Because it gives you a bridge into skills that used to feel locked away.",
     },
     {
       text: "You can ask. You can test. You can build. You can make mistakes privately. You can shorten the distance between a question and an attempt.",
     },
     {
-      text: "And if you are young, that is an advantage. Your habits are still forming. You may have less distance between what you have done and what you think you are allowed to become.",
+      text: "Someone who studied marketing can learn to work with campaign data. Someone from finance can build a small automation. Someone from design can prototype a workflow. The degree remains useful. It becomes context.",
     },
     {
-      text: "Carl looked like an old man stuck in his house.",
+      text: "In Up, Carl's house begins as the thing that holds him to the past. Then it becomes the thing that carries him toward the future.",
       footnote: "1",
     },
     {
-      text: "But he was not done.",
+      text: "He does not have to erase the life he built to move. He has to lift it.",
     },
     {
-      text: "All he needed was a push.",
+      text: "That is the useful analogy. Your degree is not baggage you need to hide. It is material you can build from.",
     },
     {
-      text: "Then the thing that kept him stuck became the thing that carried him upward.",
+      text: "AI is not the destination. It is not a new identity. It is a bridge, and you still have to walk.",
     },
     {
-      text: "DO NOT GET BOXED IN BY YOUR DEGREE.",
+      text: "THE FIRST VERSION OF YOU IS NOT THE FINAL VERSION.",
       kind: "turn",
     },
     {

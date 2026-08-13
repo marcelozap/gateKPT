@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "NOTE Nº 002 - The Place You Started - gatekpt.ai";
+export const alt = "NOTE Nº 002 - The House You Started In - gatekpt.ai";
 export const size = {
   width: 1200,
   height: 630,
@@ -63,7 +63,7 @@ export default function Image() {
               maxWidth: 930,
             }}
           >
-            The Place You Started
+            The House You Started In
           </h1>
           <p
             style={{
@@ -75,7 +75,7 @@ export default function Image() {
               maxWidth: 900,
             }}
           >
-            A note on degrees, learning, and the bridge AI can become.
+            A note on degrees, learning, and building from what you know.
           </p>
         </div>
         <div

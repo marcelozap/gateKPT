@@ -24,7 +24,7 @@ export const metadata: Metadata = {
         url: `${canonical}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "NOTE Nº 002 - The Place You Started - gatekpt.ai",
+        alt: "NOTE Nº 002 - The House You Started In - gatekpt.ai",
       },
     ],
   },
