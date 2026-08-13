@@ -46,7 +46,7 @@ export default function Note002Page() {
           <header className="gkn-head">
             <div className="gkn-head-meta">
               <Link href="/" className="gkn-back gki-mono">
-                Back to stack map
+                Back to AI layers
               </Link>
               <span className="gki-kicker gki-mono">{note002.displayKicker}</span>
             </div>

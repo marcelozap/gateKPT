@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "GateKPT - AI from the physical layer up.";
+export const alt = "GateKPT - AI from the text box out.";
 export const size = {
   width: 1200,
   height: 630,
@@ -62,7 +62,7 @@ export default function Image() {
               maxWidth: 920,
             }}
           >
-            AI from the physical layer up.
+            AI from the text box out.
           </h1>
           <p
             style={{
@@ -73,7 +73,7 @@ export default function Image() {
               maxWidth: 880,
             }}
           >
-            Power, chips, data, models, software, testing, and business context.
+            Input, tokens, context, models, tools, chips, and power.
           </p>
         </div>
         <div

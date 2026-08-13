@@ -8,8 +8,8 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();
   const isSpanish = locale === "es";
   const links = [
-    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Stack" : "Stack" },
-    { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Diario" : "Field log" },
+    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Capas de IA" : "AI layers" },
+    { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Escritura" : "Writing" },
     { href: "/notes/the-mental-time-trap", label: isSpanish ? "Nota 002" : "Note 002" },
   ];
 

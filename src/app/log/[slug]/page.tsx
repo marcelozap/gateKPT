@@ -52,7 +52,7 @@ export default async function LogEntryPage({ params }: Props) {
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
           <Link href="/log" className="gkl-back gki-mono">
-            Back to field log
+            Back to writing
           </Link>
           <span className="gkl-meta gki-mono">
             {entry.date} / {entry.layer}

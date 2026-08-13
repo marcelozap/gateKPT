@@ -4,10 +4,9 @@ import { layersEn } from "@/gatekpt/content";
 function NoScriptStack() {
   return (
     <div className="gki-noscript">
-      <h1>GateKPT - AI from the physical layer up.</h1>
+      <h1>GateKPT - AI from the text box out.</h1>
       <p>
-        A public research terminal for the AI stack: power, chips, data, models, software, testing, and business
-        context.
+        Published writing and a public map of the AI layers: input, tokens, context, models, tools, chips, and power.
       </p>
       {layersEn.map((layer) => (
         <section key={layer.id}>

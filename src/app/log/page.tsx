@@ -6,7 +6,7 @@ import { getEntries } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
-  title: "Field Log",
+  title: "Published Writing",
   description: "Marcelo Zapata's writing on AI, systems, curiosity, and the world around the model.",
   alternates: {
     canonical: `${getSiteUrl()}/log`,
@@ -22,21 +22,20 @@ export default function LogPage() {
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav />
       <main className="gkl-shell">
-        <section className="gkl-hero" aria-labelledby="field-log-title">
+        <section className="gkl-hero" aria-labelledby="writing-title">
           <div className="gkl-hero-copy">
-            <span className="gki-kicker gki-mono">GateKPT / Field log</span>
-            <h1 id="field-log-title">Writing about the system underneath AI.</h1>
+            <span className="gki-kicker gki-mono">GateKPT / Published writing</span>
+            <h1 id="writing-title">Published writing.</h1>
             <p>
-              This is the writing layer of GateKPT: personal notes that connect technology to attention, work, and
-              the physical world around it.
+              Notes that connect technology to attention, work, identity, and the physical world around the model.
             </p>
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/gatekpt-field-log-hero.png"
-              alt="A person with a tablet and tennis racket walking through a rainy city at night"
-              width={1785}
-              height={881}
+              src="/brand/xiv-visor-city-reference.png"
+              alt="A lone figure overlooking a rain-lit city through a glowing visor"
+              width={1680}
+              height={945}
               priority
             />
           </figure>
@@ -45,10 +44,10 @@ export default function LogPage() {
         <section className="gkl-start" aria-labelledby="gkl-start-title">
           <div>
             <span className="gkl-label gki-mono">Start here</span>
-            <h2 id="gkl-start-title">One note is live right now.</h2>
+            <h2 id="gkl-start-title">Start with the newest note.</h2>
             <p>
-              Read the latest piece first. The stack map is the system behind the site; the field log is where the
-              human questions enter it.
+              Read the latest piece first. Then use the AI layers to connect the human questions back to the system
+              underneath them.
             </p>
           </div>
           <Link href={latest.noteHref ?? `/log/${latest.slug}`} className="gkl-primary">

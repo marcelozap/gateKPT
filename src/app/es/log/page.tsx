@@ -6,7 +6,7 @@ import { note001 } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
-  title: "Diario",
+  title: "Escritura publicada",
   description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
   alternates: {
     canonical: `${getSiteUrl()}/es/log`,
@@ -19,21 +19,21 @@ export default function SpanishLogPage() {
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav locale="es" />
       <main className="gkl-shell">
-        <section className="gkl-hero" aria-labelledby="field-log-title">
+        <section className="gkl-hero" aria-labelledby="writing-title">
           <div className="gkl-hero-copy">
-            <span className="gki-kicker gki-mono">GateKPT / Diario</span>
-            <h1 id="field-log-title">Escritura sobre el sistema debajo de la IA.</h1>
+            <span className="gki-kicker gki-mono">GateKPT / Escritura publicada</span>
+            <h1 id="writing-title">Escritura publicada.</h1>
             <p>
-              Esta es la capa de escritura de GateKPT: notas personales que conectan la tecnologia con la atencion,
-              el trabajo y el mundo fisico alrededor.
+              Notas que conectan la tecnologia con la atencion, el trabajo, la identidad y el mundo fisico alrededor
+              del modelo.
             </p>
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/gatekpt-field-log-hero.png"
-              alt="Una persona con una tableta y una raqueta caminando por una ciudad lluviosa de noche"
-              width={1785}
-              height={881}
+              src="/brand/xiv-visor-city-reference.png"
+              alt="Una figura mirando una ciudad nocturna con un visor encendido"
+              width={1680}
+              height={945}
               priority
             />
           </figure>
@@ -42,10 +42,10 @@ export default function SpanishLogPage() {
         <section className="gkl-start" aria-labelledby="gkl-start-title">
           <div>
             <span className="gkl-label gki-mono">Empieza aqui</span>
-            <h2 id="gkl-start-title">Una nota esta publicada.</h2>
+            <h2 id="gkl-start-title">Empieza con la nota mas nueva.</h2>
             <p>
-              Lee primero la nota mas reciente. El mapa del stack es el sistema detras del sitio; el diario es donde
-              entran las preguntas humanas.
+              Lee primero la nota mas reciente. Despues usa las capas de IA para conectar las preguntas humanas con
+              el sistema debajo de ellas.
             </p>
           </div>
           <Link href="/notes/wall-e" className="gkl-primary">

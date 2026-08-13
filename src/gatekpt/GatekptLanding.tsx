@@ -179,7 +179,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
   const count = phase === "boot" ? copy.countBoot : phase === "end" ? "07 / 07" : `${String(layerIndex + 1).padStart(2, "0")} / 07`;
 
   return (
-    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="GateKPT AI stack map">
+    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="GateKPT AI layers">
       <div className="gki-atmos" aria-hidden="true">
         <div className="gki-bloom xb1" />
         <div className="gki-bloom xb2" />
@@ -282,7 +282,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                   </div>
                 </section>
 
-                <aside className="gki-home-log" aria-label="Recent field log entries">
+                <aside className="gki-home-log" aria-label="Published writing">
                   <div className="gki-home-log-head">
                     <span className="gki-kicker gki-mono">{copy.fieldLog}</span>
                     <Link className="gki-mini gki-mono" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
@@ -374,7 +374,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
         </div>
       </div>
 
-      <div className={`gki-map${mapOpen ? " on" : ""}`} role="dialog" aria-label="All layers" aria-hidden={!mapOpen}>
+      <div className={`gki-map${mapOpen ? " on" : ""}`} role="dialog" aria-label="AI layers" aria-hidden={!mapOpen}>
         <div>
           {layers.map((item, index) => (
             <button
