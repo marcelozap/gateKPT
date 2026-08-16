@@ -8,9 +8,9 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();
   const isSpanish = locale === "es";
   const links = [
-    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Capas de IA" : "AI layers" },
+    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Inteligencia Artificial" : "AI layers" },
     { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Escritura" : "Writing" },
-    { href: isSpanish ? "/es/notes/the-trap-of-time" : "/notes/the-trap-of-time", label: isSpanish ? "Nota 002" : "Note 002" },
+    { href: isSpanish ? "/es/notes/you-are-not-a-runner" : "/notes/you-are-not-a-runner", label: isSpanish ? "Nota 003" : "Note 003" },
   ];
 
   return (
@@ -40,7 +40,7 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
           ))}
         </nav>
 
-        <Link className="gkh-language gki-mono" href={isSpanish ? "/" : "/es"}>
+        <Link className="gkh-language gki-mono" href={isSpanish ? (pathname?.replace(/^\/es/, "") || "/") : `/es${pathname === "/" ? "" : pathname}`}>
           {isSpanish ? "EN" : "ES"}
         </Link>
       </div>
