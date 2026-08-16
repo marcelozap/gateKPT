@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* -------------------------------------------------------------------
+   XIV VISUAL STANDARD - canonical palette tokens.
+   Source: XIV\_XIV_KIT\06_XIV_VISUAL_STANDARD.md (art-direction law).
+   Added 2026-08-13. ADDITIVE ONLY - namespaced --xiv-* so that nothing
+   below this block is overwritten. The two :root blocks further down
+   still drive the shipped UI. See docs/standards/XIV_RECONCILIATION.md
+   for the token-by-token conflicts and the pending decisions.
+   ------------------------------------------------------------------- */
+:root {
+  --xiv-void: #05070D;  --xiv-deep: #0B1220;
+  --xiv-cyan: #22D3EE;  --xiv-cyan-hot: #67E8F9;
+  --xiv-magenta: #FF2D95; --xiv-violet: #7C3AED; --xiv-amber: #FFB020;
+  --xiv-mist: #94A3B8;  --xiv-white: #E6F4FF;
+  --xiv-glow: 0 0 24px -4px currentColor;
+}
+
 :root {
   color-scheme: dark;
   --void: #080806;

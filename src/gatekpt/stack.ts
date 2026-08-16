@@ -126,9 +126,9 @@ export const LAYERS_ES: Layer[] = [
   {
     id: "L01",
     name: "Energia",
-    essence: "La IA funciona con electricidad. Conseguirla toma anos.",
+    essence: "La IA funciona con electricidad. Conseguirla toma años.",
     fig: "5+",
-    unit: "anos",
+    unit: "años",
     figcap: "Espera mediana para conectar un nuevo proyecto a la red electrica de EE. UU.",
     src: "Berkeley Lab, Queued Up 2026",
     srcUrl: "https://emp.lbl.gov/publications/queued-2026-edition-characteristics",

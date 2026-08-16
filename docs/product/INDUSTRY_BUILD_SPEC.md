@@ -56,7 +56,7 @@ Voice Mirror Visual Engine -> projector / OBS / NDI / projection mapper
 
 Voice Mirror must never be inserted in a way that blocks or delays the singer's monitor path.
 
-For the gateKPT live rig, the preferred deployment is a two-machine setup: MacBook for DAW/audio and PC for visual rendering/projector output. See [MACBOOK_PC_DEPLOYMENT_PLAN.md](./MACBOOK_PC_DEPLOYMENT_PLAN.md).
+For the gateKPT live rig, the preferred deployment is a two-machine setup: MacBook for DAW/audio and PC for visual rendering/projector output. See [MACBOOK_PC_DEPLOYMENT_PLAN.md](../ops/MACBOOK_PC_DEPLOYMENT_PLAN.md).
 
 ## Technical Architecture
 
