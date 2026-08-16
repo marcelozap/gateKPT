@@ -674,8 +674,64 @@ const fieldLogEntryNote002Es: LogEntry = {
   ],
 };
 
+
+export const note003 = {
+  slug: "you-are-not-a-runner",
+  displayKicker: "NOTE Nº 003",
+  title: "You Are Not a Runner",
+  description:
+    "A language model is made of language, and for it the words are the whole thing. We talk about ourselves the same way. A note on what stops you learning something, and why you cannot argue it away.",
+  publishedTime: "2026-08-16T09:00:00-04:00",
+  citation:
+    "Jacques Hadamard, An Essay on the Psychology of Invention in the Mathematical Field, Princeton University Press, 1945.",
+  body: [
+    { text: "A language model is made of language. That is not an insult. It is the whole description." },
+    { text: "It read what we wrote down. It predicts what comes next." },
+    { text: "It is very good at that. Most thinking is already written down somewhere." },
+    { text: "It has read more than I ever will. It answers in seconds what would take me a week." },
+    { text: "I use it every day and I am not being modest about that." },
+    { text: "There is nothing under the words. Ask it what it is and you get more words." },
+    { text: "For a model the words are not a container. They are the whole thing." },
+    { text: "We talk about ourselves the same way." },
+    { text: "At the halfway point of the Miami Marathon the course splits." },
+    { text: "Left is a finish line and a medal. Right is thirteen more miles." },
+    { text: "I was cramping badly." },
+    { text: "Stop. You cannot do this. You are not a runner." },
+    { text: "The first two were about the race." },
+    { text: "The third one was about me." },
+    { text: "That sentence had been in my head for years. I never once checked it." },
+    { text: "You cannot argue with that one. The thing you argue with is the thing that wrote it." },
+    { text: "Einstein was asked how he actually thought.", footnote: "1" },
+    { text: "He said words had nothing to do with it. He worked in images. The words had to be found afterwards, laboriously." },
+    { text: "Afterwards." },
+    { text: "The words came last. They were never the thing." },
+    { text: "I went right." },
+    { text: "Thirteen more miles with the sentence still going." },
+    { text: "It never stopped. It stopped being true." },
+    { text: "Nothing in my head did that. Something outside it did." },
+    { text: "Months later I sat down to learn this technology from nothing." },
+    { text: "Hours at a desk. No crowd, no mile markers, nobody watching if I stopped." },
+    { text: "The same sentence showed up. This time I knew what it was." },
+    { text: "A model cannot be contradicted from outside its text. You can. You are not only text." },
+    { text: "Some days the sentence still wins. But one that has been proven wrong once never sounds the same." },
+    { text: "WORDS ARE CONTAINERS FOR COMMUNICATION. NOT IDENTITY.", kind: "turn" },
+  ],
+};
+
+const fieldLogEntryNote003: LogEntry = {
+  slug: note003.slug,
+  date: "2026-08-16",
+  title: note003.title,
+  layer: note003.displayKicker,
+  summary: note003.description,
+  noteHref: "/notes/you-are-not-a-runner",
+  body: [
+    "A language model is made of language. It read what we wrote down and it predicts what comes next, which makes it very good at the thinking that is already settled. There is nothing under the words.",
+    "We talk about ourselves the same way. At the halfway point of the Miami Marathon the words in my head were clear: stop, you cannot do this, you are not a runner. The third one was not about the race.",
+  ],
+};
 export function getEntries(locale: Locale) {
-  return locale === "es" ? [fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote002, fieldLogEntryEn];
+  return locale === "es" ? [fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
