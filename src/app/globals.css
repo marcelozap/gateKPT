@@ -1852,7 +1852,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   align-items: center;
   display: grid;
   gap: clamp(28px, 5vw, 72px);
-  grid-template-columns: minmax(0, 0.82fr) minmax(380px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   margin: 0 0 64px;
   max-width: none;
 }

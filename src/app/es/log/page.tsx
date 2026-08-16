@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
@@ -33,15 +32,6 @@ export default function SpanishLogPage() {
               del modelo.
             </p>
           </div>
-          <figure className="gkl-hero-media">
-            <Image
-              src="/brand/xiv-holy-grail-reference-v2.png"
-              alt="Un collage de ciudad neon con una figura usando un visor encendido"
-              width={1680}
-              height={945}
-              priority
-            />
-          </figure>
         </section>
 
         <section className="gkl-start" aria-labelledby="gkl-start-title">

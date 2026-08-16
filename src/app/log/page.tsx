@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
 import { getEntries } from "@/gatekpt/content";
@@ -30,15 +29,6 @@ export default function LogPage() {
               Notes that connect technology to attention, work, identity, and the physical world around the model.
             </p>
           </div>
-          <figure className="gkl-hero-media">
-            <Image
-              src="/brand/xiv-holy-grail-reference-v2.png"
-              alt="A neon city collage of a lone figure wearing a glowing visor"
-              width={1680}
-              height={945}
-              priority
-            />
-          </figure>
         </section>
 
         <section className="gkl-start" aria-labelledby="gkl-start-title">
