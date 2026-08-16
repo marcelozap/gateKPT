@@ -695,7 +695,7 @@ export const note003 = {
     { text: "We talk about ourselves the same way." },
     { text: "At the halfway point of the Miami Marathon the course splits." },
     { text: "Left is a finish line and a medal. Right is thirteen more miles." },
-    { text: "I was cramping badly." },
+    { text: "My legs had stopped working. Another thirteen felt impossible. What have I gotten myself into." },
     { text: "Stop. You cannot do this. You are not a runner." },
     { text: "The first two were about the race." },
     { text: "The third one was about me." },
@@ -730,8 +730,22 @@ const fieldLogEntryNote003: LogEntry = {
     "We talk about ourselves the same way. At the halfway point of the Miami Marathon the words in my head were clear: stop, you cannot do this, you are not a runner. The third one was not about the race.",
   ],
 };
+
+const fieldLogEntryNote003Es: LogEntry = {
+  slug: note003.slug,
+  date: "2026-08-16",
+  title: "No Eres Corredor",
+  layer: "NOTA 003",
+  summary:
+    "Un modelo de lenguaje está hecho de lenguaje, y para él las palabras son todo lo que hay. Hablamos de nosotros mismos igual. Una nota sobre lo que te detiene y por qué no puedes discutirlo.",
+  noteHref: `/es/notes/${note003.slug}`,
+  body: [
+    "Un modelo de lenguaje está hecho de lenguaje. Leyó lo que ya escribimos y predice lo que sigue, y por eso es muy bueno con el pensamiento que ya está resuelto. No hay nada debajo de las palabras.",
+    "Hablamos de nosotros mismos igual. En la mitad del Maratón de Miami las palabras en mi cabeza eran claras: para, no puedes hacer esto, no eres corredor. Las dos primeras eran sobre la carrera. La tercera era sobre mí.",
+  ],
+};
 export function getEntries(locale: Locale) {
-  return locale === "es" ? [fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
+  return locale === "es" ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
