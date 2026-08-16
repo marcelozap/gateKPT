@@ -303,6 +303,7 @@ button {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0;
+  pointer-events: none;
   white-space: nowrap;
   z-index: 8;
 }
@@ -1662,7 +1663,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   transition:background .35s var(--xease),box-shadow .35s var(--xease)}
 .gki-ladder i.done{background:var(--visor-deep)}
 .gki-ladder i.now{background:var(--visor);box-shadow:0 0 12px var(--visor)}
-.gki-hint{position:fixed;z-index:6;bottom:26px;right:30px;font-size:10px;letter-spacing:.13em;
+.gki-hint{position:fixed;z-index:6;bottom:26px;right:30px;font-size:10px;letter-spacing:.13em;pointer-events:none;
   text-transform:uppercase;color:var(--ghost);transition:color .3s}
 .gki-hint.lit{color:var(--visor-deep)}
 .gki-controls{position:fixed;z-index:7;right:30px;top:50%;transform:translateY(-50%);

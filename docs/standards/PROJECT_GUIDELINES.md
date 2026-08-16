@@ -84,8 +84,11 @@ Required navigation behavior:
 - `Latest note` goes directly to the current featured note.
 - `ES` and `EN` switch language without hiding the main destination.
 - The homepage `Read latest note` action goes to the note itself, not to an empty archive.
+- The homepage center-console actions must be real click targets with visible hover/focus animation and verified behavior. Do not count a CSS hover as done until the button has been clicked locally and the live deployment has been visually checked.
 - Every reading page can return to the stack map.
 - A link shared on LinkedIn must open the exact post, not the homepage.
+- Treat production as the source of truth. A local build or GitHub push is not complete until the deployed page is checked in a browser.
+- When changing GateKPT or marcelozapata.dev from another machine, preserve the previous working version with a branch, commit, or deployment history before replacing production.
 
 Do not make visitors decode labels such as `L01-L07`, `Note 001`, or `Field Log` without nearby context. Technical labels can remain as secondary metadata, but the primary heading must say what the page is about.
 
