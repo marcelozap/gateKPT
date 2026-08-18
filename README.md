@@ -1,30 +1,26 @@
-# XIV Music Surface
+# GateKPT
 
-This repo currently hosts the public music-art surface that replaced the retired prototype identity.
+GateKPT is a public AI learning hub for studying the stack end to end: physical compute, data foundations, models, prompting, AI engineering, markets, and real-world deployment.
 
 Public purpose:
-- act as a small doorway into XIV
-- show sound as visual atmosphere
-- keep the experience simple, musical, and non-corporate
-- avoid overclaiming unfinished private tools
+- explain AI from the ground up without hype
+- keep evergreen foundation notes in one durable place
+- turn weekly AI research into clear posts and career-building material
+- connect technical concepts to real operational workflows
 
 Current public concept:
-- question-led landing page: "What does sound look like?"
-- one guitar loop
-- three moods: Chrome, Fire, Storm
-- icon links to Marcelo / XIV social channels
+- homepage as a training-document style map
+- foundation sections for compute, data, models, and AI engineering
+- learning tracks for prompting, markets, safety, and real-world AI
+- weekly brief workflow for news, simplification, and publishing
 
 Important rule:
-Do not revive the retired prototype name in public copy, metadata, nav, posts, project descriptions, or future product planning. If that old name appears in code paths, package names, or legacy URLs, treat it as technical debt only.
-
-Future direction:
-- move the useful recorder / visualizer / session-memory work into XIV
-- keep this website as a public art doorway or redirect it to the main XIV/Marcelo site
-- do not turn this into a generic DAW, SaaS pitch, AI music generator, or product marketing page
+Keep examples source-grounded and clear about uncertainty. Public market notes, salaries, funding, IPO timing, and talent movement should use public sources and avoid rumor framing.
 
 Local commands:
 
 ```bash
 npm run dev
 npm run build
+npm run verify
 ```

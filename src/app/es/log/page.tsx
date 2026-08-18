@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
-import { note001 } from "@/gatekpt/content";
+import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
+import { getEntries } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
-  title: "Diario",
+  title: "Escritura publicada",
   description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
   alternates: {
     canonical: `${getSiteUrl()}/es/log`,
@@ -14,26 +15,30 @@ export const metadata: Metadata = {
 };
 
 export default function SpanishLogPage() {
+  const entries = getEntries("es");
+  const latest = entries[0];
+
   return (
-    <div className="gkl-page">
+    <div className="gkl-page" lang="es" translate="no">
+      <SpanishDocumentGuard />
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav locale="es" />
       <main className="gkl-shell">
-        <section className="gkl-hero" aria-labelledby="field-log-title">
+        <section className="gkl-hero" aria-labelledby="writing-title">
           <div className="gkl-hero-copy">
-            <span className="gki-kicker gki-mono">GateKPT / Diario</span>
-            <h1 id="field-log-title">Escritura sobre el sistema debajo de la IA.</h1>
+            <span className="gki-kicker gki-mono">GateKPT / Escritura publicada</span>
+            <h1 id="writing-title">Escritura publicada.</h1>
             <p>
-              Esta es la capa de escritura de GateKPT: notas personales que conectan la tecnologia con la atencion,
-              el trabajo y el mundo fisico alrededor.
+              Notas que conectan la tecnologia con la atencion, el trabajo, la identidad y el mundo fisico alrededor
+              del modelo.
             </p>
           </div>
           <figure className="gkl-hero-media">
             <Image
-              src="/gatekpt-field-log-hero.png"
-              alt="Una persona con una tableta y una raqueta caminando por una ciudad lluviosa de noche"
-              width={1785}
-              height={881}
+              src="/brand/xiv-holy-grail-reference-v2.png"
+              alt="Un collage de ciudad neon con una figura usando un visor encendido"
+              width={1680}
+              height={945}
               priority
             />
           </figure>
@@ -42,13 +47,13 @@ export default function SpanishLogPage() {
         <section className="gkl-start" aria-labelledby="gkl-start-title">
           <div>
             <span className="gkl-label gki-mono">Empieza aqui</span>
-            <h2 id="gkl-start-title">Una nota esta publicada.</h2>
+            <h2 id="gkl-start-title">Empieza con la nota mas nueva.</h2>
             <p>
-              Lee primero la nota mas reciente. El mapa del stack es el sistema detras del sitio; el diario es donde
-              entran las preguntas humanas.
+              Lee primero la nota mas reciente. Despues usa las capas de IA para conectar las preguntas humanas con
+              el sistema debajo de ellas.
             </p>
           </div>
-          <Link href="/notes/wall-e" className="gkl-primary">
+          <Link href={latest.noteHref ?? `/es/log/${latest.slug}`} className="gkl-primary">
             Leer la nota completa <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>
@@ -56,19 +61,28 @@ export default function SpanishLogPage() {
         <section className="gkl-list" aria-labelledby="gkl-list-title">
           <div className="gkl-list-head">
             <h2 id="gkl-list-title">Escritura publicada</h2>
-            <span className="gkl-label gki-mono">01 nota</span>
+            <span className="gkl-label gki-mono">{String(entries.length).padStart(2, "0")} notas</span>
           </div>
-          <Link href="/notes/wall-e" className="gkl-entry gkl-entry-featured">
-            <div className="gkl-entry-meta gki-mono">
-              <span>{note001.publishedTime.slice(0, 10)}</span>
-              <span>{note001.displayKicker}</span>
-            </div>
-            <div className="gkl-entry-copy">
-              <h3>{note001.title}</h3>
-              <p>{note001.description}</p>
-              <span className="gkl-read">Abrir Nota 001 <span aria-hidden="true">-&gt;</span></span>
-            </div>
-          </Link>
+          {entries.map((entry, index) => {
+            const href = entry.noteHref ?? `/es/log/${entry.slug}`;
+            return (
+              <Link
+                key={entry.slug}
+                href={href}
+                className={`gkl-entry${index === 0 ? " gkl-entry-featured" : ""}`}
+              >
+                <div className="gkl-entry-meta gki-mono">
+                  <span>{entry.date}</span>
+                  <span>{entry.layer}</span>
+                </div>
+                <div className="gkl-entry-copy">
+                  <h3>{entry.title}</h3>
+                  <p>{entry.summary}</p>
+                  <span className="gkl-read">Abrir {entry.layer} <span aria-hidden="true">-&gt;</span></span>
+                </div>
+              </Link>
+            );
+          })}
         </section>
       </main>
     </div>

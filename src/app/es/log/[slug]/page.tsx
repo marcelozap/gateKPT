@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HubNav } from "@/components/HubNav";
+import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
 import { getEntries, getEntry } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
@@ -46,7 +47,8 @@ export default async function SpanishLogEntryPage({ params }: Props) {
   }
 
   return (
-    <div className="gkl-page">
+    <div className="gkl-page" lang="es" translate="no">
+      <SpanishDocumentGuard />
       <div className="gkl-atmos" aria-hidden="true" />
       <HubNav locale="es" />
       <main className="gkl-shell gkl-shell-narrow">

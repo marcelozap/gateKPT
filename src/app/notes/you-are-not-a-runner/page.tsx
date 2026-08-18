@@ -1,42 +1,42 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
-import { note001 } from "@/gatekpt/content";
+import { note003 } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
-const canonical = `${getSiteUrl()}/notes/${note001.slug}`;
+const canonical = `${getSiteUrl()}/notes/${note003.slug}`;
 
 export const metadata: Metadata = {
-  title: note001.title,
-  description: note001.description,
+  title: note003.title,
+  description: note003.description,
   alternates: {
     canonical,
   },
   openGraph: {
-    title: `${note001.title} - GateKPT`,
-    description: note001.description,
+    title: `${note003.title} - GateKPT`,
+    description: note003.description,
     type: "article",
     url: canonical,
-    publishedTime: note001.publishedTime,
+    publishedTime: note003.publishedTime,
     authors: ["Marcelo Zapata"],
     images: [
       {
         url: `${canonical}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "NOTE Nº 001 - The Only Thing Paying Attention - gatekpt.ai",
+        alt: "NOTE Nº 003 - You Are Not a Runner - gatekpt.ai",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${note001.title} - GateKPT`,
-    description: note001.description,
+    title: `${note003.title} - GateKPT`,
+    description: note003.description,
     images: [`${canonical}/opengraph-image`],
   },
 };
 
-export default function NotePage() {
+export default function Note003Page() {
   return (
     <div className="gkn-page">
       <div className="gkn-atmos" aria-hidden="true" />
@@ -48,14 +48,14 @@ export default function NotePage() {
               <Link href="/" className="gkn-back gki-mono">
                 Back to AI layers
               </Link>
-              <span className="gki-kicker gki-mono">{note001.displayKicker}</span>
+              <span className="gki-kicker gki-mono">{note003.displayKicker}</span>
             </div>
-            <h1>{note001.title}</h1>
-            <p>{note001.description}</p>
+            <h1>{note003.title}</h1>
+            <p>{note003.description}</p>
           </header>
 
           <div className="gkn-body">
-            {note001.body.map((block) => (
+            {note003.body.map((block) => (
               <p key={block.text} className={block.kind === "turn" ? "gkn-turn" : undefined}>
                 {block.text}
                 {block.footnote ? <sup className="gkn-ref">{block.footnote}</sup> : null}
@@ -65,7 +65,7 @@ export default function NotePage() {
 
           <footer className="gkn-foot">
             <p>
-              <span className="gki-mono">1.</span> {note001.citation}
+              <span className="gki-mono">1.</span> {note003.citation}
             </p>
           </footer>
         </article>

@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "GateKPT - AI from the text box out.";
+export const alt = "NOTE Nº 003 - You Are Not a Runner - gatekpt.ai";
 export const size = {
   width: 1200,
   height: 630,
@@ -14,13 +14,13 @@ export default function Image() {
       <div
         style={{
           background: "#080806",
-          color: "#f4efe4",
+          color: "#f7f0df",
           display: "flex",
           flexDirection: "column",
-          fontFamily: "Arial, sans-serif",
+          fontFamily: "Georgia, serif",
           height: "100%",
           justifyContent: "space-between",
-          padding: 72,
+          padding: 74,
           width: "100%",
         }}
       >
@@ -29,6 +29,7 @@ export default function Image() {
             alignItems: "center",
             color: "#8ff0ff",
             display: "flex",
+            fontFamily: "Arial, sans-serif",
             fontSize: 30,
             fontWeight: 700,
             gap: 18,
@@ -43,37 +44,38 @@ export default function Image() {
               width: 14,
             }}
           />
-          GATEKPT
+          NOTE Nº 003
         </div>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: 28,
+            gap: 24,
           }}
         >
           <h1
             style={{
-              color: "#f4efe4",
-              fontSize: 82,
-              fontWeight: 800,
-              lineHeight: 1,
+              color: "#f7f0df",
+              fontSize: 92,
+              fontWeight: 700,
+              lineHeight: 1.02,
               margin: 0,
-              maxWidth: 920,
+              maxWidth: 930,
             }}
           >
-            AI from the text box out.
+            You Are Not a Runner
           </h1>
           <p
             style={{
-              color: "#c9e8e8",
-              fontSize: 34,
-              lineHeight: 1.24,
+              color: "#d9e7df",
+              fontFamily: "Arial, sans-serif",
+              fontSize: 32,
+              lineHeight: 1.3,
               margin: 0,
-              maxWidth: 880,
+              maxWidth: 900,
             }}
           >
-            Input, tokens, context, models, tools, chips, and power.
+            A note on time, identity, and using AI to test your limits.
           </p>
         </div>
         <div
@@ -82,13 +84,14 @@ export default function Image() {
             borderTop: "1px solid rgba(143, 240, 255, 0.35)",
             color: "#f5b84b",
             display: "flex",
+            fontFamily: "Arial, sans-serif",
             fontSize: 28,
             justifyContent: "space-between",
             paddingTop: 28,
           }}
         >
           <span>gatekpt.ai</span>
-          <span>L01 - L07</span>
+          <span>Marcelo Zapata</span>
         </div>
       </div>
     ),

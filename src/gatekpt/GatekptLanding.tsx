@@ -179,7 +179,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
   const count = phase === "boot" ? copy.countBoot : phase === "end" ? "07 / 07" : `${String(layerIndex + 1).padStart(2, "0")} / 07`;
 
   return (
-    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="GateKPT AI stack map">
+    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="GateKPT AI layers">
       <div className="gki-atmos" aria-hidden="true">
         <div className="gki-bloom xb1" />
         <div className="gki-bloom xb2" />
@@ -214,6 +214,9 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
       <Link className="gki-lang gki-mono" href={copy.switchHref} onClick={(event) => event.stopPropagation()}>
         {copy.switchLabel}
       </Link>
+      <Link className="gki-writing-badge gki-mono" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
+        {copy.writingBadge}
+      </Link>
       <div className="gki-edge gki-mono gki-where">{where}</div>
       <div className="gki-edge gki-mono gki-count">{count}</div>
       <div className="gki-hint gki-mono">{copy.hint}</div>
@@ -222,7 +225,6 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
         <button type="button" onClick={goBack} disabled={phase === "boot" || fading}>
           {copy.back}
         </button>
-        <Link href={copy.logHref}>{copy.log}</Link>
         <button type="button" onClick={() => setMapOpen(true)}>
           {copy.layers}
         </button>
@@ -269,20 +271,10 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                     >
                       {copy.exploreMap}
                     </button>
-                    <button
-                      type="button"
-                      className="gki-ghost gki-mono"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setMapOpen(true);
-                      }}
-                    >
-                      {copy.layers}
-                    </button>
                   </div>
                 </section>
 
-                <aside className="gki-home-log" aria-label="Recent field log entries">
+                <aside className="gki-home-log" aria-label="Published writing">
                   <div className="gki-home-log-head">
                     <span className="gki-kicker gki-mono">{copy.fieldLog}</span>
                     <Link className="gki-mini gki-mono" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
@@ -367,6 +359,14 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                       {layer.src}
                     </a>
                   </div>
+                  <div className="gki-layer-more" tabIndex={0} aria-label={`${copy.moreLabel}: ${layer.name}`}>
+                    <span className="gki-layer-more-label gki-mono">{copy.moreLabel}</span>
+                    <ul>
+                      {layer.details.map((detail) => (
+                        <li key={detail}>{detail}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </>
             )}
@@ -374,7 +374,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
         </div>
       </div>
 
-      <div className={`gki-map${mapOpen ? " on" : ""}`} role="dialog" aria-label="All layers" aria-hidden={!mapOpen}>
+      <div className={`gki-map${mapOpen ? " on" : ""}`} role="dialog" aria-label="AI layers" aria-hidden={!mapOpen}>
         <div>
           {layers.map((item, index) => (
             <button

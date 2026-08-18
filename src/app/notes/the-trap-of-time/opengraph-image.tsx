@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "NOTE Nº 002 - The Mental Time Trap - gatekpt.ai";
+export const alt = "NOTE Nº 002 - The Trap of Time - gatekpt.ai";
 export const size = {
   width: 1200,
   height: 630,
@@ -63,7 +63,7 @@ export default function Image() {
               maxWidth: 930,
             }}
           >
-            The Mental Time Trap
+            The Trap of Time
           </h1>
           <p
             style={{

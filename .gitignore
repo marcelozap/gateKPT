@@ -10,3 +10,8 @@ dist-desktop/
 data/xiv/
 .vercel
 .env*
+tmp-live-check/
+artifacts/
+_to_delete/
+note003.patch
+SHIP_NOTE_003.md

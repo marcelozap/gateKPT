@@ -23,11 +23,11 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - AI From the Physical Layer Up",
+    default: "GateKPT - AI From the Text Box Out",
     template: "%s - GateKPT",
   },
   description:
-    "A public research terminal for the AI stack: power, chips, data, models, software, testing, and business context.",
+    "Published writing and a public map of the AI layers: input, tokens, context, models, tools, chips, and power.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - AI From the Physical Layer Up",
-    description: "A public research terminal for the system underneath modern AI.",
+    title: "GateKPT - AI From the Text Box Out",
+    description: "Published writing and a public map of what happens after you type.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",
@@ -47,20 +47,23 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "GateKPT - AI from the physical layer up.",
+        alt: "GateKPT - AI from the text box out.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GateKPT - AI From the Physical Layer Up",
-    description: "A public research terminal for the system underneath modern AI.",
+    title: "GateKPT - AI From the Text Box Out",
+    description: "Published writing and a public map of what happens after you type.",
     images: [
       {
         url: "/opengraph-image",
-        alt: "GateKPT - AI from the physical layer up.",
+        alt: "GateKPT - AI from the text box out.",
       },
     ],
+  },
+  other: {
+    "google": "notranslate",
   },
 };
 

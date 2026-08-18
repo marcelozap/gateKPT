@@ -24,7 +24,7 @@ It should not:
 - Require internet during a show.
 - Require advanced visual software for a basic user.
 
-For the gateKPT MacBook + PC rig, the visual app should primarily run on the PC while the MacBook runs the DAW and bridge plugin. See [MACBOOK_PC_DEPLOYMENT_PLAN.md](./MACBOOK_PC_DEPLOYMENT_PLAN.md).
+For the gateKPT MacBook + PC rig, the visual app should primarily run on the PC while the MacBook runs the DAW and bridge plugin. See [MACBOOK_PC_DEPLOYMENT_PLAN.md](../ops/MACBOOK_PC_DEPLOYMENT_PLAN.md).
 
 ## Current App
 
@@ -392,7 +392,7 @@ Diagnostics should be visible in setup mode and hidden in show mode.
 
 ### Milestone 2: Bridge Integration
 
-- Consume `CONTROL_PROTOCOL.md` frames.
+- Consume `../ops/CONTROL_PROTOCOL.md` frames.
 - Add reconnect UI.
 - Add source selection: Bridge, Local Audio, Idle.
 - Add per-source smoothing profiles.

@@ -8,6 +8,8 @@ GateKPT is a public AI research and writing site. It explains the system underne
 
 XIV is the wider creative language: disciplined, cinematic, technical, musical, physical, and human. GateKPT uses that language for an AI research context. It should feel like a field instrument or editorial research terminal, not a generic SaaS site, trading dashboard, or gaming interface.
 
+Before changing GateKPT content, design, navigation, or teaching models, read `docs/training/00_READ_FIRST.md`.
+
 ## Project Location
 
 - Repository: `marcelozap/gateKPT`
@@ -37,7 +39,7 @@ Edit the source file that owns the behavior. Do not patch generated output or th
 | Root metadata and fonts | `src/app/layout.tsx` | Site title, description, metadata base, fonts, icons. |
 | Site URL logic | `src/lib/siteUrl.ts` | Keep production metadata on `https://www.gatekpt.ai`. |
 | Public images and audio | `public/` | Use stable filenames. Reference through `/filename.ext`. |
-| Deployment settings | `next.config.mjs`, `vercel.json`, `DEPLOYMENT_HANDOFF.md` | Change only when deployment behavior really needs it. |
+| Deployment settings | `next.config.mjs`, `vercel.json`, `../ops/DEPLOYMENT_HANDOFF.md` | Change only when deployment behavior really needs it. |
 
 Current important assets:
 

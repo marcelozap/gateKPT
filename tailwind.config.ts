@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // XIV × Apple — royal blue + green, pure black, cold precision
+        // MaloSound surface colors: royal blue + green, pure black, cold precision
         apple: {
           blue:      "#0A56D6",   // royal blue — primary interactive accent
           green:     "#32D74B",   // Apple system green dark-mode — data up
