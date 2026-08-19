@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { audioAnalysisLabel, parseAudioAnalysisV1, type AudioAnalysisV1 } from "./audioAnalysis";
 import { danceCopy, type DanceLocale } from "./strings";
 import styles from "./dance.module.css";
 
@@ -27,6 +28,7 @@ type Target = {
   x: number; // 0..1, stage space (already mirrored)
   y: number;
   beat: number; // absolute beat index it should be hit on
+  hitTime: number; // seconds in the active clock
   judged: Judgment | null;
   flashAt: number | null; // audio time when judged
 };
@@ -407,6 +409,9 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     perfect: 0, good: 0, late: 0, miss: 0,
   });
   const [flash, setFlash] = useState<Judgment | null>(null);
+  const [analysis, setAnalysis] = useState<AudioAnalysisV1 | null>(null);
+  const [audioName, setAudioName] = useState<string | null>(null);
+  const [trackError, setTrackError] = useState<string | null>(null);
 
   const stageRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -414,12 +419,18 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
   const streamRef = useRef<MediaStream | null>(null);
   const landmarkerRef = useRef<PoseLandmarkerLike | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
+  const audioElementRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
+  const audioFileRef = useRef<File | null>(null);
+  const trackStartTimerRef = useRef<number | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const spectrumRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const schedulerRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef(0); // audio time of beat 0
   const scheduledToRef = useRef(0); // last 16th scheduled (index)
+  const analysisRef = useRef<AudioAnalysisV1 | null>(null);
+  const trackModeRef = useRef(false);
   const targetsRef = useRef<Target[]>([]);
   const wristsRef = useRef<Array<{ x: number; y: number }>>([]);
   const pointerRef = useRef<{ x: number; y: number } | null>(null);
@@ -435,6 +446,15 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
   }, [phase]);
 
   // ---------------------------------------------------------------- audio
+  const activeBeatDuration = useCallback(() => 60 / (analysisRef.current?.bpm ?? BPM), []);
+
+  const clockSeconds = useCallback(() => {
+    if (trackModeRef.current && audioElementRef.current) return audioElementRef.current.currentTime;
+    const ctx = audioRef.current;
+    if (!ctx) return -Infinity;
+    return ctx.currentTime - startTimeRef.current;
+  }, []);
+
   const scheduleSixteenth = useCallback((ctx: AudioContext, i: number, t: number) => {
     const master = 0.5;
     if (i % 4 === 0) {
@@ -512,6 +532,26 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     analyserRef.current = analyser;
     spectrumRef.current = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
     void ctx.resume();
+    const beatDuration = activeBeatDuration();
+    trackModeRef.current = Boolean(analysisRef.current && audioFileRef.current);
+
+    if (trackModeRef.current && audioFileRef.current) {
+      const audio = new Audio();
+      const url = URL.createObjectURL(audioFileRef.current);
+      audio.preload = "auto";
+      audio.src = url;
+      audio.currentTime = 0;
+      audioElementRef.current = audio;
+      audioUrlRef.current = url;
+      const source = ctx.createMediaElementSource(audio);
+      source.connect(analyser);
+      const leadInMs = leadInBeats * beatDuration * 1000;
+      trackStartTimerRef.current = window.setTimeout(() => {
+        void audio.play().catch(() => setTrackError("The local audio could not start. Press retry and choose the file again."));
+      }, leadInMs);
+      return;
+    }
+
     startTimeRef.current = ctx.currentTime + leadInBeats * BEAT;
     scheduledToRef.current = -leadInBeats * 4;
     if (schedulerRef.current !== null) window.clearInterval(schedulerRef.current);
@@ -525,16 +565,25 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       }
       scheduledToRef.current = i;
     }, 25);
-  }, [scheduleSixteenth]);
+  }, [activeBeatDuration, scheduleSixteenth]);
 
   const stopEverything = useCallback(() => {
     if (schedulerRef.current !== null) window.clearInterval(schedulerRef.current);
     schedulerRef.current = null;
+    if (trackStartTimerRef.current !== null) window.clearTimeout(trackStartTimerRef.current);
+    trackStartTimerRef.current = null;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
     streamRef.current?.getTracks().forEach((tr) => tr.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
+    audioElementRef.current?.pause();
+    audioElementRef.current?.removeAttribute("src");
+    audioElementRef.current?.load();
+    audioElementRef.current = null;
+    if (audioUrlRef.current) URL.revokeObjectURL(audioUrlRef.current);
+    audioUrlRef.current = null;
+    trackModeRef.current = false;
     landmarkerRef.current?.close();
     landmarkerRef.current = null;
     analyserRef.current?.disconnect();
@@ -548,10 +597,10 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
 
   // ---------------------------------------------------------------- game
   const beatNow = useCallback(() => {
-    const ctx = audioRef.current;
-    if (!ctx) return -Infinity;
-    return (ctx.currentTime - startTimeRef.current) / BEAT;
-  }, []);
+    const seconds = clockSeconds();
+    if (!Number.isFinite(seconds)) return -Infinity;
+    return seconds / activeBeatDuration();
+  }, [activeBeatDuration, clockSeconds]);
 
   const judge = useCallback((target: Target, offsetSeconds: number) => {
     const abs = Math.abs(offsetSeconds);
@@ -560,7 +609,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     else if (abs <= WIN_GOOD) j = "good";
     else j = "late";
     target.judged = j;
-    target.flashAt = audioRef.current?.currentTime ?? 0;
+    target.flashAt = clockSeconds();
     const points = j === "perfect" ? 100 : j === "good" ? 60 : 20;
     const nextCombo = j === "late" ? 0 : comboRef.current + 1;
     comboRef.current = nextCombo;
@@ -569,16 +618,16 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     setScore((s) => s + Math.round(points * (1 + nextCombo * 0.1)));
     setJudgments((jj) => ({ ...jj, [j]: jj[j] + 1 }));
     setFlash(j);
-  }, []);
+  }, [clockSeconds]);
 
   const missTarget = useCallback((target: Target) => {
     target.judged = "miss";
-    target.flashAt = audioRef.current?.currentTime ?? 0;
+    target.flashAt = clockSeconds();
     comboRef.current = 0;
     setCombo(0);
     setJudgments((jj) => ({ ...jj, miss: jj.miss + 1 }));
     setFlash("miss");
-  }, []);
+  }, [clockSeconds]);
 
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
@@ -650,7 +699,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       ? {
           x: cueTarget.x,
           y: cueTarget.y,
-          progress: clamp(1 - (cueTarget.beat - visualBeat) / LEAD_BEATS, 0, 1),
+          progress: clamp(1 - (cueTarget.hitTime - clockSeconds()) / (LEAD_BEATS * activeBeatDuration()), 0, 1),
         }
       : null;
     drawLeadDancer(g, leadDancerPose(visualBeat, cue), W, H, minDim, cyan, magenta, energy);
@@ -675,7 +724,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     }
 
     // targets
-    const now = audioRef.current?.currentTime ?? 0;
+    const now = clockSeconds();
     for (const t of targetsRef.current) {
       const tx = t.x * W;
       const ty = t.y * H;
@@ -693,8 +742,9 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
         }
         continue;
       }
-      const dt = t.beat - visualBeat; // beats until hit
-      if (dt > LEAD_BEATS) continue;
+      const leadSeconds = LEAD_BEATS * activeBeatDuration();
+      const secondsUntilHit = t.hitTime - now;
+      if (secondsUntilHit > leadSeconds) continue;
       // inner ring
       g.strokeStyle = cyan;
       g.lineWidth = 2;
@@ -702,7 +752,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       g.arc(tx, ty, r, 0, Math.PI * 2);
       g.stroke();
       // approach ring converges at beat time
-      const approach = Math.max(0, dt / LEAD_BEATS);
+      const approach = Math.max(0, secondsUntilHit / leadSeconds);
       g.strokeStyle = "rgba(143, 240, 255, 0.45)";
       g.lineWidth = 1;
       g.beginPath();
@@ -721,7 +771,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       g.arc(w.x * W, w.y * H, 5, 0, Math.PI * 2);
       g.fill();
     }
-  }, [beatNow]);
+  }, [activeBeatDuration, beatNow, clockSeconds]);
 
   const tick = useCallback(() => {
     rafRef.current = requestAnimationFrame(() => tickRef.current());
@@ -757,24 +807,28 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
         calibrateFramesRef.current = 0;
         setPhase("count");
         startClock(4);
-        window.setTimeout(() => setPhase("play"), 4 * BEAT * 1000);
+        window.setTimeout(() => setPhase("play"), 4 * activeBeatDuration() * 1000);
       }
     }
 
     if (current === "play") {
-      const beat = beatNow();
+      const seconds = clockSeconds();
+      const beatDuration = activeBeatDuration();
       // spawn
       const targets = targetsRef.current;
       const nextBeatToSpawn = targets.length * SPAWN_EVERY + LEAD_BEATS;
-      if (nextBeatToSpawn <= ROUND_BEATS - 2 && beat >= nextBeatToSpawn - LEAD_BEATS) {
+      const analysisBeats = analysisRef.current?.beat_times;
+      const maxBeats = analysisBeats ? Math.min(ROUND_BEATS, analysisBeats.length) : ROUND_BEATS;
+      const hitTime = analysisBeats?.[nextBeatToSpawn] ?? nextBeatToSpawn * BEAT;
+      if (nextBeatToSpawn < maxBeats && seconds >= hitTime - LEAD_BEATS * beatDuration) {
         const n = targets.length;
         const spot = targetSpot(n);
-        targets.push({ id: n, ...spot, beat: nextBeatToSpawn, judged: null, flashAt: null });
+        targets.push({ id: n, ...spot, beat: nextBeatToSpawn, hitTime, judged: null, flashAt: null });
       }
       // judge
       for (const t of targets) {
         if (t.judged) continue;
-        const offset = (beat - t.beat) * BEAT; // seconds past the hit beat
+        const offset = seconds - t.hitTime; // seconds past the hit beat
         if (offset > WIN_LATE) {
           missTarget(t);
           continue;
@@ -793,14 +847,17 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
           }
         }
       }
-      if (beat > ROUND_BEATS + 1) {
+      const endTime = analysisBeats
+        ? Math.min(analysisRef.current?.duration_s ?? Infinity, (analysisBeats.at(-1) ?? 0) + beatDuration * 2)
+        : ROUND_BEATS * BEAT + 1;
+      if (seconds > endTime) {
         setPhase("done");
         stopEverything();
       }
     }
 
     drawFrame();
-  }, [beatNow, drawFrame, judge, missTarget, startClock, stopEverything]);
+  }, [activeBeatDuration, clockSeconds, drawFrame, judge, missTarget, startClock, stopEverything]);
 
   useEffect(() => {
     tickRef.current = tick;
@@ -820,6 +877,29 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     setCombo(0);
     setBestCombo(0);
     setJudgments({ perfect: 0, good: 0, late: 0, miss: 0 });
+  }, []);
+
+  const onAnalysisFileChange = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    try {
+      const next = parseAudioAnalysisV1(await file.text());
+      analysisRef.current = next;
+      setAnalysis(next);
+      setTrackError(null);
+    } catch (error) {
+      setTrackError(error instanceof Error ? error.message : "The analysis file could not be read.");
+    }
+  }, []);
+
+  const onAudioFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    audioFileRef.current = file;
+    setAudioName(file.name);
+    setTrackError(null);
   }, []);
 
   const begin = useCallback(async (mode: InputMode) => {
@@ -879,10 +959,12 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
   const resumeGame = useCallback(() => {
     if (phaseRef.current !== "pause") return;
     void audioRef.current?.resume();
+    if (trackModeRef.current && audioElementRef.current) void audioElementRef.current.play();
     setPhase("play");
   }, []);
 
   const total = judgments.perfect + judgments.good + judgments.late + judgments.miss;
+  const trackReady = Boolean(analysis && audioName);
 
   return (
     <div className={styles.root}>
@@ -897,7 +979,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       </header>
 
       <div className={`${styles.statusRow} gki-mono`}>
-        <span>{copy.labels.audio} {BPM.toFixed(2)} BPM</span>
+        <span>{copy.labels.audio} {(analysis?.bpm ?? BPM).toFixed(2)} BPM{trackReady ? " / MALO" : " / SYNTH"}</span>
         <span>{copy.labels.pose} 33 LM</span>
         <span>{copy.labels.lead} ON</span>
         <span>{copy.labels.input} {inputMode === "camera" ? "CAM" : "PTR"}</span>
@@ -920,8 +1002,28 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
             <p className={styles.lede}>{copy.lede}</p>
             <p className={`${styles.guide} gki-mono`}>{copy.guide}</p>
             <p className={`${styles.privacy} gki-mono`}>{copy.privacy}</p>
+            <div className={styles.trackImport}>
+              <div className={`${styles.trackImportHeader} gki-mono`}>
+                <span>{copy.trackLabel}</span>
+                <span className={trackReady ? styles.trackReady : ""}>{trackReady ? copy.trackReady : copy.trackOptional}</span>
+              </div>
+              <div className={styles.fileButtons}>
+                <label className={`${styles.fileButton} gki-mono`}>
+                  {copy.loadAnalysis}
+                  <input type="file" accept=".json,application/json" onChange={onAnalysisFileChange} />
+                </label>
+                <label className={`${styles.fileButton} gki-mono`}>
+                  {copy.loadAudio}
+                  <input type="file" accept="audio/*,.mp3,.wav,.m4a" onChange={onAudioFileChange} />
+                </label>
+              </div>
+              {analysis && <p className={`${styles.trackMeta} gki-mono`}>{audioAnalysisLabel(analysis)} / {analysis.bpm.toFixed(2)} BPM</p>}
+              {audioName && <p className={`${styles.trackMeta} gki-mono`}>{audioName}</p>}
+              {trackError && <p className={`${styles.trackMeta} ${styles.trackError} gki-mono`}>{trackError}</p>}
+              <p className={`${styles.trackPrivacy} gki-mono`}>{copy.trackPrivacy}</p>
+            </div>
             <button type="button" className={styles.startButton} onClick={() => void begin("camera")}>
-              {copy.start}
+              {trackReady ? copy.startTrack : copy.start}
             </button>
             <button type="button" className={`${styles.simLink} gki-mono`} onClick={() => void begin("pointer")}>
               {copy.simulator}

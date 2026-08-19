@@ -133,6 +133,80 @@
   padding-left: 10px;
 }
 
+.trackImport {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  background: rgba(2, 5, 12, 0.42);
+}
+
+.trackImportHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ink-dim);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.trackReady {
+  color: var(--green);
+}
+
+.fileButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fileButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  color: var(--visor);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.fileButton:hover,
+.fileButton:focus-within {
+  border-color: var(--visor);
+  color: var(--ink);
+}
+
+.fileButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.trackMeta,
+.trackPrivacy {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.trackPrivacy {
+  color: var(--ink-dim);
+}
+
+.trackError {
+  color: var(--rust);
+  white-space: normal;
+}
+
 .startButton {
   align-self: flex-start;
   font-family: var(--font-jbmono), ui-monospace, monospace;

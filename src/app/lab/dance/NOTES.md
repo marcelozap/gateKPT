@@ -48,5 +48,7 @@ Pointer simulator mode covers denied cameras and headless testing.
 - One deterministic lead choreography and round shape (48 beats, alternating L/R spots)
 - Pose model is lite variant — fine for wrists at webcam distance
 - The lead dancer is procedural line art, not a recorded or photorealistic dancer
-- The built-in sound is a timing clock; external DJ audio is not routed into it yet
+- The built-in sound remains the fallback timing clock; a local Malo Sound
+  `AudioAnalysisV1` JSON plus its matching audio file can now drive the beat
+  grid and visualizer without copying private music into the repo
 - No score persistence, no leaderboard — it's a lab instrument, not a product

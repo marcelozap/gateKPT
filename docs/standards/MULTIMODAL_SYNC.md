@@ -56,8 +56,13 @@ Re-verify them in the Malo Sound repository before changing the counts.
 
 - The Dance Lab exists and has a beat clock, pose input, per-target timing
   judgment, procedural lead dancer, and reactive visualizer.
-- The current lab uses a synthetic 112 BPM clock. It does not yet consume a
-  real `AudioAnalysisV1` artifact.
+- The Dance Lab now accepts one local `AudioAnalysisV1` JSON plus its matching
+  rights-cleared local audio file. When both are loaded, the lab displays the
+  Malo BPM, routes the audio through the browser analyser, and schedules rings
+  from the exported beat timestamps. The synthetic 112 BPM clock remains the
+  fallback.
+- The import is an offline browser adapter. It does not copy raw audio,
+  private paths, Malo Sound source code, or model weights into this repository.
 - The lab has not yet emitted `SessionAnalysisV1`.
 - MediaPipe PoseLandmarker is pretrained. The custom movement model has not
   been trained.
@@ -87,14 +92,10 @@ movement-model version.
 
 ## Next Integration Slices
 
-1. XIV reads one reviewed `AudioAnalysisV1` artifact and plays its paired,
-   rights-cleared local audio file.
-2. Dance Lab schedules its rings from the artifact's beat grid instead of the
-   synthetic 112 BPM clock.
-3. XIV emits one valid `SessionAnalysisV1` event log.
-4. A narration LLM reads that event log and produces one explanation report.
-5. Live-audio input comes after the offline path is proven.
-6. Custom movement or fusion training comes after reviewed labels and a
+1. XIV emits one valid `SessionAnalysisV1` event log from the paired session.
+2. A narration LLM reads that event log and produces one explanation report.
+3. Live-audio input comes after the offline path is proven.
+4. Custom movement or fusion training comes after reviewed labels and a
    baseline evaluation exist.
 
 Do not retrain after every session. Collect reviewed data in batches, update a

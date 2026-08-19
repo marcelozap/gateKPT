@@ -6,7 +6,14 @@ export type DanceCopy = {
   lede: string;
   privacy: string;
   guide: string;
+  trackLabel: string;
+  trackReady: string;
+  trackOptional: string;
+  loadAnalysis: string;
+  loadAudio: string;
+  trackPrivacy: string;
   start: string;
+  startTrack: string;
   simulator: string;
   loading: string[];
   cameraDenied: string;
@@ -46,7 +53,14 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
       "Pose tracking runs in your browser. No video leaves this device.",
     guide:
       "CYAN = LEAD DANCER · AMBER = YOU · RINGS = TIMING CUES",
+    trackLabel: "MALO SOUND / AUDIOANALYSISV1",
+    trackReady: "READY",
+    trackOptional: "OPTIONAL",
+    loadAnalysis: "LOAD BEAT GRID JSON",
+    loadAudio: "LOAD AUDIO FILE",
+    trackPrivacy: "LOCAL FILES STAY IN THIS BROWSER.",
     start: "START TRACKING",
+    startTrack: "RUN TRACK + TRACKING",
     simulator: "no camera - run the pointer simulator",
     loading: [
       "loading vision runtime",
@@ -89,7 +103,14 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
       "El tracking corre en tu navegador. Ningun video sale de este equipo.",
     guide:
       "CIAN = GUIA · AMBAR = TU · ANILLOS = SEÑALES DE TIEMPO",
+    trackLabel: "MALO SOUND / AUDIOANALYSISV1",
+    trackReady: "LISTO",
+    trackOptional: "OPCIONAL",
+    loadAnalysis: "CARGAR JSON DE BEATS",
+    loadAudio: "CARGAR AUDIO",
+    trackPrivacy: "LOS ARCHIVOS LOCALES SE QUEDAN EN ESTE NAVEGADOR.",
     start: "INICIAR TRACKING",
+    startTrack: "EJECUTAR TRACK + TRACKING",
     simulator: "sin camara - usar el simulador de puntero",
     loading: [
       "cargando runtime de vision",
