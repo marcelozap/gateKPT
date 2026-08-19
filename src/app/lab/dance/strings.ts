@@ -5,6 +5,7 @@ export type DanceCopy = {
   title: string;
   lede: string;
   privacy: string;
+  guide: string;
   start: string;
   simulator: string;
   loading: string[];
@@ -29,6 +30,7 @@ export type DanceCopy = {
   labels: {
     audio: string;
     pose: string;
+    lead: string;
     input: string;
     round: string;
   };
@@ -39,9 +41,11 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
     kicker: "LAB / EXPERIMENT 01",
     title: "Dance Lab",
     lede:
-      "A timing instrument. The camera tracks your wrists; the clock plays a house pattern. Hit the rings on the beat.",
+      "A lead dancer moves first. Follow the ghost’s body, then meet each hand cue on the beat.",
     privacy:
       "Pose tracking runs in your browser. No video leaves this device.",
+    guide:
+      "CYAN = LEAD DANCER · AMBER = YOU · RINGS = TIMING CUES",
     start: "START TRACKING",
     simulator: "no camera - run the pointer simulator",
     loading: [
@@ -71,6 +75,7 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
     labels: {
       audio: "AUDIO.CLOCK",
       pose: "POSE.TRACK",
+      lead: "LEAD.MODE",
       input: "INPUT",
       round: "ROUND",
     },
@@ -79,9 +84,11 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
     kicker: "LAB / EXPERIMENTO 01",
     title: "Dance Lab",
     lede:
-      "Un instrumento de timing. La camara sigue tus munecas; el reloj toca un patron house. Toca los anillos en el beat.",
+      "Un bailarin guia se mueve primero. Sigue su cuerpo y encuentra cada señal de manos en el beat.",
     privacy:
       "El tracking corre en tu navegador. Ningun video sale de este equipo.",
+    guide:
+      "CIAN = GUIA · AMBAR = TU · ANILLOS = SEÑALES DE TIEMPO",
     start: "INICIAR TRACKING",
     simulator: "sin camara - usar el simulador de puntero",
     loading: [
@@ -111,6 +118,7 @@ export const danceCopy: Record<DanceLocale, DanceCopy> = {
     labels: {
       audio: "AUDIO.CLOCK",
       pose: "POSE.TRACK",
+      lead: "MODO.GUIA",
       input: "INPUT",
       round: "RONDA",
     },

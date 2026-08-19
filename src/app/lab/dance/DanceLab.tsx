@@ -32,6 +32,26 @@ type Target = {
 };
 
 type Landmark = { x: number; y: number; visibility?: number };
+type Point = { x: number; y: number };
+
+type LeadPose = {
+  head: Point;
+  neck: Point;
+  shoulderLeft: Point;
+  shoulderRight: Point;
+  elbowLeft: Point;
+  elbowRight: Point;
+  handLeft: Point;
+  handRight: Point;
+  hipLeft: Point;
+  hipRight: Point;
+  kneeLeft: Point;
+  kneeRight: Point;
+  footLeft: Point;
+  footRight: Point;
+};
+
+type LeadCue = Point & { progress: number };
 
 type PoseLandmarkerLike = {
   detectForVideo: (video: HTMLVideoElement, ts: number) => { landmarks: Landmark[][] };
@@ -72,6 +92,182 @@ function targetSpot(n: number): { x: number; y: number } {
     x: 0.12 + side * 0.5 + f * 0.26,
     y: 0.2 + ((n * 0.37 + f) % 1) * 0.5,
   };
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+/** A small, deterministic choreography so the performer always has a body to follow. */
+function leadDancerPose(beat: number, cue: LeadCue | null): LeadPose {
+  const groove = Math.sin((beat * Math.PI) / 2);
+  const sway = Math.sin((beat * Math.PI) / 4) * 0.035;
+  const bounce = Math.abs(Math.sin(beat * Math.PI)) * 0.018;
+  const cx = 0.5 + sway;
+  const shoulderY = 0.36 - bounce;
+  const hipY = 0.64 - bounce * 0.45;
+  const leftHand = { x: cx - 0.28, y: 0.53 + groove * 0.035 };
+  const rightHand = { x: cx + 0.28, y: 0.53 - groove * 0.035 };
+
+  if (cue) {
+    const eased = cue.progress * cue.progress * (3 - 2 * cue.progress);
+    if (cue.x < 0.5) {
+      leftHand.x += (cue.x - leftHand.x) * eased;
+      leftHand.y += (cue.y - leftHand.y) * eased;
+    } else {
+      rightHand.x += (cue.x - rightHand.x) * eased;
+      rightHand.y += (cue.y - rightHand.y) * eased;
+    }
+  }
+
+  return {
+    head: { x: cx + sway * 0.25, y: 0.19 - bounce * 0.35 },
+    neck: { x: cx, y: 0.29 - bounce },
+    shoulderLeft: { x: cx - 0.09, y: shoulderY },
+    shoulderRight: { x: cx + 0.09, y: shoulderY },
+    elbowLeft: { x: cx - 0.2 - groove * 0.018, y: 0.47 + groove * 0.025 },
+    elbowRight: { x: cx + 0.2 + groove * 0.018, y: 0.47 - groove * 0.025 },
+    handLeft: leftHand,
+    handRight: rightHand,
+    hipLeft: { x: cx - 0.065, y: hipY },
+    hipRight: { x: cx + 0.065, y: hipY },
+    kneeLeft: { x: cx - 0.11 + groove * 0.025, y: 0.79 - bounce * 0.25 },
+    kneeRight: { x: cx + 0.11 - groove * 0.025, y: 0.79 - bounce * 0.25 },
+    footLeft: { x: cx - 0.14 - groove * 0.02, y: 0.96 },
+    footRight: { x: cx + 0.14 + groove * 0.02, y: 0.96 },
+  };
+}
+
+function drawSegment(
+  g: CanvasRenderingContext2D,
+  a: Point,
+  b: Point,
+  width: number,
+  color: string,
+  W: number,
+  H: number,
+): void {
+  g.strokeStyle = color;
+  g.lineWidth = width;
+  g.beginPath();
+  g.moveTo(a.x * W, a.y * H);
+  g.lineTo(b.x * W, b.y * H);
+  g.stroke();
+}
+
+function drawLeadDancer(
+  g: CanvasRenderingContext2D,
+  pose: LeadPose,
+  W: number,
+  H: number,
+  minDim: number,
+  cyan: string,
+  pulse: number,
+): void {
+  const body = `rgba(125, 249, 255, ${0.34 + pulse * 0.14})`;
+  const bodySoft = `rgba(125, 249, 255, ${0.13 + pulse * 0.08})`;
+  const joint = `rgba(228, 253, 255, ${0.64 + pulse * 0.18})`;
+  const links: Array<[Point, Point]> = [
+    [pose.neck, pose.shoulderLeft], [pose.neck, pose.shoulderRight],
+    [pose.shoulderLeft, pose.elbowLeft], [pose.elbowLeft, pose.handLeft],
+    [pose.shoulderRight, pose.elbowRight], [pose.elbowRight, pose.handRight],
+    [pose.neck, pose.hipLeft], [pose.neck, pose.hipRight],
+    [pose.hipLeft, pose.hipRight], [pose.hipLeft, pose.kneeLeft],
+    [pose.kneeLeft, pose.footLeft], [pose.hipRight, pose.kneeRight],
+    [pose.kneeRight, pose.footRight],
+  ];
+
+  g.save();
+  g.lineCap = "round";
+  g.lineJoin = "round";
+  g.globalAlpha = 0.9;
+  for (const [a, b] of links) drawSegment(g, a, b, Math.max(3, minDim * 0.012), body, W, H);
+  drawSegment(g, pose.shoulderLeft, pose.shoulderRight, Math.max(8, minDim * 0.035), bodySoft, W, H);
+  drawSegment(g, pose.hipLeft, pose.hipRight, Math.max(8, minDim * 0.035), bodySoft, W, H);
+
+  g.fillStyle = bodySoft;
+  g.beginPath();
+  g.arc(pose.head.x * W, pose.head.y * H, minDim * 0.045, 0, Math.PI * 2);
+  g.fill();
+  g.strokeStyle = cyan;
+  g.lineWidth = Math.max(1, minDim * 0.005);
+  g.stroke();
+
+  g.fillStyle = joint;
+  for (const point of [
+    pose.shoulderLeft, pose.shoulderRight, pose.elbowLeft, pose.elbowRight,
+    pose.handLeft, pose.handRight, pose.hipLeft, pose.hipRight,
+    pose.kneeLeft, pose.kneeRight, pose.footLeft, pose.footRight,
+  ]) {
+    g.beginPath();
+    g.arc(point.x * W, point.y * H, Math.max(3, minDim * 0.009), 0, Math.PI * 2);
+    g.fill();
+  }
+
+  g.globalAlpha = 0.18 + pulse * 0.12;
+  g.strokeStyle = cyan;
+  g.lineWidth = 1;
+  g.beginPath();
+  g.ellipse(
+    ((pose.footLeft.x + pose.footRight.x) / 2) * W,
+    0.98 * H,
+    minDim * (0.19 + pulse * 0.035),
+    minDim * 0.018,
+    0,
+    0,
+    Math.PI * 2,
+  );
+  g.stroke();
+  g.restore();
+}
+
+function drawVisualizer(
+  g: CanvasRenderingContext2D,
+  W: number,
+  H: number,
+  minDim: number,
+  beat: number,
+  energy: number,
+  cyan: string,
+  magenta: string,
+): void {
+  const phase = ((beat % 1) + 1) % 1;
+  const beatPulse = Math.pow(1 - phase, 3);
+  const pulse = clamp(energy * 0.8 + beatPulse * 0.32, 0, 1);
+  const centerX = W * 0.5;
+  const centerY = H * 0.52;
+
+  g.save();
+  g.fillStyle = `rgba(2, 5, 12, ${0.42 + pulse * 0.1})`;
+  g.fillRect(0, 0, W, H);
+
+  const glow = g.createRadialGradient(centerX, centerY, 0, centerX, centerY, minDim * (0.65 + pulse * 0.22));
+  glow.addColorStop(0, `rgba(34, 211, 238, ${0.12 + pulse * 0.12})`);
+  glow.addColorStop(0.55, `rgba(34, 211, 238, ${0.035 + pulse * 0.035})`);
+  glow.addColorStop(1, "rgba(2, 5, 12, 0)");
+  g.fillStyle = glow;
+  g.fillRect(0, 0, W, H);
+
+  g.globalAlpha = 0.22 + pulse * 0.18;
+  g.strokeStyle = cyan;
+  g.lineWidth = 1;
+  for (let i = 0; i < 9; i += 1) {
+    const radius = minDim * (0.16 + i * 0.1 + beatPulse * 0.045);
+    g.beginPath();
+    g.ellipse(centerX, centerY, radius * 1.25, radius * 0.58, 0, 0, Math.PI * 2);
+    g.stroke();
+  }
+
+  g.globalAlpha = 0.16 + pulse * 0.12;
+  g.strokeStyle = magenta;
+  for (let i = 0; i < 7; i += 1) {
+    const x = ((i + 1) / 8) * W;
+    g.beginPath();
+    g.moveTo(x, H);
+    g.lineTo(centerX + (x - centerX) * (0.24 + pulse * 0.08), centerY);
+    g.stroke();
+  }
+  g.restore();
 }
 
 function loadVisionModule(): Promise<VisionModule> {
@@ -127,6 +323,8 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
   const streamRef = useRef<MediaStream | null>(null);
   const landmarkerRef = useRef<PoseLandmarkerLike | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const spectrumRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const schedulerRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const startTimeRef = useRef(0); // audio time of beat 0
@@ -156,7 +354,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       o.frequency.exponentialRampToValueAtTime(48, t + 0.11);
       g.gain.setValueAtTime(0.9 * master, t);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.13);
-      o.connect(g).connect(ctx.destination);
+      o.connect(g).connect(analyserRef.current ?? ctx.destination);
       o.start(t);
       o.stop(t + 0.14);
     }
@@ -173,7 +371,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       const g = ctx.createGain();
       g.gain.value = 0.22 * master;
       s.buffer = buf;
-      s.connect(hp).connect(g).connect(ctx.destination);
+      s.connect(hp).connect(g).connect(analyserRef.current ?? ctx.destination);
       s.start(t);
     }
     if (i % 16 === 4 || i % 16 === 12) {
@@ -190,7 +388,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       const g = ctx.createGain();
       g.gain.value = 0.4 * master;
       s.buffer = buf;
-      s.connect(bp).connect(g).connect(ctx.destination);
+      s.connect(bp).connect(g).connect(analyserRef.current ?? ctx.destination);
       s.start(t);
     }
     if (i % 2 === 0) {
@@ -207,7 +405,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.28 * master, t);
       g.gain.exponentialRampToValueAtTime(0.001, t + BEAT / 2 - 0.02);
-      o.connect(lp).connect(g).connect(ctx.destination);
+      o.connect(lp).connect(g).connect(analyserRef.current ?? ctx.destination);
       o.start(t);
       o.stop(t + BEAT / 2);
     }
@@ -216,6 +414,12 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
   const startClock = useCallback((leadInBeats: number) => {
     const ctx = audioRef.current ?? new AudioContext();
     audioRef.current = ctx;
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 128;
+    analyser.smoothingTimeConstant = 0.78;
+    analyser.connect(ctx.destination);
+    analyserRef.current = analyser;
+    spectrumRef.current = new Uint8Array(new ArrayBuffer(analyser.frequencyBinCount));
     void ctx.resume();
     startTimeRef.current = ctx.currentTime + leadInBeats * BEAT;
     scheduledToRef.current = -leadInBeats * 4;
@@ -239,8 +443,12 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     rafRef.current = null;
     streamRef.current?.getTracks().forEach((tr) => tr.stop());
     streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
     landmarkerRef.current?.close();
     landmarkerRef.current = null;
+    analyserRef.current?.disconnect();
+    analyserRef.current = null;
+    spectrumRef.current = null;
     void audioRef.current?.close();
     audioRef.current = null;
   }, []);
@@ -294,6 +502,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     if (!g) return;
     const W = canvas.width;
     const H = canvas.height;
+    if (W <= 0 || H <= 0) return;
     const minDim = Math.min(W, H);
     g.clearRect(0, 0, W, H);
 
@@ -301,6 +510,20 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     const cyan = styleVars.getPropertyValue("--visor").trim() || "#8ff0ff";
     const amber = styleVars.getPropertyValue("--amber").trim() || "#f5b84b";
     const ink = styleVars.getPropertyValue("--ink").trim() || "#f4efe4";
+    const magenta = "#e26bd2";
+    const beat = beatNow();
+    const visualBeat = Number.isFinite(beat) ? beat : 0;
+    let energy = 0;
+    const analyser = analyserRef.current;
+    const spectrum = spectrumRef.current;
+    if (analyser && spectrum) {
+      analyser.getByteFrequencyData(spectrum);
+      let total = 0;
+      for (let i = 0; i < Math.min(12, spectrum.length); i += 1) total += spectrum[i];
+      energy = total / (Math.min(12, spectrum.length) * 255);
+    }
+
+    drawVisualizer(g, W, H, minDim, visualBeat, energy, cyan, magenta);
 
     // video, mirrored and dimmed
     const video = videoRef.current;
@@ -329,11 +552,23 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       }
     }
 
+    const cueTarget = targetsRef.current
+      .filter((target) => !target.judged && target.beat >= visualBeat - 0.4)
+      .sort((a, b) => Math.abs(a.beat - visualBeat) - Math.abs(b.beat - visualBeat))[0];
+    const cue = cueTarget
+      ? {
+          x: cueTarget.x,
+          y: cueTarget.y,
+          progress: clamp(1 - (cueTarget.beat - visualBeat) / LEAD_BEATS, 0, 1),
+        }
+      : null;
+    drawLeadDancer(g, leadDancerPose(visualBeat, cue), W, H, minDim, cyan, energy);
+
     // skeleton
     const wrists = wristsRef.current;
     const pose = poseRef.current;
     if (inputModeRef.current === "camera" && pose) {
-      g.strokeStyle = cyan;
+      g.strokeStyle = amber;
       g.globalAlpha = 0.8;
       g.lineWidth = 1.5;
       for (const [a, b] of CONNECTIONS) {
@@ -350,25 +585,24 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
 
     // targets
     const now = audioRef.current?.currentTime ?? 0;
-    const beat = beatNow();
     for (const t of targetsRef.current) {
       const tx = t.x * W;
       const ty = t.y * H;
-      const r = HIT_RADIUS * minDim;
+      const r = Math.max(0, HIT_RADIUS * minDim);
       if (t.judged) {
         if (t.flashAt !== null && now - t.flashAt < 0.35) {
-          const a = 1 - (now - t.flashAt) / 0.35;
+          const a = clamp(1 - (now - t.flashAt) / 0.35, 0, 1);
           g.strokeStyle = t.judged === "miss" ? "rgba(200, 107, 67, 1)" : t.judged === "perfect" ? cyan : ink;
           g.globalAlpha = a;
           g.lineWidth = 2;
           g.beginPath();
-          g.arc(tx, ty, r * (1 + (1 - a) * 0.5), 0, Math.PI * 2);
+          g.arc(tx, ty, Math.max(0, r * (1 + (1 - a) * 0.5)), 0, Math.PI * 2);
           g.stroke();
           g.globalAlpha = 1;
         }
         continue;
       }
-      const dt = t.beat - beat; // beats until hit
+      const dt = t.beat - visualBeat; // beats until hit
       if (dt > LEAD_BEATS) continue;
       // inner ring
       g.strokeStyle = cyan;
@@ -381,7 +615,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       g.strokeStyle = "rgba(143, 240, 255, 0.45)";
       g.lineWidth = 1;
       g.beginPath();
-      g.arc(tx, ty, r * (1 + approach * 1.6), 0, Math.PI * 2);
+      g.arc(tx, ty, Math.max(0, r * (1 + approach * 1.6)), 0, Math.PI * 2);
       g.stroke();
       // side tick label
       g.fillStyle = amber;
@@ -390,7 +624,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     }
 
     // wrist markers
-    g.fillStyle = cyan;
+    g.fillStyle = amber;
     for (const w of wrists) {
       g.beginPath();
       g.arc(w.x * W, w.y * H, 5, 0, Math.PI * 2);
@@ -524,6 +758,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
         if (!video) throw new Error("no video element");
         video.srcObject = stream;
         await video.play();
+        setLoadStep(3);
       }
       setPhase("calibrate");
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
@@ -573,6 +808,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       <div className={`${styles.statusRow} gki-mono`}>
         <span>{copy.labels.audio} {BPM.toFixed(2)} BPM</span>
         <span>{copy.labels.pose} 33 LM</span>
+        <span>{copy.labels.lead} ON</span>
         <span>{copy.labels.input} {inputMode === "camera" ? "CAM" : "PTR"}</span>
         <span>{copy.labels.round} 01</span>
         <span className={styles.statusScore}>{copy.score} {score.toString().padStart(5, "0")}</span>
@@ -591,6 +827,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
         {phase === "boot" && (
           <div className={styles.panel}>
             <p className={styles.lede}>{copy.lede}</p>
+            <p className={`${styles.guide} gki-mono`}>{copy.guide}</p>
             <p className={`${styles.privacy} gki-mono`}>{copy.privacy}</p>
             <button type="button" className={styles.startButton} onClick={() => void begin("camera")}>
               {copy.start}

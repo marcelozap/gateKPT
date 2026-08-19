@@ -19,9 +19,11 @@ Built 2026-08-18 by Claude. Feature only — nothing committed, nothing pushed.
 
 ## What it is
 
-Webcam pose game. MediaPipe PoseLandmarker (lite) tracks wrists; a generative
-Web Audio house clock (112 BPM, no audio assets) spawns rings on the beat grid;
-hits are judged on timing (±90ms perfect / ±180ms on-time / ±300ms late).
+Performance visualizer and webcam pose game. A deterministic lead dancer gives
+the performer a body to follow; MediaPipe PoseLandmarker (lite) tracks wrists
+and the amber user skeleton; a generative Web Audio house clock (112 BPM, no
+audio assets) drives the cyan lead dancer, reactive rings, and the visualizer
+field. Hits are judged on timing (±90ms perfect / ±180ms on-time / ±300ms late).
 Pointer simulator mode covers denied cameras and headless testing.
 
 ## Runtime dependencies (browser-side, not build-side)
@@ -43,6 +45,8 @@ Pointer simulator mode covers denied cameras and headless testing.
 
 ## Known limits (deliberate v1 scope)
 
-- One round shape (48 beats, alternating L/R spots)
+- One deterministic lead choreography and round shape (48 beats, alternating L/R spots)
 - Pose model is lite variant — fine for wrists at webcam distance
+- The lead dancer is procedural line art, not a recorded or photorealistic dancer
+- The built-in sound is a timing clock; external DJ audio is not routed into it yet
 - No score persistence, no leaderboard — it's a lab instrument, not a product

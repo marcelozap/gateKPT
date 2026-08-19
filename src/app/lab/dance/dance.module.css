@@ -114,6 +114,16 @@
   color: var(--ink);
 }
 
+.guide {
+  margin: 0;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  color: var(--visor);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+}
+
 .privacy {
   margin: 0;
   font-size: 10px;
