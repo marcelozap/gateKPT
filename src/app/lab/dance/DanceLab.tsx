@@ -37,6 +37,8 @@ type Landmark = { x: number; y: number; visibility?: number };
 type Point = { x: number; y: number };
 
 type LeadPose = {
+  bodyTilt: number;
+  headTilt: number;
   head: Point;
   neck: Point;
   shoulderLeft: Point;
@@ -100,16 +102,22 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-/** A small, deterministic choreography so the performer always has a body to follow. */
+/** A deterministic eight-count phrase so the performer always has a body to follow. */
 function leadDancerPose(beat: number, cue: LeadCue | null): LeadPose {
   const groove = Math.sin((beat * Math.PI) / 2);
-  const sway = Math.sin((beat * Math.PI) / 4) * 0.035;
+  const phrase = Math.sin((beat * Math.PI) / 4);
+  const sway = Math.sin((beat * Math.PI) / 4) * 0.028;
   const bounce = Math.abs(Math.sin(beat * Math.PI)) * 0.018;
+  const bodyTilt = phrase * 0.06;
   const cx = 0.5 + sway;
-  const shoulderY = 0.36 - bounce;
-  const hipY = 0.64 - bounce * 0.45;
-  const leftHand = { x: cx - 0.28, y: 0.53 + groove * 0.035 };
-  const rightHand = { x: cx + 0.28, y: 0.53 - groove * 0.035 };
+  const shoulderY = 0.34 - bounce;
+  const hipY = 0.62 - bounce * 0.45;
+  const leftLift = clamp((groove + 0.12) * 0.5, 0, 1);
+  const rightLift = clamp((-groove + 0.12) * 0.5, 0, 1);
+  const leftHand = { x: cx - 0.26 - leftLift * 0.045, y: 0.48 - leftLift * 0.2 + phrase * 0.025 };
+  const rightHand = { x: cx + 0.26 + rightLift * 0.045, y: 0.48 - rightLift * 0.2 - phrase * 0.025 };
+  const leftKneeLift = clamp((groove + 0.15) * 0.5, 0, 1);
+  const rightKneeLift = clamp((-groove + 0.15) * 0.5, 0, 1);
 
   if (cue) {
     const eased = cue.progress * cue.progress * (3 - 2 * cue.progress);
@@ -123,20 +131,22 @@ function leadDancerPose(beat: number, cue: LeadCue | null): LeadPose {
   }
 
   return {
-    head: { x: cx + sway * 0.25, y: 0.19 - bounce * 0.35 },
-    neck: { x: cx, y: 0.29 - bounce },
-    shoulderLeft: { x: cx - 0.09, y: shoulderY },
-    shoulderRight: { x: cx + 0.09, y: shoulderY },
-    elbowLeft: { x: cx - 0.2 - groove * 0.018, y: 0.47 + groove * 0.025 },
-    elbowRight: { x: cx + 0.2 + groove * 0.018, y: 0.47 - groove * 0.025 },
+    bodyTilt,
+    headTilt: -phrase * 0.08,
+    head: { x: cx + bodyTilt * 0.18, y: 0.17 - bounce * 0.35 },
+    neck: { x: cx + bodyTilt * 0.2, y: 0.28 - bounce },
+    shoulderLeft: { x: cx - 0.105 + bodyTilt * 0.1, y: shoulderY - bodyTilt * 0.12 },
+    shoulderRight: { x: cx + 0.105 + bodyTilt * 0.1, y: shoulderY + bodyTilt * 0.12 },
+    elbowLeft: { x: cx - 0.19 - leftLift * 0.025, y: 0.44 - leftLift * 0.08 + groove * 0.018 },
+    elbowRight: { x: cx + 0.19 + rightLift * 0.025, y: 0.44 - rightLift * 0.08 - groove * 0.018 },
     handLeft: leftHand,
     handRight: rightHand,
-    hipLeft: { x: cx - 0.065, y: hipY },
-    hipRight: { x: cx + 0.065, y: hipY },
-    kneeLeft: { x: cx - 0.11 + groove * 0.025, y: 0.79 - bounce * 0.25 },
-    kneeRight: { x: cx + 0.11 - groove * 0.025, y: 0.79 - bounce * 0.25 },
-    footLeft: { x: cx - 0.14 - groove * 0.02, y: 0.96 },
-    footRight: { x: cx + 0.14 + groove * 0.02, y: 0.96 },
+    hipLeft: { x: cx - 0.075 + bodyTilt * 0.08, y: hipY + bodyTilt * 0.06 },
+    hipRight: { x: cx + 0.075 + bodyTilt * 0.08, y: hipY - bodyTilt * 0.06 },
+    kneeLeft: { x: cx - 0.115 + groove * 0.045, y: 0.78 - leftKneeLift * 0.07 - bounce * 0.25 },
+    kneeRight: { x: cx + 0.115 - groove * 0.045, y: 0.78 - rightKneeLift * 0.07 - bounce * 0.25 },
+    footLeft: { x: cx - 0.145 - leftKneeLift * 0.035 - groove * 0.018, y: 0.95 - leftKneeLift * 0.1 },
+    footRight: { x: cx + 0.145 + rightKneeLift * 0.035 + groove * 0.018, y: 0.95 - rightKneeLift * 0.1 },
   };
 }
 
@@ -178,28 +188,38 @@ function drawPolygon(
   g.stroke();
 }
 
-function drawDiamond(
+function drawLimb(
   g: CanvasRenderingContext2D,
-  point: Point,
-  size: number,
+  a: Point,
+  b: Point,
+  width: number,
   fill: string,
+  underlight: string,
   W: number,
   H: number,
 ): void {
-  drawPolygon(
-    g,
-    [
-      { x: point.x, y: point.y - size },
-      { x: point.x + size, y: point.y },
-      { x: point.x, y: point.y + size },
-      { x: point.x - size, y: point.y },
-    ],
-    fill,
-    fill,
-    1,
-    W,
-    H,
-  );
+  drawSegment(g, a, b, width + Math.max(4, width * 0.28), underlight, W, H);
+  drawSegment(g, a, b, width, fill, W, H);
+}
+
+function drawEllipse(
+  g: CanvasRenderingContext2D,
+  point: Point,
+  radiusX: number,
+  radiusY: number,
+  fill: string,
+  stroke: string,
+  lineWidth: number,
+  W: number,
+  H: number,
+): void {
+  g.beginPath();
+  g.ellipse(point.x * W, point.y * H, radiusX, radiusY, 0, 0, Math.PI * 2);
+  g.fillStyle = fill;
+  g.fill();
+  g.strokeStyle = stroke;
+  g.lineWidth = lineWidth;
+  g.stroke();
 }
 
 function drawLeadDancer(
@@ -212,97 +232,108 @@ function drawLeadDancer(
   magenta: string,
   pulse: number,
 ): void {
-  const core = `rgba(125, 249, 255, ${0.52 + pulse * 0.16})`;
-  const suit = `rgba(4, 16, 25, ${0.78 + pulse * 0.08})`;
-  const panel = `rgba(125, 249, 255, ${0.09 + pulse * 0.06})`;
-  const joint = `rgba(228, 253, 255, ${0.72 + pulse * 0.18})`;
-  const limbLinks: Array<[Point, Point]> = [
-    [pose.shoulderLeft, pose.elbowLeft], [pose.elbowLeft, pose.handLeft],
-    [pose.shoulderRight, pose.elbowRight], [pose.elbowRight, pose.handRight],
-    [pose.hipLeft, pose.kneeLeft], [pose.kneeLeft, pose.footLeft],
-    [pose.hipRight, pose.kneeRight], [pose.kneeRight, pose.footRight],
-  ];
-  const headRadiusX = minDim * 0.045 / W;
-  const headRadiusY = minDim * 0.045 / H;
+  const core = `rgba(125, 249, 255, ${0.58 + pulse * 0.16})`;
+  const outfit = `rgba(10, 17, 28, ${0.9 + pulse * 0.05})`;
+  const outfitPanel = `rgba(28, 48, 66, ${0.68 + pulse * 0.08})`;
+  const skin = `rgba(222, 170, 145, ${0.88 + pulse * 0.06})`;
+  const skinShadow = `rgba(138, 78, 87, ${0.48 + pulse * 0.08})`;
+  const hair = `rgba(17, 22, 35, ${0.96 + pulse * 0.03})`;
   const head = pose.head;
   const torso = [
     pose.shoulderLeft,
-    { x: pose.shoulderLeft.x + 0.035, y: pose.neck.y + 0.01 },
-    { x: pose.shoulderRight.x - 0.035, y: pose.neck.y + 0.01 },
+    { x: pose.shoulderLeft.x + 0.035, y: pose.neck.y + 0.015 },
+    { x: pose.shoulderRight.x - 0.035, y: pose.neck.y + 0.015 },
     pose.shoulderRight,
-    { x: pose.hipRight.x + 0.045, y: pose.hipRight.y - 0.015 },
-    pose.hipRight,
-    pose.hipLeft,
-    { x: pose.hipLeft.x - 0.045, y: pose.hipLeft.y - 0.015 },
+    { x: pose.hipRight.x + 0.06, y: pose.hipRight.y - 0.015 },
+    { x: pose.hipRight.x + 0.035, y: pose.hipRight.y + 0.035 },
+    { x: pose.hipLeft.x - 0.035, y: pose.hipLeft.y + 0.035 },
+    { x: pose.hipLeft.x - 0.06, y: pose.hipLeft.y - 0.015 },
   ];
+  const headRadiusX = minDim * 0.045;
+  const headRadiusY = minDim * 0.058;
+  const headRadiusXNorm = headRadiusX / W;
+  const headRadiusYNorm = headRadiusY / H;
+  const footLeft = { x: pose.footLeft.x - 0.035, y: pose.footLeft.y + 0.005 };
+  const footRight = { x: pose.footRight.x + 0.035, y: pose.footRight.y + 0.005 };
 
   g.save();
   g.lineCap = "round";
   g.lineJoin = "round";
-  g.globalAlpha = 0.92;
+  g.globalAlpha = 0.96;
 
-  // A light-traced synthetic body: magenta sits underneath the cyan core as a
-  // small XIV accent, while the torso carries the actual visual weight.
-  for (const [a, b] of limbLinks) {
-    drawSegment(g, a, b, Math.max(8, minDim * 0.035), `rgba(226, 107, 210, ${0.18 + pulse * 0.08})`, W, H);
-    drawSegment(g, a, b, Math.max(3, minDim * 0.014), core, W, H);
-  }
-  drawPolygon(g, torso, suit, core, Math.max(1, minDim * 0.005), W, H);
-  drawSegment(g, pose.neck, { x: head.x, y: head.y + headRadiusY * 1.35 }, Math.max(4, minDim * 0.018), core, W, H);
+  // A dancer's stage shadow gives the character weight before the beat light
+  // traces the outfit. The body is drawn in layers so it reads as a person,
+  // not a collection of joints.
+  g.fillStyle = `rgba(0, 0, 0, ${0.28 + pulse * 0.1})`;
+  g.beginPath();
+  g.ellipse(((footLeft.x + footRight.x) / 2) * W, 0.975 * H, minDim * 0.2, minDim * 0.022, 0, 0, Math.PI * 2);
+  g.fill();
 
-  const chest = [
-    { x: head.x, y: pose.neck.y + 0.035 },
-    { x: pose.shoulderRight.x - 0.035, y: pose.shoulderRight.y + 0.02 },
-    { x: pose.hipRight.x - 0.01, y: pose.hipRight.y - 0.05 },
-    { x: pose.hipLeft.x + 0.01, y: pose.hipLeft.y - 0.05 },
-    { x: pose.shoulderLeft.x + 0.035, y: pose.shoulderLeft.y + 0.02 },
-  ];
-  drawPolygon(g, chest, panel, `rgba(125, 249, 255, ${0.34 + pulse * 0.1})`, 1, W, H);
-  drawSegment(g, { x: head.x - 0.035, y: pose.neck.y + 0.07 }, { x: head.x + 0.035, y: pose.neck.y + 0.07 }, 1.5, magenta, W, H);
+  drawLimb(g, pose.hipLeft, pose.kneeLeft, minDim * 0.085, outfit, `rgba(226, 107, 210, ${0.22 + pulse * 0.1})`, W, H);
+  drawLimb(g, pose.kneeLeft, pose.footLeft, minDim * 0.062, outfitPanel, `rgba(226, 107, 210, ${0.2 + pulse * 0.08})`, W, H);
+  drawLimb(g, pose.hipRight, pose.kneeRight, minDim * 0.085, outfit, `rgba(226, 107, 210, ${0.22 + pulse * 0.1})`, W, H);
+  drawLimb(g, pose.kneeRight, pose.footRight, minDim * 0.062, outfitPanel, `rgba(226, 107, 210, ${0.2 + pulse * 0.08})`, W, H);
 
-  const headPolygon = Array.from({ length: 6 }, (_, i) => {
-    const angle = Math.PI / 6 + (i * Math.PI) / 3;
-    return { x: head.x + Math.cos(angle) * headRadiusX, y: head.y + Math.sin(angle) * headRadiusY };
-  });
-  drawPolygon(g, headPolygon, suit, core, Math.max(1, minDim * 0.005), W, H);
-  drawSegment(
+  drawSegment(g, pose.footLeft, footLeft, minDim * 0.046, "#f4efe4", W, H);
+  drawSegment(g, pose.footRight, footRight, minDim * 0.046, "#f4efe4", W, H);
+  drawSegment(g, pose.footLeft, footLeft, minDim * 0.014, core, W, H);
+  drawSegment(g, pose.footRight, footRight, minDim * 0.014, core, W, H);
+
+  drawLimb(g, pose.shoulderLeft, pose.elbowLeft, minDim * 0.064, outfit, `rgba(226, 107, 210, ${0.26 + pulse * 0.1})`, W, H);
+  drawLimb(g, pose.elbowLeft, pose.handLeft, minDim * 0.035, skin, skinShadow, W, H);
+  drawLimb(g, pose.shoulderRight, pose.elbowRight, minDim * 0.064, outfit, `rgba(226, 107, 210, ${0.26 + pulse * 0.1})`, W, H);
+  drawLimb(g, pose.elbowRight, pose.handRight, minDim * 0.035, skin, skinShadow, W, H);
+
+  drawPolygon(g, torso, outfit, core, Math.max(1.5, minDim * 0.005), W, H);
+  drawPolygon(
     g,
-    { x: head.x - headRadiusX * 0.7, y: head.y + headRadiusY * 0.08 },
-    { x: head.x + headRadiusX * 0.7, y: head.y + headRadiusY * 0.08 },
-    Math.max(3, minDim * 0.012),
-    magenta,
+    [
+      { x: pose.shoulderLeft.x + 0.025, y: pose.shoulderLeft.y + 0.025 },
+      { x: pose.neck.x, y: pose.neck.y + 0.03 },
+      { x: pose.shoulderRight.x - 0.025, y: pose.shoulderRight.y + 0.025 },
+      { x: pose.hipRight.x - 0.015, y: pose.hipRight.y - 0.02 },
+      { x: pose.hipLeft.x + 0.015, y: pose.hipLeft.y - 0.02 },
+    ],
+    outfitPanel,
+    `rgba(125, 249, 255, ${0.3 + pulse * 0.1})`,
+    1,
     W,
     H,
   );
-  drawSegment(
+  drawSegment(g, { x: pose.hipLeft.x - 0.02, y: pose.hipLeft.y }, { x: pose.hipRight.x + 0.02, y: pose.hipRight.y }, minDim * 0.012, magenta, W, H);
+  drawLimb(g, pose.neck, { x: head.x, y: head.y + headRadiusYNorm * 0.82 }, minDim * 0.035, skin, skinShadow, W, H);
+
+  drawEllipse(g, head, headRadiusX, headRadiusY, skin, skinShadow, 1.5, W, H);
+  drawPolygon(
     g,
-    { x: head.x - headRadiusX * 0.5, y: head.y + headRadiusY * 0.08 },
-    { x: head.x + headRadiusX * 0.5, y: head.y + headRadiusY * 0.08 },
-    Math.max(1, minDim * 0.004),
-    "#f4efe4",
+    [
+      { x: head.x - headRadiusXNorm, y: head.y - headRadiusYNorm * 0.15 },
+      { x: head.x - headRadiusXNorm * 0.78, y: head.y - headRadiusYNorm * 0.86 },
+      { x: head.x - headRadiusXNorm * 0.1, y: head.y - headRadiusYNorm * 1.12 },
+      { x: head.x + headRadiusXNorm * 0.78, y: head.y - headRadiusYNorm * 0.75 },
+      { x: head.x + headRadiusXNorm, y: head.y + headRadiusYNorm * 0.05 },
+      { x: head.x + headRadiusXNorm * 0.42, y: head.y - headRadiusYNorm * 0.12 },
+      { x: head.x - headRadiusXNorm * 0.2, y: head.y - headRadiusYNorm * 0.08 },
+    ],
+    hair,
+    hair,
+    1,
     W,
     H,
   );
+  drawSegment(g, { x: head.x - headRadiusXNorm * 0.55, y: head.y + headRadiusYNorm * 0.12 }, { x: head.x - headRadiusXNorm * 0.12, y: head.y + headRadiusYNorm * 0.1 }, 1.5, "rgba(17, 22, 35, 0.9)", W, H);
+  drawSegment(g, { x: head.x + headRadiusXNorm * 0.12, y: head.y + headRadiusYNorm * 0.1 }, { x: head.x + headRadiusXNorm * 0.52, y: head.y + headRadiusYNorm * 0.08 }, 1.5, "rgba(17, 22, 35, 0.9)", W, H);
+  drawSegment(g, { x: head.x - headRadiusXNorm * 0.24, y: head.y + headRadiusYNorm * 0.46 }, { x: head.x + headRadiusXNorm * 0.2, y: head.y + headRadiusYNorm * 0.43 }, 1, magenta, W, H);
 
-  for (const point of [pose.shoulderLeft, pose.shoulderRight, pose.hipLeft, pose.hipRight]) {
-    drawDiamond(g, point, Math.max(0.006, minDim * 0.009 / Math.max(W, H)), joint, W, H);
-  }
-  for (const point of [pose.elbowLeft, pose.elbowRight, pose.kneeLeft, pose.kneeRight]) {
-    drawDiamond(g, point, Math.max(0.005, minDim * 0.007 / Math.max(W, H)), core, W, H);
-  }
-  for (const point of [pose.handLeft, pose.handRight, pose.footLeft, pose.footRight]) {
-    g.fillStyle = joint;
-    g.beginPath();
-    g.arc(point.x * W, point.y * H, Math.max(3, minDim * 0.008), 0, Math.PI * 2);
-    g.fill();
-  }
+  for (const point of [pose.handLeft, pose.handRight]) drawEllipse(g, point, minDim * 0.018, minDim * 0.018, skin, skinShadow, 1, W, H);
+  for (const point of [pose.kneeLeft, pose.kneeRight]) drawEllipse(g, point, minDim * 0.04, minDim * 0.04, outfitPanel, core, 1, W, H);
 
   g.globalAlpha = 0.18 + pulse * 0.12;
   g.strokeStyle = cyan;
   g.lineWidth = 1;
   g.beginPath();
   g.ellipse(
-    ((pose.footLeft.x + pose.footRight.x) / 2) * W,
+    ((footLeft.x + footRight.x) / 2) * W,
     0.98 * H,
     minDim * (0.19 + pulse * 0.035),
     minDim * 0.018,
