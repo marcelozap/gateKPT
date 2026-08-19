@@ -26,6 +26,15 @@ audio/movement alignment, the visualizer, performer experience, and
 The repositories must remain separate. XIV consumes Malo Sound outputs through
 an artifact or API; it does not copy Malo Sound source code or model weights.
 
+### XIV Repository Address
+
+XIV now has a dedicated local repository at
+`/Users/a14/Documents/xiv-performance`. Its intended remote is
+`https://github.com/marcelozap/xiv-performance`; that GitHub repository has
+not been created yet, so no public remote claim is being made. The older
+`/Users/a14/Documents/xiv` directory is a separate trading archive and is not
+part of XIV performance work.
+
 ## Verified State
 
 ### Malo Sound
@@ -89,6 +98,15 @@ movement-model version.
 - per-event offsets and confidence
 - aggregate session metrics
 - judgments and personal-baseline comparison
+
+## Chart Reproducibility
+
+XIV V1 uses a deterministic two-lane hand chart. It skips the first two beat
+entries for lead-in, selects every second beat after that, and assigns the
+selected event ordinal by parity: even ordinals are `L`, odd ordinals are `R`.
+Vertical placement uses a fixed event-index seed. The lane is stored on the
+chart event, not inferred later by the renderer. The full contract lives in
+the XIV repository at `docs/CHART_CONTRACT.md`.
 
 ## Next Integration Slices
 
