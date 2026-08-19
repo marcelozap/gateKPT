@@ -9,6 +9,17 @@ Read these before writing copy, posts, or code in this repo.
 3. `docs/ops/CONTENT_RUNBOOK.md` is the procedure for publishing a note, adding a log entry, editing a layer, or renaming a slug. Read it before touching `src/gatekpt/content.ts`.
 4. `GATEKPT_HANDOFF.md`, `docs/standards/GATEKPT_DESIGN_STANDARD.md`, and `XIV_BRAND_STANDARD.md` may provide historical or extended context when present. If one is absent from the repo, do not invent its contents; use `docs/standards/PROJECT_GUIDELINES.md` as the current source of truth.
 
+## Multimodal Architecture
+
+- **Malo Sound** is the separate audio-intelligence project. It owns MP3/WAV/live-audio ingestion, beat and tempo analysis, spectral features, CLAP embeddings, audio-model training, and versioned `AudioAnalysisV1` artifacts.
+- **XIV/GateKPT** owns movement capture, the future custom movement model, audio/movement synchronization, the visualizer, user experience, and the final session report.
+- Do not duplicate Malo Sound code or model weights in this repository. XIV consumes a versioned audio-analysis artifact or API.
+- The target pipeline is `Malo Sound audio analysis + XIV movement analysis -> SessionAnalysisV1 -> narration LLM`.
+- Dance is the first activity, not the final scope. Preserve extension points for tennis, golf, swimming, and running through activity adapters and an `activity_type` field rather than hard-coding dance into the core.
+- Current status: the local CLAP bundle is pretrained and not custom-trained; MediaPipe pose is pretrained; the Dance Lab clock is procedural; there are no custom training examples, training steps, adapters, evaluation runs, or deployed custom models in this repository.
+- Never claim a model is trained or deployed without a real dataset, recorded run, checkpoint or adapter, evaluation result, and deployment evidence.
+- Collect reviewed session data in batches. Do not retrain model weights after every user session; update personal baselines immediately and fine-tune periodically after consent and evaluation.
+
 ## Non-negotiables
 
 - `src/gatekpt/content.ts` is the current source of truth for the seven layers, in this order: Input, Tokens, Context, Models, Tools, Chips, Power. (The old Power/Chips/Data/Models/Software/Testing/Business order is retired — see `docs/training/00_READ_FIRST.md`. `src/gatekpt/stack.ts` still contains it and is dead code: zero imports.) Any list of layers in a post, meta description, OG image, noscript block, or homepage copy must match it exactly and in order.

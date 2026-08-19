@@ -20,6 +20,58 @@ Before changing GateKPT content, design, navigation, or teaching models, read `d
 
 The folder `/Users/a14/Documents/xiv` is a separate trading-GPT archive. Do not edit the GateKPT website from that folder. Do not copy trading content into this public AI site.
 
+## Multimodal Audio And Movement Architecture
+
+XIV is the wider movement and creative-systems layer. Malo Sound is a
+separate audio-intelligence project. Keep the repositories separate and join
+them through versioned analysis artifacts rather than duplicated source code or
+model weights.
+
+### Ownership
+
+- **Malo Sound** owns MP3/WAV/live-audio ingestion, preprocessing, beat and
+  tempo analysis, onset detection, energy and spectral features, CLAP
+  embeddings, audio-model training, evaluation, and `AudioAnalysisV1` output.
+- **XIV/GateKPT** owns pose capture, movement features, the future custom
+  movement model, timestamp alignment, the visualizer, the performer
+  experience, and the final session report.
+- A narration LLM reads the structured result. It is not required to process
+  raw MP3 and raw video directly in the first version.
+
+### Shared pipeline
+
+```text
+Malo Sound AudioAnalysisV1
+        +
+XIV MovementAnalysisV1
+        -> synchronized SessionAnalysisV1
+        -> narration LLM report
+```
+
+`AudioAnalysisV1` should carry a schema version, source reference, duration,
+sample rate, BPM, beat and downbeat timestamps, onset timestamps, energy and
+spectral feature references, CLAP embedding reference, confidence values, and
+the versions of every model or analysis stage used to produce it.
+
+### Training status and claims
+
+The local CLAP bundle is a pretrained dependency, not Marcelo's trained audio
+model. MediaPipe PoseLandmarker is a pretrained movement dependency, not
+Marcelo's custom movement model. The Dance Lab's internal 112 BPM clock is
+procedural. As of this standard, this repository has no custom training
+examples, custom training steps, adapters, evaluation runs, or deployed custom
+models. Do not describe any of those as complete without recorded evidence.
+
+Session data may be collected from an MP3 and synchronized video or pose
+sequence. Unpaired audio and movement can train their specialist components,
+but cannot teach cross-modal timing. Store reviewed, consented data in batches;
+update a performer's personal baseline immediately, but retrain model weights
+periodically behind an evaluation gate rather than after every session.
+
+The core must stay activity-agnostic. Dance is the first vertical. Future
+activity adapters may support tennis, golf, swimming, and running without
+forcing audio into activities where it is not relevant.
+
 ## File Map
 
 Edit the source file that owns the behavior. Do not patch generated output or the deployed site directly.
