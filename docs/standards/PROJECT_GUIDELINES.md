@@ -27,6 +27,10 @@ separate audio-intelligence project. Keep the repositories separate and join
 them through versioned analysis artifacts rather than duplicated source code or
 model weights.
 
+The current cross-project status and next integration slices live in
+`docs/standards/MULTIMODAL_SYNC.md`. Read it before changing the Dance Lab
+integration or a model/data contract.
+
 ### Ownership
 
 - **Malo Sound** owns MP3/WAV/live-audio ingestion, preprocessing, beat and

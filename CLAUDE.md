@@ -11,6 +11,9 @@ Read these before writing copy, posts, or code in this repo.
 
 ## Multimodal Architecture
 
+Read `docs/standards/MULTIMODAL_SYNC.md` for the shared status ledger and next
+integration slices. Update it only from verified artifacts.
+
 - **Malo Sound** is the separate audio-intelligence project. It owns MP3/WAV/live-audio ingestion, beat and tempo analysis, spectral features, CLAP embeddings, audio-model training, and versioned `AudioAnalysisV1` artifacts.
 - **XIV/GateKPT** owns movement capture, the future custom movement model, audio/movement synchronization, the visualizer, user experience, and the final session report.
 - Do not duplicate Malo Sound code or model weights in this repository. XIV consumes a versioned audio-analysis artifact or API.
