@@ -36,6 +36,27 @@ type Target = {
 type Landmark = { x: number; y: number; visibility?: number };
 type Point = { x: number; y: number };
 
+type MotionRegions = {
+  head: number;
+  torso: number;
+  leftArm: number;
+  rightArm: number;
+  leftLeg: number;
+  rightLeg: number;
+};
+
+type VisualPattern = "alternate" | "pulse" | "strobe" | "gradient-sweep";
+
+type VisualState = {
+  musicEnergy: number;
+  kineticIntensity: number;
+  rhythmicDensity: number;
+  switchFrequencyHz: number;
+  switchPattern: VisualPattern;
+  section: "intro" | "groove" | "build" | "drop" | "breakdown";
+  regions: MotionRegions;
+};
+
 type LeadPose = {
   bodyTilt: number;
   headTilt: number;
@@ -53,6 +74,8 @@ type LeadPose = {
   kneeRight: Point;
   footLeft: Point;
   footRight: Point;
+  kineticIntensity: number;
+  regions: MotionRegions;
 };
 
 type LeadCue = Point & { progress: number };
@@ -118,6 +141,15 @@ function leadDancerPose(beat: number, cue: LeadCue | null): LeadPose {
   const rightHand = { x: cx + 0.26 + rightLift * 0.045, y: 0.48 - rightLift * 0.2 - phrase * 0.025 };
   const leftKneeLift = clamp((groove + 0.15) * 0.5, 0, 1);
   const rightKneeLift = clamp((-groove + 0.15) * 0.5, 0, 1);
+  const kineticIntensity = clamp(0.28 + Math.abs(groove) * 0.42 + Math.abs(phrase) * 0.24 + bounce * 4, 0, 1);
+  const regions: MotionRegions = {
+    head: clamp(0.2 + Math.abs(phrase) * 0.45, 0, 1),
+    torso: clamp(0.35 + Math.abs(phrase) * 0.5 + bounce * 3, 0, 1),
+    leftArm: clamp(0.3 + leftLift * 0.62 + Math.abs(groove) * 0.16, 0, 1),
+    rightArm: clamp(0.3 + rightLift * 0.62 + Math.abs(groove) * 0.16, 0, 1),
+    leftLeg: clamp(0.3 + leftKneeLift * 0.58 + Math.abs(groove) * 0.18, 0, 1),
+    rightLeg: clamp(0.3 + rightKneeLift * 0.58 + Math.abs(groove) * 0.18, 0, 1),
+  };
 
   if (cue) {
     const eased = cue.progress * cue.progress * (3 - 2 * cue.progress);
@@ -147,6 +179,8 @@ function leadDancerPose(beat: number, cue: LeadCue | null): LeadPose {
     kneeRight: { x: cx + 0.115 - groove * 0.045, y: 0.78 - rightKneeLift * 0.07 - bounce * 0.25 },
     footLeft: { x: cx - 0.145 - leftKneeLift * 0.035 - groove * 0.018, y: 0.95 - leftKneeLift * 0.1 },
     footRight: { x: cx + 0.145 + rightKneeLift * 0.035 + groove * 0.018, y: 0.95 - rightKneeLift * 0.1 },
+    kineticIntensity,
+    regions,
   };
 }
 
@@ -222,6 +256,31 @@ function drawEllipse(
   g.stroke();
 }
 
+function heatColor(heat: number, alpha: number): string {
+  const t = clamp(heat, 0, 1);
+  const r = Math.round(43 + (255 - 43) * t);
+  const g = Math.round(105 + (54 - 105) * t);
+  const b = Math.round(191 + (85 - 191) * t);
+  return `rgba(${r}, ${g}, ${b}, ${clamp(alpha, 0, 1)})`;
+}
+
+function switchSignal(seconds: number, state: VisualState): number {
+  if (!Number.isFinite(seconds) || state.switchFrequencyHz <= 0) return 0;
+  const phase = (seconds * state.switchFrequencyHz) % 1;
+  if (state.switchPattern === "strobe") return phase < 0.18 ? 1 : 0.05;
+  if (state.switchPattern === "pulse") return 0.5 + 0.5 * Math.sin(phase * Math.PI * 2);
+  if (state.switchPattern === "gradient-sweep") return phase;
+  return phase < 0.5 ? 0.18 : 0.86;
+}
+
+function tubeGlow(region: keyof MotionRegions, state: VisualState, seconds: number): string {
+  const activation = state.regions[region];
+  const switching = switchSignal(seconds, state);
+  const heat = clamp(state.kineticIntensity * 0.62 + activation * 0.28 + switching * 0.1, 0, 1);
+  const alpha = 0.18 + activation * 0.38 + state.musicEnergy * 0.18 + switching * 0.12;
+  return heatColor(heat, alpha);
+}
+
 function drawLeadDancer(
   g: CanvasRenderingContext2D,
   pose: LeadPose,
@@ -231,6 +290,8 @@ function drawLeadDancer(
   cyan: string,
   magenta: string,
   pulse: number,
+  state: VisualState,
+  seconds: number,
 ): void {
   const core = `rgba(125, 249, 255, ${0.58 + pulse * 0.16})`;
   const outfit = `rgba(10, 17, 28, ${0.9 + pulse * 0.05})`;
@@ -238,6 +299,13 @@ function drawLeadDancer(
   const skin = `rgba(222, 170, 145, ${0.88 + pulse * 0.06})`;
   const skinShadow = `rgba(138, 78, 87, ${0.48 + pulse * 0.08})`;
   const hair = `rgba(17, 22, 35, ${0.96 + pulse * 0.03})`;
+  const bodyGlow = tubeGlow("torso", state, seconds);
+  const headGlow = tubeGlow("head", state, seconds);
+  const leftArmGlow = tubeGlow("leftArm", state, seconds);
+  const rightArmGlow = tubeGlow("rightArm", state, seconds);
+  const leftLegGlow = tubeGlow("leftLeg", state, seconds);
+  const rightLegGlow = tubeGlow("rightLeg", state, seconds);
+  const switching = switchSignal(seconds, state);
   const head = pose.head;
   const torso = [
     pose.shoulderLeft,
@@ -269,22 +337,22 @@ function drawLeadDancer(
   g.ellipse(((footLeft.x + footRight.x) / 2) * W, 0.975 * H, minDim * 0.2, minDim * 0.022, 0, 0, Math.PI * 2);
   g.fill();
 
-  drawLimb(g, pose.hipLeft, pose.kneeLeft, minDim * 0.085, outfit, `rgba(226, 107, 210, ${0.22 + pulse * 0.1})`, W, H);
-  drawLimb(g, pose.kneeLeft, pose.footLeft, minDim * 0.062, outfitPanel, `rgba(226, 107, 210, ${0.2 + pulse * 0.08})`, W, H);
-  drawLimb(g, pose.hipRight, pose.kneeRight, minDim * 0.085, outfit, `rgba(226, 107, 210, ${0.22 + pulse * 0.1})`, W, H);
-  drawLimb(g, pose.kneeRight, pose.footRight, minDim * 0.062, outfitPanel, `rgba(226, 107, 210, ${0.2 + pulse * 0.08})`, W, H);
+  drawLimb(g, pose.hipLeft, pose.kneeLeft, minDim * 0.085, outfit, leftLegGlow, W, H);
+  drawLimb(g, pose.kneeLeft, pose.footLeft, minDim * 0.062, outfitPanel, leftLegGlow, W, H);
+  drawLimb(g, pose.hipRight, pose.kneeRight, minDim * 0.085, outfit, rightLegGlow, W, H);
+  drawLimb(g, pose.kneeRight, pose.footRight, minDim * 0.062, outfitPanel, rightLegGlow, W, H);
 
   drawSegment(g, pose.footLeft, footLeft, minDim * 0.046, "#f4efe4", W, H);
   drawSegment(g, pose.footRight, footRight, minDim * 0.046, "#f4efe4", W, H);
   drawSegment(g, pose.footLeft, footLeft, minDim * 0.014, core, W, H);
   drawSegment(g, pose.footRight, footRight, minDim * 0.014, core, W, H);
 
-  drawLimb(g, pose.shoulderLeft, pose.elbowLeft, minDim * 0.064, outfit, `rgba(226, 107, 210, ${0.26 + pulse * 0.1})`, W, H);
-  drawLimb(g, pose.elbowLeft, pose.handLeft, minDim * 0.035, skin, skinShadow, W, H);
-  drawLimb(g, pose.shoulderRight, pose.elbowRight, minDim * 0.064, outfit, `rgba(226, 107, 210, ${0.26 + pulse * 0.1})`, W, H);
-  drawLimb(g, pose.elbowRight, pose.handRight, minDim * 0.035, skin, skinShadow, W, H);
+  drawLimb(g, pose.shoulderLeft, pose.elbowLeft, minDim * 0.064, outfit, leftArmGlow, W, H);
+  drawLimb(g, pose.elbowLeft, pose.handLeft, minDim * 0.035, skin, leftArmGlow, W, H);
+  drawLimb(g, pose.shoulderRight, pose.elbowRight, minDim * 0.064, outfit, rightArmGlow, W, H);
+  drawLimb(g, pose.elbowRight, pose.handRight, minDim * 0.035, skin, rightArmGlow, W, H);
 
-  drawPolygon(g, torso, outfit, core, Math.max(1.5, minDim * 0.005), W, H);
+  drawPolygon(g, torso, outfit, bodyGlow, Math.max(1.5, minDim * 0.005), W, H);
   drawPolygon(
     g,
     [
@@ -295,15 +363,15 @@ function drawLeadDancer(
       { x: pose.hipLeft.x + 0.015, y: pose.hipLeft.y - 0.02 },
     ],
     outfitPanel,
-    `rgba(125, 249, 255, ${0.3 + pulse * 0.1})`,
+    bodyGlow,
     1,
     W,
     H,
   );
-  drawSegment(g, { x: pose.hipLeft.x - 0.02, y: pose.hipLeft.y }, { x: pose.hipRight.x + 0.02, y: pose.hipRight.y }, minDim * 0.012, magenta, W, H);
+  drawSegment(g, { x: pose.hipLeft.x - 0.02, y: pose.hipLeft.y }, { x: pose.hipRight.x + 0.02, y: pose.hipRight.y }, minDim * 0.012, heatColor(clamp(state.kineticIntensity + switching * 0.2, 0, 1), 0.9), W, H);
   drawLimb(g, pose.neck, { x: head.x, y: head.y + headRadiusYNorm * 0.82 }, minDim * 0.035, skin, skinShadow, W, H);
 
-  drawEllipse(g, head, headRadiusX, headRadiusY, skin, skinShadow, 1.5, W, H);
+  drawEllipse(g, head, headRadiusX, headRadiusY, skin, headGlow, 1.5, W, H);
   drawPolygon(
     g,
     [
@@ -323,13 +391,13 @@ function drawLeadDancer(
   );
   drawSegment(g, { x: head.x - headRadiusXNorm * 0.55, y: head.y + headRadiusYNorm * 0.12 }, { x: head.x - headRadiusXNorm * 0.12, y: head.y + headRadiusYNorm * 0.1 }, 1.5, "rgba(17, 22, 35, 0.9)", W, H);
   drawSegment(g, { x: head.x + headRadiusXNorm * 0.12, y: head.y + headRadiusYNorm * 0.1 }, { x: head.x + headRadiusXNorm * 0.52, y: head.y + headRadiusYNorm * 0.08 }, 1.5, "rgba(17, 22, 35, 0.9)", W, H);
-  drawSegment(g, { x: head.x - headRadiusXNorm * 0.24, y: head.y + headRadiusYNorm * 0.46 }, { x: head.x + headRadiusXNorm * 0.2, y: head.y + headRadiusYNorm * 0.43 }, 1, magenta, W, H);
+  drawSegment(g, { x: head.x - headRadiusXNorm * 0.24, y: head.y + headRadiusYNorm * 0.46 }, { x: head.x + headRadiusXNorm * 0.2, y: head.y + headRadiusYNorm * 0.43 }, 1, headGlow, W, H);
 
   for (const point of [pose.handLeft, pose.handRight]) drawEllipse(g, point, minDim * 0.018, minDim * 0.018, skin, skinShadow, 1, W, H);
   for (const point of [pose.kneeLeft, pose.kneeRight]) drawEllipse(g, point, minDim * 0.04, minDim * 0.04, outfitPanel, core, 1, W, H);
 
   g.globalAlpha = 0.18 + pulse * 0.12;
-  g.strokeStyle = cyan;
+  g.strokeStyle = bodyGlow;
   g.lineWidth = 1;
   g.beginPath();
   g.ellipse(
@@ -345,6 +413,66 @@ function drawLeadDancer(
   g.restore();
 }
 
+function audioEnergyAt(analysis: AudioAnalysisV1 | null, seconds: number): number {
+  const curve = analysis?.energy_curve;
+  if (!curve || curve.rms.length === 0 || !Number.isFinite(seconds)) return 0.42;
+  const index = clamp(Math.floor(seconds / curve.hop_s), 0, curve.rms.length - 1);
+  const value = curve.rms[index];
+  const min = Math.min(...curve.rms);
+  const max = Math.max(...curve.rms);
+  return clamp((value - min) / Math.max(0.001, max - min), 0, 1);
+}
+
+function rhythmicDensityAt(analysis: AudioAnalysisV1 | null, seconds: number): number {
+  if (!analysis || !Number.isFinite(seconds)) return 0.32;
+  const start = seconds - 2;
+  const end = seconds + 2;
+  const onsets = analysis.onset_times.filter((time) => time >= start && time <= end).length;
+  return clamp(onsets / 12, 0, 1);
+}
+
+function buildVisualState(
+  analysis: AudioAnalysisV1 | null,
+  seconds: number,
+  analyserEnergy: number,
+  pose: LeadPose,
+): VisualState {
+  const musicEnergy = clamp(analyserEnergy * 0.72 + audioEnergyAt(analysis, seconds) * 0.28, 0, 1);
+  const rhythmicDensity = rhythmicDensityAt(analysis, seconds);
+  const section: VisualState["section"] = seconds < 4
+    ? "intro"
+    : musicEnergy < 0.24
+      ? "breakdown"
+      : musicEnergy > 0.76
+        ? "drop"
+        : rhythmicDensity > 0.62
+          ? "build"
+          : "groove";
+  const doubleTime = rhythmicDensity > 0.62;
+  const switchFrequencyHz = clamp(
+    1.5 + rhythmicDensity * 7 + (doubleTime ? 3 : 0) + (section === "drop" ? 2 : 0),
+    0,
+    20,
+  );
+  const switchPattern: VisualPattern = section === "breakdown"
+    ? "gradient-sweep"
+    : section === "build"
+      ? "pulse"
+      : doubleTime
+        ? "strobe"
+        : "alternate";
+
+  return {
+    musicEnergy,
+    kineticIntensity: pose.kineticIntensity,
+    rhythmicDensity,
+    switchFrequencyHz,
+    switchPattern,
+    section,
+    regions: pose.regions,
+  };
+}
+
 function drawVisualizer(
   g: CanvasRenderingContext2D,
   W: number,
@@ -354,10 +482,13 @@ function drawVisualizer(
   energy: number,
   cyan: string,
   magenta: string,
+  state: VisualState,
+  seconds: number,
 ): void {
   const phase = ((beat % 1) + 1) % 1;
   const beatPulse = Math.pow(1 - phase, 3);
-  const pulse = clamp(energy * 0.8 + beatPulse * 0.32, 0, 1);
+  const switching = switchSignal(seconds, state);
+  const pulse = clamp(energy * 0.8 + beatPulse * 0.32 + switching * 0.08, 0, 1);
   const centerX = W * 0.5;
   const centerY = H * 0.52;
 
@@ -372,23 +503,25 @@ function drawVisualizer(
   g.fillStyle = glow;
   g.fillRect(0, 0, W, H);
 
-  g.globalAlpha = 0.22 + pulse * 0.18;
+  g.globalAlpha = 0.16 + pulse * 0.2 + state.musicEnergy * 0.08;
   g.strokeStyle = cyan;
   g.lineWidth = 1;
-  for (let i = 0; i < 9; i += 1) {
-    const radius = minDim * (0.16 + i * 0.1 + beatPulse * 0.045);
+  const ringCount = state.section === "drop" ? 11 : state.section === "breakdown" ? 6 : 9;
+  for (let i = 0; i < ringCount; i += 1) {
+    const radius = minDim * (0.16 + i * 0.1 + beatPulse * 0.045 + switching * 0.018);
     g.beginPath();
     g.ellipse(centerX, centerY, radius * 1.25, radius * 0.58, 0, 0, Math.PI * 2);
     g.stroke();
   }
 
-  g.globalAlpha = 0.16 + pulse * 0.12;
+  g.globalAlpha = 0.1 + pulse * 0.14 + (state.section === "build" ? switching * 0.12 : 0);
   g.strokeStyle = magenta;
-  for (let i = 0; i < 7; i += 1) {
-    const x = ((i + 1) / 8) * W;
+  const rayCount = state.section === "build" ? 12 : state.section === "breakdown" ? 4 : 7;
+  for (let i = 0; i < rayCount; i += 1) {
+    const x = ((i + 1) / (rayCount + 1)) * W;
     g.beginPath();
     g.moveTo(x, H);
-    g.lineTo(centerX + (x - centerX) * (0.24 + pulse * 0.08), centerY);
+    g.lineTo(centerX + (x - centerX) * (0.24 + pulse * 0.08 + switching * 0.04), centerY);
     g.stroke();
   }
   g.restore();
@@ -684,17 +817,31 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
     const magenta = "#e26bd2";
     const beat = beatNow();
     const visualBeat = Number.isFinite(beat) ? beat : 0;
+    const seconds = clockSeconds();
     let energy = 0;
     const analyser = analyserRef.current;
     const spectrum = spectrumRef.current;
     if (analyser && spectrum) {
       analyser.getByteFrequencyData(spectrum);
       let total = 0;
-      for (let i = 0; i < Math.min(12, spectrum.length); i += 1) total += spectrum[i];
-      energy = total / (Math.min(12, spectrum.length) * 255);
+      for (let i = 0; i < spectrum.length; i += 1) total += spectrum[i];
+      energy = spectrum.length > 0 ? total / (spectrum.length * 255) : 0;
     }
 
-    drawVisualizer(g, W, H, minDim, visualBeat, energy, cyan, magenta);
+    const cueTarget = targetsRef.current
+      .filter((target) => !target.judged && target.beat >= visualBeat - 0.4)
+      .sort((a, b) => Math.abs(a.beat - visualBeat) - Math.abs(b.beat - visualBeat))[0];
+    const cue = cueTarget
+      ? {
+          x: cueTarget.x,
+          y: cueTarget.y,
+          progress: clamp(1 - (cueTarget.hitTime - seconds) / (LEAD_BEATS * activeBeatDuration()), 0, 1),
+        }
+      : null;
+    const leadPose = leadDancerPose(visualBeat, cue);
+    const visualState = buildVisualState(analysisRef.current, seconds, energy, leadPose);
+
+    drawVisualizer(g, W, H, minDim, visualBeat, visualState.musicEnergy, cyan, magenta, visualState, seconds);
 
     // video, mirrored and dimmed
     const video = videoRef.current;
@@ -723,17 +870,7 @@ export function DanceLab({ locale = "en" }: { locale?: DanceLocale }) {
       }
     }
 
-    const cueTarget = targetsRef.current
-      .filter((target) => !target.judged && target.beat >= visualBeat - 0.4)
-      .sort((a, b) => Math.abs(a.beat - visualBeat) - Math.abs(b.beat - visualBeat))[0];
-    const cue = cueTarget
-      ? {
-          x: cueTarget.x,
-          y: cueTarget.y,
-          progress: clamp(1 - (cueTarget.hitTime - clockSeconds()) / (LEAD_BEATS * activeBeatDuration()), 0, 1),
-        }
-      : null;
-    drawLeadDancer(g, leadDancerPose(visualBeat, cue), W, H, minDim, cyan, magenta, energy);
+    drawLeadDancer(g, leadPose, W, H, minDim, cyan, magenta, visualState.musicEnergy, visualState, seconds);
 
     // skeleton
     const wrists = wristsRef.current;

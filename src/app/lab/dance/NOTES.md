@@ -53,3 +53,16 @@ Pointer simulator mode covers denied cameras and headless testing.
   `AudioAnalysisV1` JSON plus its matching audio file can now drive the beat
   grid and visualizer without copying private music into the repo
 - No score persistence, no leaderboard — it's a lab instrument, not a product
+
+## Visual signal map
+
+The visualizer keeps the music, body, and light channels legible:
+
+- Music energy controls field brightness and overall glow.
+- Dancer kinetic intensity controls color heat, moving from cool cyan toward hot coral.
+- Onset density and double-time feel control the light switch rate and pattern.
+- Head, torso, arm, and leg motion activate their corresponding body tubes.
+- The current musical section selects the visual arrangement: intro, groove, build, drop, or breakdown.
+- Audio pitch is not used as switch frequency; switch rate comes from rhythmic density and double-time feel.
+
+The current body is a procedural 2D human lead dancer. It is a performance prototype and control surface, not a trained 3D avatar.
