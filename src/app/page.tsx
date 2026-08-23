@@ -1,4 +1,4 @@
-import { GatekptHome } from "@/gatekpt/GatekptHome";
+import { AudioProofGateway } from "@/gatekpt/AudioProofGateway";
 import { layersEn } from "@/gatekpt/content";
 
 function NoScriptStack() {
@@ -34,7 +34,7 @@ function NoScriptStack() {
 export default function Home() {
   return (
     <>
-      <GatekptHome />
+      <AudioProofGateway />
       <noscript>
         <NoScriptStack />
       </noscript>

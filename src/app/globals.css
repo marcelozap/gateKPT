@@ -2414,6 +2414,180 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
   }
 }
 
+/* -------------------------------------------------------------------
+   GateKPT public front door: one screen, proof in the machine.
+   ------------------------------------------------------------------- */
+.gkp-hero {
+  background:
+    radial-gradient(1000px 600px at 50% 30%, rgba(143, 240, 255, 0.05), transparent 60%),
+    #06060b;
+  border-bottom: 1px solid rgba(238, 240, 244, 0.13);
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+.gkp-hero-top {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 18px clamp(16px, 4vw, 44px);
+}
+
+.gkp-brand {
+  color: #eef0f4;
+  font-family: var(--font-jbmono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.34em;
+}
+
+.gkp-brand b {
+  color: #8ff0ff;
+  font-weight: 500;
+}
+
+.gkp-sig,
+.gkp-sig a {
+  color: rgba(238, 240, 244, 0.45);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+}
+
+.gkp-sig a:hover,
+.gkp-sig a:focus-visible {
+  color: #8ff0ff;
+  outline: none;
+}
+
+.gkp-stage-wrap {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: center;
+  padding: 8px 16px 22px;
+}
+
+#machine {
+  aspect-ratio: 860 / 380;
+  display: block;
+  opacity: 0.9;
+  width: min(680px, 92vw);
+}
+
+.gkp-machine-frame {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.gkp-machine-frame > * {
+  grid-area: 1 / 1;
+}
+
+.gkp-contract-missing {
+  color: rgba(238, 240, 244, 0.72);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  pointer-events: none;
+}
+
+.gkp-site-line {
+  color: #eef0f4;
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: clamp(26px, 4.2vw, 40px);
+  font-weight: 500;
+  line-height: 1.08;
+  margin: 4px 0 0;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.gkp-site-sub {
+  color: rgba(238, 240, 244, 0.45);
+  font-size: 14.5px;
+  margin: 0;
+  text-align: center;
+}
+
+.gkp-gates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 0 16px 34px;
+}
+
+.gkp-gate {
+  background: rgba(11, 11, 19, 0.5);
+  border: 1px solid rgba(238, 240, 244, 0.13);
+  color: rgba(238, 240, 244, 0.72);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
+.gkp-gate:hover,
+.gkp-gate:focus-visible {
+  border-color: rgba(143, 240, 255, 0.35);
+  color: #8ff0ff;
+  outline: none;
+}
+
+.gkp-machine-hint {
+  margin: -14px 0 26px;
+  text-align: center;
+}
+
+.gkp-machine-hint a {
+  color: rgba(238, 240, 244, 0.45);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+}
+
+.gkp-machine-hint a:hover,
+.gkp-machine-hint a:focus-visible {
+  color: #8ff0ff;
+  outline: none;
+}
+
+.gkp-home-footer {
+  border-top: 1px solid rgba(238, 240, 244, 0.13);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 20px clamp(16px, 4vw, 44px);
+}
+
+.gkp-home-footer span,
+.gkp-home-footer a {
+  color: rgba(238, 240, 244, 0.45);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+}
+
+.gkp-home-footer .gkp-owner {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.gkp-home-footer .gkp-owner a {
+  color: rgba(238, 240, 244, 0.72);
+}
+
 /* Published writing alignment standard: metadata left, words start on the same rail. */
 .gkl-list {
   --gkl-meta-rail: clamp(112px, 14vw, 180px);

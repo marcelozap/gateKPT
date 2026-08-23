@@ -773,8 +773,25 @@ const fieldLogEntryNote003Es: LogEntry = {
     "Jacques Hadamard, An Essay on the Psychology of Invention in the Mathematical Field, Princeton University Press, 1945.",
   ],
 };
+
+const fieldLogEntryMachine: LogEntry = {
+  slug: "the-machine",
+  date: "2026-08-23",
+  title: "The machine on the homepage",
+  layer: "Field note",
+  summary: "A short note on why the GateKPT homepage runs on a song instead of a stock animation.",
+  noteHref: "/notes/the-machine",
+  body: [
+    "The machine on the homepage is not a stock visualizer. It runs on analysis data exported from a song I made.",
+    "That matters because I want GateKPT to show how AI systems are built from layers: a real source, a contract, a renderer, and a public experience.",
+    "The analysis behind it is deterministic code plus a pretrained representation - no trained model of mine, yet. Starting at the bottom of the stack is the point. The first version also shipped with a timing bug that froze the machine on its first frame; the fix is one line, and the lesson is why the page refuses to fake a pulse when the data is missing.",
+    "The point is not to explain every number on the first screen. The point is to make the page alive, then let the notes explain the stack underneath it.",
+  ],
+};
 export function getEntries(locale: Locale) {
-  return locale === "es" ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs] : [fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
+  return locale === "es"
+    ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs]
+    : [fieldLogEntryMachine, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {

@@ -23,11 +23,10 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
+    default: "GateKPT - AI From the Physical Layer Up",
     template: "%s - GateKPT",
   },
-  description:
-    "GateKPT is Marcelo Zapata's public AI, machine learning, and data engineering notebook: LLM systems, visual signal mapping, data contracts, and field notes.",
+  description: "AI notes, field logs, and a living gateway for understanding the machine.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -37,8 +36,8 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
-    description: "LLM systems, visual signal mapping, data contracts, and field notes in one public GateKPT surface.",
+    title: "GateKPT - AI From the Physical Layer Up",
+    description: "AI notes, field logs, and a living gateway for understanding the machine.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",
@@ -47,23 +46,23 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "GateKPT - AI from the text box out.",
+        alt: "GateKPT audio-analysis gateway.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
-    description: "LLM systems, visual signal mapping, data contracts, and field notes in one public GateKPT surface.",
+    title: "GateKPT - AI From the Physical Layer Up",
+    description: "AI notes, field logs, and a living gateway for understanding the machine.",
     images: [
       {
         url: "/opengraph-image",
-        alt: "GateKPT - AI from the text box out.",
+        alt: "GateKPT audio-analysis gateway.",
       },
     ],
   },
   other: {
-    "google": "notranslate",
+    google: "notranslate",
   },
 };
 

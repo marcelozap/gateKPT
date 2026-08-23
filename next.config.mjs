@@ -1,5 +1,6 @@
 const nextConfig = {
   reactStrictMode: true,
+  allowedDevOrigins: ["127.0.0.1"],
   async redirects() {
     return [
       { source: "/gatekpt-site", destination: "/", permanent: true },

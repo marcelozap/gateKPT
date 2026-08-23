@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { GatekptLanding } from "@/gatekpt/GatekptLanding";
 
 export default function GatekptPage() {
-  redirect("/");
+  return <GatekptLanding />;
 }
