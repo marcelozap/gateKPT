@@ -31,6 +31,7 @@ const HOME_COPY = {
     layersLabel: "AI layers",
     openMap: "Open map",
     notes: "Notes",
+    music: "Music, measured",
     switchLabel: "ES",
     switchHref: "/es",
   },
@@ -47,6 +48,7 @@ const HOME_COPY = {
     layersLabel: "Capas de IA",
     openMap: "Abrir mapa",
     notes: "Notas",
+    music: "Music, measured",
     switchLabel: "EN",
     switchHref: "/",
   },
@@ -481,7 +483,7 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
             <div className={styles.links}>
               <button type="button" onClick={() => setShowMap(true)}>{copy.openMap}</button>
               <a href={locale === "es" ? "/es/notes" : "/notes"}>{copy.notes}</a>
-              <a href="https://www.marcelozapata.dev/#malosound">MaloSound</a>
+              <a href="/notes/music-measured">{copy.music}</a>
               <a href="https://www.marcelozapata.dev/#greenmachine">GreenMachine</a>
               <a href={copy.switchHref}>{copy.switchLabel}</a>
             </div>

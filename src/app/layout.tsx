@@ -69,9 +69,50 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const siteUrl = getSiteUrl();
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${siteUrl}/#marcelo-zapata`,
+        name: "Marcelo Zapata",
+        url: siteUrl,
+        sameAs: ["https://www.linkedin.com/in/marcelozap/"],
+        jobTitle: "AI Machine Learning & Data Engineer",
+        knowsAbout: [
+          "AI systems",
+          "machine learning",
+          "large language models",
+          "data engineering",
+          "signal mapping",
+          "audio analysis",
+          "visual systems",
+        ],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        name: "GateKPT",
+        url: siteUrl,
+        description:
+          "Marcelo Zapata's public surface for AI systems, machine learning literacy, data engineering notes, and signal-mapped visual work.",
+        publisher: {
+          "@id": `${siteUrl}/#marcelo-zapata`,
+        },
+      },
+    ],
+  };
+
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${newsreader.variable}`}>
       <body className="font-body">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <main id="main-content" className="relative z-10 outline-none" tabIndex={-1}>
           {children}
         </main>
