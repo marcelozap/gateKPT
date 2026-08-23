@@ -1,167 +1,223 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GatekptLanding } from "./GatekptLanding";
 import styles from "./GatekptHome.module.css";
 
+type AudioAnalysis = {
+  source_name?: string;
+  duration_s?: number;
+  duration?: number;
+  bpm?: number;
+  beat_times: number[];
+  downbeat_times: number[];
+  energy_curve: { hop_s?: number; rms: number[] };
+  band_energy: { hop_s?: number; values: number[][] };
+};
+
 const LAYERS = ["Input", "Tokens", "Context", "Models", "Tools", "Chips", "Power"];
-const TAU = Math.PI * 2;
+const ANALYSIS_FILES = [
+  "/gateway/gateway_track_alt_mj.audioanalysis.v1.json",
+  "/gateway/gateway_track.audioanalysis.v1.json",
+];
 
 function clamp(value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value));
 }
 
-function oklchToRgb(l: number, c: number, h: number) {
-  const a = c * Math.cos((h / 180) * Math.PI);
-  const b = c * Math.sin((h / 180) * Math.PI);
-  const l_ = l + 0.3963377774 * a + 0.2158037573 * b;
-  const m_ = l - 0.1055613458 * a - 0.0638541728 * b;
-  const s_ = l - 0.0894841775 * a - 1.291485548 * b;
-  const l3 = l_ ** 3;
-  const m3 = m_ ** 3;
-  const s3 = s_ ** 3;
-  return [
-    4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3,
-    -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3,
-    -0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3,
-  ];
+function valueAt(analysis: AudioAnalysis, t: number) {
+  const hop = analysis.energy_curve.hop_s || 0.5;
+  const values = analysis.energy_curve.rms;
+  const index = Math.max(0, Math.min(values.length - 1, Math.floor(t / hop)));
+  const max = Math.max(...values, 0.001);
+  return values[index] / max;
 }
 
-function toCssRgb(linear: number[]) {
-  const channels = linear.map((channel) => {
-    const srgb = channel <= 0.0031308 ? 12.92 * channel : 1.055 * channel ** (1 / 2.4) - 0.055;
-    return Math.round(clamp(srgb) * 255);
-  });
-  return `rgb(${channels[0]} ${channels[1]} ${channels[2]})`;
+function bandsAt(analysis: AudioAnalysis, t: number) {
+  const hop = analysis.band_energy.hop_s || 0.5;
+  const rows = analysis.band_energy.values;
+  const index = Math.max(0, Math.min(rows.length - 1, Math.floor(t / hop)));
+  const max = Math.max(...rows.flat(), 0.001);
+  return rows[index].slice(0, 8).map((value) => value / max);
 }
 
-function oklch(l: number, c: number, h: number) {
-  let chroma = c;
-  for (let i = 0; i < 8; i++) {
-    const linear = oklchToRgb(l, chroma, h);
-    if (linear.every((channel) => channel >= 0 && channel <= 1)) {
-      return toCssRgb(linear);
+async function loadAnalysis() {
+  for (const file of ANALYSIS_FILES) {
+    try {
+      const response = await fetch(file, { cache: "no-store" });
+      if (!response.ok) continue;
+      const next = (await response.json()) as AudioAnalysis;
+      if (Array.isArray(next.beat_times) && Array.isArray(next.band_energy?.values)) return next;
+    } catch {
+      // Try the next contract. The canvas has an honest idle state if none load.
     }
-    chroma *= 0.82;
   }
-  return toCssRgb(oklchToRgb(l, 0, h));
-}
-
-function skinColor(slice: number, focus: number, t: number) {
-  const hueBase = (208 + t * 2.4) % 360;
-  const travelingFront = 0.5 + 0.5 * Math.sin((slice * 0.35 - t / 11) * TAU);
-  const light = 0.58 + travelingFront * 0.13 + focus * 0.05;
-  const chroma = 0.1 + travelingFront * 0.055 + focus * 0.025;
-  const hue = hueBase + travelingFront * 55 + focus * 8;
-  return oklch(light, chroma, hue);
+  return null;
 }
 
 export function GatekptHome() {
   const [showMap, setShowMap] = useState(false);
   const [layer, setLayer] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const analysisRef = useRef<AudioAnalysis | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const startRef = useRef(0);
   const layerRef = useRef(0);
+  const beatRef = useRef({ beat: -1, downbeat: -1, beatFlash: 0, downbeatFlash: 0 });
 
   useEffect(() => {
     layerRef.current = layer;
   }, [layer]);
 
   useEffect(() => {
+    let cancelled = false;
+    startRef.current = performance.now();
+
+    loadAnalysis().then((analysis) => {
+      if (!cancelled) analysisRef.current = analysis;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const draw = useCallback((now: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
-    const canvasEl = canvas;
-    const context = ctx;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, width < 760 ? 1.5 : 2);
+
+    if (canvas.width !== Math.floor(width * dpr) || canvas.height !== Math.floor(height * dpr)) {
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let raf = 0;
+    const t = reduced ? 12 : now / 1000;
+    const analysis = analysisRef.current;
+    const mobile = width < 760;
+    const cx = mobile ? width * 0.52 : width * 0.62;
+    const cy = mobile ? height * 0.63 : height * 0.54;
+    const size = Math.min(width, height);
 
-    function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 760 ? 1.5 : 2);
-      canvasEl.width = Math.floor(window.innerWidth * dpr);
-      canvasEl.height = Math.floor(window.innerHeight * dpr);
-      canvasEl.style.width = `${window.innerWidth}px`;
-      canvasEl.style.height = `${window.innerHeight}px`;
-      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#02050a";
+    ctx.fillRect(0, 0, width, height);
+
+    const atmosphere = ctx.createRadialGradient(cx, cy, 0, cx, cy, size * 0.78);
+    atmosphere.addColorStop(0, "rgba(125, 249, 255, 0.16)");
+    atmosphere.addColorStop(0.36, "rgba(124, 92, 230, 0.075)");
+    atmosphere.addColorStop(0.72, "rgba(255, 45, 149, 0.035)");
+    atmosphere.addColorStop(1, "rgba(2, 5, 10, 0)");
+    ctx.fillStyle = atmosphere;
+    ctx.fillRect(0, 0, width, height);
+
+    for (let i = 0; i < (mobile ? 52 : 140); i++) {
+      const seed = i * 19.1987;
+      const x = (Math.sin(seed) * 0.5 + 0.5) * width;
+      const y = (Math.sin(seed * 1.41 + 2.7) * 0.5 + 0.5) * height;
+      ctx.globalAlpha = i % 13 === 0 ? 0.48 : 0.22;
+      ctx.fillStyle = i % 13 === 0 ? "#7df9ff" : "#93a0b4";
+      ctx.fillRect(x, y, i % 13 === 0 ? 2 : 1, i % 13 === 0 ? 2 : 1);
     }
 
-    function profile(y: number) {
-      const n = (y + 2) / 4.25;
-      const torso = Math.exp(-Math.pow((n - 0.46) / 0.24, 2)) * 0.72;
-      const chest = Math.exp(-Math.pow((n - 0.63) / 0.14, 2)) * 0.3;
-      const head = Math.exp(-Math.pow((n - 0.88) / 0.09, 2)) * 0.46;
-      const hips = Math.exp(-Math.pow((n - 0.28) / 0.1, 2)) * 0.42;
-      return Math.max(0.05, torso + chest + head + hips);
-    }
+    const duration = analysis?.duration_s || analysis?.duration || 60;
+    const elapsed = analysis ? ((now - startRef.current) / 1000) % duration : t % 60;
+    const energy = analysis ? clamp(valueAt(analysis, elapsed)) : 0.42 + Math.sin(t * 0.8) * 0.08;
+    const bands = analysis ? bandsAt(analysis, elapsed) : new Array(8).fill(0.28);
+    const state = beatRef.current;
 
-    function draw(now: number) {
-      const t = reduced ? 6 : now / 1000;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const mobile = w < 760;
-      const cx = mobile ? w * 0.52 : w * 0.56;
-      const cy = mobile ? h * 0.7 : h * 0.72;
-      const scale = mobile ? Math.min(w * 0.38, 180) : Math.min(w * 0.18, 260);
-
-      context.clearRect(0, 0, w, h);
-      context.fillStyle = "#02050a";
-      context.fillRect(0, 0, w, h);
-
-      context.globalAlpha = 0.55;
-      for (let i = 0; i < (mobile ? 60 : 180); i++) {
-        const a = i * 12.9898;
-        const x = (Math.sin(a) * 0.5 + 0.5) * w;
-        const y = (Math.sin(a * 1.73 + 4.2) * 0.5 + 0.5) * h;
-        context.fillStyle = i % 11 === 0 ? "rgba(125, 249, 255, 0.72)" : "rgba(169, 180, 198, 0.42)";
-        context.fillRect(x, y, i % 9 === 0 ? 3 : 1.5, i % 9 === 0 ? 3 : 1.5);
+    if (analysis) {
+      const beatIndex = analysis.beat_times.findIndex((beat) => beat > elapsed) - 1;
+      const downbeatIndex = analysis.downbeat_times.findIndex((beat) => beat > elapsed) - 1;
+      if (beatIndex >= 0 && beatIndex !== state.beat) {
+        state.beat = beatIndex;
+        state.beatFlash = 1;
       }
-
-      context.save();
-      context.translate(cx, cy);
-      context.rotate(Math.sin(t * Math.PI * 0.25) * 0.08 + layerRef.current * 0.015);
-
-      for (let i = 0; i < 74; i++) {
-        const y = -1.82 + (i / 73) * 4.05;
-        const slice = i / 73;
-        const p = profile(y);
-        const band = (i / 73) * 6;
-        const focus = Math.max(0, 1 - Math.abs(band - layerRef.current) / 1.35);
-        const waveA = Math.sin(t * 0.77 + i * 0.19 * 1.618);
-        const waveB = Math.sin(t * 1.246 + i * 0.19 * 0.73);
-        const field = waveA * 0.065 + waveB * 0.05;
-        const width = (p + focus * 0.2 + Math.abs(field)) * scale;
-        const depth = (p * 0.55 + 0.08) * scale;
-        const sy = y * scale * 0.86;
-        context.beginPath();
-        context.ellipse(Math.sin(t * 0.9 + i * 0.17) * 8, sy, width, depth, 0, 0, Math.PI * 2);
-        context.strokeStyle = skinColor(slice, focus, t);
-        context.globalAlpha = 0.16 + focus * 0.68;
-        context.lineWidth = focus > 0.45 ? 1.25 : 0.7;
-        context.stroke();
+      if (downbeatIndex >= 0 && downbeatIndex !== state.downbeat) {
+        state.downbeat = downbeatIndex;
+        state.downbeatFlash = 1;
       }
-
-      context.globalAlpha = 0.42;
-      context.strokeStyle = "#F5A524";
-      context.lineWidth = 1;
-      context.beginPath();
-      context.ellipse(0, -scale * 0.22, scale * 1.5, scale * 0.22, -0.22, 0, Math.PI * 2);
-      context.stroke();
-      context.restore();
-
-      if (!reduced) raf = requestAnimationFrame(draw);
+    } else {
+      state.beatFlash = 0.25 + Math.sin(t * 1.1) * 0.1;
+      state.downbeatFlash = 0.12 + Math.sin(t * 0.35) * 0.08;
     }
 
-    resize();
-    window.addEventListener("resize", resize);
-    raf = requestAnimationFrame(draw);
+    state.beatFlash *= 0.88;
+    state.downbeatFlash *= 0.84;
 
-    return () => {
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(raf);
-    };
+    const layerFocus = layerRef.current / Math.max(1, LAYERS.length - 1);
+    const core = size * (0.14 + energy * 0.055 + state.downbeatFlash * 0.035);
+    const outer = core * (1.62 + layerFocus * 0.16);
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(elapsed * 0.038 + layerFocus * 0.32);
+
+    for (let i = 0; i < 8; i++) {
+      const band = clamp(bands[i] ?? 0);
+      const angle = (i / 8) * Math.PI * 2;
+      const length = core * (1.1 + band * 1.55 + state.beatFlash * 0.18);
+      const inner = core * (0.42 + layerFocus * 0.08);
+      const x1 = Math.cos(angle) * inner;
+      const y1 = Math.sin(angle) * inner;
+      const x2 = Math.cos(angle) * length;
+      const y2 = Math.sin(angle) * length;
+      const cyan = i % 2 === 0;
+
+      ctx.strokeStyle = cyan
+        ? `rgba(125, 249, 255, ${0.18 + band * 0.58})`
+        : `rgba(244, 248, 252, ${0.16 + band * 0.46})`;
+      ctx.lineWidth = 1.2 + band * 4.8 + state.downbeatFlash * 2.6;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle = `rgba(244, 248, 252, ${0.34 + state.beatFlash * 0.34})`;
+    ctx.lineWidth = 1.5 + state.downbeatFlash * 7;
+    ctx.beginPath();
+    ctx.arc(0, 0, core, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = `rgba(125, 249, 255, ${0.16 + energy * 0.32})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, 0, outer, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.globalAlpha = 0.18 + energy * 0.22;
+    ctx.strokeStyle = "#f5a524";
+    ctx.beginPath();
+    ctx.ellipse(0, core * 0.08, outer * 1.18, outer * 0.18, -0.24, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    const scanY = (elapsed / duration) * height;
+    ctx.globalAlpha = 0.08 + state.downbeatFlash * 0.24;
+    ctx.fillStyle = "#ffb020";
+    ctx.fillRect(0, scanY, width, 2 + state.downbeatFlash * 8);
+    ctx.globalAlpha = 1;
+
+    if (!reduced) animationRef.current = requestAnimationFrame(draw);
   }, []);
+
+  useEffect(() => {
+    animationRef.current = requestAnimationFrame(draw);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [draw]);
 
   if (showMap) return <GatekptLanding />;
 
@@ -172,7 +228,7 @@ export function GatekptHome() {
         <main className={styles.hud}>
           <header className={styles.topbar}>
             <div className={styles.mark}>GateKPT</div>
-            <div className={styles.status}>live map</div>
+            <div className={styles.status}>analysis v1</div>
           </header>
 
           <section className={styles.headline}>
