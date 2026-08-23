@@ -21,7 +21,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const layerCount = layers.length;
   const layer = layers[layerIndex];
-  const layerHref = locale === "es" ? "/es#layers" : "/#layers";
+  const layerHref = "#layers";
 
   useEffect(() => {
     document.body.classList.add("gk-instrument");
