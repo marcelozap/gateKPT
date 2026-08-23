@@ -25,7 +25,7 @@ const HOME_COPY = {
     proofLabel: "Proof lanes",
     proofLanes: [
       ["AI", "LLM systems"],
-      ["ML", "signal mapping"],
+      ["ML", "1 / model trained · ledgered"],
       ["DATA", "contracts + notes"],
     ],
     layersLabel: "AI layers",
@@ -42,7 +42,7 @@ const HOME_COPY = {
     proofLabel: "Líneas de prueba",
     proofLanes: [
       ["IA", "sistemas LLM"],
-      ["ML", "mapas de señales"],
+      ["ML", "1 modelo entrenado · ledger"],
       ["DATOS", "contratos + notas"],
     ],
     layersLabel: "Capas de IA",

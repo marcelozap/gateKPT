@@ -807,7 +807,9 @@ const fieldLogEntryMusicMeasured: LogEntry = {
     "The rhythm layer is deterministic. It uses spectral-flux onsets, autocorrelation tempo, comb-grid beats snapped within 40ms, 8-band spectral features, and RMS energy. The baseline was checked against synthesized click-track ground truth: tempo within 2.5 BPM and median grid error under 50ms.",
     "The data layer matters as much as the model layer. Every export uses the AudioAnalysisV1 contract and is validated before it is written. The pipeline also keeps content hashes, provenance fields, update mode, and bronze/silver/gold separation so the catalog can change without losing traceability.",
     "Three things are public-safe right now: the homepage machine reading real analysis data, the schema-checked gateway JSON files, and the interactive track map or screenshots built from the indexed catalog.",
-    "The limit is part of the proof: no custom-trained model of mine exists yet. The current system uses pretrained representations, deterministic signal code, contracts, validation, retrieval, and clean data discipline. Raw audio, video, embeddings matrices, pose files, local paths, and internal handoff docs stay private.",
+    "04 - A first trained model, scoped honestly. Labels came free from my own metadata. The interesting work was the leakage control: the catalog holds identical audio under different names, so tracks were grouped at cosine 0.999 and split by group - no duplicate sits in train and test at once.",
+    "One trained model exists: a linear probe on my catalog's embeddings that tells raw takes, finished bounces, and practice videos apart (test accuracy 0.952, macro-F1 0.869 vs a 0.307 majority baseline, duplicate-controlled splits). It is a probe of what the pretrained representation knows about my catalog - not a new audio model. CLAP is pretrained; the rhythm analyzer is deterministic; the unified audio+movement model is still a spec with a ledger waiting for it.",
+    "Raw audio, video, embeddings matrices, pose files, local paths, and internal handoff docs stay private.",
   ],
 };
 export function getEntries(locale: Locale) {
