@@ -91,6 +91,35 @@
   line-height: 1.55;
 }
 
+.proofLanes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.proofLanes span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  border: 1px solid rgba(125, 249, 255, 0.18);
+  border-radius: 2px;
+  background: rgba(7, 16, 26, 0.5);
+  color: var(--chrome);
+  padding: 6px 8px;
+  font-family: var(--font-jbmono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(14px);
+}
+
+.proofLanes strong {
+  color: var(--visor-core);
+  font-weight: 500;
+}
+
 .layers {
   display: flex;
   flex-wrap: wrap;
@@ -162,6 +191,10 @@
   .headline p {
     max-width: 330px;
     font-size: 14px;
+  }
+
+  .proofLanes {
+    max-width: 330px;
   }
 
 }

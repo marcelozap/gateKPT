@@ -15,6 +15,11 @@ type Segment = {
 };
 
 const LAYERS = ["Input", "Tokens", "Context", "Models", "Tools", "Chips", "Power"];
+const PROOF_LANES = [
+  ["LLM", "context + tools"],
+  ["VISUAL", "motion field"],
+  ["SOUND", "MaloSound"],
+];
 const SEGMENTS = 16;
 const TAU = Math.PI * 2;
 
@@ -315,7 +320,15 @@ export function GatekptHome() {
 
           <section className={styles.headline}>
             <h1>AI from the text box out.</h1>
-            <p>Seven layers behind one prompt.</p>
+            <p>LLM context, visual motion, sound analysis.</p>
+            <div className={styles.proofLanes} aria-label="Proof lanes">
+              {PROOF_LANES.map(([label, detail]) => (
+                <span key={label}>
+                  <strong>{label}</strong>
+                  {detail}
+                </span>
+              ))}
+            </div>
             <div className={styles.layers} aria-label="AI layers">
               {LAYERS.map((name, index) => (
                 <button
