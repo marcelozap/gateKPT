@@ -23,10 +23,10 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - AI From the Physical Layer Up",
+    default: "GateKPT - Sound Into Signal",
     template: "%s - GateKPT",
   },
-  description: "AI notes, field logs, and a living gateway for understanding the machine.",
+  description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - AI From the Physical Layer Up",
-    description: "AI notes, field logs, and a living gateway for understanding the machine.",
+    title: "GateKPT - Sound Into Signal",
+    description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",
@@ -46,18 +46,18 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "GateKPT audio-analysis gateway.",
+        alt: "GateKPT sound-to-signal gateway.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GateKPT - AI From the Physical Layer Up",
-    description: "AI notes, field logs, and a living gateway for understanding the machine.",
+    title: "GateKPT - Sound Into Signal",
+    description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
     images: [
       {
         url: "/opengraph-image",
-        alt: "GateKPT audio-analysis gateway.",
+        alt: "GateKPT sound-to-signal gateway.",
       },
     ],
   },

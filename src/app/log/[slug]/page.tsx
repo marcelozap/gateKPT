@@ -64,6 +64,15 @@ export default async function LogEntryPage({ params }: Props) {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {entry.artifacts?.length ? (
+            <div className="gkl-artifacts" aria-label="Public artifacts">
+              {entry.artifacts.map((artifact) => (
+                <a key={artifact.href} href={artifact.href}>
+                  {artifact.label}
+                </a>
+              ))}
+            </div>
+          ) : null}
           {entry.nextHref && entry.nextLabel ? (
             <Link href={entry.nextHref} className="gkl-primary gkl-note-next">
               {entry.nextLabel}

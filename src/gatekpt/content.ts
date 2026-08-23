@@ -23,6 +23,7 @@ export type LogEntry = {
   noteHref?: string;
   nextHref?: string;
   nextLabel?: string;
+  artifacts?: { href: string; label: string }[];
 };
 
 export type NoteBlock = {
@@ -798,18 +799,17 @@ const fieldLogEntryMusicMeasured: LogEntry = {
   date: "2026-08-23",
   title: "Music, measured",
   layer: "Case study",
-  summary: "A public note on indexing my music catalog with embeddings, deterministic rhythm analysis, and schema-checked exports.",
+  summary: "Two measured samples. One visual instrument. The data is open.",
   noteHref: "/notes/music-measured",
+  artifacts: [
+    { href: "/gateway/gateway_track_alt_mj.audioanalysis.v1.json", label: "Sample 01 JSON" },
+    { href: "/gateway/gateway_track.audioanalysis.v1.json", label: "Sample 02 JSON" },
+    { href: "/notes/the-machine", label: "Homepage machine note" },
+  ],
   body: [
-    "I indexed my own music catalog with audio embeddings so the system could search by sound, not by the filenames I happened to leave behind.",
-    "The catalog pass covered 151GB across 727 files. The public index is 697 tracks by 512 dimensions, created on 2026-08-18 with a pretrained CLAP model. Similarity search uses cosine distance over those embeddings.",
-    "The strongest practical result was not a chart. It found duplicate bounces my filenames hid, and it connected practice videos of songs back to the songs.",
-    "The rhythm layer is deterministic. It uses spectral-flux onsets, autocorrelation tempo, comb-grid beats snapped within 40ms, 8-band spectral features, and RMS energy. The baseline was checked against synthesized click-track ground truth: tempo within 2.5 BPM and median grid error under 50ms.",
-    "The data layer matters as much as the model layer. Every export uses the AudioAnalysisV1 contract and is validated before it is written. The pipeline also keeps content hashes, provenance fields, update mode, and bronze/silver/gold separation so the catalog can change without losing traceability.",
-    "Three things are public-safe right now: the homepage machine reading real analysis data, the schema-checked gateway JSON files, and the interactive track map or screenshots built from the indexed catalog.",
-    "04 - A first trained model, scoped honestly. Labels came free from my own metadata. The interesting work was the leakage control: the catalog holds identical audio under different names, so tracks were grouped at cosine 0.999 and split by group - no duplicate sits in train and test at once.",
-    "One trained model exists: a linear probe on my catalog's embeddings that tells raw takes, finished bounces, and practice videos apart (test accuracy 0.952, macro-F1 0.869 vs a 0.307 majority baseline, duplicate-controlled splits). It is a probe of what the pretrained representation knows about my catalog - not a new audio model. CLAP is pretrained; the rhythm analyzer is deterministic; the unified audio+movement model is still a spec with a ledger waiting for it.",
-    "Raw audio, video, embeddings matrices, pose files, local paths, and internal handoff docs stay private.",
+    "The homepage turns two audio analysis files into motion.",
+    "Switch samples. Mute bands. Watch the body change.",
+    "Open the JSON if you want to see the measured signal underneath.",
   ],
 };
 export function getEntries(locale: Locale) {
