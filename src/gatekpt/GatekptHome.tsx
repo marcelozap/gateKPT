@@ -16,9 +16,9 @@ type Segment = {
 
 const LAYERS = ["Input", "Tokens", "Context", "Models", "Tools", "Chips", "Power"];
 const PROOF_LANES = [
-  ["LLM", "context + tools"],
-  ["VISUAL", "motion field"],
-  ["SOUND", "MaloSound"],
+  ["AI", "LLM systems"],
+  ["ML", "signal mapping"],
+  ["DATA", "contracts + notes"],
 ];
 const SEGMENTS = 16;
 const TAU = Math.PI * 2;
@@ -83,6 +83,10 @@ function skinColor(yNorm: number, speed: number, t: number, focus: number) {
   const light = 0.34 + front * 0.2 + heat * 0.18;
   const chroma = 0.09 + front * 0.035 + heat * 0.065;
   return oklchSafe(light, chroma, hue, 0.92);
+}
+
+function mean(values: number[]) {
+  return values.reduce((sum, value) => sum + value, 0) / Math.max(values.length, 1);
 }
 
 function assertAnatomy() {
@@ -236,6 +240,46 @@ export function GatekptHome() {
     ctx.stroke();
     ctx.restore();
 
+    const links = [
+      [hips, pelvisTop],
+      [pelvisTop, waistTop],
+      [waistTop, chestTop],
+      [chestTop, neckTop],
+      [neckTop, head],
+      [chestTop, shoulderL],
+      [chestTop, shoulderR],
+      [shoulderL, elbowL],
+      [shoulderR, elbowR],
+      [elbowL, handL],
+      [elbowR, handR],
+      [hips, hipL],
+      [hips, hipR],
+      [hipL, kneeL],
+      [hipR, kneeR],
+      [kneeL, footL],
+      [kneeR, footR],
+    ];
+    const nodes = [hips, pelvisTop, waistTop, chestTop, neckTop, head, shoulderL, shoulderR, elbowL, elbowR, handL, handR, hipL, hipR, kneeL, kneeR, footL, footR];
+
+    ctx.save();
+    ctx.globalAlpha = 0.16;
+    ctx.strokeStyle = "#7df9ff";
+    ctx.lineWidth = 1;
+    links.forEach(([a, b]) => {
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 0.42;
+    nodes.forEach((node, index) => {
+      ctx.fillStyle = index % 5 === 0 ? "#f4f8fc" : "#7df9ff";
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, index % 5 === 0 ? 2.4 : 1.6, 0, TAU);
+      ctx.fill();
+    });
+    ctx.restore();
+
     function drawCapsule(segment: Segment) {
       const centerY = ((segment.a.y + segment.b.y) / 2 - (origin.y - scale * 1.9)) / (scale * 4.2);
       const focus = Math.max(0, 1 - Math.abs(segment.index / (SEGMENTS - 1) - layerFocus) * 4);
@@ -296,6 +340,39 @@ export function GatekptHome() {
 
     ctx.shadowBlur = 0;
 
+    const speeds = Array.from(speedRef.current);
+    const featureVector = [
+      mean([speeds[0], speeds[1], speeds[2]]),
+      mean([speeds[3], speeds[4], speeds[9], speeds[10]]),
+      mean([speeds[5], speeds[6], speeds[7], speeds[8]]),
+      mean([speeds[11], speeds[12], speeds[13], speeds[14], speeds[15]]),
+      clamp(Math.abs(rootYaw) * 3.1),
+      clamp(Math.abs(chestYaw) * 5.4),
+      clamp(layerFocus),
+    ];
+
+    const probeX = mobile ? width - 92 : origin.x + scale * 1.95;
+    const probeY = mobile ? height * 0.56 : origin.y - scale * 2.05;
+    const barW = mobile ? 46 : 64;
+    const barGap = mobile ? 7 : 9;
+
+    ctx.save();
+    ctx.font = "10px var(--font-jbmono), ui-monospace, monospace";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "rgba(147, 160, 180, 0.72)";
+    ctx.fillText("VISUAL", probeX, probeY - 18);
+    ctx.fillStyle = "rgba(125, 249, 255, 0.9)";
+    ctx.fillText("VECTOR", probeX + 46, probeY - 18);
+    featureVector.forEach((value, index) => {
+      const y = probeY + index * barGap;
+      ctx.fillStyle = "rgba(34, 44, 64, 0.72)";
+      ctx.fillRect(probeX, y, barW, 2);
+      ctx.fillStyle = index === layerRef.current ? "rgba(245, 165, 36, 0.86)" : "rgba(125, 249, 255, 0.78)";
+      ctx.fillRect(probeX, y, barW * clamp(value), 2);
+    });
+    ctx.restore();
+
     if (!reduced) animationRef.current = requestAnimationFrame(draw);
   }, []);
 
@@ -315,12 +392,12 @@ export function GatekptHome() {
         <main className={styles.hud}>
           <header className={styles.topbar}>
             <div className={styles.mark}>GateKPT</div>
-            <div className={styles.status}>motion field</div>
+            <div className={styles.status}>visual ai</div>
           </header>
 
           <section className={styles.headline}>
             <h1>AI from the text box out.</h1>
-            <p>LLM context, visual motion, sound analysis.</p>
+            <p>AI, machine learning, and data engineering shown as working systems.</p>
             <div className={styles.proofLanes} aria-label="Proof lanes">
               {PROOF_LANES.map(([label, detail]) => (
                 <span key={label}>

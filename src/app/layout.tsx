@@ -23,11 +23,11 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - AI From the Text Box Out",
+    default: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
     template: "%s - GateKPT",
   },
   description:
-    "Published writing and a public map of the AI layers: input, tokens, context, models, tools, chips, and power.",
+    "GateKPT is Marcelo Zapata's public AI, machine learning, and data engineering notebook: LLM systems, visual signal mapping, data contracts, and field notes.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -37,8 +37,8 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - AI From the Text Box Out",
-    description: "Published writing and a public map of what happens after you type.",
+    title: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
+    description: "LLM systems, visual signal mapping, data contracts, and field notes in one public GateKPT surface.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",
@@ -53,8 +53,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GateKPT - AI From the Text Box Out",
-    description: "Published writing and a public map of what happens after you type.",
+    title: "Marcelo Zapata - AI, Machine Learning & Data Engineering",
+    description: "LLM systems, visual signal mapping, data contracts, and field notes in one public GateKPT surface.",
     images: [
       {
         url: "/opengraph-image",
