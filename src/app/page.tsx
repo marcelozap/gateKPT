@@ -1,4 +1,4 @@
-import { GatekptLanding } from "@/gatekpt/GatekptLanding";
+import { GatekptHome } from "@/gatekpt/GatekptHome";
 import { layersEn } from "@/gatekpt/content";
 
 function NoScriptStack() {
@@ -34,7 +34,7 @@ function NoScriptStack() {
 export default function Home() {
   return (
     <>
-      <GatekptLanding />
+      <GatekptHome />
       <noscript>
         <NoScriptStack />
       </noscript>
