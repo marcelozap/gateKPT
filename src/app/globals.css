@@ -1815,6 +1815,7 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
 .gkl-body{margin-top:42px;display:grid;gap:24px}
 .gkl-body p{margin:0;color:var(--near);font-size:20px;line-height:1.75;max-width:760px}
 .gkl-body p:first-child{color:var(--focal)}
+.gkl-note-next{margin-top:34px}
 .gkl-footer{margin-top:52px;border-top:1px solid var(--ghost);padding-top:24px}
 
 @media(max-width:720px){

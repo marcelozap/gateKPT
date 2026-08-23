@@ -64,6 +64,11 @@ export default async function LogEntryPage({ params }: Props) {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {entry.nextHref && entry.nextLabel ? (
+            <Link href={entry.nextHref} className="gkl-primary gkl-note-next">
+              {entry.nextLabel}
+            </Link>
+          ) : null}
         </article>
       </main>
     </div>

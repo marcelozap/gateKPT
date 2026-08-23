@@ -21,6 +21,8 @@ export type LogEntry = {
   summary: string;
   body: string[];
   noteHref?: string;
+  nextHref?: string;
+  nextLabel?: string;
 };
 
 export type NoteBlock = {
@@ -781,6 +783,8 @@ const fieldLogEntryMachine: LogEntry = {
   layer: "Field note",
   summary: "A short note on why the GateKPT homepage runs on a song instead of a stock animation.",
   noteHref: "/notes/the-machine",
+  nextHref: "/notes/music-measured",
+  nextLabel: "Read the music system note",
   body: [
     "The machine on the homepage is not a stock visualizer. It runs on analysis data exported from a song I made.",
     "That matters because I want GateKPT to show how AI systems are built from layers: a real source, a contract, a renderer, and a public experience.",
@@ -788,10 +792,28 @@ const fieldLogEntryMachine: LogEntry = {
     "The point is not to explain every number on the first screen. The point is to make the page alive, then let the notes explain the stack underneath it.",
   ],
 };
+
+const fieldLogEntryMusicMeasured: LogEntry = {
+  slug: "music-measured",
+  date: "2026-08-23",
+  title: "Music, measured",
+  layer: "Case study",
+  summary: "A public note on indexing my music catalog with embeddings, deterministic rhythm analysis, and schema-checked exports.",
+  noteHref: "/notes/music-measured",
+  body: [
+    "I indexed my own music catalog with audio embeddings so the system could search by sound, not by the filenames I happened to leave behind.",
+    "The catalog pass covered 151GB across 727 files. The public index is 697 tracks by 512 dimensions, created on 2026-08-18 with a pretrained CLAP model. Similarity search uses cosine distance over those embeddings.",
+    "The strongest practical result was not a chart. It found duplicate bounces my filenames hid, and it connected practice videos of songs back to the songs.",
+    "The rhythm layer is deterministic. It uses spectral-flux onsets, autocorrelation tempo, comb-grid beats snapped within 40ms, 8-band spectral features, and RMS energy. The baseline was checked against synthesized click-track ground truth: tempo within 2.5 BPM and median grid error under 50ms.",
+    "The data layer matters as much as the model layer. Every export uses the AudioAnalysisV1 contract and is validated before it is written. The pipeline also keeps content hashes, provenance fields, update mode, and bronze/silver/gold separation so the catalog can change without losing traceability.",
+    "Three things are public-safe right now: the homepage machine reading real analysis data, the schema-checked gateway JSON files, and the interactive track map or screenshots built from the indexed catalog.",
+    "The limit is part of the proof: no custom-trained model of mine exists yet. The current system uses pretrained representations, deterministic signal code, contracts, validation, retrieval, and clean data discipline. Raw audio, video, embeddings matrices, pose files, local paths, and internal handoff docs stay private.",
+  ],
+};
 export function getEntries(locale: Locale) {
   return locale === "es"
     ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs]
-    : [fieldLogEntryMachine, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
+    : [fieldLogEntryMachine, fieldLogEntryMusicMeasured, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
