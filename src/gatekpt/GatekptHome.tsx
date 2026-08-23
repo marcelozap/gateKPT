@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GatekptLanding } from "./GatekptLanding";
+import type { Locale } from "./content";
 import styles from "./GatekptHome.module.css";
 
 type Point = { x: number; y: number };
@@ -15,13 +16,47 @@ type Segment = {
 };
 
 const LAYERS = ["Input", "Tokens", "Context", "Models", "Tools", "Chips", "Power"];
-const PROOF_LANES = [
-  ["AI", "LLM systems"],
-  ["ML", "signal mapping"],
-  ["DATA", "contracts + notes"],
-];
+const LAYERS_ES = ["Entrada", "Tokens", "Contexto", "Modelos", "Herramientas", "Chips", "Energía"];
+const HOME_COPY = {
+  en: {
+    status: "visual ai",
+    title: "AI from the text box out.",
+    subtitle: "AI, machine learning, and data engineering shown as working systems.",
+    proofLabel: "Proof lanes",
+    proofLanes: [
+      ["AI", "LLM systems"],
+      ["ML", "signal mapping"],
+      ["DATA", "contracts + notes"],
+    ],
+    layersLabel: "AI layers",
+    openMap: "Open map",
+    notes: "Notes",
+    switchLabel: "ES",
+    switchHref: "/es",
+  },
+  es: {
+    status: "ia visual",
+    title: "IA desde el texto hacia afuera.",
+    subtitle: "IA, aprendizaje automático e ingeniería de datos como sistemas reales.",
+    proofLabel: "Líneas de prueba",
+    proofLanes: [
+      ["IA", "sistemas LLM"],
+      ["ML", "mapas de señales"],
+      ["DATOS", "contratos + notas"],
+    ],
+    layersLabel: "Capas de IA",
+    openMap: "Abrir mapa",
+    notes: "Notas",
+    switchLabel: "EN",
+    switchHref: "/",
+  },
+} as const;
 const SEGMENTS = 16;
 const TAU = Math.PI * 2;
+// Chameleon rule: one narrow hue window, slow drift. Never a rainbow sweep.
+const HUE_CENTER = 202;
+const HUE_SPAN = 40;
+const VECTOR_LABELS = ["TORSO", "HEAD", "ARMS", "LEGS", "YAW", "TWIST", "LAYER"];
 
 function clamp(value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value));
@@ -76,10 +111,11 @@ function endFrom(start: Point, angle: number, length: number) {
 }
 
 function skinColor(yNorm: number, speed: number, t: number, focus: number) {
-  const front = 0.5 + 0.5 * Math.sin((yNorm * 0.35 - t / 11) * TAU);
+  const front = 0.5 + 0.5 * Math.sin((yNorm * 1.45 - t / 11) * TAU);
   const heat = clamp(speed * 0.68 + front * 0.22 + focus * 0.1);
-  const hueBase = 195 + ((t / 150) * 135) % 135;
-  const hue = hueBase + front * 55 + heat * 14;
+  const drift = 0.5 + 0.5 * Math.sin(t / 31);
+  const hue =
+    HUE_CENTER - HUE_SPAN / 2 + HUE_SPAN * clamp(drift * 0.44 + front * 0.36 + heat * 0.2);
   const light = 0.34 + front * 0.2 + heat * 0.18;
   const chroma = 0.09 + front * 0.035 + heat * 0.065;
   return oklchSafe(light, chroma, hue, 0.92);
@@ -99,7 +135,9 @@ function assertAnatomy() {
   console.assert(waistExists, "GateKPT anatomy: waist must stay narrower than pelvis and chest.");
 }
 
-export function GatekptHome() {
+export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
+  const copy = HOME_COPY[locale];
+  const layerNames = locale === "es" ? LAYERS_ES : LAYERS;
   const [showMap, setShowMap] = useState(false);
   const [layer, setLayer] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -261,25 +299,6 @@ export function GatekptHome() {
     ];
     const nodes = [hips, pelvisTop, waistTop, chestTop, neckTop, head, shoulderL, shoulderR, elbowL, elbowR, handL, handR, hipL, hipR, kneeL, kneeR, footL, footR];
 
-    ctx.save();
-    ctx.globalAlpha = 0.16;
-    ctx.strokeStyle = "#7df9ff";
-    ctx.lineWidth = 1;
-    links.forEach(([a, b]) => {
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
-    });
-    ctx.globalAlpha = 0.42;
-    nodes.forEach((node, index) => {
-      ctx.fillStyle = index % 5 === 0 ? "#f4f8fc" : "#7df9ff";
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, index % 5 === 0 ? 2.4 : 1.6, 0, TAU);
-      ctx.fill();
-    });
-    ctx.restore();
-
     function drawCapsule(segment: Segment) {
       const centerY = ((segment.a.y + segment.b.y) / 2 - (origin.y - scale * 1.9)) / (scale * 4.2);
       const focus = Math.max(0, 1 - Math.abs(segment.index / (SEGMENTS - 1) - layerFocus) * 4);
@@ -340,6 +359,35 @@ export function GatekptHome() {
 
     ctx.shadowBlur = 0;
 
+    const energy = clamp(mean(Array.from(speedRef.current)));
+
+    ctx.save();
+    ctx.globalAlpha = 0.3 + energy * 0.24;
+    ctx.strokeStyle = "#bff6ff";
+    ctx.lineWidth = 1;
+    links.forEach(([a, b]) => {
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    });
+    nodes.forEach((node, index) => {
+      const joint = index % 5 === 0;
+      ctx.globalAlpha = 0.62 + energy * 0.3;
+      ctx.fillStyle = joint ? "#ffffff" : "#bff6ff";
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, joint ? 2.7 : 1.9, 0, TAU);
+      ctx.fill();
+      if (joint) {
+        ctx.globalAlpha = 0.2 + energy * 0.26;
+        ctx.strokeStyle = "#7df9ff";
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 5 + energy * 2.6, 0, TAU);
+        ctx.stroke();
+      }
+    });
+    ctx.restore();
+
     const speeds = Array.from(speedRef.current);
     const featureVector = [
       mean([speeds[0], speeds[1], speeds[2]]),
@@ -351,13 +399,13 @@ export function GatekptHome() {
       clamp(layerFocus),
     ];
 
-    const probeX = mobile ? width - 92 : origin.x + scale * 1.95;
-    const probeY = mobile ? height * 0.56 : origin.y - scale * 2.05;
+    const probeX = mobile ? width - 96 : origin.x + scale * 1.95;
+    const probeY = mobile ? height * 0.8 : origin.y - scale * 2.05;
     const barW = mobile ? 46 : 64;
     const barGap = mobile ? 7 : 9;
 
     ctx.save();
-    ctx.font = "10px var(--font-jbmono), ui-monospace, monospace";
+    ctx.font = '10px ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace';
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "rgba(147, 160, 180, 0.72)";
@@ -366,10 +414,16 @@ export function GatekptHome() {
     ctx.fillText("VECTOR", probeX + 46, probeY - 18);
     featureVector.forEach((value, index) => {
       const y = probeY + index * barGap;
+      const active = index === layerRef.current;
       ctx.fillStyle = "rgba(34, 44, 64, 0.72)";
       ctx.fillRect(probeX, y, barW, 2);
-      ctx.fillStyle = index === layerRef.current ? "rgba(245, 165, 36, 0.86)" : "rgba(125, 249, 255, 0.78)";
+      ctx.fillStyle = active ? "rgba(245, 165, 36, 0.86)" : "rgba(125, 249, 255, 0.78)";
       ctx.fillRect(probeX, y, barW * clamp(value), 2);
+      if (!mobile) {
+        ctx.font = '8px ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace';
+        ctx.fillStyle = active ? "rgba(245, 165, 36, 0.7)" : "rgba(147, 160, 180, 0.46)";
+        ctx.fillText(VECTOR_LABELS[index], probeX + barW + 7, y + 1);
+      }
     });
     ctx.restore();
 
@@ -383,7 +437,7 @@ export function GatekptHome() {
     };
   }, [draw]);
 
-  if (showMap) return <GatekptLanding />;
+  if (showMap) return <GatekptLanding locale={locale} />;
 
   return (
     <div className={styles.shell}>
@@ -392,22 +446,22 @@ export function GatekptHome() {
         <main className={styles.hud}>
           <header className={styles.topbar}>
             <div className={styles.mark}>GateKPT</div>
-            <div className={styles.status}>visual ai</div>
+            <div className={styles.status}>{copy.status}</div>
           </header>
 
           <section className={styles.headline}>
-            <h1>AI from the text box out.</h1>
-            <p>AI, machine learning, and data engineering shown as working systems.</p>
-            <div className={styles.proofLanes} aria-label="Proof lanes">
-              {PROOF_LANES.map(([label, detail]) => (
+            <h1>{copy.title}</h1>
+            <p>{copy.subtitle}</p>
+            <div className={styles.proofLanes} aria-label={copy.proofLabel}>
+              {copy.proofLanes.map(([label, detail]) => (
                 <span key={label}>
                   <strong>{label}</strong>
                   {detail}
                 </span>
               ))}
             </div>
-            <div className={styles.layers} aria-label="AI layers">
-              {LAYERS.map((name, index) => (
+            <div className={styles.layers} aria-label={copy.layersLabel}>
+              {layerNames.map((name, index) => (
                 <button
                   key={name}
                   type="button"
@@ -424,10 +478,11 @@ export function GatekptHome() {
 
           <nav className={styles.gateway} aria-label="Gateway links">
             <div className={styles.links}>
-              <button type="button" onClick={() => setShowMap(true)}>Open map</button>
-              <a href="/notes">Notes</a>
+              <button type="button" onClick={() => setShowMap(true)}>{copy.openMap}</button>
+              <a href={locale === "es" ? "/es/notes" : "/notes"}>{copy.notes}</a>
               <a href="https://www.marcelozapata.dev/#malosound">MaloSound</a>
               <a href="https://www.marcelozapata.dev/#greenmachine">GreenMachine</a>
+              <a href={copy.switchHref}>{copy.switchLabel}</a>
             </div>
           </nav>
         </main>

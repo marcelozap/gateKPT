@@ -1,13 +1,15 @@
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
 import type { Metadata } from "next";
-import { GatekptLanding } from "@/gatekpt/GatekptLanding";
+import { GatekptHome } from "@/gatekpt/GatekptHome";
 import { layersEs } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
-  title: "GateKPT - IA Desde el Texto Hacia Afuera",
+  title: {
+    absolute: "Marcelo Zapata - IA, Machine Learning e Ingeniería de Datos",
+  },
   description:
-    "Escritura publicada y un mapa publico de las capas de IA: entrada, tokens, contexto, modelos, herramientas, chips y energia.",
+    "GateKPT es la superficie pública de IA, machine learning e ingeniería de datos de Marcelo Zapata: sistemas LLM, mapas de señales visuales, contratos de datos y notas.",
   alternates: {
     canonical: `${getSiteUrl()}/es`,
   },
@@ -18,8 +20,8 @@ function NoScriptStack() {
     <div className="gki-noscript">
       <h1>GateKPT - IA desde el texto hacia afuera.</h1>
       <p>
-        Escritura publicada y un mapa para entender que pasa cuando escribes: entrada, tokens, contexto, modelos,
-        herramientas, chips y energia.
+        Escritura publicada y un mapa para entender qué pasa cuando escribes: entrada, tokens, contexto, modelos,
+        herramientas, chips y energía.
       </p>
       {layersEs.map((layer) => (
         <section key={layer.id}>
@@ -48,7 +50,7 @@ export default function SpanishHome() {
   return (
     <div lang="es" translate="no">
       <SpanishDocumentGuard />
-      <GatekptLanding locale="es" />
+      <GatekptHome locale="es" />
       <noscript>
         <NoScriptStack />
       </noscript>

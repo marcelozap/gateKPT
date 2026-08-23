@@ -1900,14 +1900,15 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   }
 
   .gkl-page {
-    width: 100vw;
+    overflow-x: hidden;
+    width: 100%;
   }
 
   .gkl-shell {
-    max-width: calc(100vw - 36px);
+    max-width: 100%;
     padding-left: 0;
     padding-right: 0;
-    width: calc(100vw - 36px);
+    width: 100%;
   }
 
   .gkl-hero,
@@ -1915,9 +1916,9 @@ body.gk-instrument .gki-mono{font-family:var(--font-jbmono),ui-monospace,Menlo,m
   .gkl-start,
   .gkl-list,
   .gkl-list-head {
-    max-width: calc(100vw - 36px);
+    max-width: 100%;
     min-width: 0;
-    width: calc(100vw - 36px);
+    width: 100%;
   }
 
   .gkl-hero-copy p,
@@ -2026,16 +2027,17 @@ body.gk-instrument .gki-layer-main .gki-essence {
   }
 
   .gkl-page {
+    overflow-x: hidden;
     padding-left: 18px;
     padding-right: 18px;
-    width: 100vw;
+    width: 100%;
   }
 
   .gkl-shell {
-    max-width: calc(100vw - 36px);
+    max-width: 100%;
     padding-left: 0;
     padding-right: 0;
-    width: calc(100vw - 36px);
+    width: 100%;
   }
 
   .gkl-hero,
@@ -2043,9 +2045,9 @@ body.gk-instrument .gki-layer-main .gki-essence {
   .gkl-start,
   .gkl-list,
   .gkl-list-head {
-    max-width: calc(100vw - 36px);
+    max-width: 100%;
     min-width: 0;
-    width: calc(100vw - 36px);
+    width: 100%;
   }
 
   .gkl-hero-copy,
