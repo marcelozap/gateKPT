@@ -28,7 +28,7 @@ export default function SpanishLogPage() {
             <span className="gki-kicker gki-mono">GateKPT / Escritura publicada</span>
             <h1 id="writing-title">Escritura publicada.</h1>
             <p>
-              Notas que conectan la tecnologia con la atencion, el trabajo, la identidad y el mundo fisico alrededor
+              Notas que conectan la tecnología con la atención, el trabajo, la identidad y el mundo físico alrededor
               del modelo.
             </p>
           </div>
@@ -36,10 +36,10 @@ export default function SpanishLogPage() {
 
         <section className="gkl-start" aria-labelledby="gkl-start-title">
           <div>
-            <span className="gkl-label gki-mono">Empieza aqui</span>
-            <h2 id="gkl-start-title">Empieza con la nota mas nueva.</h2>
+            <span className="gkl-label gki-mono">Empieza aquí</span>
+            <h2 id="gkl-start-title">Empieza con la nota más nueva.</h2>
             <p>
-              Lee primero la nota mas reciente. Despues usa las capas de IA para conectar las preguntas humanas con
+              Lee primero la nota más reciente. Después usa las capas de IA para conectar las preguntas humanas con
               el sistema debajo de ellas.
             </p>
           </div>
