@@ -183,8 +183,8 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
     const phase = (t % 8) / 8;
     const loop = phase * TAU;
     const layerFocus = layerRef.current / Math.max(1, LAYERS.length - 1);
-    const scale = mobile ? Math.min(width * 0.16, 74) : Math.min(width * 0.085, 118);
-    const origin = { x: mobile ? width * 0.56 : width * 0.63, y: mobile ? height * 0.68 : height * 0.67 };
+    const scale = mobile ? Math.min(width * 0.132, 60) : Math.min(width * 0.085, 118);
+    const origin = { x: mobile ? width * 0.6 : width * 0.63, y: mobile ? height * 0.82 : height * 0.67 };
 
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "#02050a";
@@ -399,8 +399,9 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
       clamp(layerFocus),
     ];
 
-    const probeX = mobile ? width - 96 : origin.x + scale * 1.95;
-    const probeY = mobile ? height * 0.8 : origin.y - scale * 2.05;
+    // Mobile keeps the probe in the free gutter under the layer chips, left of the figure.
+    const probeX = mobile ? 18 : origin.x + scale * 1.95;
+    const probeY = mobile ? height * 0.76 : origin.y - scale * 2.05;
     const barW = mobile ? 46 : 64;
     const barGap = mobile ? 7 : 9;
 
