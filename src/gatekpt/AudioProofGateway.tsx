@@ -200,16 +200,6 @@ function startMachine(
       joint(point, index < 4 ? 4.5 : 5.8, index * 0.75);
     }
 
-    g.fillStyle = "rgba(238,240,244,0.42)";
-    g.font = "10px monospace";
-    g.letterSpacing = "2px";
-    g.fillText("AUDIOANALYSIS.V1", 72, 340);
-    for (let channel = 0; channel < 8; channel += 1) {
-      const value = norm(row[channel], channel);
-      const x = 72 + channel * 18;
-      g.fillStyle = signalColor(channel * 0.7, 0.26 + value * 0.5);
-      g.fillRect(x, 352 - value * 28, 8, Math.max(2, value * 28));
-    }
   }
 
   if (reduced) {
@@ -293,7 +283,8 @@ export function AudioProofGateway() {
             GATE<b>KPT</b>
           </span>
           <span className="gkp-sig">
-            <Link href="/">EN</Link> · <Link href="/es">ES</Link>
+            <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/gatekpt">AI</Link> ·{" "}
+            <Link href="/notes">JOURNAL</Link>
           </span>
         </div>
 
