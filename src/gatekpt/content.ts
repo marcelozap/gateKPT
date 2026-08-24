@@ -778,27 +778,65 @@ const fieldLogEntryNote003Es: LogEntry = {
   ],
 };
 
-const fieldLogEntryMusicMeasured: LogEntry = {
-  slug: "music-measured",
-  date: "2026-08-23",
-  title: "Music, measured",
-  layer: "Journal",
-  summary: "Technology keeps moving faster. Music gives me somewhere honest to use it.",
-  noteHref: "/notes/music-measured",
+const fieldLogEntryNote004: LogEntry = {
+  slug: "time-does-not-disappear",
+  date: "2026-08-24",
+  title: "Time Does Not Disappear",
+  layer: "NOTE Nº 004",
+  summary:
+    "Time becomes cost. Role-based agentic workflows are the version of AI built around the work itself.",
+  noteHref: "/notes/time-does-not-disappear",
   body: [
-    "The world feels like it is in a crazy place right now.",
-    "Technology has advanced so quickly in the 25 years I have been alive that any kind of discovery or devotion to innovation can feel wasteful to me unless it helps people somehow, especially in medicine.",
-    "I paid $30k for an MRI. With the resources and technology we have, I do not understand why something like that should be that expensive.",
-    "That is part of why GateKPT matters to me. Technology feels gated inside specific industries. I can guess why, but I do not want to pretend I know for sure.",
-    "Music is something I feel passionate about. It gives me a chance to use this technology and all of my skills to the max without pretending the work is bigger than it is.",
-    "Einstein said he would have been a musician. I think I see why.",
-    "I do not know what the point is sometimes. But it feels nice to finally use the technology and make something cool.",
+    "Time does not disappear inside an organization. It gets built into the cost of whatever it provides.",
+    "A fifteen minute meeting costs an hour. Scheduling it, preparing for it, switching context for it, writing it up after. Times everyone in the room. All because the context only lives in people's heads.",
+    "After four years inside a Fortune 100 technology company, I started seeing it everywhere. Groceries, subscriptions, services, schools, restaurants. Prices rise for a lot of reasons, and this is one of them. You would think AI would be fixing it by now.",
+    "The bet was that a copilot on everyone's computer would make the whole company more efficient. It did not.",
+    "The technology worked. The rollout was an experiment, and everyone using it was the subject. It landed on everyone's laptop the same way, with no direction, and the burden of making it useful stayed on each person. A lot of what sped up was not the work, it was the reporting about the work.",
+    "The people who refused were not being stubborn. A blank box asks you to invent a use for it. Some saw it immediately, most did not, and it turned into a question about people instead of tools.",
+    "That is the part I would do differently.",
+    "The right version is not a copilot on every laptop. It is one system that knows the work and gives each role the part that matters to them. Nobody has to invent a use for it, because the use is already the job.",
+    "And it stays current. New brand guidelines drop, every marketer is working from them that day. New regulation lands, every analyst is reviewing against it immediately.",
+    "The work tells the AI what it needs to be.",
+    "That is the business I am building with XIV: role-based agentic workflows for real work.",
+    "I am starting with music because it gives me a full system I can own end to end: writing, recording, sound design, visuals, movement, publishing, feedback, release.",
+    "But the pattern is bigger than music, and it is bigger than saving time. You still need a teacher in every classroom. But thirty students could each have their own plan, which no one has ever had the hours to build.",
+    "That is the part worth building for. Not the work that gets faster. The work that was never possible.",
+    "I am not interested in making people work harder inside broken systems.",
+    "I am building lighter ones.",
+  ],
+};
+
+const fieldLogEntryNote004Es: LogEntry = {
+  slug: "time-does-not-disappear",
+  date: "2026-08-24",
+  title: "El Tiempo No Desaparece",
+  layer: "NOTA 004",
+  summary:
+    "El tiempo se convierte en costo. Los flujos agenticos por rol son la version de IA construida alrededor del trabajo real.",
+  noteHref: "/es/notes/time-does-not-disappear",
+  body: [
+    "El tiempo no desaparece dentro de una organizacion. Se convierte en parte del costo de lo que ofrece.",
+    "Una reunion de quince minutos cuesta una hora. Agendarla, prepararla, cambiar de contexto para entrar, escribir lo que paso despues. Multiplicado por todos en la sala. Todo porque el contexto solo vive en la cabeza de las personas.",
+    "Despues de cuatro anos dentro de una empresa Fortune 100 de tecnologia, empece a verlo en todas partes. Supermercados, suscripciones, servicios, escuelas, restaurantes. Los precios suben por muchas razones, y esta es una de ellas. Uno pensaria que la IA ya estaria arreglando esto.",
+    "La apuesta fue que un copilot en la computadora de todos haria que toda la empresa fuera mas eficiente. No fue asi.",
+    "La tecnologia funciono. El rollout fue un experimento, y cada persona usandola era el sujeto. Llego a la laptop de todos de la misma forma, sin direccion, y la carga de volverla util se quedo en cada persona. Mucho de lo que se acelero no fue el trabajo, fue el reporte sobre el trabajo.",
+    "Las personas que se negaron no estaban siendo tercas. Una caja en blanco te pide inventar un uso para ella. Algunos lo vieron de inmediato, la mayoria no, y se convirtio en una pregunta sobre personas en vez de herramientas.",
+    "Esa es la parte que yo haria diferente.",
+    "La version correcta no es un copilot en cada laptop. Es un sistema que conoce el trabajo y le da a cada rol la parte que le importa. Nadie tiene que inventar un uso, porque el uso ya es el trabajo.",
+    "Y se mantiene actualizado. Nuevas guias de marca llegan, cada marketer esta trabajando con ellas ese mismo dia. Nueva regulacion entra, cada analista esta revisando contra ella de inmediato.",
+    "El trabajo le dice a la IA lo que necesita ser.",
+    "Ese es el negocio que estoy construyendo con XIV: flujos agenticos basados en roles para trabajo real.",
+    "Estoy empezando con musica porque me da un sistema completo que puedo manejar de punta a punta: escritura, grabacion, diseno de sonido, visuales, movimiento, publicacion, retroalimentacion y lanzamiento.",
+    "Pero el patron es mas grande que la musica, y es mas grande que ahorrar tiempo. Todavia necesitas un maestro en cada salon. Pero treinta estudiantes podrian tener cada uno su propio plan, algo que nadie ha tenido horas suficientes para construir.",
+    "Esa es la parte por la que vale la pena construir. No el trabajo que se vuelve mas rapido. El trabajo que antes no era posible.",
+    "No me interesa hacer que la gente trabaje mas duro dentro de sistemas rotos.",
+    "Estoy construyendo sistemas mas ligeros.",
   ],
 };
 export function getEntries(locale: Locale) {
   return locale === "es"
-    ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs]
-    : [fieldLogEntryMusicMeasured, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
+    ? [fieldLogEntryNote004Es, fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs]
+    : [fieldLogEntryNote004, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {
