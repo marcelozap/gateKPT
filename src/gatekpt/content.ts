@@ -778,59 +778,58 @@ const fieldLogEntryNote003Es: LogEntry = {
   ],
 };
 
+const codingBeatsStrudelHref =
+  "https://strudel.cc/#Ly8gbWFsb3NvdW5kIOKAlCBWaWN0b3JpYSAvIFJhaW55IE5pZ2h0IFNsb3cgQmVhdAovLyBTbG93LCBkYXJrLCBjaW5lbWF0aWMgZHJ1bXMuIE5vIHJ1c2guCi8vIEN0cmwrRW50ZXIgdG8gcGxheS4gQ3RybCsuIHRvIHN0b3AuCgpzZXRjcG0oNzIvNCkgLy8gNzIgQlBNLCBvbmUgY3ljbGUgPSBvbmUgYmFyCnNhbXBsZXMoJ2dpdGh1Yjp0aWRhbGN5Y2xlcy9kaXJ0LXNhbXBsZXMnKQoKLy8gS0lDSyDigJQgc2xvdyBoZWFydGJlYXQsIG5vdCBob3VzZQokOiBzKCJiZCB%2BIH4gYmQgfiB%2BIH4gfiIpCi5iYW5rKCJSb2xhbmRUUjgwOCIpCi5nYWluKDAuOSkKLnJvb20oMC4xMikKCi8vIFNOQVJFIC8gUklNIOKAlCBsb25lbHkgaGl0IG9uIDMKJDogcygifiB%2BIHJpbSB%2BIikKLmdhaW4oMC41NSkKLnJvb20oMC4zNSkKLmRlbGF5KDAuMDgpCi5kZWxheWZlZWRiYWNrKDAuMjUpCgovLyBDTE9TRUQgSEFUIOKAlCB0aW55IHJhaW4gdGlja3MKJDogcygiaGgqOCIpCi5nYWluKDAuMTYpCi5zcGVlZCgwLjgpCi5wYW4oc2luZS5yYW5nZSgwLjM1LCAwLjY1KS5zbG93KDQpKQouZGVncmFkZUJ5KDAuMTgpCgovLyBMT1cgVE9NIOKAlCBkaXN0YW50IHRodW5kZXIgZXZlcnkgNCBiYXJzCiQ6IHMoIn4gfiB%2BIGx0IikKLmJhbmsoIlJvbGFuZFRSODA4IikKLmdhaW4oMC40NSkKLnJvb20oMC41KQoubHBmKDkwMCkKLm1hc2soIjwwIDAgMCAxPiIpCgovLyBURVhUVVJFIOKAlCBmYWtlIHJhaW4vbm9pc2UgYmVkIGZyb20gY3ltYmFsL3BlcmMKJDogcygicGVyYyoxNiIpCi5nYWluKDAuMDU1KQouc3BlZWQoMC40NSkKLnBhbihyYW5kKQouaHBmKDMwMDApCi5yb29tKDAuOCkKLmRlZ3JhZGVCeSgwLjQ1KQoKLy8gREFSSyBQVUxTRSDigJQgbG93IG5vdGUgc2hhZG93CiQ6IG5vdGUoIjAgfiB%2BIC0yIikKLnNvdW5kKCJzYXd0b290aCIpCi5nYWluKDAuMTgpCi5scGYoNDIwKQoucm9vbSgwLjI1KQouc2xvdygyKQoKLy8gU0lNUExFIE5JR0hUIENIT1JEIC8gRFJPTkUKJDogbm90ZSgiPDAgLTMgLTUgLTI%2BIikKLnNvdW5kKCJ0cmlhbmdsZSIpCi5nYWluKDAuMTMpCi5hdHRhY2soMC4yKQoucmVsZWFzZSgxLjgpCi5scGYoNjUwKQoucm9vbSgwLjc1KQouc2xvdyg0KQoKLy8gT1BUSU9OQUw6IHVuY29tbWVudCBmb3IgbW9yZSB0ZW5zaW9uCi8vICQ6IHMoIn4gfiB%2BIGNwIikKLy8gLmdhaW4oMC4yNSkKLy8gLnJvb20oMC43KQovLyAuZGVsYXkoMC4xMik%3D";
+
 const fieldLogEntryNote004: LogEntry = {
-  slug: "time-does-not-disappear",
+  slug: "coding-beats",
   date: "2026-08-24",
-  title: "Time Does Not Disappear",
+  title: "Coding Beats",
   layer: "NOTE Nº 004",
   summary:
-    "Time becomes cost. Role-based agentic workflows are the version of AI built around the work itself.",
-  noteHref: "/notes/time-does-not-disappear",
+    "A public study of rhythm written as code: patterns, motion, and measured sound.",
+  noteHref: "/notes/coding-beats",
   body: [
-    "Time does not disappear inside an organization. It gets built into the cost of whatever it provides.",
-    "A fifteen minute meeting costs an hour. Scheduling it, preparing for it, switching context for it, writing it up after. Times everyone in the room. All because the context only lives in people's heads.",
-    "After four years inside a Fortune 100 technology company, I started seeing it everywhere. Groceries, subscriptions, services, schools, restaurants. Prices rise for a lot of reasons, and this is one of them. You would think AI would be fixing it by now.",
-    "The bet was that a copilot on everyone's computer would make the whole company more efficient. It did not.",
-    "The technology worked. The rollout was an experiment, and everyone using it was the subject. It landed on everyone's laptop the same way, with no direction, and the burden of making it useful stayed on each person. A lot of what sped up was not the work, it was the reporting about the work.",
-    "The people who refused were not being stubborn. A blank box asks you to invent a use for it. Some saw it immediately, most did not, and it turned into a question about people instead of tools.",
-    "That is the part I would do differently.",
-    "The right version is not a copilot on every laptop. It is one system that knows the work and gives each role the part that matters to them. Nobody has to invent a use for it, because the use is already the job.",
-    "And it stays current. New brand guidelines drop, every marketer is working from them that day. New regulation lands, every analyst is reviewing against it immediately.",
-    "The work tells the AI what it needs to be.",
-    "That is the business I am building with XIV: role-based agentic workflows for real work.",
-    "I am starting with music because it gives me a full system I can own end to end: writing, recording, sound design, visuals, movement, publishing, feedback, release.",
-    "But the pattern is bigger than music, and it is bigger than saving time. You still need a teacher in every classroom. But thirty students could each have their own plan, which no one has ever had the hours to build.",
-    "That is the part worth building for. Not the work that gets faster. The work that was never possible.",
-    "I am not interested in making people work harder inside broken systems.",
-    "I am building lighter ones.",
+    "I want to study beats that are written as code.",
+    "Tools like Strudel make rhythm visible. A beat is not only an audio file. It is tempo, samples, rests, repetition, probability, filters, space, and timing written into a system.",
+    "That matters because coded music can be inspected. Change one line and the beat changes. Save the pattern and the idea becomes repeatable. Compare two versions and you can hear what the code did.",
+    "That is the research question: what happens when a beat is treated like software and sound at the same time?",
+    "The study is simple. Build small coded sketches. Document the pattern. Listen to the result. Measure the audio. Map the signal into motion.",
+    "This is not a claim that AI understands music. It is a public study of how coded rhythm becomes measurable sound and movement.",
+    "GateKPT is the public surface for the experiment. XIV is the larger business around role-based systems. This note is the music lab.",
+    "The first sketch is a slow coded beat in Strudel: readable, playable, and changeable.",
+  ],
+  artifacts: [
+    {
+      href: codingBeatsStrudelHref,
+      label: "Strudel coded beat sketch",
+    },
   ],
 };
 
 const fieldLogEntryNote004Es: LogEntry = {
-  slug: "time-does-not-disappear",
+  slug: "coding-beats",
   date: "2026-08-24",
-  title: "El Tiempo No Desaparece",
+  title: "Beats En Codigo",
   layer: "NOTA 004",
   summary:
-    "El tiempo se convierte en costo. Los flujos agenticos por rol son la version de IA construida alrededor del trabajo real.",
-  noteHref: "/es/notes/time-does-not-disappear",
+    "Un estudio publico de ritmo escrito como codigo: patrones, movimiento y sonido medido.",
+  noteHref: "/es/notes/coding-beats",
   body: [
-    "El tiempo no desaparece dentro de una organizacion. Se convierte en parte del costo de lo que ofrece.",
-    "Una reunion de quince minutos cuesta una hora. Agendarla, prepararla, cambiar de contexto para entrar, escribir lo que paso despues. Multiplicado por todos en la sala. Todo porque el contexto solo vive en la cabeza de las personas.",
-    "Despues de cuatro anos dentro de una empresa Fortune 100 de tecnologia, empece a verlo en todas partes. Supermercados, suscripciones, servicios, escuelas, restaurantes. Los precios suben por muchas razones, y esta es una de ellas. Uno pensaria que la IA ya estaria arreglando esto.",
-    "La apuesta fue que un copilot en la computadora de todos haria que toda la empresa fuera mas eficiente. No fue asi.",
-    "La tecnologia funciono. El rollout fue un experimento, y cada persona usandola era el sujeto. Llego a la laptop de todos de la misma forma, sin direccion, y la carga de volverla util se quedo en cada persona. Mucho de lo que se acelero no fue el trabajo, fue el reporte sobre el trabajo.",
-    "Las personas que se negaron no estaban siendo tercas. Una caja en blanco te pide inventar un uso para ella. Algunos lo vieron de inmediato, la mayoria no, y se convirtio en una pregunta sobre personas en vez de herramientas.",
-    "Esa es la parte que yo haria diferente.",
-    "La version correcta no es un copilot en cada laptop. Es un sistema que conoce el trabajo y le da a cada rol la parte que le importa. Nadie tiene que inventar un uso, porque el uso ya es el trabajo.",
-    "Y se mantiene actualizado. Nuevas guias de marca llegan, cada marketer esta trabajando con ellas ese mismo dia. Nueva regulacion entra, cada analista esta revisando contra ella de inmediato.",
-    "El trabajo le dice a la IA lo que necesita ser.",
-    "Ese es el negocio que estoy construyendo con XIV: flujos agenticos basados en roles para trabajo real.",
-    "Estoy empezando con musica porque me da un sistema completo que puedo manejar de punta a punta: escritura, grabacion, diseno de sonido, visuales, movimiento, publicacion, retroalimentacion y lanzamiento.",
-    "Pero el patron es mas grande que la musica, y es mas grande que ahorrar tiempo. Todavia necesitas un maestro en cada salon. Pero treinta estudiantes podrian tener cada uno su propio plan, algo que nadie ha tenido horas suficientes para construir.",
-    "Esa es la parte por la que vale la pena construir. No el trabajo que se vuelve mas rapido. El trabajo que antes no era posible.",
-    "No me interesa hacer que la gente trabaje mas duro dentro de sistemas rotos.",
-    "Estoy construyendo sistemas mas ligeros.",
+    "Quiero estudiar beats que estan escritos como codigo.",
+    "Herramientas como Strudel hacen visible el ritmo. Un beat no es solo un archivo de audio. Es tempo, samples, silencios, repeticion, probabilidad, filtros, espacio y timing escritos dentro de un sistema.",
+    "Eso importa porque la musica en codigo se puede inspeccionar. Cambias una linea y cambia el beat. Guardas el patron y la idea se vuelve repetible. Comparas dos versiones y puedes escuchar lo que hizo el codigo.",
+    "Esa es la pregunta de investigacion: que pasa cuando un beat se trata como software y sonido al mismo tiempo?",
+    "El estudio es simple. Construir pequenos sketches en codigo. Documentar el patron. Escuchar el resultado. Medir el audio. Mapear la senal hacia movimiento.",
+    "Esto no es una afirmacion de que la IA entiende musica. Es un estudio publico de como el ritmo en codigo se convierte en sonido medible y movimiento.",
+    "GateKPT es la superficie publica del experimento. XIV es el negocio mas grande alrededor de sistemas basados en roles. Esta nota es el laboratorio musical.",
+    "El primer sketch es un beat lento en Strudel: legible, reproducible y modificable.",
+  ],
+  artifacts: [
+    {
+      href: codingBeatsStrudelHref,
+      label: "Sketch de beat en Strudel",
+    },
   ],
 };
 export function getEntries(locale: Locale) {
