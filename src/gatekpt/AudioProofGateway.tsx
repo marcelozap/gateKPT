@@ -516,9 +516,6 @@ export function AudioProofGateway() {
         <span className="gkp-owner">
           <a href="https://www.linkedin.com/in/marcelozap/">Marcelo Zapata</a>
         </span>
-        <span>
-          <a href="https://marcelozapata.dev">work -&gt;</a>
-        </span>
       </footer>
     </>
   );

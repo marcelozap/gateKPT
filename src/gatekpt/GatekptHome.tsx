@@ -484,7 +484,6 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
               <button type="button" onClick={() => setShowMap(true)}>{copy.openMap}</button>
               <a href={locale === "es" ? "/es/notes" : "/notes"}>{copy.notes}</a>
               <a href="/notes/music-measured">{copy.music}</a>
-              <a href="https://www.marcelozapata.dev/#greenmachine">GreenMachine</a>
               <a href={copy.switchHref}>{copy.switchLabel}</a>
             </div>
           </nav>

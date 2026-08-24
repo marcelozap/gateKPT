@@ -413,7 +413,7 @@ export const localeCopy = {
     endKicker: "L01 - L07",
     endTitle: "The stack becomes work.",
     endBody:
-      "GateKPT maps the system. Music, measured shows the audio signal work. GreenMachine is the product surface that comes next.",
+      "GateKPT maps the system. Music, measured shows the audio signal work. Each surface stays separate on purpose.",
     endNote: "Open journal",
     backLayers: "View AI layers",
     startOver: "Start over",
@@ -444,7 +444,7 @@ export const localeCopy = {
     endKicker: "L01 - L07",
     endTitle: "La pila se vuelve trabajo.",
     endBody:
-      "GateKPT mapea el sistema. Music, measured muestra el trabajo de señales de audio. GreenMachine es la próxima superficie de producto.",
+      "GateKPT mapea el sistema. Music, measured muestra el trabajo de señales de audio. Cada superficie se mantiene separada por una razon.",
     endNote: "Abrir notas del proyecto",
     backLayers: "Ver capas de IA",
     startOver: "Empezar de nuevo",
