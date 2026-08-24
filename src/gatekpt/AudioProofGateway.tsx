@@ -13,39 +13,14 @@ type GatewayData = {
   model_versions?: { analysis?: string; clap?: string };
 };
 
-type Telemetry = {
-  audio: string;
-  bands: string;
-  zScore: string;
-  zone: string;
-  color: string;
-};
-
-type FitResult = {
-  trainStart: number;
-  trainEnd: number;
-  holdout: number;
-  baseline: number;
-  rows: number;
-};
-
 const W = 860;
 const H = 380;
 const LOOP = 60;
-const samples = [
-  {
-    id: "sample-01",
-    label: "Sample 01",
-    file: "/gateway/xiv_malosound_mix.audioanalysis.v1.json",
-  },
-];
+const GATEWAY_FILE = "/gateway/xiv_malosound_mix.audioanalysis.v1.json";
+const ACTIVE_BANDS = Array.from({ length: 8 }, () => true);
 
 function clamp(value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value));
-}
-
-function sigmoid(value: number) {
-  return 1 / (1 + Math.exp(-value));
 }
 
 function envelopeAt(times: number[], t: number, attack: number, decay: number) {
@@ -58,62 +33,11 @@ function envelopeAt(times: number[], t: number, attack: number, decay: number) {
   return envelope;
 }
 
-function fitBeatPhaseModel(data: GatewayData): FitResult {
-  const chMax = Array.from({ length: 8 }, (_, channel) =>
-    Math.max(...data.band_energy.values.map((row) => row[channel] ?? 0), 0.001),
-  );
-  const norm = (value: number, channel: number) => clamp(Math.log1p(value) / Math.log1p(chMax[channel]));
-  const rows = data.band_energy.values.slice(0, 120).map((row, index) => {
-    const bass = (norm(row[0], 0) + norm(row[1], 1)) * 0.5;
-    const mids = (norm(row[2], 2) + norm(row[3], 3) + norm(row[4], 4)) / 3;
-    const air = (norm(row[5], 5) + norm(row[6], 6) + norm(row[7], 7)) / 3;
-    const target = envelopeAt(data.beat_times, index * data.energy_curve.hop_s, 0.06, 0.34);
-    return { x: (bass + mids + air) / 3, y: target };
-  });
-  const split = Math.max(12, Math.floor(rows.length * 0.67));
-  const train = rows.slice(0, split);
-  const holdout = rows.slice(split);
-  let weight = 0;
-  let bias = 0;
-
-  const loss = (set: typeof rows, baseline?: number) =>
-    set.reduce((sum, row) => {
-      const predicted = typeof baseline === "number" ? baseline : sigmoid(weight * row.x + bias);
-      return sum + (predicted - row.y) ** 2;
-    }, 0) / Math.max(set.length, 1);
-
-  const trainStart = loss(train);
-  const learningRate = 0.85;
-  for (let epoch = 0; epoch < 120; epoch += 1) {
-    let g0 = 0;
-    let g1 = 0;
-    for (const row of train) {
-      const predicted = sigmoid(weight * row.x + bias);
-      const common = 2 * (predicted - row.y) * predicted * (1 - predicted);
-      g0 += common * row.x;
-      g1 += common;
-    }
-    weight -= (learningRate * g0) / Math.max(train.length, 1);
-    bias -= (learningRate * g1) / Math.max(train.length, 1);
-  }
-
-  const baseline = train.reduce((sum, row) => sum + row.y, 0) / Math.max(train.length, 1);
-  return {
-    trainStart,
-    trainEnd: loss(train),
-    holdout: loss(holdout),
-    baseline: loss(holdout, baseline),
-    rows: rows.length,
-  };
-}
-
 function startMachine(
   canvas: HTMLCanvasElement,
   data: GatewayData,
   reduced: boolean,
   activeBands: boolean[],
-  audioLabel: string,
-  onTelemetry: (telemetry: Telemetry) => void,
 ) {
   const context = canvas.getContext("2d");
   if (!context) return null;
@@ -130,7 +54,6 @@ function startMachine(
       Math.max(data.energy_curve.rms.length, 1),
   );
   const lerp = (a: number, b: number, f: number) => a + (b - a) * f;
-  let lastTelemetry = 0;
 
   function envAt(times: number[], t: number, attack: number, decay: number) {
     return envelopeAt(times, t, attack, decay);
@@ -204,21 +127,6 @@ function startMachine(
     const rKnee = { x: hips.x + 42 + 24 * step, y: 260 - bounce * 0.2 - 9 * bass };
     const lFoot = { x: lKnee.x - 18 + 22 * Math.cos(t * 1.2), y: floor - 6 * beatE };
     const rFoot = { x: rKnee.x + 22 + 18 * Math.sin(t * 1.25), y: floor - 10 * downE };
-
-    const zone = bass >= mids && bass >= air ? "LEGS" : air >= bass && air >= mids ? "HEAD/HANDS" : "TORSO";
-    const hueBase = 184 + 52 * Math.sin(t / 18) + 18 * mids;
-    const zScore = (rawRms - rmsMean) / Math.max(rmsStd, 0.001);
-
-    if (typeof performance !== "undefined" && performance.now() - lastTelemetry > 220) {
-      lastTelemetry = performance.now();
-      onTelemetry({
-        audio: audioLabel,
-        bands: `${Math.round((bass + mids + air) * 33)}% active`,
-        zScore: `${zScore >= 0 ? "+" : ""}${zScore.toFixed(2)}`,
-        zone,
-        color: `${Math.round(hueBase)}deg`,
-      });
-    }
 
     function signalColor(offset: number, alpha = 0.9) {
       const hue = 184 + 52 * Math.sin(t / 18 + offset) + 18 * mids;
@@ -325,19 +233,7 @@ export function AudioProofGateway() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [missingContract, setMissingContract] = useState(false);
-  const [sampleIndex, setSampleIndex] = useState(0);
-  const [sampleMeta, setSampleMeta] = useState<{ bpm?: number; confidence?: number }>({});
-  const [activeBands, setActiveBands] = useState(() => Array.from({ length: 8 }, () => true));
-  const [telemetry, setTelemetry] = useState<Telemetry>({
-    audio: "loading",
-    bands: "0% active",
-    zScore: "+0.00",
-    zone: "TORSO",
-    color: "184deg",
-  });
-  const [fitResult, setFitResult] = useState<FitResult | null>(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
-  const sample = samples[sampleIndex];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -347,22 +243,16 @@ export function AudioProofGateway() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let cleanup = () => {};
     let cancelled = false;
-    setFitResult(null);
 
     async function loadGateway() {
       try {
         if (typeof window.fetch !== "function") throw new Error("contract file missing");
-        const response = await window.fetch(sample.file, { cache: "no-store" });
+        const response = await window.fetch(GATEWAY_FILE, { cache: "no-store" });
         if (!response.ok) throw new Error("contract file missing");
         const data = (await response.json()) as GatewayData;
         if (!cancelled) {
           setMissingContract(false);
-          setSampleMeta({
-            bpm: data.bpm,
-            confidence: data.confidence?.beats,
-          });
-          setFitResult(fitBeatPhaseModel(data));
-          const machineCleanup = startMachine(currentCanvas, data, reduced, activeBands, sample.label, setTelemetry);
+          const machineCleanup = startMachine(currentCanvas, data, reduced, ACTIVE_BANDS);
           if (machineCleanup) cleanup = machineCleanup;
           else setMissingContract(true);
         }
@@ -380,7 +270,7 @@ export function AudioProofGateway() {
       cancelled = true;
       cleanup();
     };
-  }, [activeBands, sample.file]);
+  }, []);
 
   async function toggleAudio() {
     const audio = audioRef.current;
@@ -420,96 +310,11 @@ export function AudioProofGateway() {
             {missingContract ? <span className="gkp-contract-missing">contract file missing</span> : null}
           </div>
           <h1 className="gkp-site-line">Sound into signal. Signal into motion.</h1>
-          <p className="gkp-site-sub">A song I made, measured into a living data sketch.</p>
+          <p className="gkp-site-sub">A song I made.</p>
           <button type="button" className="gkp-audio-toggle" onClick={toggleAudio} aria-pressed={audioPlaying}>
-            {audioPlaying ? "PAUSE ORIGINAL LOOP" : "PLAY ORIGINAL LOOP"}
+            {audioPlaying ? "PAUSE" : "PLAY"}
           </button>
-          <div className="gkp-sample-switcher" aria-label="Measured audio samples">
-            {samples.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-pressed={sampleIndex === index}
-                onClick={() => setSampleIndex(index)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <div className="gkp-band-toggles" aria-label="Band mute toggles">
-            {activeBands.map((active, index) => (
-              <button
-                key={`band-${index}`}
-                type="button"
-                aria-pressed={active}
-                onClick={() =>
-                  setActiveBands((bands) =>
-                    bands.map((bandActive, bandIndex) => (bandIndex === index ? !bandActive : bandActive)),
-                  )
-                }
-              >
-                B{index + 1}
-              </button>
-            ))}
-          </div>
-          <div className="gkp-signal-chain" aria-label="Live signal chain">
-            <span>
-              <b>AUDIO</b>
-              {telemetry.audio}
-            </span>
-            <span>
-              <b>8 BANDS</b>
-              {telemetry.bands}
-            </span>
-            <span>
-              <b>z-SCORE</b>
-              {telemetry.zScore}
-            </span>
-            <span>
-              <b>ZONE MAP</b>
-              {telemetry.zone}
-            </span>
-            <span>
-              <b>COLOR</b>
-              {telemetry.color}
-            </span>
-          </div>
-          <div className="gkp-proof-rail" aria-label="AI and machine learning proof">
-            <span>MIDI-DERIVED AUDIO LOOP</span>
-            <span>RHYTHM + ENERGY ANALYSIS</span>
-            <span>8-BAND MOTION MAP</span>
-            <span>SCHEMA-CHECKED JSON</span>
-            {typeof sampleMeta.bpm === "number" ? <span>{sampleMeta.bpm.toFixed(1)} BPM</span> : null}
-          </div>
-          {fitResult ? (
-            <div className="gkp-fit-readout" aria-label="In-browser machine learning fit">
-              <span>2-PARAM FIT ON SIGNAL FEATURES</span>
-              <span>{fitResult.rows} ROWS</span>
-              <span>
-                LOSS {fitResult.trainStart.toFixed(3)} -&gt; {fitResult.trainEnd.toFixed(3)}
-              </span>
-              <span>
-                HOLDOUT {fitResult.holdout.toFixed(3)} / BASELINE {fitResult.baseline.toFixed(3)}
-              </span>
-            </div>
-          ) : null}
         </div>
-
-        <nav className="gkp-gates" aria-label="primary">
-          <Link className="gkp-gate" href="/notes/music-measured">
-            MUSIC MEASURED
-          </Link>
-          <Link className="gkp-gate" href="/gatekpt">
-            AI STACK
-          </Link>
-          <Link className="gkp-gate" href="/notes">
-            JOURNAL
-          </Link>
-        </nav>
-
-        <p className="gkp-machine-hint">
-          <Link href="/notes/music-measured">the sound behind it -&gt;</Link>
-        </p>
       </section>
 
       <footer className="gkp-home-footer">
