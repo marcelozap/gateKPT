@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     default: "GateKPT - Sound Into Signal",
     template: "%s - GateKPT",
   },
-  description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
+  description: "A living gateway where music, signal analysis, The Record, and shipped systems meet.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "GateKPT - Sound Into Signal",
-    description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
+    description: "A living gateway where music, signal analysis, The Record, and shipped systems meet.",
     type: "website",
     url: getSiteUrl(),
     siteName: "GateKPT",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "GateKPT - Sound Into Signal",
-    description: "A living gateway where music, signal analysis, AI notes, and shipped systems meet.",
+    description: "A living gateway where music, signal analysis, The Record, and shipped systems meet.",
     images: [
       {
         url: "/opengraph-image",
@@ -96,7 +96,7 @@ export default function RootLayout({
         name: "GateKPT",
         url: siteUrl,
         description:
-          "Marcelo Zapata's public surface for AI systems, machine learning literacy, data engineering notes, and signal-mapped visual work.",
+          "Marcelo Zapata's public surface for AI systems, machine learning literacy, The Record, and signal-mapped visual work.",
         publisher: {
           "@id": `${siteUrl}/#marcelo-zapata`,
         },

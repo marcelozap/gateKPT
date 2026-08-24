@@ -31,7 +31,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     body: [
       "The first thing I wanted to make public was the map itself. AI is usually explained from the model outward, but that skips the system underneath it.",
       "Power, chips, data, models, software, testing, and real-world use all shape what AI can actually do. If one part is weak, everything above it bends around that limit.",
-      "This is where I will keep turning scattered notes into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
+      "The Record is where I will keep turning scattered journal entries into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
     ],
   },
   {
@@ -76,7 +76,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     slug: "weekly-ai-brief-format",
     date: "Planned",
     title: "Weekly AI check-in",
-    layer: "Weekly notes",
+    layer: "Weekly entries",
     summary:
       "A simple format for tracking what changed, why it matters, and what to watch next.",
     body: [

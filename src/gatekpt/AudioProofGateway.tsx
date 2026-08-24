@@ -507,7 +507,7 @@ export function AudioProofGateway() {
             AI STACK
           </Link>
           <Link className="gkp-gate" href="/notes">
-            NOTES
+            THE RECORD
           </Link>
         </nav>
 
