@@ -36,12 +36,7 @@ const samples = [
   {
     id: "sample-01",
     label: "Sample 01",
-    file: "/gateway/gateway_track_alt_mj.audioanalysis.v1.json",
-  },
-  {
-    id: "sample-02",
-    label: "Sample 02",
-    file: "/gateway/gateway_track.audioanalysis.v1.json",
+    file: "/gateway/xiv_malosound_mix.audioanalysis.v1.json",
   },
 ];
 
@@ -401,7 +396,7 @@ export function AudioProofGateway() {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/gatekpt-night-guitar-preview.mp3" loop preload="metadata" />
+      <audio ref={audioRef} src="/audio/xiv-malosound-loop.mp3" loop preload="metadata" />
       <section className="gkp-hero">
         <div className="gkp-hero-top">
           <span className="gkp-brand">
@@ -480,7 +475,7 @@ export function AudioProofGateway() {
             </span>
           </div>
           <div className="gkp-proof-rail" aria-label="AI and machine learning proof">
-            <span>PRETRAINED AUDIO EMBEDDING</span>
+            <span>MIDI-DERIVED AUDIO LOOP</span>
             <span>RHYTHM + ENERGY ANALYSIS</span>
             <span>8-BAND MOTION MAP</span>
             <span>SCHEMA-CHECKED JSON</span>
