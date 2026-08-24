@@ -482,6 +482,7 @@ export function AudioProofGateway() {
           <div className="gkp-proof-rail" aria-label="AI and machine learning proof">
             <span>PRETRAINED AUDIO EMBEDDING</span>
             <span>RHYTHM + ENERGY ANALYSIS</span>
+            <span>8-BAND MOTION MAP</span>
             <span>SCHEMA-CHECKED JSON</span>
             {typeof sampleMeta.bpm === "number" ? <span>{sampleMeta.bpm.toFixed(1)} BPM</span> : null}
           </div>

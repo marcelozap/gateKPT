@@ -125,7 +125,8 @@ export const layersEn: Layer[] = [
     brk: "AI can feel invisible because it arrives through a screen. <em>Underneath it are chips, memory, heat, cost, and time.</em>",
     details: [
       "Training and running models require large amounts of computation.",
-      "Audio analysis, visual rendering, and model inference are all compute problems.",
+      "On the homepage, the browser maps 8 spectral bands from the analysis JSON into a moving body.",
+      "Audio analysis, visual rendering, motion mapping, and model inference are all compute problems.",
       "Hardware shapes speed, cost, access, and what is practical to build.",
     ],
   },
