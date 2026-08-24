@@ -301,9 +301,10 @@ export function AudioProofGateway() {
             {missingContract ? <span className="gkp-contract-missing">contract file missing</span> : null}
           </div>
           <h1 className="gkp-site-line">Sound into signal. Signal into motion.</h1>
-          <p className="gkp-site-sub">A song I made.</p>
+          <p className="gkp-site-sub">Better music. Better movement.</p>
           <button type="button" className="gkp-audio-toggle" onClick={toggleAudio} aria-pressed={audioPlaying}>
-            {audioPlaying ? "PAUSE" : "PLAY"}
+            <span className="gkp-audio-icon" aria-hidden="true" />
+            <span>{audioPlaying ? "STOP AUDIO" : "START AUDIO"}</span>
           </button>
         </div>
       </section>
