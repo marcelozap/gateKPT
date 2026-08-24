@@ -293,7 +293,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
                   </div>
                 </section>
 
-                <aside className="gki-home-log" aria-label="The Record">
+                <aside className="gki-home-log" aria-label="Journal entries">
                   <div className="gki-home-log-head">
                     <span className="gki-kicker gki-mono">{copy.fieldLog}</span>
                     <Link className="gki-mini gki-mono" href={copy.logHref} onClick={(event) => event.stopPropagation()}>
