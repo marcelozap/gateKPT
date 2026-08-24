@@ -777,45 +777,31 @@ const fieldLogEntryNote003Es: LogEntry = {
   ],
 };
 
-const fieldLogEntryMachine: LogEntry = {
-  slug: "the-machine",
-  date: "2026-08-23",
-  title: "The machine on the homepage",
-  layer: "Field note",
-  summary: "A short note on why the GateKPT homepage runs on a song instead of a stock animation.",
-  noteHref: "/notes/the-machine",
-  nextHref: "/notes/music-measured",
-  nextLabel: "Read the music system note",
-  body: [
-    "The machine on the homepage is not a stock visualizer. It runs on analysis data exported from a song I made.",
-    "That matters because I want GateKPT to show how AI systems are built from layers: a real source, a contract, a renderer, and a public experience.",
-    "The analysis behind it is deterministic code plus a pretrained representation - no trained model of mine, yet. Starting at the bottom of the stack is the point. The first version also shipped with a timing bug that froze the machine on its first frame; the fix is one line, and the lesson is why the page refuses to fake a pulse when the data is missing.",
-    "The point is not to explain every number on the first screen. The point is to make the page alive, then let the notes explain the stack underneath it.",
-  ],
-};
-
 const fieldLogEntryMusicMeasured: LogEntry = {
   slug: "music-measured",
   date: "2026-08-23",
   title: "Music, measured",
-  layer: "Case study",
-  summary: "Two measured samples. One visual instrument. The data is open.",
+  layer: "Journal",
+  summary: "Technology keeps moving faster. Music gives me somewhere honest to use it.",
   noteHref: "/notes/music-measured",
   artifacts: [
     { href: "/gateway/gateway_track_alt_mj.audioanalysis.v1.json", label: "Sample 01 JSON" },
     { href: "/gateway/gateway_track.audioanalysis.v1.json", label: "Sample 02 JSON" },
-    { href: "/notes/the-machine", label: "Homepage machine note" },
   ],
   body: [
-    "The homepage turns two audio analysis files into motion.",
-    "Switch samples. Mute bands. Watch the body change.",
-    "Open the JSON if you want to see the measured signal underneath.",
+    "The world feels like it is in a crazy place right now.",
+    "Technology has advanced so quickly in the 25 years I have been alive that any kind of discovery or devotion to innovation can feel wasteful to me unless it helps people somehow, especially in medicine.",
+    "I paid $30k for an MRI. With the resources and technology we have, I do not understand why something like that should be that expensive.",
+    "That is part of why GateKPT matters to me. Technology feels gated inside specific industries. I can guess why, but I do not want to pretend I know for sure.",
+    "Music is something I feel passionate about. It gives me a chance to use this technology and all of my skills to the max without pretending the work is bigger than it is.",
+    "Einstein said he would have been a musician. I think I see why.",
+    "I do not know what the point is sometimes. But it feels nice to finally use the technology and make something cool.",
   ],
 };
 export function getEntries(locale: Locale) {
   return locale === "es"
     ? [fieldLogEntryNote003Es, fieldLogEntryNote002Es, fieldLogEntryEs]
-    : [fieldLogEntryMachine, fieldLogEntryMusicMeasured, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
+    : [fieldLogEntryMusicMeasured, fieldLogEntryNote003, fieldLogEntryNote002, fieldLogEntryEn];
 }
 
 export function getLayers(locale: Locale) {

@@ -512,7 +512,7 @@ export function AudioProofGateway() {
         </nav>
 
         <p className="gkp-machine-hint">
-          <Link href="/notes/the-machine">the measurement behind it -&gt;</Link>
+          <Link href="/notes/music-measured">the thought behind it -&gt;</Link>
         </p>
       </section>
 
