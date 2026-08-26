@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/notes/${entry.slug}`;
+  const canonical = `${siteUrl}/log/${entry.slug}`;
   return {
     title: entry.title,
     description: entry.summary,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical,
       languages: {
         en: canonical,
-        es: `${siteUrl}/es/notes/${entry.slug}`,
+        es: `${siteUrl}/es/log/${entry.slug}`,
       },
     },
     openGraph: {
@@ -77,7 +77,7 @@ export default async function LogEntryPage({ params }: Props) {
       <HubNav />
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
-          <Link href="/notes" className="gkl-back gki-mono">
+          <Link href="/log" className="gkl-back gki-mono">
             Back to The Record
           </Link>
           <span className="gkl-meta gki-mono">
@@ -86,10 +86,23 @@ export default async function LogEntryPage({ params }: Props) {
           <h1>{entry.title}</h1>
           <p className="gkl-summary">{entry.summary}</p>
           <div className="gkl-body">
-            {entry.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            {entry.body.map((item) => {
+              const block = typeof item === "string" ? { text: item } : item;
+              return (
+              <p key={block.text} className={block.kind === "turn" ? "gkn-turn" : undefined}>
+                {block.text}
+                {block.footnote ? <sup className="gkn-ref">{block.footnote}</sup> : null}
+              </p>
+              );
+            })}
           </div>
+          {entry.citation ? (
+            <footer className="gkn-foot">
+              <p>
+                <span className="gki-mono">1.</span> {entry.citation}
+              </p>
+            </footer>
+          ) : null}
           {entry.artifacts?.length ? (
             <div className="gkl-artifacts" aria-label="Public artifacts">
               {entry.artifacts.map((artifact) => (

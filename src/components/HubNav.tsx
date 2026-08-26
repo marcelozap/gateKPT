@@ -9,8 +9,8 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const isSpanish = locale === "es";
   const links = [
     { href: isSpanish ? "/es" : "/", label: isSpanish ? "Inteligencia Artificial" : "AI layers" },
-    { href: isSpanish ? "/es/notes" : "/notes", label: isSpanish ? "Diario" : "Journal" },
-    { href: isSpanish ? "/es/notes/coding-beats" : "/notes/coding-beats", label: isSpanish ? "Nota 004" : "Note 004" },
+    { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Diario" : "Journal" },
+    { href: isSpanish ? "/es/log/fourteen" : "/log/fourteen", label: isSpanish ? "Nota 005" : "Note 005" },
   ];
 
   return (

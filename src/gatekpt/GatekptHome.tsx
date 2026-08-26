@@ -482,8 +482,8 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
           <nav className={styles.gateway} aria-label="Gateway links">
             <div className={styles.links}>
               <button type="button" onClick={() => setShowMap(true)}>{copy.openMap}</button>
-              <a href={locale === "es" ? "/es/notes" : "/notes"}>{copy.notes}</a>
-              <a href={locale === "es" ? "/es/notes/coding-beats" : "/notes/coding-beats"}>{copy.music}</a>
+              <a href={locale === "es" ? "/es/log" : "/log"}>{copy.notes}</a>
+              <a href={locale === "es" ? "/es/log/coding-beats" : "/log/coding-beats"}>{copy.music}</a>
               <a href={copy.switchHref}>{copy.switchLabel}</a>
             </div>
           </nav>

@@ -23,14 +23,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const siteUrl = getSiteUrl();
-  const canonical = `${siteUrl}/es/notes/${entry.slug}`;
+  const canonical = `${siteUrl}/es/log/${entry.slug}`;
   return {
     title: entry.title,
     description: entry.summary,
     alternates: {
       canonical,
       languages: {
-        en: `${siteUrl}/notes/${entry.slug}`,
+        en: `${siteUrl}/log/${entry.slug}`,
         es: canonical,
       },
     },
@@ -79,7 +79,7 @@ export default async function SpanishLogEntryPage({ params }: Props) {
       <HubNav locale="es" />
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
-          <Link href="/es/notes" className="gkl-back gki-mono">
+          <Link href="/es/log" className="gkl-back gki-mono">
             Volver al diario
           </Link>
           <span className="gkl-meta gki-mono">
@@ -88,10 +88,23 @@ export default async function SpanishLogEntryPage({ params }: Props) {
           <h1>{entry.title}</h1>
           <p className="gkl-summary">{entry.summary}</p>
           <div className="gkl-body">
-            {entry.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            {entry.body.map((item) => {
+              const block = typeof item === "string" ? { text: item } : item;
+              return (
+              <p key={block.text} className={block.kind === "turn" ? "gkn-turn" : undefined}>
+                {block.text}
+                {block.footnote ? <sup className="gkn-ref">{block.footnote}</sup> : null}
+              </p>
+              );
+            })}
           </div>
+          {entry.citation ? (
+            <footer className="gkn-foot">
+              <p>
+                <span className="gki-mono">1.</span> {entry.citation}
+              </p>
+            </footer>
+          ) : null}
           {entry.artifacts?.length ? (
             <div className="gkl-artifacts" aria-label="Artefactos publicos">
               {entry.artifacts.map((artifact) => (

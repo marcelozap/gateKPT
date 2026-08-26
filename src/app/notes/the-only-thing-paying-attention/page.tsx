@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function LegacyNotePage() {
-  redirect("/notes/wall-e");
+export default function LegacyOnlyThingPayingAttentionPage() {
+  redirect("/log/wall-e");
 }

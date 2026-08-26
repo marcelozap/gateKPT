@@ -1,5 +1,10 @@
-import EntryPage, { generateMetadata, generateStaticParams } from "@/app/log/[slug]/page";
+import { redirect } from "next/navigation";
 
-export { generateMetadata, generateStaticParams };
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-export default EntryPage;
+export default async function LegacyNotePage({ params }: Props) {
+  const { slug } = await params;
+  redirect(`/log/${slug}`);
+}

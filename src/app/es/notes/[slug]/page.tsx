@@ -1,8 +1,10 @@
-import SpanishEntryPage, {
-  generateMetadata,
-  generateStaticParams,
-} from "@/app/es/log/[slug]/page";
+import { redirect } from "next/navigation";
 
-export { generateMetadata, generateStaticParams };
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-export default SpanishEntryPage;
+export default async function LegacySpanishNotePage({ params }: Props) {
+  const { slug } = await params;
+  redirect(`/es/log/${slug}`);
+}

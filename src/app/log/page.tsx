@@ -8,10 +8,10 @@ export const metadata: Metadata = {
   title: "The Record",
   description: "Marcelo Zapata's journal entries on technology, systems, music, curiosity, and the world around the model.",
   alternates: {
-    canonical: `${getSiteUrl()}/notes`,
+    canonical: `${getSiteUrl()}/log`,
     languages: {
-      en: `${getSiteUrl()}/notes`,
-      es: `${getSiteUrl()}/es/notes`,
+      en: `${getSiteUrl()}/log`,
+      es: `${getSiteUrl()}/es/log`,
     },
   },
 };
@@ -45,7 +45,7 @@ export default function LogPage() {
               underneath them.
             </p>
           </div>
-          <Link href={latest.noteHref ?? `/notes/${latest.slug}`} className="gkl-primary">
+          <Link href={latest.noteHref ?? `/log/${latest.slug}`} className="gkl-primary">
             Read the full entry <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>
@@ -56,7 +56,7 @@ export default function LogPage() {
             <span className="gkl-label gki-mono">{String(entries.length).padStart(2, "0")} entries</span>
           </div>
           {entries.map((entry, index) => {
-            const href = entry.noteHref ?? `/notes/${entry.slug}`;
+            const href = entry.noteHref ?? `/log/${entry.slug}`;
             return (
               <Link
                 key={entry.slug}

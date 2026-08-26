@@ -14,7 +14,7 @@ export function GET() {
   const siteUrl = getSiteUrl();
   const items = getEntries("en")
     .map((entry) => {
-      const url = `${siteUrl}/notes/${entry.slug}`;
+      const url = `${siteUrl}/log/${entry.slug}`;
       const pubDate = new Date(entry.publishedTime ?? entry.date).toUTCString();
 
       return `
@@ -32,7 +32,7 @@ export function GET() {
     <rss version="2.0">
       <channel>
         <title>GateKPT Notes</title>
-        <link>${siteUrl}/notes</link>
+        <link>${siteUrl}/log</link>
         <description>Public GateKPT notes on AI systems, music, attention, and signal-mapped work.</description>
         <language>en-us</language>
         ${items}

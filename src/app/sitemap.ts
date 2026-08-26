@@ -4,16 +4,16 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticRoutes = ["", "/es", "/gatekpt", "/notes", "/es/notes"];
+  const staticRoutes = ["", "/es", "/gatekpt", "/log", "/es/log"];
   const noteRoutes = getEntries("en").flatMap((entry) => [
-    `/notes/${entry.slug}`,
-    `/es/notes/${entry.slug}`,
+    `/log/${entry.slug}`,
+    `/es/log/${entry.slug}`,
   ]);
 
   return [...staticRoutes, ...noteRoutes].map((route) => ({
     url: `${siteUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: route.includes("/notes/") ? "monthly" : "weekly",
-    priority: route === "" ? 1 : route.includes("/notes/") ? 0.7 : 0.8,
+    changeFrequency: route.includes("/log/") ? "monthly" : "weekly",
+    priority: route === "" ? 1 : route.includes("/log/") ? 0.7 : 0.8,
   }));
 }

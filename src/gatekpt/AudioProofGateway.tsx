@@ -284,7 +284,7 @@ export function AudioProofGateway() {
           </span>
           <span className="gkp-sig">
             <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/gatekpt">AI</Link> ·{" "}
-            <Link href="/notes">JOURNAL</Link>
+            <Link href="/log">JOURNAL</Link>
           </span>
         </div>
 
