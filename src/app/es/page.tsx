@@ -12,6 +12,25 @@ export const metadata: Metadata = {
     "GateKPT es la superficie pública de IA, machine learning e ingeniería de datos de Marcelo Zapata: sistemas LLM, mapas de señales visuales, contratos de datos y notas.",
   alternates: {
     canonical: `${getSiteUrl()}/es`,
+    languages: {
+      en: getSiteUrl(),
+      es: `${getSiteUrl()}/es`,
+    },
+  },
+  openGraph: {
+    title: "Marcelo Zapata - IA, Machine Learning e Ingeniería de Datos",
+    description:
+      "GateKPT es la superficie pública de IA, machine learning e ingeniería de datos de Marcelo Zapata: sistemas LLM, mapas de señales visuales, contratos de datos y notas.",
+    type: "website",
+    url: `${getSiteUrl()}/es`,
+    images: [
+      {
+        url: `${getSiteUrl()}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "GateKPT en español: sonido, señal y movimiento.",
+      },
+    ],
   },
 };
 

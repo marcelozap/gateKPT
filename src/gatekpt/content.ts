@@ -24,6 +24,7 @@ export type LogEntry = {
   nextHref?: string;
   nextLabel?: string;
   artifacts?: { href: string; label: string }[];
+  publishedTime?: string;
 };
 
 export type NoteBlock = {
@@ -424,8 +425,8 @@ export const localeCopy = {
     load: "GATEKPT ONLINE",
     switchLabel: "ES",
     switchHref: "/es",
-    logHref: "/log",
-    noteHref: "/notes/the-trap-of-time",
+    logHref: "/notes",
+    noteHref: "/notes/the-geometry-of-attention",
   },
   es: {
     whereBoot: "ESCRITURA + CAPAS DE IA",
@@ -455,8 +456,8 @@ export const localeCopy = {
     load: "GATEKPT EN LINEA",
     switchLabel: "EN",
     switchHref: "/",
-    logHref: "/es/log",
-    noteHref: "/es/notes/the-trap-of-time",
+    logHref: "/es/notes",
+    noteHref: "/es/notes/the-geometry-of-attention",
   },
 } as const;
 
@@ -515,6 +516,7 @@ const fieldLogEntryEn: LogEntry = {
     summary: note001.description,
     noteHref: "/notes/wall-e",
     body: note001.body.map((block) => block.text),
+    publishedTime: note001.publishedTime,
 };
 
 const fieldLogEntryEs: LogEntry = {
@@ -524,10 +526,12 @@ const fieldLogEntryEs: LogEntry = {
   layer: "NOTA 001",
   summary: "Una nota en inglés sobre curiosidad, agencia y lo que la IA puede estar explorando en nosotros.",
   body: note001.body.map((block) => block.text),
+  noteHref: "/es/notes/wall-e",
+  publishedTime: note001.publishedTime,
 };
 
 export const note002 = {
-  slug: "the-trap-of-time",
+  slug: "the-geometry-of-attention",
   displayKicker: "NOTE Nº 002",
   title: "The Trap of Time",
   description:
@@ -635,6 +639,7 @@ const fieldLogEntryNote002: LogEntry = {
   summary: note002.description,
   noteHref: `/notes/${note002.slug}`,
   body: note002.body.map((block) => block.text),
+  publishedTime: note002.publishedTime,
 };
 
 const fieldLogEntryNote002Es: LogEntry = {
@@ -645,6 +650,7 @@ const fieldLogEntryNote002Es: LogEntry = {
   summary:
     "Una etiqueta útil puede convertirse en una habitación que dejas de intentar abandonar. Una nota sobre tiempo, identidad y usar IA para probar tus límites.",
   noteHref: `/es/notes/${note002.slug}`,
+  publishedTime: note002.publishedTime,
   body: [
     "El tiempo es peligroso cuando pasas demasiado dentro de la misma historia.",
     "Al principio, una etiqueta es útil.",
@@ -672,15 +678,15 @@ const fieldLogEntryNote002Es: LogEntry = {
     "Parece estabilidad. Suena como experiencia. Se siente como ser realista.",
     "Pero a veces ser realista es solo miedo con mejor ropa.",
     "No te quedes dormido dentro de una etiqueta.",
-    "Las herramientas ya estan aqui.",
-    "A veces todo lo que necesitas es un empujon.",
+    "Las herramientas ya están aquí.",
+    "A veces todo lo que necesitas es un empujón.",
     "The only way is UP.",
   ],
 };
 
 
 export const note003 = {
-  slug: "you-are-not-a-runner",
+  slug: "the-signal-and-the-noise",
   displayKicker: "NOTE Nº 003",
   title: "You Are Not a Runner",
   description:
@@ -728,7 +734,8 @@ const fieldLogEntryNote003: LogEntry = {
   title: note003.title,
   layer: note003.displayKicker,
   summary: note003.description,
-  noteHref: "/notes/you-are-not-a-runner",
+  noteHref: `/notes/${note003.slug}`,
+  publishedTime: note003.publishedTime,
   body: [
     "A language model is made of language. It read what we wrote down and it predicts what comes next, which makes it very good at the thinking that is already settled. There is nothing under the words.",
     "We talk about ourselves the same way. At the halfway point of the Miami Marathon the words in my head were clear: stop, you cannot do this, you are not a runner. The third one was not about the race.",
@@ -743,6 +750,7 @@ const fieldLogEntryNote003Es: LogEntry = {
   summary:
     "Un modelo de lenguaje está hecho de lenguaje, y para él las palabras son todo lo que hay. Hablamos de nosotros mismos igual. Una nota sobre lo que te detiene y por qué no puedes discutirlo.",
   noteHref: `/es/notes/${note003.slug}`,
+  publishedTime: note003.publishedTime,
   body: [
     "Un modelo de lenguaje está hecho de lenguaje. No es un insulto. Es la descripción completa.",
     "Leyó lo que escribimos. Predice lo que sigue.",
@@ -789,6 +797,7 @@ const fieldLogEntryNote004: LogEntry = {
   summary:
     "A public study of rhythm written as code: patterns, motion, and measured sound.",
   noteHref: "/notes/coding-beats",
+  publishedTime: "2026-08-24T09:00:00-04:00",
   body: [
     "I want to study beats that are written as code.",
     "Tools like Strudel make rhythm visible. A beat is not only an audio file. It is tempo, samples, rests, repetition, probability, filters, space, and timing written into a system.",
@@ -801,6 +810,7 @@ const fieldLogEntryNote004: LogEntry = {
     "This is not a claim that AI understands music. It is a public study of how coded rhythm becomes measurable sound and movement.",
     "GateKPT is the public surface for the experiment. XIV is the larger business around role-based systems. This note is the music lab.",
     "The first sketch is a slow coded beat in Strudel: readable, playable, and changeable.",
+    "Footnote: the linked sketch uses Strudel with public Dirt-Samples, not raw studio files.",
   ],
   artifacts: [
     {
@@ -813,23 +823,25 @@ const fieldLogEntryNote004: LogEntry = {
 const fieldLogEntryNote004Es: LogEntry = {
   slug: "coding-beats",
   date: "2026-08-24",
-  title: "Beats En Codigo",
+  title: "Beats En Código",
   layer: "NOTA 004",
   summary:
-    "Un estudio publico de ritmo escrito como codigo: patrones, movimiento y sonido medido.",
+    "Un estudio público de ritmo escrito como código: patrones, movimiento y sonido medido.",
   noteHref: "/es/notes/coding-beats",
+  publishedTime: "2026-08-24T09:00:00-04:00",
   body: [
-    "Quiero estudiar beats que estan escritos como codigo.",
-    "Herramientas como Strudel hacen visible el ritmo. Un beat no es solo un archivo de audio. Es tempo, samples, silencios, repeticion, probabilidad, filtros, espacio y timing escritos dentro de un sistema.",
-    "Eso importa porque la musica en codigo se puede inspeccionar. Cambias una linea y cambia el beat. Guardas el patron y la idea se vuelve repetible. Comparas dos versiones y puedes escuchar lo que hizo el codigo.",
-    "Esa es la pregunta de investigacion: que pasa cuando un beat se trata como software y sonido al mismo tiempo?",
-    "El estudio es simple. Construir pequenos sketches en codigo. Documentar el patron. Escuchar el resultado. Medir el audio. Mapear la senal hacia movimiento.",
-    "Tambien es un sistema de memoria. Puedo volver despues y ver el beat como codigo: el tempo, los silencios, los drums, la forma del filtro, el espacio y el pulso.",
+    "Quiero estudiar beats que están escritos como código.",
+    "Herramientas como Strudel hacen visible el ritmo. Un beat no es solo un archivo de audio. Es tempo, samples, silencios, repetición, probabilidad, filtros, espacio y timing escritos dentro de un sistema.",
+    "Eso importa porque la música en código se puede inspeccionar. Cambias una línea y cambia el beat. Guardas el patrón y la idea se vuelve repetible. Comparas dos versiones y puedes escuchar lo que hizo el código.",
+    "Esa es la pregunta de investigación: ¿qué pasa cuando un beat se trata como software y sonido al mismo tiempo?",
+    "El estudio es simple. Construir pequeños sketches en código. Documentar el patrón. Escuchar el resultado. Medir el audio. Mapear la señal hacia movimiento.",
+    "También es un sistema de memoria. Puedo volver después y ver el beat como código: el tempo, los silencios, los drums, la forma del filtro, el espacio y el pulso.",
     "Otra persona puede abrir el mismo sketch en Strudel, darle play y cambiarlo. Eso es diferente a publicar solo un clip de audio.",
     "El beat no es solo algo para escuchar. Es algo para inspeccionar.",
-    "Esto no es una afirmacion de que la IA entiende musica. Es un estudio publico de como el ritmo en codigo se convierte en sonido medible y movimiento.",
-    "GateKPT es la superficie publica del experimento. XIV es el negocio mas grande alrededor de sistemas basados en roles. Esta nota es el laboratorio musical.",
+    "Esto no es una afirmación de que la IA entiende música. Es un estudio público de cómo el ritmo en código se convierte en sonido medible y movimiento.",
+    "GateKPT es la superficie pública del experimento. XIV es el negocio más grande alrededor de sistemas basados en roles. Esta nota es el laboratorio musical.",
     "El primer sketch es un beat lento en Strudel: legible, reproducible y modificable.",
+    "Nota: el sketch enlazado usa Strudel con Dirt-Samples públicos, no archivos crudos del estudio.",
   ],
   artifacts: [
     {

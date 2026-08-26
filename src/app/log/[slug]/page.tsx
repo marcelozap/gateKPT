@@ -21,18 +21,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
 
-  const canonical = `${getSiteUrl()}/log/${entry.slug}`;
+  const siteUrl = getSiteUrl();
+  const canonical = `${siteUrl}/notes/${entry.slug}`;
   return {
     title: entry.title,
     description: entry.summary,
     alternates: {
       canonical,
+      languages: {
+        en: canonical,
+        es: `${siteUrl}/es/notes/${entry.slug}`,
+      },
     },
     openGraph: {
       title: `${entry.title} - GateKPT`,
       description: entry.summary,
       type: "article",
       url: canonical,
+      publishedTime: entry.publishedTime,
+      authors: ["Marcelo Zapata"],
+      images: [
+        {
+          url: `${siteUrl}/opengraph-image`,
+          width: 1200,
+          height: 630,
+          alt: `${entry.layer} - ${entry.title} - GateKPT`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${entry.title} - GateKPT`,
+      description: entry.summary,
+      images: [
+        {
+          url: `${siteUrl}/opengraph-image`,
+          alt: `${entry.layer} - ${entry.title} - GateKPT`,
+        },
+      ],
     },
   };
 }
@@ -51,7 +77,7 @@ export default async function LogEntryPage({ params }: Props) {
       <HubNav />
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
-          <Link href="/log" className="gkl-back gki-mono">
+          <Link href="/notes" className="gkl-back gki-mono">
             Back to The Record
           </Link>
           <span className="gkl-meta gki-mono">

@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   description: note001.description,
   alternates: {
     canonical,
+    languages: {
+      en: canonical,
+      es: `${getSiteUrl()}/es/notes/${note001.slug}`,
+    },
   },
   openGraph: {
     title: `${note001.title} - GateKPT`,
@@ -32,7 +36,12 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${note001.title} - GateKPT`,
     description: note001.description,
-    images: [`${canonical}/opengraph-image`],
+    images: [
+      {
+        url: `${canonical}/opengraph-image`,
+        alt: "NOTE Nº 001 - The Only Thing Paying Attention - GateKPT",
+      },
+    ],
   },
 };
 

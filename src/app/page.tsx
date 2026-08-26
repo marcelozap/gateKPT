@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import { AudioProofGateway } from "@/gatekpt/AudioProofGateway";
 import { layersEn } from "@/gatekpt/content";
+import { getSiteUrl } from "@/lib/siteUrl";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: getSiteUrl(),
+    languages: {
+      en: getSiteUrl(),
+      es: `${getSiteUrl()}/es`,
+    },
+  },
+};
 
 function NoScriptStack() {
   return (

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function LegacyMentalTimeTrapPage() {
-  redirect("/notes/the-trap-of-time");
+  redirect("/notes/the-geometry-of-attention");
 }

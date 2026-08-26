@@ -3,7 +3,7 @@
  * Defaults to the public domain so aliased preview builds still produce
  * shareable social URLs.
  */
-const PUBLIC_SITE_URL = "https://www.gatekpt.ai";
+const PUBLIC_SITE_URL = "https://gatekpt.ai";
 
 export function getSiteUrl(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();

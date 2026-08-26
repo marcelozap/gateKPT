@@ -9,7 +9,25 @@ export const metadata: Metadata = {
   title: "Escritura publicada",
   description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
   alternates: {
-    canonical: `${getSiteUrl()}/es/log`,
+    canonical: `${getSiteUrl()}/es/notes`,
+    languages: {
+      en: `${getSiteUrl()}/notes`,
+      es: `${getSiteUrl()}/es/notes`,
+    },
+  },
+  openGraph: {
+    title: "Escritura publicada - GateKPT",
+    description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
+    type: "website",
+    url: `${getSiteUrl()}/es/notes`,
+    images: [
+      {
+        url: `${getSiteUrl()}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        alt: "Escritura publicada de GateKPT.",
+      },
+    ],
   },
 };
 
@@ -43,7 +61,7 @@ export default function SpanishLogPage() {
               el sistema debajo de ellas.
             </p>
           </div>
-          <Link href={latest.noteHref ?? `/es/log/${latest.slug}`} className="gkl-primary">
+          <Link href={latest.noteHref ?? `/es/notes/${latest.slug}`} className="gkl-primary">
             Leer la nota completa <span aria-hidden="true">-&gt;</span>
           </Link>
         </section>
@@ -54,7 +72,7 @@ export default function SpanishLogPage() {
             <span className="gkl-label gki-mono">{String(entries.length).padStart(2, "0")} notas</span>
           </div>
           {entries.map((entry, index) => {
-            const href = entry.noteHref ?? `/es/log/${entry.slug}`;
+            const href = entry.noteHref ?? `/es/notes/${entry.slug}`;
             return (
               <Link
                 key={entry.slug}
