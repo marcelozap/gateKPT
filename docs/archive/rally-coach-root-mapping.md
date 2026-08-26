@@ -8,16 +8,16 @@ Standalone source root:
 
 Consolidated gateKPT package root:
 
-- `C:\Users\Green Machine\Documents\gateKPT\src\kinematics`
+- `C:\Users\Green Machine\Documents\gateKPT\kinematics`
 
 Migrated kinematics modules:
 
-- `src\rally_coach\core\types.py` -> `src\kinematics\core\types.py`
-- `src\rally_coach\pose\base.py` -> `src\kinematics\pose\base.py`
-- `src\rally_coach\pose\mediapipe_backend.py` -> `src\kinematics\pose\mediapipe_backend.py`
-- `src\rally_coach\pose\movenet_backend.py` -> `src\kinematics\pose\movenet_backend.py`
-- `src\rally_coach\tracking\smoothing.py` -> `src\kinematics\tracking\smoothing.py`
-- `src\rally_coach\metrics\kinematics.py` -> `src\kinematics\metrics\kinematics.py`
+- `src\rally_coach\core\types.py` -> `kinematics\core\types.py`
+- `src\rally_coach\pose\base.py` -> `kinematics\pose\base.py`
+- `src\rally_coach\pose\mediapipe_backend.py` -> `kinematics\pose\mediapipe_backend.py`
+- `src\rally_coach\pose\movenet_backend.py` -> `kinematics\pose\movenet_backend.py`
+- `src\rally_coach\tracking\smoothing.py` -> `kinematics\tracking\smoothing.py`
+- `src\rally_coach\metrics\kinematics.py` -> `kinematics\metrics\kinematics.py`
 
 Import mapping:
 
