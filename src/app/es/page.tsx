@@ -1,6 +1,6 @@
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
 import type { Metadata } from "next";
-import { GatekptHome } from "@/gatekpt/GatekptHome";
+import { AudioProofGateway } from "@/gatekpt/AudioProofGateway";
 import { layersEs } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
@@ -69,7 +69,7 @@ export default function SpanishHome() {
   return (
     <div lang="es" translate="no">
       <SpanishDocumentGuard />
-      <GatekptHome locale="es" />
+      <AudioProofGateway locale="es" />
       <noscript>
         <NoScriptStack />
       </noscript>

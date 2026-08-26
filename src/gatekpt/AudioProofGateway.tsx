@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 type GatewayData = {
+  duration_s?: number;
   bpm?: number;
   beat_times: number[];
   downbeat_times: number[];
@@ -15,9 +16,47 @@ type GatewayData = {
 
 const W = 860;
 const H = 380;
-const LOOP = 60;
-const GATEWAY_FILE = "/gateway/xiv_malosound_mix.audioanalysis.v1.json";
-const ACTIVE_BANDS = Array.from({ length: 8 }, () => true);
+const SAMPLES = [
+  {
+    label: "Sample 01",
+    contract: "/gateway/xiv_malosound_mix.audioanalysis.v1.json",
+    audio: "/audio/xiv-malosound-loop.mp3",
+  },
+  {
+    label: "Sample 02",
+    contract: "/gateway/gateway_track.audioanalysis.v1.json",
+    audio: "/audio/gatekpt-night-guitar-preview.mp3",
+  },
+] as const;
+
+const COPY = {
+  en: {
+    ai: "AI",
+    journal: "JOURNAL",
+    headline: "Sound into signal. Signal into motion.",
+    subline: "Better music. Better movement.",
+    start: "START AUDIO",
+    stop: "STOP AUDIO",
+    missing: "contract file missing",
+    aria: "A signal-mapped body moving from audio analysis data.",
+    proof: "MOTION MAP",
+    music: "MUSIC",
+    stack: "AI STACK",
+  },
+  es: {
+    ai: "IA",
+    journal: "DIARIO",
+    headline: "Sonido en señal. Señal en movimiento.",
+    subline: "Mejor música. Mejor movimiento.",
+    start: "INICIAR AUDIO",
+    stop: "DETENER AUDIO",
+    missing: "falta el contrato",
+    aria: "Un cuerpo mapeado por señal que se mueve con datos de análisis de audio.",
+    proof: "MAPA DE MOVIMIENTO",
+    music: "MÚSICA",
+    stack: "STACK IA",
+  },
+} as const;
 
 function clamp(value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, value));
@@ -38,6 +77,8 @@ function startMachine(
   data: GatewayData,
   reduced: boolean,
   activeBands: boolean[],
+  getAudioTime: () => number | null,
+  proofLabel: string,
 ) {
   const context = canvas.getContext("2d");
   if (!context) return null;
@@ -54,6 +95,7 @@ function startMachine(
       Math.max(data.energy_curve.rms.length, 1),
   );
   const lerp = (a: number, b: number, f: number) => a + (b - a) * f;
+  const loop = Math.max(1, Math.min(data.duration_s ?? 60, data.energy_curve.rms.length * data.energy_curve.hop_s));
 
   function envAt(times: number[], t: number, attack: number, decay: number) {
     return envelopeAt(times, t, attack, decay);
@@ -83,6 +125,8 @@ function startMachine(
     const mids = clamp((norm(row[2], 2) + norm(row[3], 3) + norm(row[4], 4)) / 3);
     const air = clamp((norm(row[5], 5) + norm(row[6], 6) + norm(row[7], 7)) / 3);
     const pulse = clamp(beatE * 0.65 + downE * 0.25 + rms * 0.35);
+    const zScore = clamp((rawRms - rmsMean) / Math.max(rmsStd, 0.001), -1, 3);
+    const motionScore = clamp(0.42 * bass + 0.34 * mids + 0.24 * air + 0.22 * pulse);
 
     g.clearRect(0, 0, W, H);
 
@@ -200,6 +244,23 @@ function startMachine(
       joint(point, index < 4 ? 4.5 : 5.8, index * 0.75);
     }
 
+    const barsX = 74;
+    const barsY = 318;
+    g.font = "700 9px monospace";
+    g.fillStyle = "rgba(238,240,244,0.34)";
+    g.fillText(proofLabel, barsX, barsY - 13);
+    row.slice(0, 8).forEach((value, channel) => {
+      const h = 9 + norm(value, channel) * 34;
+      const x = barsX + channel * 17;
+      g.fillStyle = activeBands[channel]
+        ? `hsla(${188 + channel * 13}, 88%, ${54 + motionScore * 22}%, 0.76)`
+        : "rgba(238,240,244,0.1)";
+      g.fillRect(x, barsY - h, 8, h);
+    });
+    g.fillStyle = "rgba(143,240,255,0.5)";
+    g.fillText(`MOTION ${Math.round(motionScore * 100).toString().padStart(2, "0")}`, 666, 322);
+    g.fillStyle = "rgba(245,184,75,0.42)";
+    g.fillText(`Z ${zScore.toFixed(2)}`, 666, 340);
   }
 
   if (reduced) {
@@ -211,7 +272,9 @@ function startMachine(
   let t0: number | null = null;
   function frame(now: number) {
     if (t0 === null || now < t0) t0 = now;
-    draw(((((now - t0) / 1000) % LOOP) + LOOP) % LOOP);
+    const audioTime = getAudioTime();
+    const phase = audioTime ?? (now - t0) / 1000;
+    draw((((phase % loop) + loop) % loop));
     frameId = requestAnimationFrame(frame);
   }
   frameId = requestAnimationFrame(frame);
@@ -219,11 +282,15 @@ function startMachine(
   return () => cancelAnimationFrame(frameId);
 }
 
-export function AudioProofGateway() {
+export function AudioProofGateway({ locale = "en" }: { locale?: "en" | "es" }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [missingContract, setMissingContract] = useState(false);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [sampleIndex, setSampleIndex] = useState(0);
+  const [activeBands, setActiveBands] = useState(() => Array.from({ length: 8 }, () => true));
+  const copy = COPY[locale];
+  const sample = SAMPLES[sampleIndex] ?? SAMPLES[0];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -237,12 +304,22 @@ export function AudioProofGateway() {
     async function loadGateway() {
       try {
         if (typeof window.fetch !== "function") throw new Error("contract file missing");
-        const response = await window.fetch(GATEWAY_FILE, { cache: "no-store" });
+        const response = await window.fetch(sample.contract, { cache: "no-store" });
         if (!response.ok) throw new Error("contract file missing");
         const data = (await response.json()) as GatewayData;
         if (!cancelled) {
           setMissingContract(false);
-          const machineCleanup = startMachine(currentCanvas, data, reduced, ACTIVE_BANDS);
+          const machineCleanup = startMachine(
+            currentCanvas,
+            data,
+            reduced,
+            activeBands,
+            () => {
+              const audio = audioRef.current;
+              return audio && !audio.paused ? audio.currentTime : null;
+            },
+            copy.proof,
+          );
           if (machineCleanup) cleanup = machineCleanup;
           else setMissingContract(true);
         }
@@ -260,7 +337,15 @@ export function AudioProofGateway() {
       cancelled = true;
       cleanup();
     };
-  }, []);
+  }, [activeBands, copy.proof, sample.contract]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause();
+    audio.currentTime = 0;
+    setAudioPlaying(false);
+  }, [sample.audio]);
 
   async function toggleAudio() {
     const audio = audioRef.current;
@@ -276,15 +361,15 @@ export function AudioProofGateway() {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/xiv-malosound-loop.mp3" loop preload="metadata" />
+      <audio ref={audioRef} src={sample.audio} loop preload="metadata" />
       <section className="gkp-hero">
         <div className="gkp-hero-top">
           <span className="gkp-brand">
             GATE<b>KPT</b>
           </span>
           <span className="gkp-sig">
-            <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/gatekpt">AI</Link> ·{" "}
-            <Link href="/log">JOURNAL</Link>
+            <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/gatekpt">{copy.ai}</Link> ·{" "}
+            <Link href={locale === "es" ? "/es/log" : "/log"}>{copy.journal}</Link>
           </span>
         </div>
 
@@ -296,17 +381,55 @@ export function AudioProofGateway() {
               width={W}
               height={H}
               role="img"
-              aria-label="A signal-mapped body moving from audio analysis data."
+              aria-label={copy.aria}
             />
-            {missingContract ? <span className="gkp-contract-missing">contract file missing</span> : null}
+            {missingContract ? <span className="gkp-contract-missing">{copy.missing}</span> : null}
           </div>
-          <h1 className="gkp-site-line">Sound into signal. Signal into motion.</h1>
-          <p className="gkp-site-sub">Better music. Better movement.</p>
+          <div className="gkp-sample-switcher" aria-label="Motion samples">
+            {SAMPLES.map((option, index) => (
+              <button
+                key={option.label}
+                type="button"
+                aria-pressed={sampleIndex === index}
+                onClick={() => setSampleIndex(index)}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <div className="gkp-band-toggles" aria-label="Audio bands mapped to motion">
+            {activeBands.map((active, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-pressed={active}
+                onClick={() =>
+                  setActiveBands((bands) => bands.map((band, bandIndex) => (bandIndex === index ? !band : band)))
+                }
+              >
+                B{index + 1}
+              </button>
+            ))}
+          </div>
+          <h1 className="gkp-site-line">{copy.headline}</h1>
+          <p className="gkp-site-sub">{copy.subline}</p>
           <button type="button" className="gkp-audio-toggle" onClick={toggleAudio} aria-pressed={audioPlaying}>
             <span className="gkp-audio-icon" aria-hidden="true" />
-            <span>{audioPlaying ? "STOP AUDIO" : "START AUDIO"}</span>
+            <span>{audioPlaying ? copy.stop : copy.start}</span>
           </button>
         </div>
+
+        <nav className="gkp-gates" aria-label="GateKPT sections">
+          <Link className="gkp-gate" href={locale === "es" ? "/es/log/coding-beats" : "/log/coding-beats"}>
+            {copy.music}
+          </Link>
+          <Link className="gkp-gate" href="/gatekpt">
+            {copy.stack}
+          </Link>
+          <Link className="gkp-gate" href={locale === "es" ? "/es/log" : "/log"}>
+            {copy.journal}
+          </Link>
+        </nav>
       </section>
 
       <footer className="gkp-home-footer">
