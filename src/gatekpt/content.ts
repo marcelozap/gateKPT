@@ -795,6 +795,9 @@ const fieldLogEntryNote004: LogEntry = {
     "That matters because coded music can be inspected. Change one line and the beat changes. Save the pattern and the idea becomes repeatable. Compare two versions and you can hear what the code did.",
     "That is the research question: what happens when a beat is treated like software and sound at the same time?",
     "The study is simple. Build small coded sketches. Document the pattern. Listen to the result. Measure the audio. Map the signal into motion.",
+    "It is also a memory system. I can come back later and see the beat as code: the tempo, the rests, the drum choices, the filter shape, the space, and the pulse.",
+    "Someone else can open the same sketch in Strudel, press play, and change it. That is different from posting an audio clip.",
+    "The beat is not only something to hear. It is something to inspect.",
     "This is not a claim that AI understands music. It is a public study of how coded rhythm becomes measurable sound and movement.",
     "GateKPT is the public surface for the experiment. XIV is the larger business around role-based systems. This note is the music lab.",
     "The first sketch is a slow coded beat in Strudel: readable, playable, and changeable.",
@@ -802,7 +805,7 @@ const fieldLogEntryNote004: LogEntry = {
   artifacts: [
     {
       href: codingBeatsStrudelHref,
-      label: "Strudel coded beat sketch",
+      label: "Open Strudel beat sketch",
     },
   ],
 };
@@ -821,6 +824,9 @@ const fieldLogEntryNote004Es: LogEntry = {
     "Eso importa porque la musica en codigo se puede inspeccionar. Cambias una linea y cambia el beat. Guardas el patron y la idea se vuelve repetible. Comparas dos versiones y puedes escuchar lo que hizo el codigo.",
     "Esa es la pregunta de investigacion: que pasa cuando un beat se trata como software y sonido al mismo tiempo?",
     "El estudio es simple. Construir pequenos sketches en codigo. Documentar el patron. Escuchar el resultado. Medir el audio. Mapear la senal hacia movimiento.",
+    "Tambien es un sistema de memoria. Puedo volver despues y ver el beat como codigo: el tempo, los silencios, los drums, la forma del filtro, el espacio y el pulso.",
+    "Otra persona puede abrir el mismo sketch en Strudel, darle play y cambiarlo. Eso es diferente a publicar solo un clip de audio.",
+    "El beat no es solo algo para escuchar. Es algo para inspeccionar.",
     "Esto no es una afirmacion de que la IA entiende musica. Es un estudio publico de como el ritmo en codigo se convierte en sonido medible y movimiento.",
     "GateKPT es la superficie publica del experimento. XIV es el negocio mas grande alrededor de sistemas basados en roles. Esta nota es el laboratorio musical.",
     "El primer sketch es un beat lento en Strudel: legible, reproducible y modificable.",
@@ -828,7 +834,7 @@ const fieldLogEntryNote004Es: LogEntry = {
   artifacts: [
     {
       href: codingBeatsStrudelHref,
-      label: "Sketch de beat en Strudel",
+      label: "Abrir sketch de beat en Strudel",
     },
   ],
 };
