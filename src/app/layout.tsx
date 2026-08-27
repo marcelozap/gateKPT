@@ -23,10 +23,11 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = {
   title: {
-    default: "GateKPT - Sound Into Signal",
-    template: "%s - GateKPT",
+    default: "XIV - Role-Based AI Systems",
+    template: "%s - XIV",
   },
-  description: "A living gateway where music, signal analysis, motion mapping, The Record, and shipped systems meet.",
+  description:
+    "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
@@ -36,28 +37,30 @@ export const metadata: Metadata = {
     shortcut: ["/gatekpt-icon.png"],
   },
   openGraph: {
-    title: "GateKPT - Sound Into Signal",
-    description: "A living gateway where music, signal analysis, motion mapping, The Record, and shipped systems meet.",
+    title: "XIV - Role-Based AI Systems",
+    description:
+      "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
     type: "website",
     url: getSiteUrl(),
-    siteName: "GateKPT",
+    siteName: "XIV",
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "GateKPT sound-to-signal gateway.",
+        alt: "XIV ecosystem: orchestration, MaloSound proof, and Green Machine data lane.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GateKPT - Sound Into Signal",
-    description: "A living gateway where music, signal analysis, motion mapping, The Record, and shipped systems meet.",
+    title: "XIV - Role-Based AI Systems",
+    description:
+      "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
     images: [
       {
         url: "/opengraph-image",
-        alt: "GateKPT sound-to-signal gateway.",
+        alt: "XIV ecosystem: orchestration, MaloSound proof, and Green Machine data lane.",
       },
     ],
   },
@@ -93,10 +96,10 @@ export default function RootLayout({
       {
         "@type": "WebSite",
         "@id": `${siteUrl}/#website`,
-        name: "GateKPT",
+        name: "XIV",
         url: siteUrl,
         description:
-          "Marcelo Zapata's public surface for AI systems, machine learning literacy, The Record, signal-mapped motion, and visual work.",
+          "Marcelo Zapata's public surface for XIV role-based AI systems, MaloSound artist-tech proof, and Green Machine data review.",
         publisher: {
           "@id": `${siteUrl}/#marcelo-zapata`,
         },

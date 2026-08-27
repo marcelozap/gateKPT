@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 function NoScriptStack() {
   return (
     <div className="gki-noscript">
-      <h1>GateKPT - AI from the text box out.</h1>
+      <h1>XIV - Role-based AI systems.</h1>
       <p>
-        Journal entries and a public map of the AI layers: input, tokens, context, models, tools, chips, and power.
+        XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.
       </p>
       {layersEn.map((layer) => (
         <section key={layer.id}>

@@ -5,8 +5,10 @@ const nextConfig = {
     return [
       { source: "/gatekpt-site", destination: "/", permanent: true },
       { source: "/gatekpt-site/:path*", destination: "/", permanent: true },
-      { source: "/gate-kpt", destination: "/", permanent: true },
-      { source: "/gate-kpt/:path*", destination: "/", permanent: true },
+      { source: "/gate-kpt", destination: "/xiv", permanent: true },
+      { source: "/gate-kpt/:path*", destination: "/xiv", permanent: true },
+      { source: "/gatekpt", destination: "/xiv", permanent: true },
+      { source: "/gatekpt/:path*", destination: "/xiv", permanent: true },
       { source: "/notes", destination: "/log", statusCode: 301 },
       { source: "/notes/:slug", destination: "/log/:slug", statusCode: 301 },
       { source: "/es/notes", destination: "/es/log", statusCode: 301 },

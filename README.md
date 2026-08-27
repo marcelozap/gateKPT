@@ -1,21 +1,12 @@
-# GateKPT
+# XIV Public Surface
 
-GateKPT is a public AI learning hub for studying the stack end to end: physical compute, data foundations, models, prompting, AI engineering, markets, and real-world deployment.
+This repository preserves the former GateKPT.ai work while moving the public story into three clearer lanes:
 
-Public purpose:
-- explain AI from the ground up without hype
-- keep evergreen foundation notes in one durable place
-- turn weekly AI research into clear posts and career-building material
-- connect technical concepts to real operational workflows
+- **XIV**: role-based AI orchestration for real work.
+- **MaloSound**: original music and artist-tech proof of concept.
+- **Green Machine**: data, evidence, and risk-review lane.
 
-Current public concept:
-- homepage as a training-document style map
-- foundation sections for compute, data, models, and AI engineering
-- learning tracks for prompting, markets, safety, and real-world AI
-- weekly brief workflow for news, simplification, and publishing
-
-Important rule:
-Keep examples source-grounded and clear about uncertainty. Public market notes, salaries, funding, IPO timing, and talent movement should use public sources and avoid rumor framing.
+GateKPT is now treated as legacy naming only. Public pages should use XIV, MaloSound, Green Machine, or Marcelo Zapata instead.
 
 Local commands:
 

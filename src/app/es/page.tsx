@@ -6,10 +6,10 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Marcelo Zapata - IA, Machine Learning e Ingeniería de Datos",
+    absolute: "XIV - Sistemas de IA basados en roles",
   },
   description:
-    "GateKPT es la superficie pública de IA, machine learning e ingeniería de datos de Marcelo Zapata: sistemas LLM, mapas de señales visuales, contratos de datos y notas.",
+    "XIV es el orquestador. MaloSound es la prueba. Green Machine es la línea de datos y revisión de riesgo.",
   alternates: {
     canonical: `${getSiteUrl()}/es`,
     languages: {
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Marcelo Zapata - IA, Machine Learning e Ingeniería de Datos",
+    title: "XIV - Sistemas de IA basados en roles",
     description:
-      "GateKPT es la superficie pública de IA, machine learning e ingeniería de datos de Marcelo Zapata: sistemas LLM, mapas de señales visuales, contratos de datos y notas.",
+      "XIV es el orquestador. MaloSound es la prueba. Green Machine es la línea de datos y revisión de riesgo.",
     type: "website",
     url: `${getSiteUrl()}/es`,
     images: [
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         url: `${getSiteUrl()}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "GateKPT en español: sonido, señal y movimiento.",
+        alt: "XIV en español: orquestación, MaloSound y Green Machine.",
       },
     ],
   },
@@ -37,10 +37,9 @@ export const metadata: Metadata = {
 function NoScriptStack() {
   return (
     <div className="gki-noscript">
-      <h1>GateKPT - IA desde el texto hacia afuera.</h1>
+      <h1>XIV - Sistemas de IA basados en roles.</h1>
       <p>
-        Escritura publicada y un mapa para entender qué pasa cuando escribes: entrada, tokens, contexto, modelos,
-        herramientas, chips y energía.
+        XIV es el orquestador. MaloSound es la prueba. Green Machine es la línea de datos y revisión de riesgo.
       </p>
       {layersEs.map((layer) => (
         <section key={layer.id}>

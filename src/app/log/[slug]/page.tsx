@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
     },
     openGraph: {
-      title: `${entry.title} - GateKPT`,
+      title: `${entry.title} - XIV`,
       description: entry.summary,
       type: "article",
       url: canonical,
@@ -45,18 +45,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: `${siteUrl}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: `${entry.layer} - ${entry.title} - GateKPT`,
+          alt: `${entry.layer} - ${entry.title} - XIV`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${entry.title} - GateKPT`,
+      title: `${entry.title} - XIV`,
       description: entry.summary,
       images: [
         {
           url: `${siteUrl}/opengraph-image`,
-          alt: `${entry.layer} - ${entry.title} - GateKPT`,
+          alt: `${entry.layer} - ${entry.title} - XIV`,
         },
       ],
     },
@@ -78,7 +78,7 @@ export default async function LogEntryPage({ params }: Props) {
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
           <Link href="/log" className="gkl-back gki-mono">
-            Back to The Record
+            Back to public log
           </Link>
           <span className="gkl-meta gki-mono">
             {entry.date} / {entry.layer}

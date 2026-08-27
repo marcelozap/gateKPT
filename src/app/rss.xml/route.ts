@@ -31,9 +31,9 @@ export function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0">
       <channel>
-        <title>GateKPT Notes</title>
+        <title>XIV Public Log</title>
         <link>${siteUrl}/log</link>
-        <description>Public GateKPT notes on AI systems, music, attention, and signal-mapped work.</description>
+        <description>Public notes for XIV, MaloSound, and Green Machine.</description>
         <language>en-us</language>
         ${items}
       </channel>

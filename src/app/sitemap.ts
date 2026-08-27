@@ -4,7 +4,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const staticRoutes = ["", "/es", "/gatekpt", "/log", "/es/log"];
+  const staticRoutes = ["", "/es", "/xiv", "/malosound", "/green-machine", "/log", "/es/log"];
   const noteRoutes = getEntries("en").flatMap((entry) => [
     `/log/${entry.slug}`,
     `/es/log/${entry.slug}`,

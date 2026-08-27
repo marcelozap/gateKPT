@@ -31,30 +31,64 @@ const SAMPLES = [
 
 const COPY = {
   en: {
-    ai: "AI",
-    journal: "JOURNAL",
+    xiv: "XIV",
+    malosound: "MALO",
+    greenMachine: "GREEN",
+    log: "LOG",
     headline: "Sound into signal. Signal into motion.",
-    subline: "Better music. Better movement.",
+    subline: "XIV is the system. MaloSound is the proof. Green Machine is the data lane.",
     start: "START AUDIO",
     stop: "STOP AUDIO",
     missing: "contract file missing",
     aria: "A signal-mapped body moving from audio analysis data.",
     proof: "MOTION MAP",
-    music: "MUSIC",
-    stack: "AI STACK",
+    lanes: [
+      {
+        href: "/xiv",
+        title: "XIV",
+        body: "Role-based AI orchestration for specialist agents, shared timelines, receipts, and real work.",
+      },
+      {
+        href: "/malosound",
+        title: "MaloSound",
+        body: "Original music, audio analysis, coded rhythm, and visual motion as the first proof of concept.",
+      },
+      {
+        href: "/green-machine",
+        title: "Green Machine",
+        body: "Data, evidence, and risk review with audit trails and no execution claims.",
+      },
+    ],
   },
   es: {
-    ai: "IA",
-    journal: "DIARIO",
+    xiv: "XIV",
+    malosound: "MALO",
+    greenMachine: "GREEN",
+    log: "LOG",
     headline: "Sonido en señal. Señal en movimiento.",
-    subline: "Mejor música. Mejor movimiento.",
+    subline: "XIV es el sistema. MaloSound es la prueba. Green Machine es la línea de datos.",
     start: "INICIAR AUDIO",
     stop: "DETENER AUDIO",
     missing: "falta el contrato",
     aria: "Un cuerpo mapeado por señal que se mueve con datos de análisis de audio.",
     proof: "MAPA DE MOVIMIENTO",
-    music: "MÚSICA",
-    stack: "STACK IA",
+    lanes: [
+      {
+        href: "/xiv",
+        title: "XIV",
+        body: "Orquestación de IA basada en roles para agentes especialistas, líneas de tiempo compartidas, recibos y trabajo real.",
+      },
+      {
+        href: "/malosound",
+        title: "MaloSound",
+        body: "Música original, análisis de audio, ritmo en código y movimiento visual como primera prueba de concepto.",
+      },
+      {
+        href: "/green-machine",
+        title: "Green Machine",
+        body: "Datos, evidencia y revisión de riesgo con auditoría y sin afirmaciones de ejecución.",
+      },
+    ],
   },
 } as const;
 
@@ -365,11 +399,11 @@ export function AudioProofGateway({ locale = "en" }: { locale?: "en" | "es" }) {
       <section className="gkp-hero">
         <div className="gkp-hero-top">
           <span className="gkp-brand">
-            GATE<b>KPT</b>
+            <b>XIV</b>
           </span>
           <span className="gkp-sig">
-            <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/gatekpt">{copy.ai}</Link> ·{" "}
-            <Link href={locale === "es" ? "/es/log" : "/log"}>{copy.journal}</Link>
+            <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/xiv">{copy.xiv}</Link> ·{" "}
+            <Link href="/malosound">{copy.malosound}</Link> · <Link href="/green-machine">{copy.greenMachine}</Link>
           </span>
         </div>
 
@@ -417,17 +451,22 @@ export function AudioProofGateway({ locale = "en" }: { locale?: "en" | "es" }) {
             <span className="gkp-audio-icon" aria-hidden="true" />
             <span>{audioPlaying ? copy.stop : copy.start}</span>
           </button>
+          <div className="gkp-ecosystem" aria-label="XIV ecosystem">
+            {copy.lanes.map((lane) => (
+              <Link key={lane.href} href={lane.href} className="gkp-lane">
+                <span>{lane.title}</span>
+                <p>{lane.body}</p>
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <nav className="gkp-gates" aria-label="GateKPT sections">
+        <nav className="gkp-gates" aria-label="XIV sections">
           <Link className="gkp-gate" href={locale === "es" ? "/es/log/coding-beats" : "/log/coding-beats"}>
-            {copy.music}
-          </Link>
-          <Link className="gkp-gate" href="/gatekpt">
-            {copy.stack}
+            CODING BEATS
           </Link>
           <Link className="gkp-gate" href={locale === "es" ? "/es/log" : "/log"}>
-            {copy.journal}
+            {copy.log}
           </Link>
         </nav>
       </section>

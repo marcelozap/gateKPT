@@ -132,9 +132,9 @@ function assertAnatomy() {
   const headToChest = 0.28 / 0.3;
   const waistExists = 0.21 < 0.26 && 0.21 < 0.3;
 
-  console.assert(visibleNeck >= 0.13, "GateKPT anatomy: neck must remain visible.");
-  console.assert(headToChest <= 0.95, "GateKPT anatomy: head must stay narrower than chest.");
-  console.assert(waistExists, "GateKPT anatomy: waist must stay narrower than pelvis and chest.");
+  console.assert(visibleNeck >= 0.13, "XIV anatomy: neck must remain visible.");
+  console.assert(headToChest <= 0.95, "XIV anatomy: head must stay narrower than chest.");
+  console.assert(waistExists, "XIV anatomy: waist must stay narrower than pelvis and chest.");
 }
 
 export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
@@ -448,7 +448,7 @@ export function GatekptHome({ locale = "en" }: { locale?: Locale }) {
         <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />
         <main className={styles.hud}>
           <header className={styles.topbar}>
-            <div className={styles.mark}>GateKPT</div>
+            <div className={styles.mark}>XIV</div>
             <div className={styles.status}>{copy.status}</div>
           </header>
 

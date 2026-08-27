@@ -196,7 +196,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
   const count = phase === "boot" ? copy.countBoot : phase === "end" ? "07 / 07" : `${String(layerIndex + 1).padStart(2, "0")} / 07`;
 
   return (
-    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="GateKPT AI layers">
+    <div onClick={() => mapOpen && setMapOpen(false)} role="application" aria-label="XIV AI layers">
       <div className="gki-atmos" aria-hidden="true">
         <div className="gki-bloom xb1" />
         <div className="gki-bloom xb2" />
@@ -218,7 +218,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
 
       <div className="gki-loadscreen" aria-hidden="true">
         <div className="gki-loadmark gki-mono">
-          <span>GATEKPT</span>
+          <span>XIV</span>
           <i />
           <small>{copy.load}</small>
         </div>
@@ -226,7 +226,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
 
       <div className="gki-edge gki-mono gki-brand-edge">
         <span className="gki-mark" />
-        <span>GATEKPT</span>
+        <span>XIV</span>
       </div>
       <Link className="gki-lang gki-mono" href={copy.switchHref} onClick={(event) => event.stopPropagation()}>
         {copy.switchLabel}
@@ -271,7 +271,7 @@ export function GatekptLanding({ locale = "en" }: { locale?: Locale }) {
             {phase === "boot" ? (
               <div className="gki-home">
                 <section className="gki-home-main">
-                  <span className="gki-kicker gki-mono">GateKPT</span>
+                  <span className="gki-kicker gki-mono">XIV</span>
                   <p className="gki-essence">{copy.homeTitle}</p>
                   <p className="gki-donep">{copy.homeBody}</p>
                   <div className="gki-actions">

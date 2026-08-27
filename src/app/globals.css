@@ -1502,7 +1502,7 @@ button {
 }
 
 /* -------------------------------------------------------------------
-   GATEKPT INSTRUMENT THEME - instrument mode
+   XIV INSTRUMENT THEME - instrument mode
    Color lives in the ATMOSPHERE. Contrast stays with the CONTENT.
    ------------------------------------------------------------------- */
 :root{
@@ -2433,7 +2433,7 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
 }
 
 /* -------------------------------------------------------------------
-   GateKPT public front door: one screen, proof in the machine.
+   XIV public front door: one screen, proof in the machine.
    ------------------------------------------------------------------- */
 .gkp-hero {
   background:
@@ -2542,7 +2542,9 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
 .gkp-site-sub {
   color: rgba(238, 240, 244, 0.45);
   font-size: 13px;
+  line-height: 1.5;
   margin: 0;
+  max-width: min(700px, 92vw);
   text-align: center;
 }
 
@@ -2745,6 +2747,48 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
   color: rgba(245, 184, 75, 0.82);
 }
 
+.gkp-ecosystem {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 4px;
+  max-width: min(860px, 94vw);
+  width: 100%;
+}
+
+.gkp-lane {
+  background: rgba(11, 11, 19, 0.42);
+  border: 1px solid rgba(238, 240, 244, 0.1);
+  color: rgba(238, 240, 244, 0.68);
+  display: grid;
+  gap: 7px;
+  min-height: 92px;
+  padding: 13px 14px;
+  text-decoration: none;
+}
+
+.gkp-lane span {
+  color: rgba(143, 240, 255, 0.86);
+  font-family: var(--font-jbmono), monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.gkp-lane p {
+  color: rgba(238, 240, 244, 0.52);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.gkp-lane:hover,
+.gkp-lane:focus-visible {
+  border-color: rgba(143, 240, 255, 0.36);
+  outline: none;
+}
+
 .gkp-gates {
   display: flex;
   flex-wrap: wrap;
@@ -2844,6 +2888,14 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
 
   .gkp-proof-rail span {
     white-space: normal;
+  }
+
+  .gkp-ecosystem {
+    grid-template-columns: 1fr;
+  }
+
+  .gkp-lane {
+    min-height: auto;
   }
 }
 

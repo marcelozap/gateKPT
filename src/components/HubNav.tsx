@@ -8,9 +8,10 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();
   const isSpanish = locale === "es";
   const links = [
-    { href: isSpanish ? "/es" : "/", label: isSpanish ? "Inteligencia Artificial" : "AI layers" },
-    { href: isSpanish ? "/es/log" : "/log", label: isSpanish ? "Diario" : "Journal" },
-    { href: isSpanish ? "/es/log/fourteen" : "/log/fourteen", label: isSpanish ? "Nota 005" : "Note 005" },
+    { href: "/xiv", label: "XIV" },
+    { href: "/malosound", label: "MaloSound" },
+    { href: "/green-machine", label: "Green Machine" },
+    { href: isSpanish ? "/es/log" : "/log", label: "Log" },
   ];
 
   return (
@@ -19,11 +20,11 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
         <div className="gkh-brand-wrap">
           <Link
             href={isSpanish ? "/es" : "/"}
-            title="GateKPT home"
-            aria-label="GateKPT home"
+            title="XIV home"
+            aria-label="XIV home"
             className="gkh-brand gki-mono"
           >
-            GateKPT
+            XIV
           </Link>
         </div>
 

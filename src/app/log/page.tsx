@@ -5,8 +5,8 @@ import { getEntries } from "@/gatekpt/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
-  title: "The Record",
-  description: "Marcelo Zapata's journal entries on technology, systems, music, curiosity, and the world around the model.",
+  title: "Public Log",
+  description: "Marcelo Zapata's public notes on XIV, MaloSound, Green Machine, AI systems, music, and work.",
   alternates: {
     canonical: `${getSiteUrl()}/log`,
     languages: {
@@ -27,11 +27,11 @@ export default function LogPage() {
       <main className="gkl-shell">
         <section className="gkl-hero" aria-labelledby="writing-title">
           <div className="gkl-hero-copy">
-            <span className="gki-kicker gki-mono">GateKPT / The Record</span>
-            <h1 id="writing-title">The Record.</h1>
+            <span className="gki-kicker gki-mono">XIV / Public Log</span>
+            <h1 id="writing-title">Public log.</h1>
             <p>
-              Journal entries that connect technology to attention, work, identity, music, and the physical world
-              around the model.
+              Notes that connect XIV, MaloSound, Green Machine, technology, attention, work, music, and the physical
+              world around the model.
             </p>
           </div>
         </section>
@@ -41,8 +41,7 @@ export default function LogPage() {
             <span className="gkl-label gki-mono">Start here</span>
             <h2 id="gkl-start-title">Start with the newest entry.</h2>
             <p>
-              Read the latest entry first. Then use the AI layers to connect the human questions back to the system
-              underneath them.
+              Read the latest entry first. Then connect the human questions back to the system underneath them.
             </p>
           </div>
           <Link href={latest.noteHref ?? `/log/${latest.slug}`} className="gkl-primary">
@@ -52,7 +51,7 @@ export default function LogPage() {
 
         <section className="gkl-list" aria-labelledby="gkl-list-title">
           <div className="gkl-list-head">
-            <h2 id="gkl-list-title">Journal entries</h2>
+            <h2 id="gkl-list-title">Public entries</h2>
             <span className="gkl-label gki-mono">{String(entries.length).padStart(2, "0")} entries</span>
           </div>
           {entries.map((entry, index) => {

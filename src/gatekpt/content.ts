@@ -145,7 +145,7 @@ export const layersEn: Layer[] = [
     details: [
       "Data centers need electricity, cooling, land, networking, and grid access.",
       "Deployment turns an experiment into something other people can actually open.",
-      "GateKPT shows the whole chain: idea, system, machine, infrastructure, and human use.",
+      "XIV shows the chain: idea, system, machine, infrastructure, and human use.",
     ],
   },
 ];
@@ -160,7 +160,7 @@ export const layersEs: Layer[] = [
     figcap: "Tus palabras, archivos, imágenes y límites se convierten en la solicitud.",
     src: "OpenAI Help, Tokens",
     srcUrl: "https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them",
-    brk: "GateKPT empieza aquí: <em>prompts, notas, archivos, límites e intención.</em>",
+    brk: "XIV empieza aquí: <em>prompts, notas, archivos, límites e intención.</em>",
     details: [
       "El trabajo empieza convirtiendo ideas sueltas en instrucciones útiles.",
       "Buenas entradas reducen adivinanza antes de correr un modelo.",
@@ -180,7 +180,7 @@ export const layersEs: Layer[] = [
     details: [
       "Los modelos procesan piezas de texto, no significado humano completo.",
       "Los límites de tokens cambian lo que el sistema puede mantener a la vista.",
-      "GateKPT trata el formato como ingeniería, no decoración.",
+      "XIV trata el formato como ingeniería, no decoración.",
     ],
   },
   {
@@ -194,7 +194,7 @@ export const layersEs: Layer[] = [
     srcUrl: "https://developers.openai.com/api/docs/guides/prompt-engineering",
     brk: "Tu prompt es solo la entrada. <em>Archivos, memoria, fuentes y límites forman la respuesta.</em>",
     details: [
-      "GateKPT separa notas públicas de trabajo privado.",
+      "XIV separa notas públicas de trabajo privado.",
       "MaloSound y GreenMachine se enlazan; no se copian dentro de este sitio.",
       "Buen contexto es un contrato de datos con el modelo.",
     ],
@@ -276,7 +276,7 @@ export const logEntriesEn: LogEntry[] = [
     body: [
       "The first thing I wanted to make public was the map itself. AI is usually explained from the model outward, but that skips the system underneath it.",
       "Power, chips, data, models, software, testing, and business context all shape what AI can actually do. If one layer is weak, everything above it bends around that limit.",
-      "The Record is where I will keep turning scattered journal entries into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
+      "The public log is where I will keep turning scattered journal entries into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
     ],
   },
   {
@@ -404,7 +404,7 @@ export const localeCopy = {
     countBoot: "START",
     homeTitle: "AI explained from the ground up.",
     homeBody:
-      "GateKPT is a visual map of what happens after you type: input, tokens, context, models, tools, chips, and power.",
+      "XIV is a visual map of how work moves through models, tools, data, compute, and human judgment.",
     openLog: "Read journal",
     exploreMap: "Learn the layers",
     layers: "AI layers",
@@ -415,7 +415,7 @@ export const localeCopy = {
     endKicker: "L01 - L07",
     endTitle: "The stack becomes work.",
     endBody:
-      "GateKPT maps the system. Music, measured shows the audio signal work. Each surface stays separate on purpose.",
+      "XIV maps the system. MaloSound shows the audio signal work. Each lane stays separate on purpose.",
     endNote: "Open journal",
     backLayers: "View AI layers",
     startOver: "Start over",
@@ -423,7 +423,7 @@ export const localeCopy = {
     back: "Back",
     log: "Journal",
     forward: "Forward",
-    load: "GATEKPT ONLINE",
+    load: "XIV ONLINE",
     switchLabel: "ES",
     switchHref: "/es",
     logHref: "/log",
@@ -435,7 +435,7 @@ export const localeCopy = {
     countBoot: "INICIO",
     homeTitle: "Escritura publicada para entender la IA como sistema.",
     homeBody:
-      "GateKPT empieza con las notas de Marcelo y después abre lo que pasa cuando escribes: entrada, tokens, contexto, modelos, herramientas, chips y energía.",
+      "XIV empieza con las notas de Marcelo y después abre cómo el trabajo pasa por modelos, herramientas, datos, cómputo y criterio humano.",
     openLog: "Leer la nota reciente",
     exploreMap: "Aprender las capas",
     layers: "Inteligencia Artificial",
@@ -446,7 +446,7 @@ export const localeCopy = {
     endKicker: "L01 - L07",
     endTitle: "La pila se vuelve trabajo.",
     endBody:
-      "GateKPT mapea el sistema. Music, measured muestra el trabajo de señales de audio. Cada superficie se mantiene separada por una razon.",
+      "XIV mapea el sistema. MaloSound muestra el trabajo de señales de audio. Cada línea se mantiene separada por una razón.",
     endNote: "Abrir notas del proyecto",
     backLayers: "Ver capas de IA",
     startOver: "Empezar de nuevo",
@@ -454,7 +454,7 @@ export const localeCopy = {
     back: "Atrás",
     log: "Escritura",
     forward: "Avanzar",
-    load: "GATEKPT EN LINEA",
+    load: "XIV EN LINEA",
     switchLabel: "EN",
     switchHref: "/",
     logHref: "/es/log",
@@ -851,7 +851,7 @@ const fieldLogEntryNote004: LogEntry = {
     { text: "Someone else can open the same sketch in Strudel, press play, and change it. That is different from posting an audio clip." },
     { text: "The beat is not only something to hear. It is something to inspect." },
     { text: "This is not a claim that AI understands music. It is a public study of how coded rhythm becomes measurable sound and movement." },
-    { text: "GateKPT is the public surface for the experiment. XIV is the larger business around role-based systems. This note is the music lab." },
+    { text: "MaloSound is the public music proof for XIV. This note is the coded rhythm lane." },
     { text: "The first sketch is a slow coded beat in Strudel: readable, playable, and changeable." },
     { text: "Footnote: the linked sketch uses Strudel with public Dirt-Samples, not raw studio files." },
   ],
@@ -882,7 +882,7 @@ const fieldLogEntryNote004Es: LogEntry = {
     { text: "Otra persona puede abrir el mismo sketch en Strudel, darle play y cambiarlo. Eso es diferente a publicar solo un clip de audio." },
     { text: "El beat no es solo algo para escuchar. Es algo para inspeccionar." },
     { text: "Esto no es una afirmación de que la IA entiende música. Es un estudio público de cómo el ritmo en código se convierte en sonido medible y movimiento." },
-    { text: "GateKPT es la superficie pública del experimento. XIV es el negocio más grande alrededor de sistemas basados en roles. Esta nota es el laboratorio musical." },
+    { text: "MaloSound es la prueba musical pública para XIV. Esta nota es la línea de ritmo en código." },
     { text: "El primer sketch es un beat lento en Strudel: legible, reproducible y modificable." },
     { text: "Nota: el sketch enlazado usa Strudel con Dirt-Samples públicos, no archivos crudos del estudio." },
   ],

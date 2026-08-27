@@ -7,7 +7,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
   title: "Escritura publicada",
-  description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
+  description: "Escritura de Marcelo Zapata sobre XIV, MaloSound, Green Machine, IA, sistemas, música y trabajo.",
   alternates: {
     canonical: `${getSiteUrl()}/es/log`,
     languages: {
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Escritura publicada - GateKPT",
-    description: "Escritura de Marcelo Zapata sobre IA, sistemas, curiosidad y el mundo alrededor del modelo.",
+    title: "Escritura publicada - XIV",
+    description: "Escritura de Marcelo Zapata sobre XIV, MaloSound, Green Machine, IA, sistemas, música y trabajo.",
     type: "website",
     url: `${getSiteUrl()}/es/log`,
     images: [
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
         url: `${getSiteUrl()}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Escritura publicada de GateKPT.",
+        alt: "Escritura publicada de XIV.",
       },
     ],
   },
@@ -43,11 +43,11 @@ export default function SpanishLogPage() {
       <main className="gkl-shell">
         <section className="gkl-hero" aria-labelledby="writing-title">
           <div className="gkl-hero-copy">
-            <span className="gki-kicker gki-mono">GateKPT / Escritura publicada</span>
+            <span className="gki-kicker gki-mono">XIV / Escritura publicada</span>
             <h1 id="writing-title">Escritura publicada.</h1>
             <p>
-              Notas que conectan la tecnología con la atención, el trabajo, la identidad y el mundo físico alrededor
-              del modelo.
+              Notas que conectan XIV, MaloSound, Green Machine, la tecnología, la atención, el trabajo, la música y
+              el mundo físico alrededor del modelo.
             </p>
           </div>
         </section>
@@ -57,8 +57,7 @@ export default function SpanishLogPage() {
             <span className="gkl-label gki-mono">Empieza aquí</span>
             <h2 id="gkl-start-title">Empieza con la nota más nueva.</h2>
             <p>
-              Lee primero la nota más reciente. Después usa las capas de IA para conectar las preguntas humanas con
-              el sistema debajo de ellas.
+              Lee primero la nota más reciente. Después conecta las preguntas humanas con el sistema debajo de ellas.
             </p>
           </div>
           <Link href={latest.noteHref ?? `/es/log/${latest.slug}`} className="gkl-primary">

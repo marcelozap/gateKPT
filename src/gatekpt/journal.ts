@@ -17,7 +17,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
       "A simple note on technology, attention, comfort, and why learning still has to stay human.",
     body: [
       "Wall-E is a useful story for thinking about AI because it is not really about machines replacing people. It is about people becoming too passive inside systems built for comfort.",
-      "That is why I want GateKPT to stay simple. The point is not to sound advanced. The point is to keep learning active: look at the system, ask what changed, check the source, and think for yourself.",
+      "That is why I want XIV to stay simple. The point is not to sound advanced. The point is to keep learning active: look at the system, ask what changed, check the source, and think for yourself.",
       "Good technology should make people more capable, not less present. That is the line I want to keep coming back to as I learn AI from the ground up.",
     ],
   },
@@ -31,7 +31,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     body: [
       "The first thing I wanted to make public was the map itself. AI is usually explained from the model outward, but that skips the system underneath it.",
       "Power, chips, data, models, software, testing, and real-world use all shape what AI can actually do. If one part is weak, everything above it bends around that limit.",
-      "The Record is where I will keep turning scattered journal entries into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
+      "The public log is where I will keep turning scattered journal entries into structured entries. Some entries will be technical, some will be industry or career context, and some will be about how to use AI better in real work.",
     ],
   },
   {

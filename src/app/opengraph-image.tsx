@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "GateKPT - AI from the text box out.";
+export const alt = "XIV - Role-based AI systems.";
 export const size = {
   width: 1200,
   height: 630,
@@ -43,7 +43,7 @@ export default function Image() {
               width: 14,
             }}
           />
-          GATEKPT
+          XIV
         </div>
         <div
           style={{
@@ -62,7 +62,7 @@ export default function Image() {
               maxWidth: 920,
             }}
           >
-            AI from the text box out.
+            Role-based AI systems for real work.
           </h1>
           <p
             style={{
@@ -73,7 +73,7 @@ export default function Image() {
               maxWidth: 880,
             }}
           >
-            Input, tokens, context, models, tools, chips, and power.
+            XIV is the orchestrator. MaloSound is the proof. Green Machine is the data lane.
           </p>
         </div>
         <div
@@ -87,8 +87,8 @@ export default function Image() {
             paddingTop: 28,
           }}
         >
-          <span>gatekpt.ai</span>
-          <span>L01 - L07</span>
+          <span>Marcelo Zapata</span>
+          <span>XIV / MaloSound / Green Machine</span>
         </div>
       </div>
     ),
