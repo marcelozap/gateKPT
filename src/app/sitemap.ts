@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getEntries } from "@/gatekpt/content";
+import { getEntries } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {

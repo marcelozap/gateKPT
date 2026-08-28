@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { Locale } from "@/gatekpt/content";
+import type { Locale } from "@/xiv/content";
 
 export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();

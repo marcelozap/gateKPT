@@ -25,7 +25,7 @@ const SAMPLES = [
   {
     label: "Sample 02",
     contract: "/gateway/gateway_track.audioanalysis.v1.json",
-    audio: "/audio/gatekpt-night-guitar-preview.mp3",
+    audio: "/audio/xiv-night-guitar-preview.mp3",
   },
 ] as const;
 
@@ -36,7 +36,7 @@ const COPY = {
     greenMachine: "GREEN",
     log: "LOG",
     headline: "Sound into signal. Signal into motion.",
-    subline: "XIV is the system. MaloSound is the proof. Green Machine is the data lane.",
+    subline: "XIV is the system. MaloSound is the music lane. Green Machine is the data lane.",
     start: "START AUDIO",
     stop: "STOP AUDIO",
     missing: "contract file missing",
@@ -51,7 +51,7 @@ const COPY = {
       {
         href: "/malosound",
         title: "MaloSound",
-        body: "Original music, audio analysis, coded rhythm, and visual motion as the first proof of concept.",
+        body: "Original music, audio analysis, coded rhythm, and visual motion as an artist-tech system.",
       },
       {
         href: "/green-machine",
@@ -66,7 +66,7 @@ const COPY = {
     greenMachine: "GREEN",
     log: "LOG",
     headline: "Sonido en señal. Señal en movimiento.",
-    subline: "XIV es el sistema. MaloSound es la prueba. Green Machine es la línea de datos.",
+    subline: "XIV es el sistema. MaloSound es la línea musical. Green Machine es la línea de datos.",
     start: "INICIAR AUDIO",
     stop: "DETENER AUDIO",
     missing: "falta el contrato",
@@ -81,7 +81,7 @@ const COPY = {
       {
         href: "/malosound",
         title: "MaloSound",
-        body: "Música original, análisis de audio, ritmo en código y movimiento visual como primera prueba de concepto.",
+        body: "Música original, análisis de audio, ritmo en código y movimiento visual como sistema artístico.",
       },
       {
         href: "/green-machine",

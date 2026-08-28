@@ -31,7 +31,7 @@ export default function XivPage() {
               A specialist system should know the context, the files, the review steps, and what done looks like.
             </p>
             <p>
-              MaloSound is the first proof of concept: original music, coded rhythm, audio analysis, visual motion,
+              MaloSound is the music system: original music, coded rhythm, audio analysis, visual motion,
               publishing workflow, feedback, and ownership connected end to end.
             </p>
             <p>
@@ -40,7 +40,7 @@ export default function XivPage() {
             </p>
           </div>
           <div className="gkl-artifacts" aria-label="XIV links">
-            <Link href="/malosound">MaloSound proof</Link>
+            <Link href="/malosound">MaloSound</Link>
             <Link href="/log/fourteen">Read Fourteen</Link>
             <a href="https://github.com/marcelozap/role-systems">role-systems repo</a>
           </div>

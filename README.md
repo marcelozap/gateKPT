@@ -1,12 +1,12 @@
 # XIV Public Surface
 
-This repository preserves the former GateKPT.ai work while moving the public story into three clearer lanes:
+This repository is the public XIV web surface, organized around three clear lanes:
 
 - **XIV**: role-based AI orchestration for real work.
-- **MaloSound**: original music and artist-tech proof of concept.
+- **MaloSound**: original music and artist-tech infrastructure.
 - **Green Machine**: data, evidence, and risk-review lane.
 
-GateKPT is now treated as legacy naming only. Public pages should use XIV, MaloSound, Green Machine, or Marcelo Zapata instead.
+Public pages should use XIV, MaloSound, Green Machine, or Marcelo Zapata.
 
 Local commands:
 

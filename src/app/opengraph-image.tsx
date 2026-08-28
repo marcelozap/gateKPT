@@ -73,7 +73,7 @@ export default function Image() {
               maxWidth: 880,
             }}
           >
-            XIV is the orchestrator. MaloSound is the proof. Green Machine is the data lane.
+            XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data lane.
           </p>
         </div>
         <div

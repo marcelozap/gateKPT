@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HubNav } from "@/components/HubNav";
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
-import { getEntries, getEntry } from "@/gatekpt/content";
+import { getEntries, getEntry } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 type Props = {

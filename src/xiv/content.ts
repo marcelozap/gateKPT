@@ -851,7 +851,7 @@ const fieldLogEntryNote004: LogEntry = {
     { text: "Someone else can open the same sketch in Strudel, press play, and change it. That is different from posting an audio clip." },
     { text: "The beat is not only something to hear. It is something to inspect." },
     { text: "This is not a claim that AI understands music. It is a public study of how coded rhythm becomes measurable sound and movement." },
-    { text: "MaloSound is the public music proof for XIV. This note is the coded rhythm lane." },
+    { text: "MaloSound is the public music lane for XIV. This note is the coded rhythm lane." },
     { text: "The first sketch is a slow coded beat in Strudel: readable, playable, and changeable." },
     { text: "Footnote: the linked sketch uses Strudel with public Dirt-Samples, not raw studio files." },
   ],

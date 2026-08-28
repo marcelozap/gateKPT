@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { AudioProofGateway } from "@/gatekpt/AudioProofGateway";
-import { layersEn } from "@/gatekpt/content";
+import { AudioProofGateway } from "@/xiv/AudioProofGateway";
+import { layersEn } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ function NoScriptStack() {
     <div className="gki-noscript">
       <h1>XIV - Role-based AI systems.</h1>
       <p>
-        XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.
+        XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data and risk-review lane.
       </p>
       {layersEn.map((layer) => (
         <section key={layer.id}>

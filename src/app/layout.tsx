@@ -27,19 +27,19 @@ export const metadata: Metadata = {
     template: "%s - XIV",
   },
   description:
-    "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
+    "XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data and risk-review lane.",
   metadataBase: new URL(getSiteUrl()),
   icons: {
     icon: [
-      { url: "/gatekpt-icon.png", type: "image/png" },
+      { url: "/xiv-icon.png", type: "image/png" },
       { url: "/icon.svg", type: "image/svg+xml" },
     ],
-    shortcut: ["/gatekpt-icon.png"],
+    shortcut: ["/xiv-icon.png"],
   },
   openGraph: {
     title: "XIV - Role-Based AI Systems",
     description:
-      "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
+      "XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data and risk-review lane.",
     type: "website",
     url: getSiteUrl(),
     siteName: "XIV",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "XIV ecosystem: orchestration, MaloSound proof, and Green Machine data lane.",
+        alt: "XIV ecosystem: orchestration, MaloSound, and Green Machine data lane.",
       },
     ],
   },
@@ -56,11 +56,11 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "XIV - Role-Based AI Systems",
     description:
-      "XIV is the orchestrator. MaloSound is the proof. Green Machine is the data and risk-review lane.",
+      "XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data and risk-review lane.",
     images: [
       {
         url: "/opengraph-image",
-        alt: "XIV ecosystem: orchestration, MaloSound proof, and Green Machine data lane.",
+        alt: "XIV ecosystem: orchestration, MaloSound, and Green Machine data lane.",
       },
     ],
   },

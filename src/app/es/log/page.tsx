@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { HubNav } from "@/components/HubNav";
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
-import { getEntries } from "@/gatekpt/content";
+import { getEntries } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {

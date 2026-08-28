@@ -1,7 +1,7 @@
 import { SpanishDocumentGuard } from "@/components/SpanishDocumentGuard";
 import type { Metadata } from "next";
-import { AudioProofGateway } from "@/gatekpt/AudioProofGateway";
-import { layersEs } from "@/gatekpt/content";
+import { AudioProofGateway } from "@/xiv/AudioProofGateway";
+import { layersEs } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 export const metadata: Metadata = {

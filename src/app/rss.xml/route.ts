@@ -1,4 +1,4 @@
-import { getEntries } from "@/gatekpt/content";
+import { getEntries } from "@/xiv/content";
 import { getSiteUrl } from "@/lib/siteUrl";
 
 function escapeXml(value: string) {

@@ -6,7 +6,7 @@ import { getSiteUrl } from "@/lib/siteUrl";
 export const metadata: Metadata = {
   title: "MaloSound",
   description:
-    "MaloSound is the original music and artist-tech proof of concept for XIV: audio analysis, coded rhythm, visual motion, and release workflow.",
+    "MaloSound is original music and artist-tech infrastructure for XIV: audio analysis, coded rhythm, visual motion, and release workflow.",
   alternates: {
     canonical: `${getSiteUrl()}/malosound`,
   },
@@ -19,10 +19,10 @@ export default function MaloSoundPage() {
       <HubNav />
       <main className="gkl-shell gkl-shell-narrow">
         <article className="gkl-article">
-          <span className="gkl-meta gki-mono">MALOSOUND / PROOF OF CONCEPT</span>
+          <span className="gkl-meta gki-mono">MALOSOUND / MUSIC SYSTEM</span>
           <h1>MaloSound</h1>
           <p className="gkl-summary">
-            Original music and artist-tech infrastructure. MaloSound proves the XIV model through a workflow the
+            Original music and artist-tech infrastructure. MaloSound carries the XIV model through a workflow the
             artist controls end to end.
           </p>
           <div className="gkl-body">
@@ -35,7 +35,7 @@ export default function MaloSoundPage() {
               publishing, feedback, and ownership can connect inside one repeatable system.
             </p>
             <p>
-              This is the first proof because music gives the whole workflow: creation, production, analysis,
+              This is the music lane because music gives the whole workflow: creation, production, analysis,
               visuals, release, response, and memory.
             </p>
           </div>
