@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { XivLogo } from "@/components/XivLogo";
 
 type GatewayData = {
   duration_s?: number;
@@ -398,9 +400,9 @@ export function AudioProofGateway({ locale = "en" }: { locale?: "en" | "es" }) {
       <audio ref={audioRef} src={sample.audio} loop preload="metadata" />
       <section className="gkp-hero">
         <div className="gkp-hero-top">
-          <span className="gkp-brand">
-            <b>XIV</b>
-          </span>
+          <Link href={locale === "es" ? "/es" : "/"} className="gkp-brand" aria-label="XIV">
+            <XivLogo />
+          </Link>
           <span className="gkp-sig">
             <Link href="/">EN</Link> · <Link href="/es">ES</Link> · <Link href="/xiv">{copy.xiv}</Link> ·{" "}
             <Link href="/malosound">{copy.malosound}</Link> · <Link href="/green-machine">{copy.greenMachine}</Link>
@@ -408,16 +410,28 @@ export function AudioProofGateway({ locale = "en" }: { locale?: "en" | "es" }) {
         </div>
 
         <div className="gkp-stage-wrap">
-          <div className="gkp-machine-frame">
-            <canvas
-              ref={canvasRef}
-              id="machine"
-              width={W}
-              height={H}
-              role="img"
-              aria-label={copy.aria}
+          <div className="gkp-visuals">
+            <Image
+              src="/brand/xiv-banner-sharp.png"
+              alt={locale === "es" ? "XIV: toro dorado con detalles en azul eléctrico." : "XIV: a gold bull with electric-blue accents."}
+              width={1729}
+              height={910}
+              sizes="(max-width: 800px) calc(100vw - 32px), (max-width: 1312px) 52vw, 660px"
+              quality={90}
+              preload
+              className="xiv-brand-banner"
             />
-            {missingContract ? <span className="gkp-contract-missing">{copy.missing}</span> : null}
+            <div className="gkp-machine-frame">
+              <canvas
+                ref={canvasRef}
+                id="machine"
+                width={W}
+                height={H}
+                role="img"
+                aria-label={copy.aria}
+              />
+              {missingContract ? <span className="gkp-contract-missing">{copy.missing}</span> : null}
+            </div>
           </div>
           <div className="gkp-sample-switcher" aria-label="Motion samples">
             {SAMPLES.map((option, index) => (

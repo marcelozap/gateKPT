@@ -2449,20 +2449,68 @@ body.gk-instrument .gki-controls button:active:not(:disabled) {
 .gkp-hero-top {
   align-items: center;
   display: flex;
+  gap: 16px;
   justify-content: space-between;
   padding: 18px clamp(16px, 4vw, 44px);
 }
 
 .gkp-brand {
+  display: inline-flex;
+  flex-shrink: 0;
   color: #eef0f4;
   font-family: var(--font-jbmono), monospace;
   font-size: 13px;
   letter-spacing: 0.34em;
 }
 
-.gkp-brand b {
-  color: #8ff0ff;
-  font-weight: 500;
+.xiv-brand-logo {
+  display: block;
+  height: 64px;
+  object-fit: contain;
+  width: 64px;
+}
+
+.gkp-brand:focus-visible,
+.gkh-brand:focus-visible {
+  outline: 2px solid var(--visor);
+  outline-offset: 4px;
+}
+
+.gkp-visuals {
+  align-items: center;
+  display: grid;
+  gap: clamp(16px, 3vw, 40px);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  width: min(1280px, 100%);
+}
+
+.xiv-brand-banner {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.gkp-visuals .gkp-machine-frame {
+  min-width: 0;
+}
+
+.gkp-visuals #machine {
+  height: auto;
+  max-height: none;
+  width: 100%;
+}
+
+@media (max-width: 800px) {
+  .gkp-visuals {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 680px;
+  }
+}
+
+.gkp-sig {
+  line-height: 1.8;
+  min-width: 0;
+  text-align: right;
 }
 
 .gkp-sig,

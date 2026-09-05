@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/xiv/content";
+import { XivLogo } from "@/components/XivLogo";
 
 export function HubNav({ locale = "en" }: { locale?: Locale }) {
   const pathname = usePathname();
@@ -24,7 +25,7 @@ export function HubNav({ locale = "en" }: { locale?: Locale }) {
             aria-label="XIV home"
             className="gkh-brand gki-mono"
           >
-            XIV
+            <XivLogo />
           </Link>
         </div>
 
