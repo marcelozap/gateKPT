@@ -12,6 +12,7 @@ import {
   Pause,
   RotateCcw,
   Download,
+  Sprout,
 } from 'lucide-react';
 import { Button, Checkbox } from './controls';
 const blocks = [
@@ -192,12 +193,13 @@ export default function Calendar() {
         <strong>
           <Sun size={20} /> Practice Day
         </strong>
-        <span>XIV / HEALTH</span>
+        <span><Sprout size={15} /> XIV / HEALTH</span>
       </header>
+      <div className="garden-band" role="img" aria-label="Sunlit solarpunk conservatory with lush plants and solar architecture" />
       <main className="workspace">
         <section className="heading">
           <div>
-            <p className="eyebrow">SPACE FOR MUSIC. ROOM TO RECOVER.</p>
+            <p className="eyebrow"><Sprout size={14} /> SPACE FOR MUSIC. ROOM TO RECOVER.</p>
             <h1>Your daily rhythm</h1>
             <p>
               A gentle starting schedule, not an injury-rehabilitation
@@ -273,7 +275,7 @@ export default function Calendar() {
             {blocks.map((block, i) => (
               <article
                 key={i}
-                className={'row ' + (selected === i ? 'selected' : '')}
+                className={'row ' + (selected === i ? 'selected ' : '') + (done[date + ':' + i] ? 'completed' : '')}
               >
                 <time>{block[0]}</time>
                 <button className="block" onClick={() => choose(i)}>
@@ -380,7 +382,7 @@ export default function Calendar() {
           </aside>
         </div>
       </main>
-      <footer>
+      <footer><Sprout size={16} />
         Small sessions. No catching up. Progress stays in this browser.
       </footer>
     </>

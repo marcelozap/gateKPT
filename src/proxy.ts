@@ -37,7 +37,7 @@ const maintenancePage = `<!doctype html>
 // Remove this proxy when the replacement site is ready to launch.
 export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (path === "/" || path.startsWith("/_next/") || path === "/favicon.ico" || path === "/icon.svg") {
+  if (path === "/" || path === "/practice-garden.webp" || path.startsWith("/_next/") || path === "/favicon.ico" || path === "/icon.svg") {
     const response = NextResponse.next();
     if (path === "/") response.headers.set("Cache-Control", "no-store");
     return response;
