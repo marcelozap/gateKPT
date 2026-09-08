@@ -11,7 +11,6 @@ import {
   Play,
   Pause,
   RotateCcw,
-  LogOut,
   Download,
 } from 'lucide-react';
 import { Button, Checkbox } from './controls';
@@ -194,17 +193,6 @@ export default function Calendar() {
           <Sun size={20} /> Practice Day
         </strong>
         <span>XIV / HEALTH</span>
-        <form action="/api/session" method="post">
-          <input type="hidden" name="logout" value="yes" />
-          <Button
-            type="submit"
-            variant="ghost"
-            aria-label="Lock calendar"
-            title="Lock calendar"
-          >
-            <LogOut />
-          </Button>
-        </form>
       </header>
       <main className="workspace">
         <section className="heading">
