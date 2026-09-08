@@ -85,6 +85,16 @@
 .practice-root a{color:#346a50;text-decoration:underline;text-underline-offset:3px}
 .practice-root footer{display:flex;align-items:center;justify-content:center;gap:10px;padding:22px 20px;border-top:1px solid #bacbb0;background:#e7eedf;font-size:11px;color:#4c684c;text-align:center}
 .practice-root output{display:block;color:#9c433c;margin:12px 0}
+.practice-root .physical-support{padding:24px 0;margin:24px 0;border-block:1px solid #bacbbc}
+.practice-root .physical-support h2{font-size:28px;line-height:1.25}
+.practice-root .physical-support>p{max-width:78ch;line-height:1.65}
+.practice-root .physical-support details{border-bottom:1px solid #bacbbc}
+.practice-root .physical-support summary{padding:18px 8px;cursor:pointer;font-weight:600;min-height:48px}
+.practice-root .physical-support summary:focus-visible{outline:2px solid #286c4d;outline-offset:2px}
+.practice-root .physical-support summary span{display:block;font-weight:400;font-size:14px;line-height:1.5;margin:8px 0 0 18px}
+.practice-root .physical-detail{padding:0 18px 16px;max-width:78ch;line-height:1.65}
+.practice-root .physical-support nav{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:20px}
+.practice-root .physical-support nav a{display:inline-flex;align-items:center;gap:6px;min-height:44px}
 .practice-root .movement-reference{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,315px);align-items:center;gap:32px;padding:28px 0;border-block:1px solid #bacbbc;margin:24px 0}
 .practice-root .movement-reference h2{font-size:28px;margin:12px 0}
 .practice-root .movement-reference video{display:block;width:100%;aspect-ratio:9/16;max-height:560px;object-fit:contain;background:#15251e;border-radius:6px}
