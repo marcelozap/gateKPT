@@ -1,0 +1,289 @@
+@import 'tailwindcss';
+:root {
+  --primary: #176d62;
+  --primary-foreground: #fff;
+  --background: #fff;
+  --foreground: #202522;
+  --border: #ced7d2;
+  --input: #9baba3;
+  --muted: #edf1ee;
+  --ring: #176d62;
+  --radius-md: 6px;
+}
+* {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+body {
+  margin: 0;
+  background: #f6f8f6;
+  color: #202522;
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+button,
+input {
+  font: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid #168876;
+  outline-offset: 3px;
+}
+header {
+  height: 72px;
+  border-bottom: 1px solid #dce3df;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 5%;
+  background: white;
+}
+header strong {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header > span {
+  font-size: 12px;
+  color: #607369;
+  margin-left: auto;
+}
+h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 8px 0 12px;
+}
+h2 {
+  font-size: 18px;
+  margin: 0 0 14px;
+}
+p {
+  margin: 10px 0;
+}
+.workspace {
+  max-width: 1180px;
+  margin: auto;
+  padding: 36px 24px;
+}
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.eyebrow {
+  font-size: 11px;
+  color: #527064;
+  font-weight: 700;
+}
+small {
+  color: #64756c;
+  font-size: 12px;
+}
+.dates {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 28px 0;
+  padding: 18px 0;
+  border-block: 1px solid #dce3df;
+}
+.dates input {
+  border: 0;
+  background: transparent;
+  font-weight: 600;
+  max-width: 170px;
+}
+.dates > span {
+  margin-left: auto;
+  color: #176d62;
+}
+.readiness {
+  padding: 20px 0 24px;
+  border-bottom: 1px solid #dce3df;
+}
+.readiness label {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  min-height: 38px;
+}
+.readiness p {
+  color: #805527;
+  font-size: 13px;
+}
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 40px;
+  margin-top: 28px;
+}
+.timeline h2 small {
+  display: block;
+  font-weight: 400;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid #dce3df;
+  padding: 12px 8px;
+  min-height: 90px;
+}
+.row.selected {
+  background: #e8f1ec;
+  box-shadow: inset 3px 0 #176d62;
+}
+.row time {
+  font-size: 13px;
+  min-width: 44px;
+  font-variant-numeric: tabular-nums;
+}
+.block {
+  flex: 1;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.block strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.tag {
+  font-size: 10px;
+  font-weight: bold;
+  color: #547362;
+}
+.tag.Music,
+.tag.Voice {
+  color: #994968;
+}
+.tag.Move {
+  color: #157e7c;
+}
+.tag.Work {
+  color: #846426;
+}
+.practice {
+  background: #fff;
+  border: 1px solid #d0dcd5;
+  border-radius: 8px;
+  padding: 24px;
+}
+.practice > svg {
+  color: #176d62;
+  margin: 14px 0;
+}
+.practice h2 {
+  font-size: 24px;
+  line-height: 1.25;
+}
+.dose {
+  background: #edf3ef;
+  padding: 12px;
+  font-size: 13px;
+}
+.timer {
+  font-size: 42px;
+  font-variant-numeric: tabular-nums;
+  margin: 20px 0 10px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+}
+.actions button,
+nav button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.guardrails {
+  padding: 24px 0;
+  color: #5d6d63;
+  font-size: 13px;
+}
+.guardrails h2 {
+  font-size: 15px;
+}
+a {
+  color: #176d62;
+  text-decoration: underline;
+}
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  border-top: 1px solid #dce3df;
+}
+.entry {
+  max-width: 440px;
+  margin: 15vh auto;
+  padding: 24px;
+}
+.entry form {
+  display: grid;
+  gap: 12px;
+  margin-top: 28px;
+}
+.entry input {
+  border: 1px solid #a9b9ae;
+  border-radius: 6px;
+  padding: 12px;
+  background: white;
+}
+.entry button {
+  border: 0;
+  border-radius: 6px;
+  background: #176d62;
+  color: white;
+  padding: 12px;
+}
+@media (max-width: 760px) {
+  .workspace {
+    padding: 24px 16px;
+  }
+  .heading {
+    display: block;
+  }
+  .heading > button {
+    margin-top: 12px;
+  }
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  aside {
+    grid-row: 1;
+  }
+  .dates > span {
+    font-size: 11px;
+  }
+  header {
+    padding: 0 16px;
+    gap: 8px;
+  }
+  h1 {
+    font-size: 28px;
+  }
+  .dates {
+    gap: 5px;
+  }
+  .dates input {
+    max-width: 140px;
+  }
+  .row {
+    gap: 10px;
+  }
+  .readiness label {
+    padding: 6px 0;
+  }
+}
