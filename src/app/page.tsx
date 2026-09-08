@@ -1,55 +1,12 @@
-import type { Metadata } from "next";
-import { AudioProofGateway } from "@/xiv/AudioProofGateway";
-import { layersEn } from "@/xiv/content";
-import { getSiteUrl } from "@/lib/siteUrl";
-
-export const metadata: Metadata = {
-  alternates: {
-    canonical: getSiteUrl(),
-    languages: {
-      en: getSiteUrl(),
-      es: `${getSiteUrl()}/es`,
-    },
-  },
-};
-
-function NoScriptStack() {
-  return (
-    <div className="gki-noscript">
-      <h1>XIV - Role-based AI systems.</h1>
-      <p>
-        XIV is the orchestrator. MaloSound is the music lane. Green Machine is the data and risk-review lane.
-      </p>
-      {layersEn.map((layer) => (
-        <section key={layer.id}>
-          <h2>
-            {layer.id} - {layer.name}
-          </h2>
-          <p>{layer.essence}</p>
-          <p>
-            <strong>
-              {layer.fig}
-              {layer.unit}
-            </strong>{" "}
-            - {layer.figcap}
-          </p>
-          <p>
-            <a href={layer.srcUrl}>{layer.src}</a>
-          </p>
-          <p dangerouslySetInnerHTML={{ __html: layer.brk }} />
-        </section>
-      ))}
-    </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <>
-      <AudioProofGateway />
-      <noscript>
-        <NoScriptStack />
-      </noscript>
-    </>
-  );
+import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { validSession } from '@/lib/session';
+import Calendar from '@/practice/Calendar';
+import '@/practice/practice.css';
+export const dynamic = 'force-dynamic';
+export const metadata:Metadata={title:'Practice Day',description:'Private daily practice calendar.',robots:{index:false,follow:false},openGraph:{title:'Practice Day',description:'Private daily practice calendar.',images:[]},twitter:{title:'Practice Day',description:'Private daily practice calendar.',images:[]}};
+export default async function Home({searchParams}:{searchParams:Promise<{incorrect?:string}>}) {
+ const allowed=await validSession((await cookies()).get('practice_session')?.value);
+ const params=await searchParams;
+ return <div className="practice-root">{allowed?<Calendar/>:<section className="entry"><p>XIV / DAILY PRACTICE</p><h1>Room to practice.</h1><form action="/api/session" method="post"><label htmlFor="code">Entry code</label><input id="code" name="code" type="password" required autoComplete="current-password" maxLength={100}/><button type="submit">Open calendar</button></form>{params.incorrect&&<p role="alert">That code was not accepted. Try again.</p>}</section>}</div>;
 }

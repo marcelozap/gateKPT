@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 const maintenancePage = `<!doctype html>
 <html lang="en">
@@ -35,7 +35,13 @@ const maintenancePage = `<!doctype html>
 
 // Keep the previous site saved while every public route is offline.
 // Remove this proxy when the replacement site is ready to launch.
-export function proxy() {
+export function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  if (path === "/" || path === "/api/session" || path.startsWith("/_next/") || path === "/favicon.ico" || path === "/icon.svg") {
+    const response = NextResponse.next();
+    if (path === "/" || path === "/api/session") response.headers.set("Cache-Control", "private, no-store");
+    return response;
+  }
   return new NextResponse(maintenancePage, {
     status: 503,
     headers: {
