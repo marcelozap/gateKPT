@@ -1,4 +1,21 @@
 /* All styling stays inside the public practice surface. */
+.practice-root .visualization{padding:24px 0;border-bottom:1px solid var(--line)}
+.practice-root .visualization-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.practice-root .visualization h2{font-family:var(--font-newsreader),Georgia,serif;font-size:27px;font-weight:500;margin-bottom:0}
+.practice-root .intentions{display:flex;border-bottom:1px solid #a8b99c;gap:4px}
+.practice-root .intentions button{min-height:44px;background:transparent;border:0;border-bottom:3px solid transparent;padding:8px 12px;font-size:12px;color:#4d6551}
+.practice-root .intentions button[aria-pressed="true"]{border-color:#a55e48;color:#7c3e2d;font-weight:600}
+.practice-root .intention-thought{font-size:13px;color:#5e6e58;max-width:760px}
+.practice-root .breath-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.practice-root .breath-steps button{min-height:64px;display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #bdcdb3;border-radius:6px;background:transparent;color:#396446;font-size:14px}
+.practice-root .breath-steps button[aria-pressed="true"]{background:#e1edda;border-color:#537c4e;box-shadow:inset 0 -3px #537c4e}
+.practice-root .step-arrow{margin-left:auto;color:#849873}
+.practice-root .imagery-cue{max-width:790px;min-height:260px;font-size:13px}
+.practice-root .imagery-phrase{font-family:var(--font-newsreader),Georgia,serif;font-size:25px;color:#234b35}
+.practice-root .imagery-metaphor{color:#8b503c;font-style:italic}
+.practice-root .imagery-cue blockquote{border-left:2px solid #d4ba5a;padding-left:14px;margin:16px 0;font-size:15px;color:#55704c}
+.practice-root .imagery-note{font-size:11px;color:#66735f;max-width:900px}
+@media(max-width:760px){.practice-root .visualization-heading{display:block}.practice-root .intentions{margin:12px 0;width:max-content;max-width:100%}.practice-root .breath-steps{gap:6px}.practice-root .breath-steps button{padding:10px 5px;flex-direction:column;gap:5px;font-size:12px}.practice-root .step-arrow{display:none}.practice-root .imagery-cue{min-height:330px}}
 .practice-root .session-rule{padding:16px 0;border-bottom:1px solid #c9d8c9;color:#5a674f;font-size:12px}
 .practice-root .exercise-steps{list-style:decimal;padding-left:22px;margin:18px 0;font-size:13px}
 .practice-root .exercise-steps li{padding:0 0 12px 4px}
