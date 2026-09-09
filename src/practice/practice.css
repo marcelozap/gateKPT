@@ -1,4 +1,21 @@
 /* All styling stays inside the public practice surface. */
+.practice-root .artist-launch{padding:40px 0;margin:28px 0;border-block:1px solid var(--line);scroll-margin-top:24px}
+.practice-root .artist-launch h2{font:36px var(--font-newsreader),Georgia,serif;max-width:650px}
+.practice-root .artist-launch h3{font-size:16px;margin:16px 0 8px}
+.practice-root .launch-date{display:flex;align-items:center;flex-wrap:wrap;gap:16px 24px;padding:18px 0;border-block:1px solid var(--line);margin:24px 0}
+.practice-root .launch-date label{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+.practice-root .launch-date input{min-height:44px;max-width:100%;background:white;color:var(--forest);border:1px solid #879f95;padding:8px}
+.practice-root .launch-daily>label{display:flex;gap:14px;align-items:flex-start;min-height:64px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.practice-root .launch-daily input{width:22px;height:22px;flex-shrink:0;accent-color:#286c4d;margin-top:3px}
+.practice-root .launch-daily label span span{display:block;margin-top:4px}
+.practice-root .launch-note{font-size:12px;max-width:85ch;padding:12px 0}
+.practice-root .artist-launch details{border-bottom:1px solid var(--line)}
+.practice-root .artist-launch summary{cursor:pointer;min-height:48px;padding:16px 8px;font-weight:600;overflow-wrap:anywhere}
+.practice-root .artist-launch summary small{display:inline-block;margin-left:12px;color:#477445}
+.practice-root .artist-launch details p{max-width:80ch;padding:0 16px 16px}
+.practice-root .launch-bottom{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:24px}
+.practice-root #launch-weeks{scroll-margin-top:24px}
+@media(max-width:760px){.practice-root .artist-launch h2{font-size:30px}.practice-root .launch-bottom{grid-template-columns:1fr;gap:4px}.practice-root .launch-date{align-items:flex-start;flex-direction:column}}
 .practice-root .visualization{padding:24px 0;border-bottom:1px solid var(--line)}
 .practice-root .visualization-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .practice-root .visualization h2{font-family:var(--font-newsreader),Georgia,serif;font-size:27px;font-weight:500;margin-bottom:0}
