@@ -1,0 +1,25 @@
+.practice-root .practice-today{padding:28px 0 32px;margin:0 0 26px;border-bottom:1px solid var(--line);scroll-margin-top:24px;font-size:16px}
+.practice-root .practice-today>h2{font:clamp(30px,4vw,42px)/1.2 var(--font-newsreader),Georgia,serif;margin:10px 0}
+.practice-root .practice-today>.eyebrow{font-size:12px}
+.practice-root .today-path{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0 16px}
+.practice-root .today-path a{display:grid;gap:6px;border-top:2px solid #799e86;padding:14px 8px 14px 0;text-decoration:none;min-height:84px}
+.practice-root .today-path a:hover{border-color:#173e32;background:#e8f0e7}
+.practice-root .today-path span{font-size:13px;color:#486354}
+.practice-root .today-path strong{font-size:16px;font-weight:600}
+.practice-root .today-soft{font-size:14px;color:#506754;max-width:82ch}
+.practice-root .lesson-notebook{margin-top:24px;padding:20px 24px;background:#fffef7;border:1px solid #afc29f;border-top:4px solid #d1bc5e;border-radius:4px}
+.practice-root .lesson-notebook summary{cursor:pointer;font-size:20px;font-weight:600;min-height:44px;padding:6px 0}
+.practice-root .lesson-notebook fieldset{border:0;padding:0;margin:20px 0 0;min-width:0}
+.practice-root .lesson-notebook label{display:grid;gap:8px;margin-bottom:18px;font-size:15px}
+.practice-root .notebook-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.practice-root .lesson-notebook input,.practice-root .lesson-notebook textarea{width:100%;min-width:0;background:white;border:1px solid #8ba899;border-radius:4px;padding:12px;color:#203e39;font:16px/1.5 var(--font-inter),sans-serif}
+.practice-root .lesson-notebook textarea{resize:vertical}
+.practice-root .lesson-notebook input::placeholder,.practice-root .lesson-notebook textarea::placeholder{color:#66786e;opacity:1}
+.practice-root .lesson-notebook textarea:focus-visible,.practice-root .lesson-notebook summary:focus-visible{outline:3px solid #bd5c3f;outline-offset:4px}
+.practice-root .notebook-actions{display:flex;gap:12px;flex-wrap:wrap}
+.practice-root .notebook-actions button{font-size:15px;min-height:46px}
+.practice-root .notebook-status{font-size:14px;color:#365b44;min-height:24px}
+.practice-root .today-launch{display:inline-block;margin-top:20px;min-height:44px;padding:10px 0;font-size:15px}
+.practice-root #exercise-library,.practice-root #readiness{scroll-margin-top:24px}
+.practice-root .notebook-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media(max-width:760px){.practice-root .today-path{grid-template-columns:1fr;gap:0}.practice-root .today-path a{min-height:72px}.practice-root .notebook-pair{grid-template-columns:1fr;gap:0}.practice-root .lesson-notebook{padding:16px}.practice-root .notebook-actions button{flex:1 1 180px}}
