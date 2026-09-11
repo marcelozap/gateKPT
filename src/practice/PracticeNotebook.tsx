@@ -1,6 +1,7 @@
 'use client';
 
 import './notebook.css';
+import ReleaseVideos from './ReleaseVideos';
 
 export default function PracticeNotebook() {
   return (
@@ -22,6 +23,7 @@ export default function PracticeNotebook() {
       </div>
       <p className="today-soft">Listening or resting can be today's choice. Follow the check-in and exercise safety guidance below.</p>
       <a className="today-launch" href="#artist-launch">When you want to share: your 90-day artist plan</a>
+      <ReleaseVideos />
     </section>
   );
 }
