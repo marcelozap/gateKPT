@@ -23,6 +23,18 @@ export default function PracticeNotebook() {
       </div>
       <p className="today-soft">Listening or resting can be today's choice. Follow the check-in and exercise safety guidance below.</p>
       <a className="today-launch" href="#artist-launch">When you want to share: your 90-day artist plan</a>
+      <section className="lesson-notebook" aria-labelledby="recording-recipe-title" style={{ marginTop: '2rem' }}>
+        <p className="eyebrow">YOUR FIRST CLIP / KEEP IT SIMPLE</p>
+        <h3 id="recording-recipe-title">One phrase. One person. One take.</h3>
+        <ol style={{ paddingLeft: '1.5rem', lineHeight: 1.8 }}>
+          <li><strong>Wear what you have.</strong> An off-white tee if you like. Your current hair and stubble are fine.</li>
+          <li><strong>Face a window.</strong> Choose soft daylight and a simple background.</li>
+          <li><strong>Phone at eye level.</strong> Prop it securely, film vertically, and keep your face and shoulders in frame.</li>
+          <li><strong>Sing one familiar phrase.</strong> Imagine sharing it with someone you feel comfortable with, not an audience to impress.</li>
+          <li><strong>Listen once.</strong> Notice one moment you like. Keep the clip private or share when you want.</li>
+        </ol>
+        <p className="today-soft">No new gear. No perfect look required. Posting is optional.</p>
+      </section>
       <ReleaseVideos />
     </section>
   );
